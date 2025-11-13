@@ -2,7 +2,6 @@ import { ncontiero } from "@ncontiero/eslint-config";
 
 export default ncontiero(
   {
-    ignores: ["dkmovie/templates/emails/**/*.html"],
     javascript: {
       overrides: {
         "node/no-unsupported-features/node-builtins": [

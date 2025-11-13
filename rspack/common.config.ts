@@ -14,19 +14,15 @@ const BROWSER_TARGETS = [
 const BASE_PATH = path.join(__dirname, "../");
 const PROJECT_PATH = path.join(BASE_PATH, "dkmovie");
 
+const isDev = process.env.NODE_ENV === "development";
+
 export const commonConfig = defineConfig({
   target: "web",
   context: BASE_PATH,
-  entry: {
-    main: path.resolve(PROJECT_PATH, "src/index.ts"),
-    vendors: path.resolve(PROJECT_PATH, "src/vendors.ts"),
-  },
+  entry: path.resolve(PROJECT_PATH, "src/index.tsx"),
   output: {
     path: path.resolve(PROJECT_PATH, "static/bundles/"),
     publicPath: "/static/bundles/",
-    filename: "js/[name].js",
-    chunkFilename: "js/[name].js",
-    cssFilename: "css/[name].css",
     assetModuleFilename: "assets/[name][ext]",
     clean: true,
   },
@@ -44,7 +40,16 @@ export const commonConfig = defineConfig({
           {
             loader: "builtin:swc-loader",
             options: {
-              jsc: { parser: { syntax: "typescript" } },
+              jsc: {
+                parser: { syntax: "typescript", tsx: true },
+                transform: {
+                  react: {
+                    runtime: "automatic",
+                    development: isDev,
+                    refresh: isDev,
+                  },
+                },
+              },
               env: { targets: BROWSER_TARGETS },
             } satisfies SwcLoaderOptions,
           },

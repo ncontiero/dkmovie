@@ -1,3 +1,5 @@
+import rspack from "@rspack/core";
+import ReactRefreshPlugin from "@rspack/plugin-react-refresh";
 import { merge } from "webpack-merge";
 import { commonConfig } from "./common.config";
 
@@ -20,9 +22,7 @@ export default merge(commonConfig, {
         runtimeErrors: true,
       },
     },
-    // We need hot=false (Disable HMR) to set liveReload=true
-    hot: false,
-    liveReload: true,
     watchFiles: ["dkmovie/**/templates/**/*.html"],
   },
+  plugins: [new ReactRefreshPlugin(), new rspack.HotModuleReplacementPlugin()],
 });
