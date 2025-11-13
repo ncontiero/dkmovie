@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":disableRateLimiting"],
+  "dependencyDashboard": false,
+  "semanticCommits": "enabled",
+  "rangeStrategy": "bump",
+  "configMigration": true,
+  "packageRules": [
+    {
+      "enabled": false,
+      "matchDatasources": ["docker"],
+      "matchDepNames": ["docker.io/python"],
+      "matchUpdateTypes": ["major", "minor"]
+    },
+    {
+      "enabled": false,
+      "matchDatasources": ["pypi"],
+      "matchDepNames": ["django"],
+      "matchUpdateTypes": ["major", "minor"]
+    }
+  ],
+  "pip_requirements": {
+    "fileMatch": [
+      "(^|/)[\\w-]*requirements(-\\w+)?\\.(txt|pip)$",
+      "^.*/requirements/.*.txt$"
+    ]
+  }
+}

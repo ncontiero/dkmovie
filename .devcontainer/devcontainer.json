@@ -1,0 +1,69 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-docker-compose
+{
+  "name": "dkmovie-dev",
+  "dockerComposeFile": ["../docker-compose.local.yml"],
+  "init": true,
+  "mounts": [
+    {
+      "source": "./.devcontainer/zsh_history",
+      "target": "/home/dev-user/.zsh_history",
+      "type": "bind"
+    },
+    {
+      "source": "~/.ssh",
+      "target": "/home/dev-user/.ssh",
+      "type": "bind"
+    }
+  ],
+
+  "overrideCommand": false,
+  "service": "django",
+  "remoteUser": "dev-user",
+  "workspaceFolder": "/app",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "[python]": {
+          "analysis.autoImportCompletions": true,
+          "analysis.typeCheckingMode": "basic",
+          "defaultInterpreterPath": "/usr/local/bin/python",
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "languageServer": "Pylance",
+          "linting.enabled": true,
+          "linting.mypyEnabled": true,
+          "linting.mypyPath": "/usr/local/bin/mypy"
+        },
+        "[django-html]": {
+          "editor.quickSuggestions": {
+            "other": true,
+            "comments": true,
+            "strings": true
+          },
+          "djlint.enableLinting": true,
+          "djlint.profile": "django",
+          "editor.defaultFormatter": "monosans.djlint",
+          "editor.formatOnSave": false
+        }
+      },
+      "extensions": [
+        // python
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "sourcery.sourcery",
+        "KevinRose.vsc-python-indent",
+        "charliermarsh.ruff",
+        // django
+        "batisteo.vscode-django",
+        "monosans.djlint"
+      ]
+    }
+  },
+
+  "shutdownAction": "stopCompose"
+}

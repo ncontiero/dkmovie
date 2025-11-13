@@ -1,0 +1,77 @@
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_traefik: {}
+  production_redis_data: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+      args:
+        # These variable can be defined in an .env file in the root of the repo
+        DJANGO_AWS_STORAGE_BUCKET_NAME: ${DJANGO_AWS_STORAGE_BUCKET_NAME}
+        DJANGO_AWS_S3_CUSTOM_DOMAIN: ${DJANGO_AWS_S3_CUSTOM_DOMAIN}
+    image: dkmovie_production_django
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: dkmovie_production_postgres
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data
+      - production_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.production/.postgres
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: dkmovie_production_traefik
+    depends_on:
+      - django
+    volumes:
+      - production_traefik:/etc/traefik/acme
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "0.0.0.0:5555:5555"
+
+  redis:
+    image: docker.io/redis:8
+    volumes:
+      - production_redis_data:/data
+
+  celeryworker:
+    <<: *django
+    image: dkmovie_production_celeryworker
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: dkmovie_production_celerybeat
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: dkmovie_production_flower
+    command: /start-flower
+
+  awscli:
+    build:
+      context: .
+      dockerfile: ./compose/production/aws/Dockerfile
+    env_file:
+      - ./.envs/.production/.django
+    volumes:
+      - production_postgres_data_backups:/backups:z

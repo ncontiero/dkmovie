@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Run database migrations if enabled
+if [ "$RUN_MIGRATIONS" = "True" ]; then
+  python /app/manage.py migrate --noinput
+fi
+
+# Run static file collection unless disabled
+if [ "$NOT_COLLECT_STATIC" != "True" ]; then
+  python /app/manage.py collectstatic --noinput
+fi
+
+exec gunicorn config.wsgi --bind 0.0.0.0:5000 --chdir=/app

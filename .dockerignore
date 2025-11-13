@@ -1,0 +1,16 @@
+.venv/
+venv/
+node_modules/
+.yarn/cache
+.yarn/install-state.gz
+.pnp.*
+pnpm-store/
+.git/
+.gitignore
+.gitattributes
+.github
+.editorconfig
+.pre-commit-config.yaml
+.envs/
+*.md
+dkmovie/static/bundles/
