@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { Suspense, useEffect } from "react";
+import { BrowserRouter } from "react-router";
+import { Header } from "./components/header";
+import { LoadingPage } from "./components/loading-page";
+import { Router } from "./routes";
 
 export function App() {
-  const [count, setCount] = useState(0);
+  useEffect(() => {
+    document.documentElement.classList.remove("opacity-0");
+  }, []);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <h1>Count: {count}</h1>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Suspense fallback={<LoadingPage />}>
+        <Router />
+      </Suspense>
+    </BrowserRouter>
   );
 }

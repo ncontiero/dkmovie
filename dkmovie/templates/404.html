@@ -3,14 +3,3 @@
 {% block title %}
   Page not found
 {% endblock title %}
-{% block content %}
-  <h1 class="text-4xl underline font-bold my-4">Page not found</h1>
-  <p class="text-lg">
-    {% if exception %}
-      {{ exception }}
-    {% else %}
-      This is not the page you were
-      looking for.
-    {% endif %}
-  </p>
-{% endblock content %}
