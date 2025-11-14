@@ -16,7 +16,7 @@ dependencies = [
   "django-celery-beat==2.8.1",
   "django-cleanup==9.0.0",
   "django-cors-headers==4.9.0",
-  "django-ninja==1.4.5",
+  "django-ninja==1.5.0",
   "django-redis==6.0.0",
   "django-storages[s3]==1.14.6",
   "django-webpack-loader==3.2.2",
@@ -45,7 +45,7 @@ dev = [
   "pytest==8.4.2",
   "pytest-django==4.11.1",
   "pytest-sugar==1.1.1",
-  "ruff==0.14.4",
+  "ruff==0.14.5",
   "watchfiles==1.1.1",
   "werkzeug[watchdog]==3.1.3",
 ]

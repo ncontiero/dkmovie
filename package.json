@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@ncontiero/eslint-config": "6.4.1",
-    "@rspack/cli": "^1.6.2",
-    "@rspack/core": "^1.6.2",
+    "@rspack/cli": "^1.6.3",
+    "@rspack/core": "^1.6.3",
     "@rspack/plugin-react-refresh": "^1.5.3",
     "@tailwindcss/postcss": "4.1.17",
     "@types/node": "^24.10.1",
