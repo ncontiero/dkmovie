@@ -1,4 +1,3 @@
-import type { Title } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import {
   CarouselSkeleton,
@@ -10,15 +9,15 @@ import {
   HeroSectionSkeleton,
 } from "@/components/hero-section";
 import { Meta } from "@/components/meta";
+import { getTitles } from "@/http/get-titles";
 
 export default function HomePage() {
-  const { data: titles = [], isLoading } = useQuery({
-    queryKey: ["titles"],
+  const { data: movies = [], isLoading: moviesLoading } = useQuery({
+    queryKey: ["movies"],
     queryFn: async () => {
       try {
-        const res = await fetch("/api/titles/");
-        const data = (await res.json()) as Title[];
-        return data || [];
+        const data = await getTitles({ limit: 10, contentType: "MOVIE" });
+        return data?.items || [];
       } catch (error) {
         console.error(error);
         return [];
@@ -27,7 +26,21 @@ export default function HomePage() {
     staleTime: 10 * 60 * 1000,
   });
 
-  if (isLoading)
+  const { data: series = [], isLoading: seriesLoading } = useQuery({
+    queryKey: ["series"],
+    queryFn: async () => {
+      try {
+        const data = await getTitles({ limit: 10, contentType: "SERIES" });
+        return data?.items || [];
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  if (moviesLoading || seriesLoading)
     return (
       <main className="min-h-screen">
         <HeroSectionSkeleton />
@@ -38,7 +51,7 @@ export default function HomePage() {
       </main>
     );
 
-  if (!titles || titles.length === 0)
+  if (!movies || !series || (movies.length === 0 && series.length === 0))
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-2">
         <h1 className="text-center text-2xl font-semibold">No titles found.</h1>
@@ -48,29 +61,22 @@ export default function HomePage() {
       </main>
     );
 
-  const heroContent: HeroContent[] = titles
-    .map((title) => {
-      return {
-        id: title.id,
-        title: title.title,
-        description: title.description,
-        imageUrl: title.cover || "",
-        type: title.content_type,
-      };
+  const titles = [...movies, ...series]
+    .sort((a, b) => {
+      const aDate = new Date(a.release_date || "");
+      const bDate = new Date(b.release_date || "");
+      return bDate.getTime() - aDate.getTime();
     })
     .slice(0, 4);
-
-  const movies = titles
-    .map((title) => {
-      return title.content_type === "MOVIE" ? title : null;
-    })
-    .filter(Boolean) as Title[];
-
-  const series = titles
-    .map((title) => {
-      return title.content_type === "SERIES" ? title : null;
-    })
-    .filter(Boolean) as Title[];
+  const heroContent: HeroContent[] = titles.map((title) => {
+    return {
+      id: title.id,
+      title: title.title,
+      description: title.description,
+      imageUrl: title.cover || "",
+      type: title.content_type,
+    };
+  });
 
   return (
     <main>
