@@ -1,14 +1,16 @@
-import type { Movie } from "@/utils/types";
+import type { Title } from "@/utils/types";
 import { Link } from "react-router";
 
 interface MovieCardProps {
-  readonly movie: Movie;
+  readonly movie: Title;
 }
 
 export function MovieCard({ movie }: MovieCardProps) {
+  const pathTo = movie.content_type === "MOVIE" ? "movies" : "series";
+
   return (
     <Link
-      to={`/${movie.type}/${movie.id}`}
+      to={`/${pathTo}/${movie.id}`}
       className="group relative shrink-0 transform rounded-lg focus-visible:outline-hidden"
     >
       <div
@@ -17,14 +19,16 @@ export function MovieCard({ movie }: MovieCardProps) {
           group-focus-visible:ring-2 hover:scale-105
         `}
       >
-        <img
-          src={movie.posterUrl}
-          alt={movie.title}
-          className={`
-            group-hover:border-border group-hover:shadow-xl relative h-[350px] w-full rounded-lg border-2
-            border-transparent object-cover shadow-md duration-200
-          `}
-        />
+        {movie.poster ? (
+          <img
+            src={movie.poster}
+            alt={movie.title}
+            className={`
+              group-hover:border-border group-hover:shadow-xl relative h-[350px] w-full rounded-lg border-2
+              border-transparent object-cover shadow-md duration-200
+            `}
+          />
+        ) : null}
         <p className="text-muted-foreground mt-1 truncate font-medium duration-200 group-hover:text-foreground">
           {movie.title}
         </p>

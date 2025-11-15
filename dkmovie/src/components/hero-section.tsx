@@ -5,9 +5,10 @@ import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 export interface HeroContent {
-  id: number;
+  id: string;
   title: string;
   description: string;
   imageUrl: string;
@@ -19,7 +20,7 @@ interface HeroProps {
 }
 
 function HeroSectionItem({ content }: { readonly content: HeroContent }) {
-  const pathTo = content.type === "movie" ? "movies" : "series";
+  const pathTo = content.type === "MOVIE" ? "movies" : "series";
 
   return (
     <div className="relative h-[75vh] w-full">
@@ -92,5 +93,31 @@ export function HeroSection({ content }: HeroProps) {
         </SwiperSlide>
       ))}
     </Swiper>
+  );
+}
+
+export function HeroSectionSkeleton() {
+  return (
+    <Skeleton className="bg-secondary relative h-[75vh] w-full">
+      <div className="relative z-10 flex h-full flex-col justify-end pb-16 sm:pb-24 lg:pb-32">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-xl space-y-4">
+            {/* Title Skeleton */}
+            <Skeleton className="bg-background h-10 w-3/4 sm:h-12 lg:h-14" />
+            {/* Description Skeleton */}
+            <div className="space-y-2">
+              <Skeleton className="bg-background h-4 w-full" />
+              <Skeleton className="bg-background h-4 w-full" />
+              <Skeleton className="bg-background h-4 w-3/4" />
+            </div>
+            {/* Button Skeletons */}
+            <div className="xs:flex-row mt-8 flex flex-col gap-4">
+              <Skeleton className="bg-primary h-12 w-40" />
+              <Skeleton className="bg-background h-12 w-44" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Skeleton>
   );
 }

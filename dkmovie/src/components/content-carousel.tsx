@@ -1,11 +1,12 @@
-import type { Movie } from "@/utils/types";
+import type { Title } from "@/utils/types";
 import { Mousewheel, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { MovieCard } from "./movie-card";
+import { Skeleton } from "./ui/skeleton";
 
 interface CarouselProps {
   readonly title: string;
-  readonly items: Movie[];
+  readonly items: Title[];
 }
 
 export function ContentCarousel({ title, items }: CarouselProps) {
@@ -30,6 +31,27 @@ export function ContentCarousel({ title, items }: CarouselProps) {
             </SwiperSlide>
           ))}
         </Swiper>
+      </div>
+    </section>
+  );
+}
+
+export function CarouselSkeleton() {
+  return (
+    <section className="mt-4 py-4">
+      <div className="container mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
+        {/* Title Skeleton */}
+        <Skeleton className="h-10 w-1/3" />
+        {/* Card Skeletons */}
+        <div className="flex gap-5 overflow-hidden">
+          {[...Array.from({ length: 5 })].map((_, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <div key={i} className="w-40 shrink-0 space-y-3 sm:w-48 lg:w-56">
+              <Skeleton className="aspect-2/3 w-full rounded-lg" />
+              <Skeleton className="h-6 w-3/4" />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
