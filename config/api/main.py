@@ -2,6 +2,7 @@ import orjson
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpRequest
 from ninja import NinjaAPI
+from ninja.errors import ValidationError as NinjaValidationError
 from ninja.parser import Parser
 
 from dkmovie.titles.api import router as titles_router
@@ -22,6 +23,13 @@ api = NinjaAPI(
     description="Documentation of API endpoints of DkMovie",
     version="1.0.0",
 )
+
+
+@api.exception_handler(NinjaValidationError)
+def ninja_validation_error_handler(request, exc: NinjaValidationError):
+    messages = [f"{error['loc']!s}: {error['msg']}" for error in exc.errors]
+    status, response = api_error(400, "Validation Error", "\n".join(messages))
+    return api.create_response(request, response, status=status)
 
 
 @api.exception_handler(ApiProcessError)
