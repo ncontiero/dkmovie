@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "./ui/link";
 
 interface PageErrorProps {
   readonly title: string;
@@ -11,7 +11,11 @@ export function PageError({ title, description }: PageErrorProps) {
       <h1 className="text-4xl font-bold tracking-wide">{title}</h1>
       <p className="mt-4 text-lg">{description}</p>
       <p className="mt-2 text-base">
-        Go back to the <Link to="/">home</Link>.
+        Go back to the{" "}
+        <Link to="/" variant="ghost">
+          home
+        </Link>
+        .
       </p>
     </main>
   );

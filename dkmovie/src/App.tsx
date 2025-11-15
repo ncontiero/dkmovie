@@ -1,5 +1,7 @@
 import { Suspense, useEffect } from "react";
 import { BrowserRouter } from "react-router";
+import { ThemeProvider } from "next-themes";
+import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { LoadingPage } from "./components/loading-page";
 import { Router } from "./routes";
@@ -11,10 +13,13 @@ export function App() {
 
   return (
     <BrowserRouter>
-      <Header />
-      <Suspense fallback={<LoadingPage />}>
-        <Router />
-      </Suspense>
+      <ThemeProvider attribute="class" defaultTheme="dark">
+        <Header />
+        <Suspense fallback={<LoadingPage />}>
+          <Router />
+        </Suspense>
+        <Footer />
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

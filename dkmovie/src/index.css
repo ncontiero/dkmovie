@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,6 +46,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --breakpoint-xs: 30rem; /* 480px */
 }
 
 :root {
@@ -118,9 +121,21 @@
     @apply scroll-smooth antialiased;
   }
   body {
-    @apply relative bg-background text-foreground;
+    @apply relative bg-background text-foreground font-sans;
   }
   button {
     @apply cursor-pointer;
+  }
+
+  /* Swipper */
+  .swiper-button-prev,
+  .swiper-button-next {
+    @apply text-primary! text-center! bg-background/80! backdrop-blur-sm! rounded-full! p-2! [&_svg]:size-full! [&_svg]:pl-0.5! duration-200! hover:bg-background!;
+  }
+  .swiper-pagination-bullet {
+    @apply text-center! font-medium! text-sm! bg-foreground/80!;
+  }
+  .swiper-pagination-bullet-active {
+    @apply bg-primary! text-primary-foreground!;
   }
 }
