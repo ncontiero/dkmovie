@@ -276,6 +276,7 @@ dump.rdb
 ### Project template
 mailpit
 dkmovie/media/
+dkmovie/titles/scripts/media/
 
 .pytest_cache/
 
