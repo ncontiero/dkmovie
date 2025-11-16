@@ -40,9 +40,7 @@ export function CarouselSkeleton() {
   return (
     <section className="mt-4 py-4">
       <div className="container mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
-        {/* Title Skeleton */}
         <Skeleton className="h-10 w-1/3" />
-        {/* Card Skeletons */}
         <div className="flex gap-5 overflow-hidden">
           {[...Array.from({ length: 5 })].map((_, i) => (
             // eslint-disable-next-line react/no-array-index-key

@@ -21,6 +21,7 @@ class TitleSchema(ModelSchema):
 
 class TitleFilterSchema(FilterSchema):
     title: str | None = None
+    title__icontains: str | None = None
     content_type: Title.ContentType = None
     genre: str | None = None
     release_date: str | None = None

@@ -23,7 +23,7 @@ export default function HomePage() {
         return [];
       }
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
   });
 
   const { data: series = [], isLoading: seriesLoading } = useQuery({
@@ -37,7 +37,7 @@ export default function HomePage() {
         return [];
       }
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 60 * 60 * 1000,
   });
 
   if (moviesLoading || seriesLoading)

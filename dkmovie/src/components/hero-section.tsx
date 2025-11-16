@@ -20,8 +20,6 @@ interface HeroProps {
 }
 
 function HeroSectionItem({ content }: { readonly content: HeroContent }) {
-  const pathTo = content.type === "MOVIE" ? "movies" : "series";
-
   return (
     <div className="relative h-[75vh] w-full">
       <div
@@ -47,8 +45,8 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
                 className="shadow-xl hover:scale-105 focus-visible:scale-105 [&_svg]:size-5"
                 asChild
               >
-                <Link to={`/${pathTo}/${content.id}/watch`}>
-                  <Play />
+                <Link to={`/title/${content.id}/watch`}>
+                  <Play className="fill-current" />
                   Watch Now
                 </Link>
               </Button>
@@ -59,7 +57,7 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
                 className="shadow-xl backdrop-blur-sm hover:scale-105 focus-visible:scale-105 [&_svg]:size-5"
                 asChild
               >
-                <Link to={`/${pathTo}/${content.id}`}>
+                <Link to={`/title/${content.id}`}>
                   <Info />
                   More Information
                 </Link>
@@ -102,15 +100,12 @@ export function HeroSectionSkeleton() {
       <div className="relative z-10 flex h-full flex-col justify-end pb-16 sm:pb-24 lg:pb-32">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl space-y-4">
-            {/* Title Skeleton */}
             <Skeleton className="bg-background h-10 w-3/4 sm:h-12 lg:h-14" />
-            {/* Description Skeleton */}
             <div className="space-y-2">
               <Skeleton className="bg-background h-4 w-full" />
               <Skeleton className="bg-background h-4 w-full" />
               <Skeleton className="bg-background h-4 w-3/4" />
             </div>
-            {/* Button Skeletons */}
             <div className="xs:flex-row mt-8 flex flex-col gap-4">
               <Skeleton className="bg-primary h-12 w-40" />
               <Skeleton className="bg-background h-12 w-44" />

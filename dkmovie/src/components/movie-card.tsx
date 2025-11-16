@@ -6,11 +6,9 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ movie }: MovieCardProps) {
-  const pathTo = movie.content_type === "MOVIE" ? "movies" : "series";
-
   return (
     <Link
-      to={`/${pathTo}/${movie.id}`}
+      to={`/title/${movie.id}`}
       className="group relative shrink-0 transform rounded-lg focus-visible:outline-hidden"
     >
       <div

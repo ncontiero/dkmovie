@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { AlertTriangle } from "lucide-react";
+import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 
 export default function PageNotFound() {
@@ -9,6 +10,7 @@ export default function PageNotFound() {
         bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center font-sans
       `}
     >
+      <Meta title="Page Not Found" />
       <div className="mb-6">
         <AlertTriangle className="text-primary size-16" />
       </div>

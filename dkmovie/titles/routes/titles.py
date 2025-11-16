@@ -14,8 +14,18 @@ router = Router()
 
 @router.get("/", response={200: list[TitleSchema]})
 @paginate
-def get_titles(request, filters: TitleFilterSchema = Query(...)):  # noqa: B008
+def get_titles(
+    request,
+    filters: TitleFilterSchema = Query(...),  # noqa: B008
+    exclude: str | None = None,
+):
     titles = Title.objects.all()
+    if exclude:
+        try:
+            exclude = exclude.split(",")
+            titles = titles.exclude(id__in=[UUID(pk) for pk in exclude])
+        except ValueError as err:
+            raise ApiProcessError(400, "Invalid exclude parameter.") from err
     return filters.filter(titles)
 
 
