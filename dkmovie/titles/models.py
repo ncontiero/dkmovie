@@ -1,5 +1,7 @@
 from uuid import uuid4
 
+from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
@@ -74,6 +76,13 @@ class Title(models.Model):
         blank=True,
         null=True,
         help_text=_("The duration in minutes"),
+    )
+    rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=0,
+        help_text=_("The average rating out of 10"),
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
     genres = models.ManyToManyField(
         Genre,

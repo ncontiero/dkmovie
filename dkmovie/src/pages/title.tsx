@@ -121,26 +121,27 @@ export default function TitlePage() {
                   {title.title}
                 </h1>
 
-                <div className="text-muted-foreground my-4 flex flex-wrap items-center gap-x-6 gap-y-2">
+                <div className="text-muted-foreground my-4 flex flex-wrap items-center gap-4">
                   {title.release_date ? (
-                    <span className="flex items-center">
-                      <Calendar className="mr-2 size-4" />
+                    <span className="flex items-center gap-2">
+                      <Calendar className="size-4" />
                       {new Date(title.release_date).getFullYear()}
                     </span>
                   ) : null}
                   {durationFormatted ? (
-                    <span className="flex items-center">
-                      <Clock className="mr-2 size-4" />
+                    <span className="flex items-center gap-2">
+                      <Clock className="size-4" />
                       {durationFormatted}
                     </span>
                   ) : null}
-                  {/* <span
+                  <span
                     className={`
-                      border-foreground/50 text-foreground/90 rounded-sm border px-2 py-0.5 text-sm font-medium
+                      text-foreground/90 flex items-center gap-2 rounded-sm border border-yellow-500 px-2 py-0.5 text-sm
+                      font-medium dark:border-yellow-400
                     `}
                   >
-                    {movie.rating}
-                  </span> */}
+                    {title.rating}
+                  </span>
                 </div>
 
                 {title.genres && title.genres.length > 0 ? (

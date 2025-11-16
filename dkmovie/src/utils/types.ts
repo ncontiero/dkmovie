@@ -12,6 +12,7 @@ export interface Title {
   content_type: ContentsType;
   release_date: string | null;
   duration: number | null;
+  rating: number;
   genres: Genre[];
   poster: string | null;
   cover: string | null;
