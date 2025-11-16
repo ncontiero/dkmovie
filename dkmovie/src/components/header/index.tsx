@@ -18,6 +18,8 @@ const links: { title: string; href: string }[] = [
 ];
 
 const pagesToAddScrollEffect = ["/", "/title/"];
+// For Sign In and Sign Up links
+const pathsToNotAddNext = ["/sign-in", "/sign-up"];
 
 export function Header() {
   const location = useLocation();
@@ -39,6 +41,10 @@ export function Header() {
   }, [addScrollEffect]);
 
   const isToAddScrollClasses = isScrolled || !addScrollEffect;
+  const addNextPathToSignInUp = !pathsToNotAddNext.some((path) =>
+    location.pathname.startsWith(path),
+  );
+  const nextPath = addNextPathToSignInUp ? `?next=${location.pathname}` : "";
 
   return (
     <header
@@ -122,13 +128,13 @@ export function Header() {
                   className="focus:bg-foreground/40 cursor-pointer py-2"
                   asChild
                 >
-                  <Link to="/sign-in">Sign In</Link>
+                  <Link to={`/sign-in${nextPath}`}>Sign In</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   asChild
                   className="focus:bg-foreground/40 cursor-pointer py-2"
                 >
-                  <Link to="/sign-up">Sign Up</Link>
+                  <Link to={`/sign-up${nextPath}`}>Sign Up</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

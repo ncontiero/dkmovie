@@ -1,4 +1,5 @@
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { z } from "zod";
@@ -15,6 +16,9 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function SignInPage() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     register,
@@ -23,11 +27,15 @@ export default function SignInPage() {
     resolver: zodResolver(signInSchema),
   });
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const nextPathParam = searchParams.get("next") ?? "/";
+  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
+
   const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
     console.log("Simulating API call...");
     await new Promise((resolve) => setTimeout(resolve, 1500));
     console.log("Form data submitted:", data);
+
+    navigate(nextPath);
   };
 
   return (
