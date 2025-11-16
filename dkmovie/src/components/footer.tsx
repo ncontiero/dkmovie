@@ -12,68 +12,68 @@ export function Footer() {
             <ul className="mt-4 space-y-2">
               <li>
                 <Link to="/" variant="footer">
-                  Perguntas Frequentes
+                  Frequently Asked Questions
                 </Link>
               </li>
               <li>
                 <Link to="/" variant="footer">
-                  Privacidade
+                  Privacy
                 </Link>
               </li>
               <li>
                 <Link to="/" variant="footer">
-                  Teste de Velocidade
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
-              Ajuda
-            </h4>
-            <ul className="mt-4 space-y-2">
-              <li>
-                <Link to="/" variant="footer">
-                  Central de Ajuda
-                </Link>
-              </li>
-              <li>
-                <Link to="/" variant="footer">
-                  Termos de Uso
-                </Link>
-              </li>
-              <li>
-                <Link to="/" variant="footer">
-                  Contato
+                  Speed Test
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
-              Conta
+              Help
             </h4>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link to="/" variant="footer">
-                  Minha Conta
+                  Help Center
                 </Link>
               </li>
               <li>
                 <Link to="/" variant="footer">
-                  Preferências
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link to="/" variant="footer">
+                  Contact
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
-              Mídia
+              Account
             </h4>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link to="/" variant="footer">
-                  Avisos Legais
+                  My Account
+                </Link>
+              </li>
+              <li>
+                <Link to="/" variant="footer">
+                  Preferences
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-muted-foreground text-sm font-semibold tracking-wider uppercase">
+              Media
+            </h4>
+            <ul className="mt-4 space-y-2">
+              <li>
+                <Link to="/" variant="footer">
+                  Legal Notices
                 </Link>
               </li>
             </ul>
