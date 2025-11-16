@@ -114,7 +114,7 @@ export default function TitlePage() {
                   {title.title}
                 </h1>
 
-                <div className="text-muted-foreground mt-4 mb-6 flex flex-wrap items-center gap-x-6 gap-y-2">
+                <div className="text-muted-foreground my-4 flex flex-wrap items-center gap-x-6 gap-y-2">
                   {title.release_date ? (
                     <span className="flex items-center">
                       <Calendar className="mr-2 size-4" />
@@ -134,7 +134,22 @@ export default function TitlePage() {
                   </span> */}
                 </div>
 
-                <p className="text-foreground/90 hidden max-w-prose text-lg drop-shadow-md md:block">
+                {title.genres && title.genres.length > 0 ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {title.genres.map((genre) => (
+                      <span
+                        key={genre.slug}
+                        className={`
+                          border-foreground/50 text-foreground/90 rounded-sm border px-2 py-0.5 text-sm font-medium
+                        `}
+                      >
+                        {genre.name}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+
+                <p className="text-foreground/90 mt-4 hidden max-w-prose text-lg drop-shadow-md md:block">
                   {title.description}
                 </p>
 
