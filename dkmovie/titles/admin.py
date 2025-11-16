@@ -47,4 +47,10 @@ class TitleAdmin(admin.ModelAdmin):
                 "fields": ("genres", "rating"),
             },
         ),
+        (
+            _("More Information"),
+            {
+                "fields": ("cast",),
+            },
+        ),
     )

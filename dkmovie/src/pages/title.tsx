@@ -203,18 +203,7 @@ export default function TitlePage() {
               <h3 className="text-foreground mb-3 text-xl font-semibold">
                 Cast
               </h3>
-              {/* <ul className="list-inside list-none space-y-1">
-                {movie.cast.map((actor) => (
-                  <li key={actor}>{actor}</li>
-                ))}
-              </ul> */}
-            </div>
-
-            <div>
-              <h3 className="text-foreground mb-3 text-xl font-semibold">
-                Director
-              </h3>
-              {/* <p>{movie.director}</p> */}
+              <p>{title.cast}</p>
             </div>
           </div>
         </div>

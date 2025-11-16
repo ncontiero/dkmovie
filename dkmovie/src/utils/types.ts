@@ -13,6 +13,7 @@ export interface Title {
   release_date: string | null;
   duration: number | null;
   rating: number;
+  cast: string;
   genres: Genre[];
   poster: string | null;
   cover: string | null;

@@ -90,6 +90,10 @@ class Title(models.Model):
         blank=True,
         help_text=_("Select one or more genres for this title"),
     )
+    cast = models.TextField(
+        blank=True,
+        help_text=_("List of main cast members"),
+    )
     poster = models.ImageField(
         upload_to="posters/",
         blank=True,
