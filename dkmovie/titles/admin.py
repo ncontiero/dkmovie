@@ -14,7 +14,7 @@ class GenreAdmin(admin.ModelAdmin):
 
 @admin.register(Title)
 class TitleAdmin(admin.ModelAdmin):
-    list_display = ("title", "content_type", "release_date")
+    list_display = ("title", "content_type", "duration", "release_date")
     list_filter = ("content_type", "genres", "release_date")
     search_fields = ("title", "description")
     filter_horizontal = ("genres",)
@@ -24,9 +24,10 @@ class TitleAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "title",
+                    "description",
                     "content_type",
                     "release_date",
-                    "description",
+                    "duration",
                 ),
             },
         ),

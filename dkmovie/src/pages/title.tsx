@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useParams } from "react-router";
 
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Play, Plus } from "lucide-react";
+import { Calendar, Clock, Play, Plus } from "lucide-react";
 import { ContentCarousel } from "@/components/content-carousel";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -93,6 +93,13 @@ export default function TitlePage() {
       staleTime: 60 * 60 * 1000,
     });
 
+  const durationFormatted = useMemo(() => {
+    if (!title || !title.duration) return null;
+    const hours = Math.floor(title.duration / 60);
+    const minutes = title.duration % 60;
+    return `${hours}h ${minutes}m`;
+  }, [title]);
+
   if (isLoading || relatedMoviesLoading) return <TitlePageSkeleton />;
   if (!title) return <PageNotFound />;
 
@@ -121,11 +128,13 @@ export default function TitlePage() {
                       {new Date(title.release_date).getFullYear()}
                     </span>
                   ) : null}
-                  {/* <span className="flex items-center">
-                    <Clock className="mr-2 size-4" />
-                    {movie.duration}
-                  </span>
-                  <span
+                  {durationFormatted ? (
+                    <span className="flex items-center">
+                      <Clock className="mr-2 size-4" />
+                      {durationFormatted}
+                    </span>
+                  ) : null}
+                  {/* <span
                     className={`
                       border-foreground/50 text-foreground/90 rounded-sm border px-2 py-0.5 text-sm font-medium
                     `}

@@ -70,6 +70,11 @@ class Title(models.Model):
         null=True,
         help_text=_("The original release date"),
     )
+    duration = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text=_("The duration in minutes"),
+    )
     genres = models.ManyToManyField(
         Genre,
         related_name="titles",
