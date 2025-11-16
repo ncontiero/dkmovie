@@ -13,7 +13,7 @@
     <title>{% block title %}{% endblock title %} • DKMovie</title>
     {% endblock overwrite_title %}
 
-    <link href="{% static 'images/favicons/favicon.ico' %}" rel="icon" />
+    <link type="image/svg+xml" href="{% static 'images/favicons/favicon.svg' %}" rel="icon" />
 
     {% render_bundle "main" "css" %}
     {% render_bundle "main" "js" attrs="defer" %}
