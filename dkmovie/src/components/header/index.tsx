@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Bell, Search, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { ThemeToggle } from "./theme-toggle";
 
 const links: { title: string; href: string }[] = [
@@ -11,22 +17,34 @@ const links: { title: string; href: string }[] = [
   { title: "Series", href: "/series" },
 ];
 
+const pagesToAddScrollEffect = ["/", "/title/"];
+
 export function Header() {
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const addScrollEffect = pagesToAddScrollEffect.some((page) =>
+    page === "/"
+      ? location.pathname === "/"
+      : location.pathname.startsWith(page),
+  );
+
   useEffect(() => {
+    if (!addScrollEffect) return;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [addScrollEffect]);
+
+  const isToAddScrollClasses = isScrolled || !addScrollEffect;
 
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-9999 h-16 w-full duration-300",
-        isScrolled
+        isToAddScrollClasses
           ? "bg-background/60 border-border border-b backdrop-blur-md"
           : `bg-transparent`,
       )}
@@ -41,7 +59,7 @@ export function Header() {
                 font-bold duration-200 hover:underline
               `}
             >
-              DKMovie
+              DkMovie
             </Link>
             <nav className="hidden gap-1 md:flex">
               {links.map(({ title, href }) => (
@@ -53,7 +71,7 @@ export function Header() {
                       hover:bg-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden
                       rounded-md px-3 py-2 text-sm font-medium duration-200
                     `,
-                    isScrolled && `hover:bg-foreground/20`,
+                    isToAddScrollClasses && `hover:bg-foreground/20`,
                   )}
                 >
                   {title}
@@ -69,7 +87,7 @@ export function Header() {
               size="icon"
               className={cn(
                 "rounded-full",
-                isScrolled && `hover:bg-foreground/20`,
+                isToAddScrollClasses && `hover:bg-foreground/20`,
               )}
             >
               <Search />
@@ -80,25 +98,43 @@ export function Header() {
               size="icon"
               className={cn(
                 "rounded-full",
-                isScrolled && `hover:bg-foreground/20`,
+                isToAddScrollClasses && `hover:bg-foreground/20`,
               )}
             >
               <Bell />
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="invert"
+                  size="icon"
+                  className={cn(
+                    "rounded-full",
+                    isToAddScrollClasses && `hover:bg-foreground/20`,
+                  )}
+                >
+                  <User />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-background/80 backdrop-blur-md">
+                <DropdownMenuItem
+                  className="focus:bg-foreground/40 cursor-pointer py-2"
+                  asChild
+                >
+                  <Link to="/sign-in">Sign In</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  asChild
+                  className="focus:bg-foreground/40 cursor-pointer py-2"
+                >
+                  <Link to="/sign-up">Sign Up</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <ThemeToggle
-              className={isScrolled ? "hover:bg-foreground/20" : ""}
+              className={isToAddScrollClasses ? "hover:bg-foreground/20" : ""}
             />
-            <Button
-              type="button"
-              variant="invert"
-              size="icon"
-              className={cn(
-                "rounded-full",
-                isScrolled && `hover:bg-foreground/20`,
-              )}
-            >
-              <User />
-            </Button>
           </div>
         </div>
       </div>
