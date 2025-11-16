@@ -8,10 +8,17 @@ from django.views.generic import TemplateView
 
 from .api.main import api
 
+api_urlpatterns = [
+    path("", api.urls),
+    path("auth/", include("allauth.headless.urls")),
+]
+
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
+    # User management
+    path("accounts/", include("allauth.urls")),
     # API base url
-    path("api/", api.urls),
+    path("api/", include(api_urlpatterns)),
     # Media files
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     # Catch all
