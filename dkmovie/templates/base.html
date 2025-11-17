@@ -1,5 +1,5 @@
 {% load static %}
-{% load render_bundle from webpack_loader %}
+{% load render_bundle webpack_static from webpack_loader %}
 
 <!DOCTYPE html>
 <html lang="en" class="opacity-0">
@@ -13,7 +13,7 @@
     <title>{% block title %}{% endblock title %} • DKMovie</title>
     {% endblock overwrite_title %}
 
-    <link type="image/svg+xml" href="{% static 'images/favicons/favicon.svg' %}" rel="icon" />
+    <link type="image/svg+xml" href="{% webpack_static 'assets/favicon.svg' %}" rel="icon" />
 
     {% render_bundle "main" "css" %}
     {% render_bundle "main" "js" attrs="defer" %}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Bell, Search, User } from "lucide-react";
+import faviconSvg from "@/assets/favicon.svg";
 import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -76,11 +77,7 @@ export function Header() {
                   `,
               )}
             >
-              <img
-                src="/static/images/favicons/favicon.svg"
-                alt="DkMovie"
-                className="size-10"
-              />
+              <img src={faviconSvg} alt="DkMovie" className="size-10" />
             </Link>
             <nav
               className={cn(

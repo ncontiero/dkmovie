@@ -61,6 +61,10 @@ export const commonConfig = defineConfig({
         type: "css",
         use: ["postcss-loader"],
       },
+      {
+        test: /\.svg$/,
+        type: "asset/resource",
+      },
     ],
   },
   optimization: {
