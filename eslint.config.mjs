@@ -18,4 +18,10 @@ export default ncontiero(
       "tailwindcss/enforce-consistent-line-wrapping": "off",
     },
   },
+  {
+    files: ["dkmovie/src/layouts/**"],
+    rules: {
+      "import/no-default-export": "off",
+    },
+  },
 );

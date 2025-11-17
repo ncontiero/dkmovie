@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Bell, Search, User } from "lucide-react";
+import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
@@ -22,6 +23,8 @@ const pagesToAddScrollEffect = ["/", "/title/"];
 const pathsToNotAddNext = ["/sign-in", "/sign-up"];
 
 export function Header() {
+  const { isAuthenticated, logout, isLogoutPending } = useSession();
+
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -124,18 +127,40 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-background/80 backdrop-blur-md">
-                <DropdownMenuItem
-                  className="focus:bg-foreground/40 cursor-pointer py-2"
-                  asChild
-                >
-                  <Link to={`/sign-in${nextPath}`}>Sign In</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  asChild
-                  className="focus:bg-foreground/40 cursor-pointer py-2"
-                >
-                  <Link to={`/sign-up${nextPath}`}>Sign Up</Link>
-                </DropdownMenuItem>
+                {isAuthenticated ? (
+                  <>
+                    <DropdownMenuItem
+                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      asChild
+                    >
+                      <Link to={`/account`}>My Account</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        logout();
+                      }}
+                    >
+                      {isLogoutPending ? "Logging out..." : "Log out"}
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem
+                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      asChild
+                    >
+                      <Link to={`/sign-in${nextPath}`}>Sign In</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      asChild
+                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                    >
+                      <Link to={`/sign-up${nextPath}`}>Sign Up</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
             <ThemeToggle

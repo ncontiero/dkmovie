@@ -1,3 +1,10 @@
+export interface Session {
+  user: {
+    id: number;
+    email: string;
+  };
+}
+
 export type ContentsType = "MOVIE" | "SERIES";
 
 export interface Genre {

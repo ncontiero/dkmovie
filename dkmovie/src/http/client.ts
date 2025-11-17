@@ -1,6 +1,20 @@
+import { getCookie } from "@/utils/get-cookie";
+
 export interface PaginationDataProps<T = any> {
   items: T;
   count: number;
+}
+
+export class HTTPError extends Error {
+  status: number;
+  data: any;
+
+  constructor(message: string, status: number, data: any) {
+    super(message);
+    this.name = "HTTPError";
+    this.status = status;
+    this.data = data;
+  }
 }
 
 /**
@@ -8,7 +22,16 @@ export interface PaginationDataProps<T = any> {
  * It handles JSON request/response logic and basic error handling.
  */
 export class HttpClient {
-  private readonly baseUrl = "/api";
+  private baseUrl: string;
+  private defaultHeaders: HeadersInit = {
+    accept: "application/json",
+    "content-type": "application/json",
+  };
+
+  constructor(baseUrl: string = "/api", defaultHeaders: HeadersInit = {}) {
+    this.baseUrl = baseUrl;
+    this.defaultHeaders = { ...this.defaultHeaders, ...defaultHeaders };
+  }
 
   /**
    * The core request method. All public methods (get, post, etc.) use this.
@@ -17,19 +40,26 @@ export class HttpClient {
    * @returns A promise that resolves to the JSON response data.
    */
   private async request<T>(endpoint: string, options: RequestInit): Promise<T> {
+    const isToAddCSRFToken = options.method && options.method !== "GET";
+    const headers = new Headers({
+      ...this.defaultHeaders,
+      ...options.headers,
+      ...(isToAddCSRFToken ? { "X-CSRFToken": getCookie("csrftoken") } : {}),
+    });
     const url = `${this.baseUrl}${endpoint}`;
-    const response = await fetch(url, options);
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
 
     // Handle non-OK responses
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({})); // Try to get error details
-      const error = new Error(
+      const error = new HTTPError(
         `HTTP error! Status: ${response.status} ${response.statusText}`,
+        response.status,
+        errorData,
       );
-
-      // Attach status and error data to the error object for better debugging
-      (error as any).status = response.status;
-      (error as any).data = errorData;
 
       console.error("HTTP Request Failed:", error);
       throw error;
@@ -123,3 +153,4 @@ export class HttpClient {
 }
 
 export const httpClient = new HttpClient();
+export const authHttpClient = new HttpClient("/api/auth/browser/v1/auth");

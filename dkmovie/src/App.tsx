@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { LoadingPage } from "./components/loading-page";
+import { SessionProvider } from "./context/session/provider";
 import { queryClient } from "./lib/query";
 import { Router } from "./routes";
 
@@ -15,15 +16,17 @@ export function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeProvider attribute="class" defaultTheme="dark">
-          <Header />
-          <Suspense fallback={<LoadingPage />}>
-            <Router />
-          </Suspense>
-          <Footer />
-        </ThemeProvider>
-      </BrowserRouter>
+      <SessionProvider>
+        <BrowserRouter>
+          <ThemeProvider attribute="class" defaultTheme="dark">
+            <Header />
+            <Suspense fallback={<LoadingPage />}>
+              <Router />
+            </Suspense>
+            <Footer />
+          </ThemeProvider>
+        </BrowserRouter>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }
