@@ -5,11 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export default function PageNotFound() {
   return (
-    <div
-      className={`
-        bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center font-sans
-      `}
-    >
+    <div className="bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center">
       <Meta title="Page Not Found" />
       <div className="mb-6">
         <AlertTriangle className="text-primary size-16" />

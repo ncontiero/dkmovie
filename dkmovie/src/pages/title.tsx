@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, Play, Plus } from "lucide-react";
 import { ContentCarousel } from "@/components/content-carousel";
+import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTitle, getTitles } from "@/http/get-titles";
@@ -105,6 +106,7 @@ export default function TitlePage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
+      <Meta title={title.title} description={title.description} />
       <main>
         <div className="relative h-[70vh] w-full md:h-[80vh]">
           <div

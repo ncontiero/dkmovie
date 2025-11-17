@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +13,7 @@ import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
 
 export default function SignInPage() {
+  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { refetchSession, isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -32,9 +34,8 @@ export default function SignInPage() {
       await signIn(data);
     } catch (error) {
       if (error instanceof HTTPError) {
-        console.error(error.message);
-        console.error(error.data?.errors);
-        return;
+        console.error(error.data);
+        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
       }
 
       console.error(error);
@@ -80,6 +81,13 @@ export default function SignInPage() {
           <p className="text-destructive text-sm">{errors.password.message}</p>
         ) : null}
       </div>
+      {apiErrors.length > 0 ? (
+        <ul className="text-destructive text-sm">
+          {apiErrors.map((error) => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      ) : null}
       <Button
         type="submit"
         className="mt-2 w-full"

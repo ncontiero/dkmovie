@@ -93,7 +93,7 @@ export class HttpClient {
    */
   public post<T>(
     endpoint: string,
-    body: unknown,
+    body?: unknown,
     options: RequestInit = {},
   ): Promise<T> {
     return this.request<T>(endpoint, {
@@ -147,10 +147,21 @@ export class HttpClient {
    * @param options - Optional RequestInit settings.
    * @returns A promise that resolves (often to null or a confirmation message).
    */
-  public delete<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: "DELETE" });
+  public delete<T>(
+    endpoint: string,
+    body?: unknown,
+    options: RequestInit = {},
+  ): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: "DELETE",
+      body: JSON.stringify(body),
+    });
   }
 }
 
 export const httpClient = new HttpClient();
 export const authHttpClient = new HttpClient("/api/auth/browser/v1/auth");
+export const authAccountHttpClient = new HttpClient(
+  "/api/auth/browser/v1/account",
+);

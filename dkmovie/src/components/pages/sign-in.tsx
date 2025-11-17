@@ -19,7 +19,7 @@ export function BasePageForSignIn({
 }: BasePageForSignInProps) {
   return (
     <main className="flex min-h-screen items-center justify-center">
-      <Meta title={isSignIn ? "Sign In" : "Sign Up"} />
+      <Meta title={title} />
       <form
         className="w-full max-w-md rounded-lg border shadow-lg"
         onSubmit={formSubmit}

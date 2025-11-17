@@ -6,6 +6,7 @@ from ninja.errors import ValidationError as NinjaValidationError
 from ninja.parser import Parser
 
 from dkmovie.titles.api import router as titles_router
+from dkmovie.users.api import router as users_router
 
 from .utils import ApiProcessError
 from .utils import api_error
@@ -45,3 +46,4 @@ def exception_handler(request, exc: Exception):
 
 
 api.add_router("/", titles_router)
+api.add_router("/", users_router)

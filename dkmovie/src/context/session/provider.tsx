@@ -1,9 +1,18 @@
-import { type PropsWithChildren, useCallback, useMemo } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { type PropsWithChildren, useCallback, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentSession, logout as logoutApi } from "@/http/auth/session";
 import { SessionContext } from "./context";
 
+const protectedRoutes = ["/account"];
+const authRoutes = ["/sign-in", "/sign-up"];
+const signInRoute = "/sign-in";
+
 export function SessionProvider({ children }: PropsWithChildren) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
   const {
     data: session = null,
     isLoading: isLoadingSession,
@@ -22,15 +31,24 @@ export function SessionProvider({ children }: PropsWithChildren) {
     mutationFn: async () => {
       return await logoutApi();
     },
+    onSuccess: () => {
+      queryClient.setQueryData(["session"], null);
+    },
   });
 
   const logout = useCallback(() => {
-    logoutMutation(undefined, {
-      onSuccess: () => {
-        refetchSession();
-      },
-    });
-  }, [logoutMutation, refetchSession]);
+    logoutMutation();
+  }, [logoutMutation]);
+
+  useEffect(() => {
+    if (isLoadingSession) return;
+    if (!isAuthenticated && protectedRoutes.includes(pathname)) {
+      navigate(signInRoute);
+    }
+    if (isAuthenticated && authRoutes.includes(pathname)) {
+      navigate("/account");
+    }
+  }, [isAuthenticated, isLoadingSession, navigate, pathname]);
 
   const contextValues = useMemo(
     () => ({

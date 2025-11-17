@@ -1,8 +1,11 @@
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 export interface Session {
-  user: {
-    id: number;
-    email: string;
-  };
+  user: Omit<User, "name">;
 }
 
 export type ContentsType = "MOVIE" | "SERIES";

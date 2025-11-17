@@ -2,7 +2,9 @@ import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
+import { toast } from "sonner";
 import { BasePageForSignIn } from "@/components/pages/sign-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +18,9 @@ import {
 import { HTTPError } from "@/http/client";
 
 export default function VerifyEmail() {
+  const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { refetchSession, isAuthenticated } = useSession();
+  const { refetchSession } = useSession();
   const navigate = useNavigate();
 
   const {
@@ -35,8 +38,8 @@ export default function VerifyEmail() {
       if (error instanceof HTTPError) {
         console.error(error.data);
         if (error.status === 409) {
-          navigate("/sign-in");
-          return;
+          toast.error("Reached the maximum number of attempts");
+          navigate("/account");
         }
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
       }
@@ -46,10 +49,9 @@ export default function VerifyEmail() {
     }
 
     refetchSession();
-    navigate("/");
+    navigate("/account");
+    queryClient.invalidateQueries({ queryKey: ["user-emails"] });
   };
-
-  if (isAuthenticated) return null;
 
   return (
     <BasePageForSignIn
