@@ -63,25 +63,41 @@ export function Header() {
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className={`
-                focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden rounded-md pb-1.5 text-3xl
-                font-bold duration-200 hover:underline
-              `}
+              className={cn(
+                `
+                  focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden ring-offset-background
+                  rounded-md font-bold ring-offset-2 duration-200 hover:scale-105
+                `,
+                !isScrolled &&
+                  addScrollEffect &&
+                  `
+                    bg-background/80 rounded-md backdrop-blur-md dark:bg-background/60 hover:bg-primary
+                    dark:hover:bg-primary focus-visible:bg-primary dark:focus-visible:bg-primary
+                  `,
+              )}
             >
-              DkMovie
+              <img
+                src="/static/images/favicons/favicon.svg"
+                alt="DkMovie"
+                className="size-10"
+              />
             </Link>
-            <nav className="hidden gap-1 md:flex">
+            <nav
+              className={cn(
+                "hidden items-center gap-0.5 md:flex",
+                !isScrolled &&
+                  addScrollEffect &&
+                  "bg-background/80 rounded-md backdrop-blur-md dark:bg-background/60",
+              )}
+            >
               {links.map(({ title, href }) => (
                 <Link
                   key={href}
                   to={href}
-                  className={cn(
-                    `
-                      hover:bg-background focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden
-                      rounded-md px-3 py-2 text-sm font-medium duration-200
-                    `,
-                    isToAddScrollClasses && `hover:bg-foreground/20`,
-                  )}
+                  className={`
+                    hover:bg-foreground/20 focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden
+                    ring-offset-background rounded-md px-3 py-2 text-sm font-medium ring-offset-2 duration-200
+                  `}
                 >
                   {title}
                 </Link>
@@ -89,15 +105,19 @@ export function Header() {
             </nav>
           </div>
 
-          <div className="text-muted-foreground flex items-center gap-1">
+          <div
+            className={cn(
+              "text-muted-foreground flex items-center gap-0.5",
+              !isScrolled &&
+                addScrollEffect &&
+                "bg-background/80 rounded-full backdrop-blur-md dark:bg-background/60",
+            )}
+          >
             <Button
               type="button"
               variant="invert"
               size="icon"
-              className={cn(
-                "rounded-full",
-                isToAddScrollClasses && `hover:bg-foreground/20`,
-              )}
+              className="hover:bg-foreground/20 rounded-full"
             >
               <Search />
             </Button>
@@ -105,10 +125,7 @@ export function Header() {
               type="button"
               variant="invert"
               size="icon"
-              className={cn(
-                "rounded-full",
-                isToAddScrollClasses && `hover:bg-foreground/20`,
-              )}
+              className="hover:bg-foreground/20 rounded-full"
             >
               <Bell />
             </Button>
@@ -118,10 +135,7 @@ export function Header() {
                   type="button"
                   variant="invert"
                   size="icon"
-                  className={cn(
-                    "rounded-full",
-                    isToAddScrollClasses && `hover:bg-foreground/20`,
-                  )}
+                  className="hover:bg-foreground/20 rounded-full"
                 >
                   <User />
                 </Button>
@@ -130,13 +144,13 @@ export function Header() {
                 {isAuthenticated ? (
                   <>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
                       <Link to={`/account`}>My Account</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      className="focus:bg-foreground/20 cursor-pointer py-2"
                       onClick={(e) => {
                         e.preventDefault();
                         logout();
@@ -148,14 +162,14 @@ export function Header() {
                 ) : (
                   <>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
                       <Link to={`/sign-in${nextPath}`}>Sign In</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
-                      className="focus:bg-foreground/40 cursor-pointer py-2"
+                      className="focus:bg-foreground/20 cursor-pointer py-2"
                     >
                       <Link to={`/sign-up${nextPath}`}>Sign Up</Link>
                     </DropdownMenuItem>
@@ -163,9 +177,7 @@ export function Header() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            <ThemeToggle
-              className={isToAddScrollClasses ? "hover:bg-foreground/20" : ""}
-            />
+            <ThemeToggle />
           </div>
         </div>
       </div>
