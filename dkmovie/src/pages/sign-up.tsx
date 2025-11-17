@@ -34,6 +34,16 @@ export default function SignUpPage() {
       await signUp(data);
     } catch (error) {
       if (error instanceof HTTPError) {
+        const needEmailVerification = error.data?.data.flows.some(
+          (flow: { id: string; is_pending: boolean }) => {
+            return flow.id === "verify_email" && flow.is_pending;
+          },
+        );
+        if (needEmailVerification) {
+          navigate("/account/verify-email");
+          return;
+        }
+
         console.error(error.data);
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
       }

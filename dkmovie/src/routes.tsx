@@ -7,6 +7,7 @@ const lazyComponentMap = {
   authLayout: lazy(() => import("./layouts/auth")),
   signUp: lazy(() => import("./pages/sign-up")),
   signIn: lazy(() => import("./pages/sign-in")),
+  verifyEmail: lazy(() => import("./pages/verify-email")),
   notFound: lazy(() => import("./pages/404")),
 };
 
@@ -18,6 +19,9 @@ export function Router() {
       <Route Component={lazyComponentMap.authLayout}>
         <Route path="/sign-up" Component={lazyComponentMap.signUp} />
         <Route path="/sign-in" Component={lazyComponentMap.signIn} />
+      </Route>
+      <Route path="/account">
+        <Route path="verify-email" Component={lazyComponentMap.verifyEmail} />
       </Route>
       <Route path="*" Component={lazyComponentMap.notFound} />
     </Routes>
