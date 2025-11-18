@@ -1,7 +1,8 @@
 import { ShieldAlert, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccountTabsContent } from "./account-tabs";
+import { SecurityTabsContent } from "./security-tabs";
 
 export default function MyAccountPage() {
   return (
@@ -32,15 +33,7 @@ export default function MyAccountPage() {
             </TabsList>
           </div>
           <AccountTabsContent />
-          <TabsContent value="security" className="w-full">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-bold">Security</h2>
-              <p className="text-foreground/80">
-                Manage your password and authentication settings.
-              </p>
-            </div>
-            <Separator className="mt-5 mb-7" />
-          </TabsContent>
+          <SecurityTabsContent />
         </Tabs>
       </main>
     </div>
