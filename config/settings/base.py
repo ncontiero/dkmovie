@@ -116,6 +116,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "allauth.usersessions.middleware.UserSessionsMiddleware",
 ]
 
 # STATIC
@@ -264,6 +265,8 @@ ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_NOTIFICATIONS = True
 ACCOUNT_MAX_EMAIL_ADDRESSES = 3
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# https://docs.allauth.org/en/latest/usersessions/configuration.html
+USERSESSIONS_TRACK_ACTIVITY = True
 # https://docs.allauth.org/en/latest/headless/configuration.html
 HEADLESS_CLIENTS = ("browser",)
 HEADLESS_FRONTEND_URLS = {
