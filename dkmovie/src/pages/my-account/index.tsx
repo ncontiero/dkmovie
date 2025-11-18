@@ -35,7 +35,7 @@ export default function MyAccountPage() {
               </TabsTrigger>
             </TabsList>
           </div>
-          <AccountTabsContent />
+          <AccountTabsContent userId={session.user.id} />
           <TabsContent value="security" className="w-full">
             <div className="flex flex-col gap-1">
               <h2 className="text-xl font-bold">Security</h2>

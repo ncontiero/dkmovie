@@ -27,7 +27,7 @@ export function Router() {
       <Route path="/account">
         <Route index Component={lazyComponentMap.account.myAccount} />
         <Route
-          path="verify-email"
+          path="verify-email/:key"
           Component={lazyComponentMap.account.verifyEmail}
         />
       </Route>

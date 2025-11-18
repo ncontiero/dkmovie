@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +16,8 @@ import { HTTPError } from "@/http/client";
 
 export default function SignUpPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { isAuthenticated } = useSession();
+  const { isAuthenticated, refetchSession } = useSession();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const {
@@ -29,24 +30,19 @@ export default function SignUpPage() {
 
   if (isAuthenticated) return null;
 
+  const nextPathParam = searchParams.get("next") ?? "/";
+  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
+
   const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
     try {
-      await signUp(data);
+      const res = await signUp(data);
+      refetchSession(res);
+      toast.success("Account created successfully!", {
+        description: "Please check your email to verify your account.",
+      });
+      navigate(nextPath);
     } catch (error) {
       if (error instanceof HTTPError) {
-        const needEmailVerification = error.data?.data.flows.some(
-          (flow: { id: string; is_pending: boolean }) => {
-            return flow.id === "verify_email" && flow.is_pending;
-          },
-        );
-        if (needEmailVerification) {
-          toast.success("Account created successfully!", {
-            description: "Please check your email to verify your account.",
-          });
-          navigate("/account/verify-email");
-          return;
-        }
-
         console.error(error.data);
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
         return;

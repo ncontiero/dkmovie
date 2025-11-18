@@ -5,7 +5,7 @@ import { DeleteAccountCard } from "./delete-account-card";
 import { UserEmailCard } from "./email-card";
 import { FullNameCard } from "./full-name-card";
 
-export function AccountTabsContent() {
+export function AccountTabsContent({ userId }: { readonly userId: number }) {
   return (
     <TabsContent value="account" className="w-full">
       <Meta title="My Account" />
@@ -15,7 +15,7 @@ export function AccountTabsContent() {
       </div>
       <Separator className="mt-5 mb-7" />
       <FullNameCard />
-      <UserEmailCard />
+      <UserEmailCard userId={userId} />
       <DeleteAccountCard />
     </TabsContent>
   );

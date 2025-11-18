@@ -39,3 +39,7 @@ export async function setPrimaryEmail(email: string) {
     primary: true,
   });
 }
+
+export async function resentEmailVerification(email: string) {
+  return await authAccountHttpClient.put("/email", { email });
+}

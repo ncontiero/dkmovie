@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Ellipsis, Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -31,19 +30,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   deleteEmail,
   getUserEmails,
+  resentEmailVerification,
   setPrimaryEmail,
 } from "@/http/account/emails";
-import { resentEmailVerification } from "@/http/auth/verify-email";
 import { HTTPError } from "@/http/client";
 import { AddEmailDialog } from "./add-email-dialog";
 
-export function UserEmailCard() {
+export function UserEmailCard({ userId }: { readonly userId: number }) {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const [showDeleteEmailDialog, setShowDeleteEmailDialog] = useState(false);
 
   const { data: userEmails, isLoading: isUserEmailsLoading } = useQuery({
-    queryKey: ["user-emails"],
+    queryKey: ["user-emails", userId],
     queryFn: async () => {
       return await getUserEmails();
     },
@@ -63,7 +61,7 @@ export function UserEmailCard() {
         return await deleteEmail({ email });
       },
       onSuccess: ({ data }) => {
-        queryClient.setQueryData(["user-emails"], data);
+        queryClient.setQueryData(["user-emails", userId], data);
         setShowDeleteEmailDialog(false);
         toast.success("Email deleted successfully");
       },
@@ -88,7 +86,7 @@ export function UserEmailCard() {
       toast.loading("Setting email as primary...", { id: "set-primary-email" });
     },
     onSuccess: ({ data }) => {
-      queryClient.setQueryData(["user-emails"], data);
+      queryClient.setQueryData(["user-emails", userId], data);
       toast.success("Email set as primary successfully", {
         id: "set-primary-email",
       });
@@ -106,21 +104,16 @@ export function UserEmailCard() {
     mutate: resendEmailVerificationMutation,
     isPending: isResendEmailVerificationPending,
   } = useMutation({
-    mutationFn: async () => {
-      return await resentEmailVerification();
+    mutationFn: async (email: string) => {
+      return await resentEmailVerification(email);
     },
     onSuccess: () => {
       toast.success("Email verification resent successfully");
-      navigate("/account/verify-email");
     },
     onError: (error) => {
       if (error instanceof HTTPError) {
         if (error.status === 403) {
           toast.error("Too many requests. Please try again later.");
-          return;
-        }
-        if (error.status === 409) {
-          toast.error("Reached the maximum number of attempts");
           return;
         }
         toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
@@ -147,7 +140,7 @@ export function UserEmailCard() {
                 <Skeleton className="bg-background h-1/2 w-1/12" />
               </Skeleton>
             ) : !userEmails ? (
-              <AddEmailDialog />
+              <AddEmailDialog userId={userId} />
             ) : (
               userEmails.map(({ email, primary, verified }) => (
                 <div
@@ -170,7 +163,7 @@ export function UserEmailCard() {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          resendEmailVerificationMutation();
+                          resendEmailVerificationMutation(email);
                         }}
                         disabled={isResendEmailVerificationPending}
                       >
@@ -266,7 +259,9 @@ export function UserEmailCard() {
               ))
             )}
           </div>
-          {userEmails && userEmails.length < 3 ? <AddEmailDialog /> : null}
+          {userEmails && userEmails.length < 3 ? (
+            <AddEmailDialog userId={userId} />
+          ) : null}
         </CardContent>
         <CardFooter>
           <CardFooterDescription>

@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,10 +26,10 @@ import {
 } from "@/http/account/emails";
 import { HTTPError } from "@/http/client";
 
-export function AddEmailDialog() {
+export function AddEmailDialog({ userId }: { readonly userId: number }) {
+  const [showDialog, setShowDialog] = useState(false);
   const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const navigate = useNavigate();
 
   const {
     register,
@@ -43,14 +42,12 @@ export function AddEmailDialog() {
   const onSubmit: SubmitHandler<AddEmailSchema> = async (data) => {
     try {
       const res = await addEmail(data);
-      queryClient.setQueryData(["user-emails"], res.data);
+      queryClient.setQueryData(["user-emails", userId], res.data);
       toast.success("Email added!", {
-        description: "You will receive an email with a verification code.",
+        description: "You will receive an email with a verification link soon.",
       });
       setApiErrors([]);
-      setTimeout(() => {
-        navigate("/account/verify-email");
-      }, 1000);
+      setShowDialog(false);
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);
@@ -65,7 +62,7 @@ export function AddEmailDialog() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
         <Button
           type="button"
