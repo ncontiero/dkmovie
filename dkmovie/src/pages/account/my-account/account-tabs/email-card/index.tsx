@@ -216,7 +216,7 @@ export function UserEmailCard() {
                           </DropdownMenuItem>
                         ) : null}
                         <DropdownMenuItem
-                          disabled={primary || !verified}
+                          disabled={primary}
                           aria-label={
                             primary
                               ? "You can't delete the primary email"
