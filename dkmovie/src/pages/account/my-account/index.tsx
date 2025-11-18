@@ -1,13 +1,9 @@
 import { ShieldAlert, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSession } from "@/hooks/use-session";
 import { AccountTabsContent } from "./account-tabs";
 
 export default function MyAccountPage() {
-  const { session } = useSession();
-  if (!session || !session.user) return null;
-
   return (
     <div className="text-foreground container mx-auto mt-30 flex min-h-screen max-w-7xl">
       <main className="w-full">
@@ -35,7 +31,7 @@ export default function MyAccountPage() {
               </TabsTrigger>
             </TabsList>
           </div>
-          <AccountTabsContent userId={session.user.id} />
+          <AccountTabsContent />
           <TabsContent value="security" className="w-full">
             <div className="flex flex-col gap-1">
               <h2 className="text-xl font-bold">Security</h2>

@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSession } from "@/hooks/use-session";
 import {
   deleteEmail,
   getUserEmails,
@@ -36,7 +37,9 @@ import {
 import { HTTPError } from "@/http/client";
 import { AddEmailDialog } from "./add-email-dialog";
 
-export function UserEmailCard({ userId }: { readonly userId: number }) {
+export function UserEmailCard() {
+  const { setSession, session } = useSession();
+  const userId = session?.user.id;
   const queryClient = useQueryClient();
   const [showDeleteEmailDialog, setShowDeleteEmailDialog] = useState(false);
 
@@ -86,6 +89,17 @@ export function UserEmailCard({ userId }: { readonly userId: number }) {
       toast.loading("Setting email as primary...", { id: "set-primary-email" });
     },
     onSuccess: ({ data }) => {
+      if (session && session.user) {
+        setSession({
+          meta: { is_authenticated: true },
+          data: {
+            user: {
+              ...session.user,
+              email: data.find((e) => e.primary)?.email || session.user.email,
+            },
+          },
+        });
+      }
       queryClient.setQueryData(["user-emails", userId], data);
       toast.success("Email set as primary successfully", {
         id: "set-primary-email",
@@ -122,6 +136,8 @@ export function UserEmailCard({ userId }: { readonly userId: number }) {
       toast.error(error.message);
     },
   });
+
+  if (!userId) return null;
 
   return (
     <Card className="mt-10" asChild>
