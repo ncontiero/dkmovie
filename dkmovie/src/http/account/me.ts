@@ -21,3 +21,7 @@ export type UpdateMeSchema = z.infer<typeof updateMeSchema>;
 export async function updateMe(data: UpdateMeSchema) {
   return await httpClient.patch<User>("/users/me", data);
 }
+
+export async function deleteMyAccount() {
+  return await httpClient.delete("/users/me");
+}

@@ -35,8 +35,9 @@ export default function VerifyEmail() {
     try {
       const res = await verifyEmail(data);
       refetchSession(res);
-      navigate("/account");
       queryClient.invalidateQueries({ queryKey: ["user-emails"] });
+      toast.success("Email verified successfully.");
+      navigate("/account");
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);

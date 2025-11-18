@@ -46,3 +46,16 @@ def update_me(request, payload: UserSchemaIn):
         user.name = payload.name
         user.save(update_fields=["name"])
         return {"id": user.id, "name": user.name, "email": user.email}
+
+
+@router.delete("/me", response={204: None})
+def delete_me(request):
+    try:
+        if request.user.is_anonymous:
+            raise ApiProcessError(401, "Unauthorized")
+        user = User.objects.get(id=request.user.id)
+    except User.DoesNotExist as err:
+        raise ApiProcessError(404, "User not found") from err
+    else:
+        user.delete()
+        return

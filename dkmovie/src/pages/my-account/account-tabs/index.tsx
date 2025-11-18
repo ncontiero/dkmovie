@@ -1,6 +1,7 @@
 import { Meta } from "@/components/meta";
 import { Separator } from "@/components/ui/separator";
 import { TabsContent } from "@/components/ui/tabs";
+import { DeleteAccountCard } from "./delete-account-card";
 import { UserEmailCard } from "./email-card";
 import { FullNameCard } from "./full-name-card";
 
@@ -15,6 +16,7 @@ export function AccountTabsContent() {
       <Separator className="mt-5 mb-7" />
       <FullNameCard />
       <UserEmailCard />
+      <DeleteAccountCard />
     </TabsContent>
   );
 }

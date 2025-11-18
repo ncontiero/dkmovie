@@ -16,7 +16,7 @@ import { HTTPError } from "@/http/client";
 
 export default function SignUpPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { refetchSession, isAuthenticated } = useSession();
+  const { isAuthenticated } = useSession();
   const navigate = useNavigate();
 
   const {
@@ -31,11 +31,7 @@ export default function SignUpPage() {
 
   const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
     try {
-      const res = await signUp(data);
-      refetchSession(res);
-      toast.success("Account created successfully!", {
-        description: "Please check your email to verify your account.",
-      });
+      await signUp(data);
     } catch (error) {
       if (error instanceof HTTPError) {
         const needEmailVerification = error.data?.data.flows.some(
@@ -44,6 +40,9 @@ export default function SignUpPage() {
           },
         );
         if (needEmailVerification) {
+          toast.success("Account created successfully!", {
+            description: "Please check your email to verify your account.",
+          });
           navigate("/account/verify-email");
           return;
         }
