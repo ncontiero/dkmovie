@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { BaseAuthForm } from "@/components/base-auth-form";
@@ -18,36 +19,20 @@ import {
 import { HTTPError } from "@/http/client";
 
 export default function ResetPasswordPage() {
-  const { refetchSession } = useSession();
+  const { setSession } = useSession();
   const { key } = useParams();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const verifyKey = useCallback(async () => {
-    if (!key) {
-      toast.error("Invalid password reset link.", {
-        description: "Please request a new password reset email.",
-      });
-      navigate("/auth/sign-in");
-      return;
-    }
-
-    try {
-      await verifyResetKey(key);
-    } catch (error) {
-      if (error instanceof HTTPError) {
-        toast.error("Invalid password reset link.", {
-          description: "Please request a new password reset email.",
-        });
-        navigate("/auth/sign-in");
-        return;
-      }
-    }
-  }, [key, navigate]);
-
-  useEffect(() => {
-    verifyKey();
-  }, [verifyKey]);
+  const { error: verifyKeyError } = useQuery({
+    queryKey: ["reset-password", key],
+    queryFn: async () => {
+      if (!key) throw new Error("Missing reset key");
+      return await verifyResetKey(key);
+    },
+    enabled: !!key,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const {
     register,
@@ -57,6 +42,14 @@ export default function ResetPasswordPage() {
     resolver: zodResolver(resetPasswordSchema),
   });
 
+  if (verifyKeyError) {
+    toast.error("Invalid password reset link.", {
+      description: "Please request a new password reset email.",
+    });
+    navigate("/auth/sign-in");
+    return null;
+  }
+
   const onSubmit: SubmitHandler<ResetPasswordSchema> = async (data) => {
     if (!key) return;
     try {
@@ -64,7 +57,7 @@ export default function ResetPasswordPage() {
     } catch (error) {
       if (error instanceof HTTPError) {
         if (error.status === 401) {
-          refetchSession();
+          setSession(null);
           toast.success("Password reset successful.", {
             description: "You can now sign in with your new password.",
           });

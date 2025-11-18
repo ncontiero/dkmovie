@@ -22,7 +22,7 @@ const especialNextPaths = [
 
 export default function SignInPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { refetchSession, isAuthenticated } = useSession();
+  const { setSession, isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -42,7 +42,7 @@ export default function SignInPage() {
   const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
     try {
       const res = await signIn(data);
-      refetchSession(res);
+      setSession(res);
 
       if (especialNextPaths.includes(nextPath)) {
         location.assign(nextPath);

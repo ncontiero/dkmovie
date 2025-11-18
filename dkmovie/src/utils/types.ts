@@ -29,3 +29,8 @@ export interface Title {
   cover: string | null;
   trailer_url: string;
 }
+
+export interface PaginationDataProps<T = any> {
+  items: T;
+  count: number;
+}

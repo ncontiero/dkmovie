@@ -1,7 +1,6 @@
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -32,8 +31,7 @@ const confirmDeleteAccountSchema = z.object({
 type ConfirmDeleteAccountSchema = z.infer<typeof confirmDeleteAccountSchema>;
 
 export function DeleteAccountCard() {
-  const queryClient = useQueryClient();
-  const { session } = useSession();
+  const { session, setSession } = useSession();
   const navigate = useNavigate();
 
   const {
@@ -45,23 +43,7 @@ export function DeleteAccountCard() {
     resolver: zodResolver(confirmDeleteAccountSchema),
   });
 
-  const { mutate: deleteAccount, isPending } = useMutation({
-    mutationFn: async () => {
-      return await deleteMyAccount();
-    },
-    onSuccess: () => {
-      toast.success("Account deleted successfully.");
-      queryClient.setQueryData(["session"], null);
-      navigate("/");
-    },
-    onError: () => {
-      toast.error(
-        "There was an error deleting your account. Please try again.",
-      );
-    },
-  });
-
-  const onSubmit: SubmitHandler<ConfirmDeleteAccountSchema> = (data) => {
+  const onSubmit: SubmitHandler<ConfirmDeleteAccountSchema> = async (data) => {
     if (data.confirmEmail !== session?.user.email) {
       setError("confirmEmail", {
         type: "manual",
@@ -69,7 +51,17 @@ export function DeleteAccountCard() {
       });
       return;
     }
-    deleteAccount();
+
+    try {
+      await deleteMyAccount();
+      setSession(null);
+      toast.success("Account deleted successfully.");
+      navigate("/");
+    } catch {
+      toast.error(
+        "There was an error deleting your account. Please try again.",
+      );
+    }
   };
 
   return (
@@ -150,9 +142,9 @@ export function DeleteAccountCard() {
                 <Button
                   variant="destructive"
                   type="submit"
-                  disabled={isSubmitting || isPending}
+                  disabled={isSubmitting}
                 >
-                  {isSubmitting || isPending ? (
+                  {isSubmitting ? (
                     <Loader className="animate-spin" />
                   ) : (
                     "Confirm Delete"

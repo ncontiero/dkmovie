@@ -57,7 +57,6 @@ export function AddEmailDialog({ userId }: { readonly userId: number }) {
 
       console.error(error);
       toast.error("Something went wrong!");
-      return;
     }
   };
 

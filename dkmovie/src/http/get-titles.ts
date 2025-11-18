@@ -1,5 +1,5 @@
 import type { ContentsType, Title } from "@/utils/types";
-import { httpClient } from "./client";
+import { type PaginationDataProps, httpClient } from "./client";
 
 interface GetTitleProps {
   limit?: number;
@@ -7,11 +7,6 @@ interface GetTitleProps {
   title?: string;
   contentType?: ContentsType;
   exclude?: string;
-}
-
-export interface ResponseDataProps<T = any> {
-  items: T;
-  count: number;
 }
 
 export async function getTitles({
@@ -29,7 +24,7 @@ export async function getTitles({
   if (exclude) params.append("exclude", exclude);
 
   const url = `/titles/?${params.toString()}`;
-  return await httpClient.get<ResponseDataProps<Title[]>>(url);
+  return await httpClient.get<PaginationDataProps<Title[]>>(url);
 }
 
 export async function getTitle(id: string) {

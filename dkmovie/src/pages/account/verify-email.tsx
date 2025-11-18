@@ -1,33 +1,41 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
-import { verifyEmail } from "@/http/auth/verify-email";
+import {
+  verifyEmail,
+  verifyEmailVerificationKey,
+} from "@/http/auth/verify-email";
 import { HTTPError } from "@/http/client";
 
 export default function VerifyEmail() {
   const { key } = useParams();
   const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { refetchSession } = useSession();
+  const { setSession } = useSession();
   const navigate = useNavigate();
+
+  const { error: verifyKeyError } = useQuery({
+    queryKey: ["email-verify", key],
+    queryFn: async () => {
+      if (!key) throw new Error("Missing reset key");
+      return await verifyEmailVerificationKey(key);
+    },
+    enabled: !!key,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const { mutate: verifyEmailMutation, isPending } = useMutation({
     mutationFn: async () => {
-      if (!key) {
-        toast.error("Invalid verification link.", {
-          description: "Please request a new verification email.",
-        });
-        throw new Error("Verification key is missing");
-      }
+      if (!key) return;
       return await verifyEmail(key);
     },
     onSuccess: (res) => {
-      refetchSession(res);
+      setSession(res);
       queryClient.invalidateQueries({ queryKey: ["user-emails"] });
       toast.success("Email verified successfully.");
       navigate("/account");
@@ -44,12 +52,12 @@ export default function VerifyEmail() {
     },
   });
 
-  if (!key) {
+  if (verifyKeyError) {
     toast.error("Invalid verification link.", {
       description: "Please request a new verification email.",
     });
     navigate("/auth/sign-in");
-    return;
+    return null;
   }
 
   return (

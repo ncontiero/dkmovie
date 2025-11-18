@@ -16,7 +16,7 @@ import { HTTPError } from "@/http/client";
 
 export default function SignUpPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { isAuthenticated, refetchSession } = useSession();
+  const { isAuthenticated, setSession } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ export default function SignUpPage() {
   const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
     try {
       const res = await signUp(data);
-      refetchSession(res);
+      setSession(res);
       toast.success("Account created successfully!", {
         description: "Please check your email to verify your account.",
       });

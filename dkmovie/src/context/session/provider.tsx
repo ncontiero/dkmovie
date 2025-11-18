@@ -36,13 +36,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
     },
   });
 
-  const refetchSession = useCallback(
-    (data?: CurrentSessionResponse) => {
-      if (data) {
-        queryClient.setQueryData(["session"], data);
-        return;
-      }
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+  const setSession = useCallback(
+    (data?: CurrentSessionResponse | null) => {
+      queryClient.setQueryData(["session"], data);
     },
     [queryClient],
   );
@@ -68,14 +64,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
       isLoadingSession,
       isLogoutPending,
       logout,
-      refetchSession,
+      setSession,
     }),
     [
       isAuthenticated,
       isLoadingSession,
       isLogoutPending,
       logout,
-      refetchSession,
+      setSession,
       session?.data,
     ],
   );

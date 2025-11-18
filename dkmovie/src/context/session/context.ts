@@ -7,7 +7,7 @@ export interface SessionContextProps {
   isAuthenticated: boolean;
   isLoadingSession: boolean;
   isLogoutPending: boolean;
-  refetchSession: (newSession?: CurrentSessionResponse) => void;
+  setSession: (newSession?: CurrentSessionResponse | null) => void;
   logout: () => void;
 }
 
@@ -19,7 +19,7 @@ export const SessionContext = createContext<SessionContextProps>({
   logout: () => {
     throw new Error("logout function not implemented");
   },
-  refetchSession: () => {
-    throw new Error("refetchSession function not implemented");
+  setSession: () => {
+    throw new Error("setSession function not implemented");
   },
 });
