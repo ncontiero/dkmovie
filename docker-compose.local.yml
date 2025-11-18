@@ -84,6 +84,8 @@ services:
       dockerfile: ./compose/local/node/Dockerfile
     image: dkmovie_local_node
     container_name: dkmovie_local_node
+    env_file:
+      - ./.envs/.local/.django
     depends_on:
       - django
     volumes:

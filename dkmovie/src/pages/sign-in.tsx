@@ -14,6 +14,11 @@ import { useSession } from "@/hooks/use-session";
 import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
 
+const especialNextPaths = [
+  process.env.DJANGO_ADMIN_URL || "/admin",
+  "/api/docs",
+];
+
 export default function SignInPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { refetchSession, isAuthenticated } = useSession();
@@ -38,7 +43,7 @@ export default function SignInPage() {
       const res = await signIn(data);
       refetchSession(res);
 
-      if (nextPath.startsWith("/admin")) {
+      if (especialNextPaths.includes(nextPath)) {
         location.assign(nextPath);
       } else {
         navigate(nextPath);
