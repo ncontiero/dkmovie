@@ -31,7 +31,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: "Host(`movies.ncontiero.com`)"
+      rule: Host(`movies.ncontiero.com`)
       entryPoints:
         - web-secure
       middlewares:

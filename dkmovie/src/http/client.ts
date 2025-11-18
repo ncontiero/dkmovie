@@ -144,6 +144,7 @@ export class HttpClient {
   /**
    * Performs a DELETE request.
    * @param endpoint - The API endpoint.
+   * @param body - The data to send in the request body (will be stringified).
    * @param options - Optional RequestInit settings.
    * @returns A promise that resolves (often to null or a confirmation message).
    */
