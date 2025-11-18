@@ -22,7 +22,7 @@ const linkVariants = cva(
           focus-visible:text-primary-foreground focus-visible:shadow-[var(--primary)_0_-30px_0_-1px_inset]
           focus-visible:ring-transparent px-0.5 shadow-[var(--primary)_0_-2px_0_0_inset]
         `,
-        footer: "text-muted-foreground text-base hover:text-foreground",
+        muted: "text-muted-foreground text-base hover:text-foreground",
       },
       size: {
         sm: "text-sm",

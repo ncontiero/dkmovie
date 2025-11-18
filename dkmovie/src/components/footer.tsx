@@ -11,17 +11,17 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Frequently Asked Questions
                 </Link>
               </li>
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Privacy
                 </Link>
               </li>
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Speed Test
                 </Link>
               </li>
@@ -33,17 +33,17 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Terms of Use
                 </Link>
               </li>
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Contact
                 </Link>
               </li>
@@ -55,12 +55,12 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   My Account
                 </Link>
               </li>
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Preferences
                 </Link>
               </li>
@@ -72,7 +72,7 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link to="/" variant="footer">
+                <Link to="/" variant="muted">
                   Legal Notices
                 </Link>
               </li>
