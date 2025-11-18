@@ -6,8 +6,10 @@ import { toast } from "sonner";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardFooterDescription,
+  CardTitle,
 } from "@/components/card";
 import {
   AlertDialog,
@@ -142,11 +144,11 @@ export function UserEmailCard() {
   return (
     <Card className="mt-10">
       <CardContent className="flex flex-col p-4 sm:p-6">
-        <h3 className="text-lg font-bold">Email</h3>
-        <p className="text-muted-foreground mt-2 text-sm">
+        <CardTitle>Email</CardTitle>
+        <CardDescription>
           Enter the email addresses you want to use to log in. Your primary
           email will be used for account-related notifications.
-        </p>
+        </CardDescription>
         <div className="mt-4 flex flex-col gap-2">
           {isUserEmailsLoading ? (
             <Skeleton className="flex h-14 items-center gap-2 px-4">

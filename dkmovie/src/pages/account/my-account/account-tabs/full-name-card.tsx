@@ -8,8 +8,10 @@ import { toast } from "sonner";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardFooterDescription,
+  CardTitle,
 } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +73,7 @@ export function FullNameCard() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="flex flex-col p-4 sm:p-6">
           <Label htmlFor="full-name">
-            <h3 className="text-lg font-bold">Full Name</h3>
+            <CardTitle>Full Name</CardTitle>
           </Label>
           <Input
             id="full-name"
@@ -88,10 +90,10 @@ export function FullNameCard() {
           {apiErrors ? (
             <span className="text-destructive mt-1 text-sm">{apiErrors}</span>
           ) : null}
-          <p className="text-muted-foreground mt-2 text-sm">
+          <CardDescription>
             Please enter your full name, or a display name you are comfortable
             with.
-          </p>
+          </CardDescription>
         </CardContent>
         <CardFooter>
           <CardFooterDescription>
