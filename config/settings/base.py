@@ -81,7 +81,7 @@ AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend"
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "/sign-in"
+LOGIN_URL = "/auth/sign-in"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------

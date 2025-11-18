@@ -10,4 +10,4 @@ def test_home(admin_client):
     response = admin_client.get(url)
     assert response.status_code == HTTPStatus.OK
     assert "pages/home.html" in [t.name for t in response.templates]
-    assert "Welcome to DkMovie!" in response.content.decode()
+    assert '<div id="root"></div>' in response.content.decode()
