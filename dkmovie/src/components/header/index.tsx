@@ -24,7 +24,7 @@ const pagesToAddScrollEffect = ["/", "/title/"];
 const pathsToNotAddNext = ["/auth"];
 
 export function Header() {
-  const { isAuthenticated, logout, isLogoutPending } = useSession();
+  const { isAuthenticated, logout } = useSession();
   const { pathname } = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -145,12 +145,9 @@ export function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="focus:bg-foreground/20 cursor-pointer py-2"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        logout();
-                      }}
+                      onClick={() => logout()}
                     >
-                      {isLogoutPending ? "Logging out..." : "Log out"}
+                      Log out
                     </DropdownMenuItem>
                   </>
                 ) : (

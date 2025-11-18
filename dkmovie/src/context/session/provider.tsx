@@ -1,6 +1,7 @@
 import { type PropsWithChildren, useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   type CurrentSessionResponse,
   getCurrentSession,
@@ -31,8 +32,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
     mutationFn: async () => {
       return await logoutApi();
     },
+    onMutate: () => {
+      toast.loading("Logging out...", { id: "logout" });
+    },
     onSuccess: () => {
       queryClient.setQueryData(["session"], null);
+      toast.success("Logged out successfully", { id: "logout" });
+    },
+    onError: () => {
+      toast.error("Failed to log out", { id: "logout" });
     },
   });
 
