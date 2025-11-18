@@ -165,7 +165,7 @@ export function Header() {
                       asChild
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                     >
-                      <Link to="/auth/sign-up">Sign Up</Link>
+                      <Link to={`/auth/sign-up${nextPath}`}>Sign Up</Link>
                     </DropdownMenuItem>
                   </>
                 )}

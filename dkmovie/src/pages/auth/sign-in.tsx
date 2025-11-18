@@ -83,7 +83,7 @@ export default function SignInPage() {
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="password">Password</Label>
-          <Link to="/auth/forgot-password" size="sm">
+          <Link to="/auth/password/forgot" size="sm">
             Forgot your password?
           </Link>
         </div>
