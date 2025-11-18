@@ -1,3 +1,4 @@
+import type { CurrentSessionResponse } from "@/http/auth/session";
 import type { Session } from "@/utils/types";
 import { createContext } from "react";
 
@@ -6,7 +7,7 @@ export interface SessionContextProps {
   isAuthenticated: boolean;
   isLoadingSession: boolean;
   isLogoutPending: boolean;
-  refetchSession: () => void;
+  refetchSession: (newSession: CurrentSessionResponse) => void;
   logout: () => void;
 }
 

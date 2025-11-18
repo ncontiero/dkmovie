@@ -21,18 +21,15 @@ const links: { title: string; href: string }[] = [
 
 const pagesToAddScrollEffect = ["/", "/title/"];
 // For Sign In and Sign Up links
-const pathsToNotAddNext = ["/sign-in", "/sign-up"];
+const pathsToNotAddNext = ["/auth"];
 
 export function Header() {
   const { isAuthenticated, logout, isLogoutPending } = useSession();
-
-  const location = useLocation();
+  const { pathname } = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
 
   const addScrollEffect = pagesToAddScrollEffect.some((page) =>
-    page === "/"
-      ? location.pathname === "/"
-      : location.pathname.startsWith(page),
+    page === "/" ? pathname === "/" : pathname.startsWith(page),
   );
 
   useEffect(() => {
@@ -46,9 +43,9 @@ export function Header() {
 
   const isToAddScrollClasses = isScrolled || !addScrollEffect;
   const addNextPathToSignInUp = !pathsToNotAddNext.some((path) =>
-    location.pathname.startsWith(path),
+    pathname.startsWith(path),
   );
-  const nextPath = addNextPathToSignInUp ? `?next=${location.pathname}` : "";
+  const nextPath = addNextPathToSignInUp ? `?next=${pathname}` : "";
 
   return (
     <header
@@ -162,13 +159,13 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
-                      <Link to={`/sign-in${nextPath}`}>Sign In</Link>
+                      <Link to={`/auth/sign-in${nextPath}`}>Sign In</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                     >
-                      <Link to={`/sign-up${nextPath}`}>Sign Up</Link>
+                      <Link to="/auth/sign-up">Sign Up</Link>
                     </DropdownMenuItem>
                   </>
                 )}

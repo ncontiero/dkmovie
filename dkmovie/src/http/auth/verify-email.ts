@@ -1,3 +1,4 @@
+import type { CurrentSessionResponse } from "./session";
 import { z } from "zod";
 import { authHttpClient } from "../client";
 
@@ -8,7 +9,10 @@ export const verifyEmailSchema = z.object({
 export type VerifyEmailSchema = z.infer<typeof verifyEmailSchema>;
 
 export async function verifyEmail(data: VerifyEmailSchema) {
-  await authHttpClient.post("/email/verify", data);
+  return await authHttpClient.post<CurrentSessionResponse>(
+    "/email/verify",
+    data,
+  );
 }
 
 export async function resentEmailVerification() {

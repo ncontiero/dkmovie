@@ -1,7 +1,7 @@
 import type { Title } from "@/utils/types";
 import { Mousewheel, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { MovieCard } from "./movie-card";
+import { TitleCard } from "./title-card";
 import { Skeleton } from "./ui/skeleton";
 
 interface CarouselProps {
@@ -27,7 +27,7 @@ export function ContentCarousel({ title, items }: CarouselProps) {
         >
           {items.map((item) => (
             <SwiperSlide key={item.id} className="w-40! sm:w-48! lg:w-56!">
-              <MovieCard movie={item} />
+              <TitleCard title={item} />
             </SwiperSlide>
           ))}
         </Swiper>

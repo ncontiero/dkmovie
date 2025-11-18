@@ -1,7 +1,7 @@
 import type { Session } from "@/utils/types";
 import { authHttpClient } from "../client";
 
-interface CurrentSessionResponse {
+export interface CurrentSessionResponse {
   data: Session;
   meta: {
     is_authenticated: boolean;

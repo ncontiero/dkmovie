@@ -1,3 +1,4 @@
+import type { CurrentSessionResponse } from "./session";
 import { z } from "zod";
 import { emailSchema, passwordSchema } from "@/utils/schemas";
 import { authHttpClient } from "../client";
@@ -16,5 +17,5 @@ export const signUpSchema = z
 export type SignUpSchema = z.infer<typeof signUpSchema>;
 
 export async function signUp(data: SignUpSchema) {
-  await authHttpClient.post("/signup", data);
+  return await authHttpClient.post<CurrentSessionResponse>("/signup", data);
 }

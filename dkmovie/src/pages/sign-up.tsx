@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
-import { BasePageForSignIn } from "@/components/pages/sign-in";
+import { toast } from "sonner";
+import { BaseAuthForm } from "@/components/base-auth-form";
+import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +17,6 @@ import { HTTPError } from "@/http/client";
 export default function SignUpPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { refetchSession, isAuthenticated } = useSession();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const {
@@ -26,12 +27,15 @@ export default function SignUpPage() {
     resolver: zodResolver(signUpSchema),
   });
 
-  const nextPathParam = searchParams.get("next") ?? "/";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
+  if (isAuthenticated) return null;
 
   const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
     try {
-      await signUp(data);
+      const res = await signUp(data);
+      refetchSession(res);
+      toast.success("Account created successfully!", {
+        description: "Please check your email to verify your account.",
+      });
     } catch (error) {
       if (error instanceof HTTPError) {
         const needEmailVerification = error.data?.data.flows.some(
@@ -46,25 +50,22 @@ export default function SignUpPage() {
 
         console.error(error.data);
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+        return;
       }
 
       console.error(error);
-      return;
+      toast.error("An unexpected error occurred. Please try again.");
     }
-
-    refetchSession();
-    navigate(nextPath);
   };
 
-  if (isAuthenticated) return null;
-
   return (
-    <BasePageForSignIn
+    <BaseAuthForm
       title="Create your account"
       description="Welcome! Please fill in the details to get started."
       formSubmit={handleSubmit(onSubmit)}
       isSignIn={false}
     >
+      <Meta title="Sign Up" />
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -116,6 +117,6 @@ export default function SignUpPage() {
       >
         {isSubmitting ? <Loader className="animate-spin" /> : "Sign Up"}
       </Button>
-    </BasePageForSignIn>
+    </BaseAuthForm>
   );
 }

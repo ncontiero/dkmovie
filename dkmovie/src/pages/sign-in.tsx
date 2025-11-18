@@ -3,7 +3,9 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
-import { BasePageForSignIn } from "@/components/pages/sign-in";
+import { toast } from "sonner";
+import { BaseAuthForm } from "@/components/base-auth-form";
+import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,38 +28,40 @@ export default function SignInPage() {
     resolver: zodResolver(signInSchema),
   });
 
+  if (isAuthenticated) return null;
+
   const nextPathParam = searchParams.get("next") ?? "/";
   const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
 
   const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
     try {
-      await signIn(data);
+      const res = await signIn(data);
+      refetchSession(res);
+
+      if (nextPath.startsWith("/admin")) {
+        location.assign(nextPath);
+      } else {
+        navigate(nextPath);
+      }
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+        return;
       }
 
       console.error(error);
-      return;
-    }
-
-    refetchSession();
-    if (nextPath.startsWith("/admin/")) {
-      location.assign(nextPath);
-    } else {
-      navigate(nextPath);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 
-  if (isAuthenticated) return null;
-
   return (
-    <BasePageForSignIn
+    <BaseAuthForm
       title="Sign in"
       description="Welcome back! Please sign in to continue"
       formSubmit={handleSubmit(onSubmit)}
     >
+      <Meta title="Sign in" />
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -96,6 +100,6 @@ export default function SignInPage() {
       >
         {isSubmitting ? <Loader className="animate-spin" /> : "Sign In"}
       </Button>
-    </BasePageForSignIn>
+    </BaseAuthForm>
   );
 }

@@ -46,9 +46,7 @@ export function FullNameCard() {
     },
   });
 
-  const watchedValues = useWatch({
-    control,
-  });
+  const watchedValues = useWatch({ control });
 
   const onSubmit: SubmitHandler<UpdateMeSchema> = async (data) => {
     try {

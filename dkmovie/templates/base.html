@@ -9,10 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A Django project of films and series." />
     <meta name="author" content="Nicolas Contiero" />
-    {% block overwrite_title %}
-    <title>{% block title %}{% endblock title %} • DKMovie</title>
-    {% endblock overwrite_title %}
-
+    <title>DKMovie</title>
     <link type="image/svg+xml" href="{% webpack_static 'assets/favicon.svg' %}" rel="icon" />
 
     {% render_bundle "main" "css" %}

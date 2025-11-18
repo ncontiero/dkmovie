@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { Link, useParams } from "react-router";
-
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, Play, Plus } from "lucide-react";
 import { ContentCarousel } from "@/components/content-carousel";
@@ -106,7 +105,12 @@ export default function TitlePage() {
 
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <Meta title={title.title} description={title.description} />
+      <Meta
+        title={title.title}
+        description={title.description}
+        image={title.cover || undefined}
+        imageAlt={title.title}
+      />
       <main>
         <div className="relative h-[70vh] w-full md:h-[80vh]">
           <div

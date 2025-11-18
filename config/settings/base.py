@@ -271,8 +271,8 @@ HEADLESS_CLIENTS = ("browser",)
 HEADLESS_FRONTEND_URLS = {
     "account_reset_password": "/account/password/reset",
     "account_reset_password_from_key": "/account/password/reset/key/{key}",
-    "account_signup": "/sign-up",
-    "socialaccount_login_error": "/sign-in",
+    "account_signup": "/auth/sign-up",
+    "socialaccount_login_error": "/auth/sign-in",
 }
 HEADLESS_ONLY = True
 

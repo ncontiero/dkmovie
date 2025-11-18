@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
-import { BasePageForSignIn } from "@/components/pages/sign-in";
+import { BaseAuthForm } from "@/components/base-auth-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +20,7 @@ import { HTTPError } from "@/http/client";
 export default function VerifyEmail() {
   const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { refetchSession } = useSession();
+  const { refetchSession, isAuthenticated } = useSession();
   const navigate = useNavigate();
 
   const {
@@ -33,7 +33,10 @@ export default function VerifyEmail() {
 
   const onSubmit: SubmitHandler<VerifyEmailSchema> = async (data) => {
     try {
-      await verifyEmail(data);
+      const res = await verifyEmail(data);
+      refetchSession(res);
+      navigate("/account");
+      queryClient.invalidateQueries({ queryKey: ["user-emails"] });
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);
@@ -42,23 +45,21 @@ export default function VerifyEmail() {
           navigate("/account");
         }
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+        return;
       }
 
       console.error(error);
-      return;
+      toast.error("An unexpected error occurred. Please try again.");
     }
-
-    refetchSession();
-    navigate("/account");
-    queryClient.invalidateQueries({ queryKey: ["user-emails"] });
   };
 
   return (
-    <BasePageForSignIn
+    <BaseAuthForm
       title="Verify your email"
       description="To continue, type your verification code below."
       formSubmit={handleSubmit(onSubmit)}
       isSignIn={false}
+      isAuthenticated={isAuthenticated}
     >
       <div className="flex flex-col gap-2">
         <Label htmlFor="code">Code</Label>
@@ -87,6 +88,6 @@ export default function VerifyEmail() {
       >
         {isSubmitting ? <Loader className="animate-spin" /> : "Verify Email"}
       </Button>
-    </BasePageForSignIn>
+    </BaseAuthForm>
   );
 }
