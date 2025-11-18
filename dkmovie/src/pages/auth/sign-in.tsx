@@ -16,7 +16,7 @@ import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
 
 const especialNextPaths = [
-  process.env.DJANGO_ADMIN_URL || "/admin",
+  `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
   "/api/docs",
 ];
 
