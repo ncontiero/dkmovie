@@ -7,7 +7,7 @@ export interface SessionContextProps {
   isAuthenticated: boolean;
   isLoadingSession: boolean;
   isLogoutPending: boolean;
-  refetchSession: (newSession: CurrentSessionResponse) => void;
+  refetchSession: (newSession?: CurrentSessionResponse) => void;
   logout: () => void;
 }
 

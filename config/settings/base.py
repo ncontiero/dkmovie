@@ -268,8 +268,8 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 HEADLESS_CLIENTS = ("browser",)
 HEADLESS_FRONTEND_URLS = {
     "account_confirm_email": "/account/verify-email/{key}",
-    "account_reset_password": "/account/password/reset",
-    "account_reset_password_from_key": "/account/password/reset/key/{key}",
+    "account_reset_password": "/auth/password/reset",
+    "account_reset_password_from_key": "/auth/password/reset/{key}",
     "account_signup": "/auth/sign-up",
     "socialaccount_login_error": "/auth/sign-in",
 }

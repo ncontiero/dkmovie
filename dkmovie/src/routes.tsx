@@ -7,6 +7,8 @@ const lazyComponentMap = {
   auth: {
     signUp: lazy(() => import("./pages/sign-up")),
     signIn: lazy(() => import("./pages/sign-in")),
+    forgotPassword: lazy(() => import("./pages/forgot-password")),
+    resetPassword: lazy(() => import("./pages/password-reset")),
   },
   account: {
     verifyEmail: lazy(() => import("./pages/verify-email")),
@@ -23,6 +25,14 @@ export function Router() {
       <Route path="/auth">
         <Route path="sign-up" Component={lazyComponentMap.auth.signUp} />
         <Route path="sign-in" Component={lazyComponentMap.auth.signIn} />
+        <Route
+          path="forgot-password"
+          Component={lazyComponentMap.auth.forgotPassword}
+        />
+        <Route
+          path="password/reset/:key"
+          Component={lazyComponentMap.auth.resetPassword}
+        />
       </Route>
       <Route path="/account">
         <Route index Component={lazyComponentMap.account.myAccount} />

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -9,46 +8,30 @@ import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "@/components/ui/link";
-import { PasswordInput } from "@/components/ui/password-input";
-import { useSession } from "@/hooks/use-session";
-import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
+import {
+  type ForgotPasswordSchema,
+  forgotPassword,
+  forgotPasswordSchema,
+} from "@/http/auth/password";
 import { HTTPError } from "@/http/client";
 
-const especialNextPaths = [
-  process.env.DJANGO_ADMIN_URL || "/admin",
-  "/api/docs",
-];
-
-export default function SignInPage() {
+export default function ForgotPasswordPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { refetchSession, isAuthenticated } = useSession();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const {
-    handleSubmit,
     register,
+    handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(forgotPasswordSchema),
   });
 
-  if (isAuthenticated) return null;
-
-  const nextPathParam = searchParams.get("next") ?? "/";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
-
-  const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
+  const onSubmit: SubmitHandler<ForgotPasswordSchema> = async (data) => {
     try {
-      const res = await signIn(data);
-      refetchSession(res);
-
-      if (especialNextPaths.includes(nextPath)) {
-        location.assign(nextPath);
-      } else {
-        navigate(nextPath);
-      }
+      await forgotPassword(data);
+      toast.success("Password reset email sent.", {
+        description: "Please check your inbox for further instructions.",
+      });
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);
@@ -63,11 +46,12 @@ export default function SignInPage() {
 
   return (
     <BaseAuthForm
-      title="Sign in"
-      description="Welcome back! Please sign in to continue"
+      title="Forgot Password?"
+      description="Enter your email to reset your password."
+      isSignIn={false}
       formSubmit={handleSubmit(onSubmit)}
     >
-      <Meta title="Sign in" />
+      <Meta title="Forgot Password" />
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -78,22 +62,6 @@ export default function SignInPage() {
         />
         {errors.email ? (
           <p className="text-destructive text-sm">{errors.email.message}</p>
-        ) : null}
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link to="/auth/forgot-password" size="sm">
-            Forgot your password?
-          </Link>
-        </div>
-        <PasswordInput
-          id="password"
-          placeholder="Type your password"
-          {...register("password")}
-        />
-        {errors.password ? (
-          <p className="text-destructive text-sm">{errors.password.message}</p>
         ) : null}
       </div>
       {apiErrors.length > 0 ? (
@@ -109,7 +77,7 @@ export default function SignInPage() {
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Sign In"}
+        {isSubmitting ? <Loader className="animate-spin" /> : "Reset Password"}
       </Button>
     </BaseAuthForm>
   );

@@ -9,7 +9,7 @@ import {
 import { SessionContext } from "./context";
 
 const protectedRoutes = ["/account"];
-const authRoutes = ["/auth"];
+const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
 const signInRoute = "/auth/sign-in";
 
 export function SessionProvider({ children }: PropsWithChildren) {
@@ -37,8 +37,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
   });
 
   const refetchSession = useCallback(
-    (data: CurrentSessionResponse) => {
-      queryClient.setQueryData(["session"], data);
+    (data?: CurrentSessionResponse) => {
+      if (data) {
+        queryClient.setQueryData(["session"], data);
+        return;
+      }
+      queryClient.invalidateQueries({ queryKey: ["session"] });
     },
     [queryClient],
   );
