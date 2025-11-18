@@ -1,3 +1,4 @@
+from allauth.account.decorators import secure_admin_login
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -7,6 +8,9 @@ from django.urls import re_path
 from django.views.generic import TemplateView
 
 from .api.main import api
+
+admin.autodiscover()
+admin.site.login = secure_admin_login(admin.site.login)
 
 api_urlpatterns = [
     path("", api.urls),
