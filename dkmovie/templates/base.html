@@ -12,6 +12,11 @@
     <title>DKMovie</title>
     <link type="image/svg+xml" href="{% webpack_static 'assets/favicon.svg' %}" rel="icon" />
 
+    {% block head %}
+    <script id="pageErrorScript">
+      const pageError = null;
+    </script>
+    {% endblock head %}
     {% render_bundle "main" "css" %}
     {% render_bundle "main" "js" attrs="defer" %}
   </head>

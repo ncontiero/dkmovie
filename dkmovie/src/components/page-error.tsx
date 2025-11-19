@@ -1,27 +1,35 @@
+import type { ElementType } from "react";
 import { Link } from "react-router";
-import { AlertTriangle } from "lucide-react";
-import { Meta } from "@/components/meta";
-import { Button } from "@/components/ui/button";
+import { Meta } from "./meta";
+import { Button } from "./ui/button";
 
-export default function PageNotFound() {
+interface PageErrorProps {
+  readonly code: number;
+  readonly title: string;
+  readonly description: string;
+  readonly Icon: ElementType;
+}
+
+export function PageError({ code, title, description, Icon }: PageErrorProps) {
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center">
-      <Meta title="Page Not Found" />
+    <div
+      className={`bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center`}
+    >
+      <Meta title={title} />
       <div className="mb-6">
-        <AlertTriangle className="text-primary size-16" />
+        <Icon className="text-destructive size-16" />
       </div>
 
       <h1 className="text-foreground mb-4 text-6xl font-extrabold md:text-8xl">
-        404
+        {code}
       </h1>
 
       <h2 className="text-foreground mb-3 text-2xl font-semibold md:text-3xl">
-        Page Not Found
+        {title}
       </h2>
 
       <p className="text-muted-foreground mb-8 max-w-md text-lg">
-        Sorry, we couldn&apos;t find the page you&apos;re looking for. It may
-        have been moved or deleted.
+        {description}
       </p>
 
       <div>

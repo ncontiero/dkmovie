@@ -7,7 +7,7 @@ import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTitle, getTitles } from "@/http/get-titles";
-import PageNotFound from "./404";
+import PageNotFound from "./error/404";
 
 function TitlePageSkeleton() {
   return (

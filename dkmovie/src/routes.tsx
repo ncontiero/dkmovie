@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useEffect, useState } from "react";
 import { Route, Routes } from "react-router";
 
 const lazyComponentMap = {
@@ -15,12 +15,29 @@ const lazyComponentMap = {
     verifyEmail: lazy(() => import("./pages/account/verify-email")),
     providerCallback: lazy(() => import("./pages/account/provider/callback")),
   },
-  notFound: lazy(() => import("./pages/404")),
+  error: {
+    notFound: lazy(() => import("./pages/error/404")),
+    badRequest: lazy(() => import("./pages/error/400")),
+    forbidden: lazy(() => import("./pages/error/403")),
+    serverError: lazy(() => import("./pages/error/500")),
+  },
 };
 
+type ErrorPage = keyof typeof lazyComponentMap.error;
+declare const pageError: ErrorPage | null;
+
 export function Router() {
+  // eslint-disable-next-line react/hook-use-state
+  const [pageErrorScript] = useState(pageError);
+  const PageError = pageErrorScript && lazyComponentMap.error[pageErrorScript];
+
+  useEffect(() => {
+    document.querySelector("#pageErrorScript")?.remove();
+  }, []);
+
   return (
     <Routes>
+      {PageError ? <Route path="*" element={<PageError />} /> : null}
       <Route index Component={lazyComponentMap.home} />
       <Route path="/title/:id" Component={lazyComponentMap.title} />
       <Route path="/auth">
@@ -48,7 +65,7 @@ export function Router() {
           Component={lazyComponentMap.account.providerCallback}
         />
       </Route>
-      <Route path="*" Component={lazyComponentMap.notFound} />
+      <Route path="*" Component={lazyComponentMap.error.notFound} />
     </Routes>
   );
 }
