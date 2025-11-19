@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { TabsContent } from "@/components/ui/tabs";
+import { ConnectedAccountsCard } from "./connected-accounts-card";
 import { PasswordCard } from "./password-card";
 import { SessionsCard } from "./sessions-card";
 
@@ -14,6 +15,7 @@ export function SecurityTabsContent() {
       </div>
       <Separator className="mt-5 mb-7" />
       <PasswordCard />
+      <ConnectedAccountsCard />
       <SessionsCard />
     </TabsContent>
   );

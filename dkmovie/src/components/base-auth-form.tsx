@@ -1,7 +1,7 @@
 import type { BaseSyntheticEvent, PropsWithChildren } from "react";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
-import { GoogleProvider } from "./providers/google";
+import { ProviderButton } from "./provider-button";
 
 interface BaseAuthFormProps extends PropsWithChildren {
   readonly formSubmit: (e?: BaseSyntheticEvent) => Promise<void>;
@@ -32,7 +32,7 @@ export function BaseAuthForm({
           {type !== "forgot-password" && type !== "reset-password" ? (
             <>
               <div className="flex items-center justify-center">
-                <GoogleProvider />
+                <ProviderButton />
               </div>
               <div className="text-muted-foreground flex items-center justify-center text-sm">
                 <Separator className="flex-1" />
@@ -56,7 +56,7 @@ export function BaseAuthForm({
                 <Separator className="flex-1" />
               </div>
               <div className="flex items-center justify-center">
-                <GoogleProvider />
+                <ProviderButton />
               </div>
             </>
           ) : null}
