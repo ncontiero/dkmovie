@@ -1,7 +1,6 @@
 import type { SocialAccount } from "@/http/get-config";
 import { Loader } from "lucide-react";
-import { GoogleIcon } from "@/components/icons/google";
-import { ProviderButton } from "@/components/provider-button";
+import { ProviderButton, ProviderIcon } from "@/components/provider-button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,7 +43,7 @@ export function AccountCard({
     <div className="rounded-lg border p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {account.id === "google" && <GoogleIcon className="size-6" />}
+          <ProviderIcon provider={account.id} className="size-6" />
           <div className="flex flex-col gap-1">
             <p className="space-x-2 font-semibold">
               <span>{account.name}</span>

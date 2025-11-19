@@ -14,6 +14,24 @@ interface ProviderButtonProps {
   readonly buttonProps?: ButtonProps;
 }
 
+const providersIconsMap = {
+  google: GoogleIcon,
+};
+export type ProvidersIconsMap = typeof providersIconsMap;
+export type ProviderIconKey = keyof ProvidersIconsMap;
+
+export function ProviderIcon({
+  provider,
+  className,
+}: {
+  readonly provider: string;
+  readonly className?: string;
+}) {
+  const Icon = providersIconsMap[provider as ProviderIconKey];
+  if (!Icon) return null;
+  return <Icon className={className} />;
+}
+
 export function ProviderButton({
   process = "login",
   text = "Continue with Google",
@@ -24,7 +42,7 @@ export function ProviderButton({
 }: ProviderButtonProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const icon = iconToUse ?? <GoogleIcon />;
+  const icon = iconToUse ?? <ProviderIcon provider={provider} />;
 
   const actionUrl = `${apiAuthBasePath}/auth/provider/redirect`;
   const csrfToken = getCookie("csrftoken");
