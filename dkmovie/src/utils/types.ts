@@ -5,7 +5,7 @@ export interface User {
 }
 
 export interface Session {
-  user: Omit<User, "name">;
+  user: Omit<User, "name"> & { has_usable_password: boolean };
 }
 
 export type ContentsType = "MOVIE" | "SERIES";

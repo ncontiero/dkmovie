@@ -54,6 +54,11 @@ export default function ResetPasswordPage() {
     if (!key) return;
     try {
       await resetPassword(key, data);
+      setSession(null);
+      toast.success("Password reset successful.", {
+        description: "You can now sign in with your new password.",
+      });
+      navigate("/auth/sign-in");
     } catch (error) {
       if (error instanceof HTTPError) {
         if (error.status === 401) {
