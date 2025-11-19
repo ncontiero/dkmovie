@@ -4,11 +4,11 @@ import { Separator } from "@/components/ui/separator";
 import { GoogleProvider } from "./providers/google";
 
 interface BaseAuthFormProps extends PropsWithChildren {
-  readonly isSignIn?: boolean;
   readonly formSubmit: (e?: BaseSyntheticEvent) => Promise<void>;
   readonly title: string;
   readonly description: string;
   readonly isAuthenticated?: boolean;
+  readonly type?: "sign-in" | "sign-up" | "forgot-password" | "reset-password";
 }
 
 export function BaseAuthForm({
@@ -16,8 +16,8 @@ export function BaseAuthForm({
   formSubmit,
   title,
   description,
-  isSignIn = true,
   isAuthenticated = false,
+  type = "sign-in",
 }: BaseAuthFormProps) {
   return (
     <main className="flex min-h-screen items-center justify-center">
@@ -29,35 +29,69 @@ export function BaseAuthForm({
               {description}
             </p>
           </div>
-          <div className="flex items-center justify-center">
-            <GoogleProvider />
-          </div>
-          <div className="text-muted-foreground flex items-center justify-center text-sm">
-            <Separator className="shrink" />
-            <p className="mx-3">Or</p>
-            <Separator className="shrink" />
-          </div>
+          {type !== "forgot-password" && type !== "reset-password" ? (
+            <>
+              <div className="flex items-center justify-center">
+                <GoogleProvider />
+              </div>
+              <div className="text-muted-foreground flex items-center justify-center text-sm">
+                <Separator className="flex-1" />
+                <p className="mx-3">Or sign in with</p>
+                <Separator className="flex-1" />
+              </div>
+            </>
+          ) : (
+            <Separator />
+          )}
           <form onSubmit={formSubmit} className="space-y-6">
             {children}
           </form>
+          {type === "forgot-password" ? (
+            <>
+              <div className="flex items-center justify-center">
+                <Separator className="flex-1" />
+                <p className="text-muted-foreground mx-3 text-sm">
+                  Or, sign in with another method
+                </p>
+                <Separator className="flex-1" />
+              </div>
+              <div className="flex items-center justify-center">
+                <GoogleProvider />
+              </div>
+            </>
+          ) : null}
         </div>
         {!isAuthenticated && (
           <div className="border-t px-9 py-4">
-            {isSignIn ? (
+            {type === "sign-in" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">
                 Don&apos;t have an account?{" "}
                 <Link to="/auth/sign-up" size="sm">
                   Sign up
                 </Link>
               </p>
-            ) : (
+            ) : type === "sign-up" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">
                 Already have an account?{" "}
                 <Link to="/auth/sign-in" size="sm">
                   Sign in
                 </Link>
               </p>
-            )}
+            ) : type === "forgot-password" ? (
+              <p className="text-muted-foreground text-center text-sm font-medium">
+                Remember your password?{" "}
+                <Link to="/auth/sign-in" size="sm">
+                  Sign in
+                </Link>
+              </p>
+            ) : type === "reset-password" ? (
+              <p className="text-muted-foreground text-center text-sm font-medium">
+                Go back to{" "}
+                <Link to="/auth/sign-in" size="sm">
+                  Sign in
+                </Link>
+              </p>
+            ) : null}
           </div>
         )}
       </div>

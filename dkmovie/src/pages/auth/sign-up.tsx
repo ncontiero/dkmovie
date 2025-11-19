@@ -58,7 +58,7 @@ export default function SignUpPage() {
       title="Create your account"
       description="Welcome! Please fill in the details to get started."
       formSubmit={handleSubmit(onSubmit)}
-      isSignIn={false}
+      type="sign-up"
     >
       <Meta title="Sign Up" />
       <div className="flex flex-col gap-2">

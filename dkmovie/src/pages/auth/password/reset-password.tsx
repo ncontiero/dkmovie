@@ -78,8 +78,8 @@ export default function ResetPasswordPage() {
     <BaseAuthForm
       title="Reset Password"
       description="Enter your new password."
-      isSignIn={false}
       formSubmit={handleSubmit(onSubmit)}
+      type="reset-password"
     >
       <div className="flex flex-col gap-2">
         <Label htmlFor="password">Password</Label>

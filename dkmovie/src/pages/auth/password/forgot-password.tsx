@@ -48,8 +48,8 @@ export default function ForgotPasswordPage() {
     <BaseAuthForm
       title="Forgot Password?"
       description="Enter your email to reset your password."
-      isSignIn={false}
       formSubmit={handleSubmit(onSubmit)}
+      type="forgot-password"
     >
       <Meta title="Forgot Password" />
       <div className="flex flex-col gap-2">
