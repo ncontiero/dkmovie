@@ -11,8 +11,9 @@ const lazyComponentMap = {
     resetPassword: lazy(() => import("./pages/auth/password/reset-password")),
   },
   account: {
-    verifyEmail: lazy(() => import("./pages/account/verify-email")),
     myAccount: lazy(() => import("./pages/account/my-account")),
+    verifyEmail: lazy(() => import("./pages/account/verify-email")),
+    providerCallback: lazy(() => import("./pages/account/provider/callback")),
   },
   notFound: lazy(() => import("./pages/404")),
 };
@@ -41,6 +42,10 @@ export function Router() {
         <Route
           path="verify-email/:key"
           Component={lazyComponentMap.account.verifyEmail}
+        />
+        <Route
+          path="provider/callback"
+          Component={lazyComponentMap.account.providerCallback}
         />
       </Route>
       <Route path="*" Component={lazyComponentMap.notFound} />

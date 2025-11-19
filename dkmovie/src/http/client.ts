@@ -163,7 +163,7 @@ export class HttpClient {
 
 export const httpClient = new HttpClient();
 
-const apiAuthBasePath = "/api/auth/browser/v1";
+export const apiAuthBasePath = "/api/auth/browser/v1";
 export const authHttpClient = new HttpClient(`${apiAuthBasePath}/auth`);
 export const authAccountHttpClient = new HttpClient(
   `${apiAuthBasePath}/account`,

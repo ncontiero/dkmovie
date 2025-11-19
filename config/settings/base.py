@@ -62,6 +62,8 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "allauth",
     "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "allauth.headless",
     "allauth.usersessions",
     "webpack_loader",
@@ -274,7 +276,7 @@ HEADLESS_FRONTEND_URLS = {
     "account_reset_password": "/auth/password/reset",
     "account_reset_password_from_key": "/auth/password/reset/{key}",
     "account_signup": "/auth/sign-up",
-    "socialaccount_login_error": "/auth/sign-in",
+    "socialaccount_login_error": "/account/provider/callback",
 }
 HEADLESS_ONLY = True
 
