@@ -9,7 +9,7 @@ import {
 } from "@/http/auth/session";
 import { SessionContext } from "./context";
 
-const protectedRoutes = ["/account"];
+const protectedRoutes = ["/account", "/account/security"];
 const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
 const signInRoute = "/auth/sign-in";
 

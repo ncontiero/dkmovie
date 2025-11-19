@@ -7,7 +7,7 @@ import { FullNameCard } from "./full-name-card";
 
 export function AccountTabsContent() {
   return (
-    <TabsContent value="account" className="w-full">
+    <TabsContent value="/account" className="w-full">
       <Meta title="My Account" />
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-bold">My Account</h2>

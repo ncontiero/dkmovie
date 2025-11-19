@@ -1,3 +1,4 @@
+import { Meta } from "@/components/meta";
 import { Separator } from "@/components/ui/separator";
 import { TabsContent } from "@/components/ui/tabs";
 import { ConnectedAccountsCard } from "./connected-accounts-card";
@@ -6,7 +7,8 @@ import { SessionsCard } from "./sessions-card";
 
 export function SecurityTabsContent() {
   return (
-    <TabsContent value="security" className="w-full">
+    <TabsContent value="/account/security" className="w-full">
+      <Meta title="Security" />
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-bold">Security</h2>
         <p className="text-foreground/80">
