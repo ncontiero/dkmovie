@@ -8,7 +8,12 @@ interface BaseAuthFormProps extends PropsWithChildren {
   readonly title: string;
   readonly description: string;
   readonly isAuthenticated?: boolean;
-  readonly type?: "sign-in" | "sign-up" | "forgot-password" | "reset-password";
+  readonly type?:
+    | "sign-in"
+    | "sign-up"
+    | "forgot-password"
+    | "reset-password"
+    | "2fa";
 }
 
 export function BaseAuthForm({
@@ -29,7 +34,9 @@ export function BaseAuthForm({
               {description}
             </p>
           </div>
-          {type !== "forgot-password" && type !== "reset-password" ? (
+          {type !== "forgot-password" &&
+          type !== "reset-password" &&
+          type !== "2fa" ? (
             <>
               <div className="flex items-center justify-center">
                 <ProviderButton />
@@ -61,7 +68,7 @@ export function BaseAuthForm({
             </>
           ) : null}
         </div>
-        {!isAuthenticated && (
+        {!isAuthenticated && type !== "2fa" && (
           <div className="border-t px-9 py-4">
             {type === "sign-in" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">

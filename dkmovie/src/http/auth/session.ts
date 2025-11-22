@@ -1,4 +1,5 @@
 import type { Session } from "@/utils/types";
+import { need2FA } from "@/utils/erros";
 import { authHttpClient } from "../client";
 
 export interface CurrentSessionResponse {
@@ -11,7 +12,8 @@ export interface CurrentSessionResponse {
 export async function getCurrentSession() {
   try {
     return await authHttpClient.get<CurrentSessionResponse>("/session");
-  } catch {
+  } catch (error) {
+    if (need2FA(error)) throw error;
     return null;
   }
 }

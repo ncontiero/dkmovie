@@ -14,6 +14,8 @@ import {
   getCurrentSession,
   logout as logoutApi,
 } from "@/http/auth/session";
+import { HTTPError } from "@/http/client";
+import { need2FA } from "@/utils/erros";
 import { type SessionContextProps, SessionContext } from "./context";
 
 const protectedRoutes = ["/account", "/account/security"];
@@ -30,12 +32,22 @@ export function SessionProvider({ children }: PropsWithChildren) {
     () => () => setIsReAuthenticationNeeded(false),
   );
 
-  const { data: session = null, isLoading: isLoadingSession } = useQuery({
+  const {
+    data: session = null,
+    isLoading: isLoadingSession,
+    error: sessionError,
+  } = useQuery({
     queryKey: ["session"],
     queryFn: async () => {
       return await getCurrentSession();
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: (count, error) => {
+      if (error instanceof HTTPError && error.status === 401) {
+        return false;
+      }
+      return count < 3;
+    },
   });
 
   const isAuthenticated = session?.meta.is_authenticated || false;
@@ -78,13 +90,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (isLoadingSession) return;
+    if (need2FA(sessionError)) {
+      navigate(`/auth/2fa?next=${pathname}`);
+      return;
+    }
+
     if (!isAuthenticated && protectedRoutes.includes(pathname)) {
       navigate(signInRoute);
     }
     if (isAuthenticated && authRoutes.includes(pathname)) {
       navigate("/account");
     }
-  }, [isAuthenticated, isLoadingSession, navigate, pathname]);
+  }, [isAuthenticated, isLoadingSession, navigate, pathname, sessionError]);
 
   const contextValues = useMemo(
     (): SessionContextProps => ({

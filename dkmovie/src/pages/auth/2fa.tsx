@@ -9,19 +9,20 @@ import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "@/components/ui/link";
-import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
-import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
+import {
+  type TwoFactorAuthSchema,
+  confirm2FA,
+  twoFactorAuthSchema,
+} from "@/http/auth/2fa";
 import { HTTPError } from "@/http/client";
-import { need2FA } from "@/utils/erros";
 
 const especialNextPaths = [
   `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
   "/api/docs",
 ];
 
-export default function SignInPage() {
+export default function TwoFactorAuthenticationPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { setSession, isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
@@ -32,7 +33,7 @@ export default function SignInPage() {
     register,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(twoFactorAuthSchema),
   });
 
   if (isAuthenticated) return null;
@@ -40,9 +41,9 @@ export default function SignInPage() {
   const nextPathParam = searchParams.get("next") ?? "/";
   const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
 
-  const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
+  const onSubmit: SubmitHandler<TwoFactorAuthSchema> = async (data) => {
     try {
-      const res = await signIn(data);
+      const res = await confirm2FA(data);
       setSession(res);
 
       if (especialNextPaths.includes(nextPath)) {
@@ -51,7 +52,6 @@ export default function SignInPage() {
         navigate(nextPath);
       }
     } catch (error) {
-      if (need2FA(error)) navigate(`/auth/2fa?next=${nextPath}`);
       if (error instanceof HTTPError) {
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
         return;
@@ -64,37 +64,17 @@ export default function SignInPage() {
 
   return (
     <BaseAuthForm
-      title="Sign in"
-      description="Welcome back! Please sign in to continue"
+      title="Two Factor Authentication"
+      description="Please enter the code from your authenticator app"
       formSubmit={handleSubmit(onSubmit)}
+      type="2fa"
     >
-      <Meta title="Sign in" />
+      <Meta title="Two Factor Authentication" />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          type="email"
-          id="email"
-          placeholder="your.email@example.com"
-          {...register("email")}
-        />
-        {errors.email ? (
-          <p className="text-destructive text-sm">{errors.email.message}</p>
-        ) : null}
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
-          <Link to="/auth/password/forgot" size="sm">
-            Forgot your password?
-          </Link>
-        </div>
-        <PasswordInput
-          id="password"
-          placeholder="Type your password"
-          {...register("password")}
-        />
-        {errors.password ? (
-          <p className="text-destructive text-sm">{errors.password.message}</p>
+        <Label htmlFor="code">Code</Label>
+        <Input type="text" id="code" {...register("code")} />
+        {errors.code ? (
+          <p className="text-destructive text-sm">{errors.code.message}</p>
         ) : null}
       </div>
       {apiErrors.length > 0 ? (
