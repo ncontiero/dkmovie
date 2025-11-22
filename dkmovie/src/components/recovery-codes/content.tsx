@@ -4,7 +4,7 @@ import { Loader } from "lucide-react";
 import { useSession } from "@/hooks/use-session";
 import { getRecoveryCodes } from "@/http/account/2fa";
 import { HTTPError } from "@/http/client";
-import { needReAuthentication } from "@/utils/erros";
+import { needReAuthentication } from "@/utils/auth-flows";
 import { CopyButton } from "../ui/copy-button";
 
 export function RecoveryCodesContent() {

@@ -14,7 +14,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
 import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
-import { need2FA } from "@/utils/erros";
+import { need2FA } from "@/utils/auth-flows";
 
 const especialNextPaths = [
   `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,

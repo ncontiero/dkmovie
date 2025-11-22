@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
 import { deleteTOTP } from "@/http/account/2fa";
-import { needReAuthentication } from "@/utils/erros";
+import { needReAuthentication } from "@/utils/auth-flows";
 
 export function RemoveTOTP() {
   const queryClient = useQueryClient();

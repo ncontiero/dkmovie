@@ -1,5 +1,5 @@
 import type { Session } from "@/utils/types";
-import { need2FA } from "@/utils/erros";
+import { need2FA } from "@/utils/auth-flows";
 import { authHttpClient } from "../client";
 
 export interface CurrentSessionResponse {

@@ -17,7 +17,7 @@ import {
 import { useSession } from "@/hooks/use-session";
 import { regenerateRecoveryCodes } from "@/http/account/2fa";
 import { HTTPError } from "@/http/client";
-import { needReAuthentication } from "@/utils/erros";
+import { needReAuthentication } from "@/utils/auth-flows";
 
 export function ViewRecoveryCodes() {
   const queryClient = useQueryClient();

@@ -15,7 +15,7 @@ import {
   logout as logoutApi,
 } from "@/http/auth/session";
 import { HTTPError } from "@/http/client";
-import { need2FA } from "@/utils/erros";
+import { need2FA } from "@/utils/auth-flows";
 import { type SessionContextProps, SessionContext } from "./context";
 
 const protectedRoutes = ["/account", "/account/security"];
