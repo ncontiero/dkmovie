@@ -34,6 +34,7 @@ export function AddEmailDialog({ userId }: { readonly userId: number }) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(addEmailSchema),
@@ -48,6 +49,7 @@ export function AddEmailDialog({ userId }: { readonly userId: number }) {
       });
       setApiErrors([]);
       setShowDialog(false);
+      reset();
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);

@@ -13,6 +13,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
 import { type SignUpSchema, signUp, signUpSchema } from "@/http/auth/sign-up";
 import { HTTPError } from "@/http/client";
+import { needEmailVerification } from "@/utils/auth-flows";
 
 export default function SignUpPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
@@ -23,6 +24,7 @@ export default function SignUpPage() {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(signUpSchema),
@@ -42,6 +44,14 @@ export default function SignUpPage() {
       });
       navigate(nextPath);
     } catch (error) {
+      if (needEmailVerification(error)) {
+        toast.success("Account created successfully!", {
+          description: "Please check your email to verify your account.",
+        });
+        reset();
+        return;
+      }
+
       if (error instanceof HTTPError) {
         console.error(error.data);
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
