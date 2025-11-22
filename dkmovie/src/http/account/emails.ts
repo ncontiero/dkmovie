@@ -20,24 +20,13 @@ export async function getUserEmails() {
   }
 }
 
-export const addEmailSchema = z.object({
+export const changeEmailSchema = z.object({
   email: emailSchema,
 });
-export type AddEmailSchema = z.infer<typeof addEmailSchema>;
+export type ChangeEmailSchema = z.infer<typeof changeEmailSchema>;
 
-export async function addEmail(data: AddEmailSchema) {
+export async function changeEmail(data: ChangeEmailSchema) {
   return await authAccountHttpClient.post<EmailResponse>("/email", data);
-}
-
-export async function deleteEmail(data: AddEmailSchema) {
-  return await authAccountHttpClient.delete<EmailResponse>("/email", data);
-}
-
-export async function setPrimaryEmail(email: string) {
-  return await authAccountHttpClient.patch<EmailResponse>("/email", {
-    email,
-    primary: true,
-  });
 }
 
 export async function resentEmailVerification(email: string) {

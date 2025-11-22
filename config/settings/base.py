@@ -267,7 +267,7 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_EMAIL_NOTIFICATIONS = True
-ACCOUNT_MAX_EMAIL_ADDRESSES = 3
+ACCOUNT_CHANGE_EMAIL = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_ADAPTER = "dkmovie.users.adapters.SocialAccountAdapter"

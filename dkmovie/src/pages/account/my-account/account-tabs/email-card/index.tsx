@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Ellipsis, Loader } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -11,39 +10,19 @@ import {
   CardFooterDescription,
   CardTitle,
 } from "@/components/card";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/hooks/use-session";
-import {
-  deleteEmail,
-  getUserEmails,
-  resentEmailVerification,
-  setPrimaryEmail,
-} from "@/http/account/emails";
+import { getUserEmails, resentEmailVerification } from "@/http/account/emails";
 import { HTTPError } from "@/http/client";
-import { AddEmailDialog } from "./add-email-dialog";
+import { ChangeEmailDialog } from "./change-email-dialog";
 
 export function UserEmailCard() {
-  const { setSession, session } = useSession();
+  const { session } = useSession();
   const userId = session?.user.id;
-  const queryClient = useQueryClient();
-  const [showDeleteEmailDialog, setShowDeleteEmailDialog] = useState(false);
 
   const { data: userEmails, isLoading: isUserEmailsLoading } = useQuery({
     queryKey: ["user-emails", userId],
@@ -57,62 +36,6 @@ export function UserEmailCard() {
         if (b.primary) return 1;
         return 0;
       });
-    },
-  });
-
-  const { mutate: deleteEmailMutation, isPending: isDeleteEmailPending } =
-    useMutation({
-      mutationFn: async (email: string) => {
-        return await deleteEmail({ email });
-      },
-      onSuccess: ({ data }) => {
-        queryClient.setQueryData(["user-emails", userId], data);
-        setShowDeleteEmailDialog(false);
-        toast.success("Email deleted successfully");
-      },
-      onError: (error) => {
-        if (error instanceof HTTPError) {
-          toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
-          return;
-        }
-        toast.error(error.message);
-        setShowDeleteEmailDialog(false);
-      },
-    });
-
-  const {
-    mutate: setPrimaryEmailMutation,
-    isPending: isSetPrimaryEmailPending,
-  } = useMutation({
-    mutationFn: async (email: string) => {
-      return await setPrimaryEmail(email);
-    },
-    onMutate: () => {
-      toast.loading("Setting email as primary...", { id: "set-primary-email" });
-    },
-    onSuccess: ({ data }) => {
-      if (session && session.user) {
-        setSession({
-          meta: { is_authenticated: true },
-          data: {
-            user: {
-              ...session.user,
-              email: data.find((e) => e.primary)?.email || session.user.email,
-            },
-          },
-        });
-      }
-      queryClient.setQueryData(["user-emails", userId], data);
-      toast.success("Email set as primary successfully", {
-        id: "set-primary-email",
-      });
-    },
-    onError: (error) => {
-      if (error instanceof HTTPError) {
-        toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
-        return;
-      }
-      toast.error(error.message);
     },
   });
 
@@ -146,8 +69,7 @@ export function UserEmailCard() {
       <CardContent className="flex flex-col p-4 sm:p-6">
         <CardTitle>Email</CardTitle>
         <CardDescription>
-          Enter the email addresses you want to use to log in. Your primary
-          email will be used for account-related notifications.
+          Manage the email address you want to use to log in to your account.
         </CardDescription>
         <div className="mt-4 flex flex-col gap-2">
           {isUserEmailsLoading ? (
@@ -156,13 +78,11 @@ export function UserEmailCard() {
               <Skeleton className="bg-background h-1/2 w-1/12" />
               <Skeleton className="bg-background h-1/2 w-1/12" />
             </Skeleton>
-          ) : !userEmails ? (
-            <AddEmailDialog userId={userId} />
           ) : (
-            userEmails.map(({ email, primary, verified }) => (
+            userEmails?.map(({ email, primary, verified }) => (
               <div
                 key={email}
-                className="flex items-center justify-between rounded-lg border px-4 py-2"
+                className={`flex items-center justify-between rounded-lg border ${verified ? "p-4" : "px-4 py-2"}`}
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{email}</span>
@@ -191,100 +111,18 @@ export function UserEmailCard() {
                       )}
                     </Button>
                   ) : null}
-                  <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-8"
-                      >
-                        <Ellipsis />
-                        <span className="sr-only">Open menu for {email}</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {!primary ? (
-                        <DropdownMenuItem
-                          aria-label="Set as primary email"
-                          className="cursor-pointer"
-                          onClick={() => {
-                            setPrimaryEmailMutation(email);
-                          }}
-                          disabled={isSetPrimaryEmailPending || !verified}
-                        >
-                          Set as primary
-                        </DropdownMenuItem>
-                      ) : null}
-                      <DropdownMenuItem
-                        disabled={primary}
-                        aria-label={
-                          primary
-                            ? "You can't delete the primary email"
-                            : "Delete email"
-                        }
-                        title={
-                          primary
-                            ? "You can't delete the primary email"
-                            : "Delete email"
-                        }
-                        className={`
-                          text-destructive cursor-pointer focus:text-destructive focus:bg-destructive/20
-                          hover:bg-destructive/20
-                        `}
-                        onClick={() => {
-                          setShowDeleteEmailDialog(true);
-                        }}
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                 </div>
-                <AlertDialog
-                  open={showDeleteEmailDialog}
-                  onOpenChange={setShowDeleteEmailDialog}
-                >
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        remove this email ({email}) from your account.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() => deleteEmailMutation(email)}
-                        disabled={isDeleteEmailPending}
-                      >
-                        {isDeleteEmailPending ? (
-                          <Loader className="animate-spin" />
-                        ) : (
-                          "Delete"
-                        )}
-                      </Button>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
               </div>
             ))
           )}
         </div>
-        {userEmails && userEmails.length < 3 ? (
-          <AddEmailDialog userId={userId} />
-        ) : null}
       </CardContent>
       <CardFooter>
         <CardFooterDescription>
-          Emails must be verified to be able to login with them or be used as
-          primary email. You can add up to 3 emails.
+          Email must be verified to be able to login with them or be used as
+          primary email.
         </CardFooterDescription>
+        <ChangeEmailDialog userId={userId} />
       </CardFooter>
     </Card>
   );

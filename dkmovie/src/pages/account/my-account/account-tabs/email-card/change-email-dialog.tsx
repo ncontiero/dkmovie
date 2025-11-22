@@ -20,13 +20,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  type AddEmailSchema,
-  addEmail,
-  addEmailSchema,
+  type ChangeEmailSchema,
+  changeEmail,
+  changeEmailSchema,
 } from "@/http/account/emails";
 import { HTTPError } from "@/http/client";
 
-export function AddEmailDialog({ userId }: { readonly userId: number }) {
+export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
   const [showDialog, setShowDialog] = useState(false);
   const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
@@ -37,12 +37,12 @@ export function AddEmailDialog({ userId }: { readonly userId: number }) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(addEmailSchema),
+    resolver: zodResolver(changeEmailSchema),
   });
 
-  const onSubmit: SubmitHandler<AddEmailSchema> = async (data) => {
+  const onSubmit: SubmitHandler<ChangeEmailSchema> = async (data) => {
     try {
-      const res = await addEmail(data);
+      const res = await changeEmail(data);
       queryClient.setQueryData(["user-emails", userId], res.data);
       toast.success("Email added!", {
         description: "You will receive an email with a verification link soon.",
@@ -65,22 +65,17 @@ export function AddEmailDialog({ userId }: { readonly userId: number }) {
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="mt-4 w-fit"
-        >
+        <Button type="button" size="sm">
           <Plus />
-          Add email
+          Change email
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Email</DialogTitle>
+          <DialogTitle>Change Email</DialogTitle>
           <DialogDescription>
-            Add a new email address to your account. This email, once verified,
-            can be used to login to your account.
+            Change to a new email address. You will receive an email with a
+            verification link.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -106,7 +101,7 @@ export function AddEmailDialog({ userId }: { readonly userId: number }) {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? <Loader className="animate-spin" /> : "Add"}
+              {isSubmitting ? <Loader className="animate-spin" /> : "Change"}
             </Button>
           </DialogFooter>
         </form>
