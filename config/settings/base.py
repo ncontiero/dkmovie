@@ -64,8 +64,9 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    "allauth.headless",
+    "allauth.mfa",
     "allauth.usersessions",
+    "allauth.headless",
     "webpack_loader",
     "django_cleanup.apps.CleanupConfig",
 ]
@@ -269,6 +270,9 @@ ACCOUNT_MAX_EMAIL_ADDRESSES = 3
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_ADAPTER = "dkmovie.users.adapters.SocialAccountAdapter"
+# https://docs.allauth.org/en/latest/mfa/configuration.html
+MFA_PASSKEY_LOGIN_ENABLED = True
+MFA_SUPPORTED_TYPES = ["totp", "webauthn", "recovery_codes"]
 # https://docs.allauth.org/en/latest/headless/configuration.html
 HEADLESS_CLIENTS = ("browser",)
 HEADLESS_FRONTEND_URLS = {

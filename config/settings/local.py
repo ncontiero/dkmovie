@@ -1,4 +1,3 @@
-# ruff: noqa: E501
 from .base import *  # noqa: F403
 from .base import INSTALLED_APPS
 from .base import MIDDLEWARE
@@ -10,7 +9,10 @@ from .base import config
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
-SECRET_KEY = config("DJANGO_SECRET_KEY", default="XwTk5hwEoRJArJxFLke2xWIk3camyrVMOn2p9grLGYbFGHDeAm9a638SPe3xhZgC")
+SECRET_KEY = config(
+    "DJANGO_SECRET_KEY",
+    default="XwTk5hwEoRJArJxFLke2xWIk3camyrVMOn2p9grLGYbFGHDeAm9a638SPe3xhZgC",
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]  # noqa: S104
 
@@ -64,5 +66,7 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # ------------------------------------------------------------------------------
 WEBPACK_LOADER["DEFAULT"]["CACHE"] = not DEBUG
 
-# Your stuff...
+# django-allauth
 # ------------------------------------------------------------------------------
+# https://docs.allauth.org/en/latest/mfa/configuration.html
+MFA_WEBAUTHN_ALLOW_INSECURE_ORIGIN = True

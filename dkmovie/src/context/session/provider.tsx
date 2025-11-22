@@ -1,19 +1,28 @@
-import { type PropsWithChildren, useCallback, useEffect, useMemo } from "react";
+import {
+  type PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { ReAuthenticateDialog } from "@/components/reauthenticate";
 import {
   type CurrentSessionResponse,
   getCurrentSession,
   logout as logoutApi,
 } from "@/http/auth/session";
-import { SessionContext } from "./context";
+import { type SessionContextProps, SessionContext } from "./context";
 
 const protectedRoutes = ["/account", "/account/security"];
 const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
 const signInRoute = "/auth/sign-in";
 
 export function SessionProvider({ children }: PropsWithChildren) {
+  const [isReAuthenticationNeeded, setIsReAuthenticationNeeded] =
+    useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -28,7 +37,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   const isAuthenticated = session?.meta.is_authenticated || false;
 
-  const { mutate: logoutMutation, isPending: isLogoutPending } = useMutation({
+  const { mutate: logoutMutation } = useMutation({
     mutationFn: async () => {
       return await logoutApi();
     },
@@ -52,9 +61,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [queryClient],
   );
 
-  const logout = useCallback(() => {
-    logoutMutation();
-  }, [logoutMutation]);
+  const initializeReAuthentication = useCallback(() => {
+    setIsReAuthenticationNeeded(true);
+  }, []);
 
   useEffect(() => {
     if (isLoadingSession) return;
@@ -67,26 +76,33 @@ export function SessionProvider({ children }: PropsWithChildren) {
   }, [isAuthenticated, isLoadingSession, navigate, pathname]);
 
   const contextValues = useMemo(
-    () => ({
+    (): SessionContextProps => ({
       session: session?.data || null,
       isAuthenticated,
       isLoadingSession,
-      isLogoutPending,
-      logout,
+      logout: logoutMutation,
       setSession,
+      initializeReAuthentication,
+      isReAuthenticating: isReAuthenticationNeeded,
     }),
     [
+      session?.data,
       isAuthenticated,
       isLoadingSession,
-      isLogoutPending,
-      logout,
+      logoutMutation,
       setSession,
-      session?.data,
+      initializeReAuthentication,
+      isReAuthenticationNeeded,
     ],
   );
 
   return (
     <SessionContext.Provider value={contextValues}>
+      {isReAuthenticationNeeded ? (
+        <ReAuthenticateDialog
+          onReAuthenticated={() => setIsReAuthenticationNeeded(false)}
+        />
+      ) : null}
       {children}
     </SessionContext.Provider>
   );
