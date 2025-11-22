@@ -21,11 +21,14 @@ const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
 const signInRoute = "/auth/sign-in";
 
 export function SessionProvider({ children }: PropsWithChildren) {
-  const [isReAuthenticationNeeded, setIsReAuthenticationNeeded] =
-    useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [isReAuthenticationNeeded, setIsReAuthenticationNeeded] =
+    useState(false);
+  const [onReAuthenticatedCallback, setOnReAuthenticatedCallback] = useState(
+    () => () => setIsReAuthenticationNeeded(false),
+  );
 
   const { data: session = null, isLoading: isLoadingSession } = useQuery({
     queryKey: ["session"],
@@ -61,8 +64,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [queryClient],
   );
 
-  const initializeReAuthentication = useCallback(() => {
+  const initializeReAuthentication = useCallback((callback?: () => void) => {
+    toast.error("You need to re-authenticate to continue");
     setIsReAuthenticationNeeded(true);
+    if (callback) {
+      // eslint-disable-next-line unicorn/consistent-function-scoping
+      setOnReAuthenticatedCallback(() => () => {
+        setIsReAuthenticationNeeded(false);
+        callback();
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -99,9 +110,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
   return (
     <SessionContext.Provider value={contextValues}>
       {isReAuthenticationNeeded ? (
-        <ReAuthenticateDialog
-          onReAuthenticated={() => setIsReAuthenticationNeeded(false)}
-        />
+        <ReAuthenticateDialog onReAuthenticated={onReAuthenticatedCallback} />
       ) : null}
       {children}
     </SessionContext.Provider>

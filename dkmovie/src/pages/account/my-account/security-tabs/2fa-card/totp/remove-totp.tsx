@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -16,13 +15,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
 import { deleteTOTP } from "@/http/account/2fa";
-import { HTTPError } from "@/http/client";
+import { needReAuthentication } from "@/utils/erros";
 
 export function RemoveTOTP() {
   const queryClient = useQueryClient();
   const { session, initializeReAuthentication, isReAuthenticating } =
     useSession();
-  const [showDialog, setShowDialog] = useState(false);
 
   const userId = session?.user.id;
 
@@ -30,16 +28,14 @@ export function RemoveTOTP() {
     {
       mutationFn: async () => await deleteTOTP(),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
         queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
         queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
+        queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
         toast.success("Removed TOTP successfully");
-        setShowDialog(false);
       },
       onError: (error) => {
-        if (error instanceof HTTPError && error.status === 401) {
-          toast.error("You need to re-authenticate to continue");
-          initializeReAuthentication();
+        if (needReAuthentication(error)) {
+          initializeReAuthentication(deleteTOTPMutation);
           return;
         }
 
@@ -51,7 +47,7 @@ export function RemoveTOTP() {
 
   return (
     !isReAuthenticating && (
-      <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+      <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button type="button" variant="outline" size="sm">
             Remove

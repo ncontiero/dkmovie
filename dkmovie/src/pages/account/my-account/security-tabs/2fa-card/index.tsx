@@ -5,12 +5,13 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
 import { get2FAAuthenticators } from "@/http/account/2fa";
-import { GenerateCodes } from "./totp/generate-codes";
 import { RemoveTOTP } from "./totp/remove-totp";
 import { SetupTOTP } from "./totp/setup-totp";
+import { ViewRecoveryCodes } from "./totp/view-codes";
 
 export function TwoFactorAuthenticationCard() {
   const { session } = useSession();
@@ -34,7 +35,18 @@ export function TwoFactorAuthenticationCard() {
   return (
     <Card className="mt-10">
       <CardContent>
-        <CardTitle>Two-Factor Authentication</CardTitle>
+        <CardTitle>
+          Two-Factor Authentication
+          {hasTOTP || hasPasskeys ? (
+            <Badge variant="defaultOutline" className="ml-2">
+              Active
+            </Badge>
+          ) : (
+            <Badge variant="destructiveOutline" className="ml-2">
+              Inactive
+            </Badge>
+          )}
+        </CardTitle>
         <CardDescription>
           Add an extra layer of security to your account by enabling two-factor
           authentication.
@@ -72,7 +84,7 @@ export function TwoFactorAuthenticationCard() {
                 your device.
               </p>
             </div>
-            <GenerateCodes alreadyExists={hasRecoveryCodes} />
+            {hasRecoveryCodes ? <ViewRecoveryCodes /> : null}
           </div>
         </div>
       </CardContent>

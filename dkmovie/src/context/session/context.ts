@@ -9,7 +9,7 @@ export interface SessionContextProps {
   isReAuthenticating: boolean;
   setSession: (newSession?: CurrentSessionResponse | null) => void;
   logout: () => void;
-  initializeReAuthentication: () => void;
+  initializeReAuthentication: (callback?: () => void) => void;
 }
 
 export const SessionContext = createContext<SessionContextProps>({
