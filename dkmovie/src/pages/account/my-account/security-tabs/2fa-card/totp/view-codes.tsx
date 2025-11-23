@@ -1,4 +1,3 @@
-import { Activity, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -21,7 +20,6 @@ import { needReAuthentication } from "@/utils/auth-flows";
 
 export function ViewRecoveryCodes() {
   const queryClient = useQueryClient();
-  const [showDialog, setShowDialog] = useState(false);
   const { session, initializeReAuthentication, isReAuthenticating } =
     useSession();
 
@@ -55,45 +53,45 @@ export function ViewRecoveryCodes() {
     },
   });
 
+  if (isReAuthenticating) return null;
+
   return (
-    <Activity mode={isReAuthenticating ? "hidden" : "visible"}>
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm">
-            View
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          View
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Recovery Codes</DialogTitle>
+          <DialogDescription>
+            Recovery codes can be used to access your account in the event you
+            lose access to your device and cannot receive two-factor
+            authentication codes.
+          </DialogDescription>
+        </DialogHeader>
+        <RecoveryCodesContent />
+        <DialogFooter className="sm:justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isRegeneratingRecoveryCodes}
+            onClick={() => regenerateRecoveryCodesMutation()}
+          >
+            {isRegeneratingRecoveryCodes ? (
+              <Loader className="animate-spin" />
+            ) : (
+              "Regenerate"
+            )}
           </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Recovery Codes</DialogTitle>
-            <DialogDescription>
-              Recovery codes can be used to access your account in the event you
-              lose access to your device and cannot receive two-factor
-              authentication codes.
-            </DialogDescription>
-          </DialogHeader>
-          <RecoveryCodesContent />
-          <DialogFooter className="sm:justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isRegeneratingRecoveryCodes}
-              onClick={() => regenerateRecoveryCodesMutation()}
-            >
-              {isRegeneratingRecoveryCodes ? (
-                <Loader className="animate-spin" />
-              ) : (
-                "Regenerate"
-              )}
+          <DialogClose asChild>
+            <Button type="button" variant="outline">
+              Close
             </Button>
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </Activity>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

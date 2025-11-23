@@ -20,10 +20,12 @@ import { PasswordInput } from "./ui/password-input";
 
 export interface ReauthenticateDialogProps {
   readonly onReAuthenticated: () => void;
+  readonly cancel?: () => void;
 }
 
 export function ReAuthenticateDialog({
   onReAuthenticated,
+  cancel,
 }: ReauthenticateDialogProps) {
   const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
@@ -55,7 +57,7 @@ export function ReAuthenticateDialog({
   };
 
   return (
-    <Dialog defaultOpen>
+    <Dialog defaultOpen open>
       <DialogContent addClose={false}>
         <DialogHeader>
           <DialogTitle>Re-authenticate to continue</DialogTitle>
@@ -81,6 +83,14 @@ export function ReAuthenticateDialog({
             </ul>
           )}
           <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSubmitting}
+              onClick={cancel}
+            >
+              Cancel
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader className="animate-spin" />

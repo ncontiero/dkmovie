@@ -1,4 +1,4 @@
-import { Activity, useState } from "react";
+import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import QRCode from "react-qr-code";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -87,102 +87,95 @@ export function SetupTOTP() {
     }
   };
 
-  return (
-    <Activity mode={isReAuthenticating ? "hidden" : "visible"}>
-      {isToGetRecoveryCodes && userId ? (
-        <RecoveryCodesDialog userId={userId} />
-      ) : (
-        <Dialog
-          open={showSetupTOTPDialog}
-          onOpenChange={setShowSetupTOTPDialog}
+  if (isReAuthenticating) return null;
+
+  return isToGetRecoveryCodes && userId ? (
+    <RecoveryCodesDialog userId={userId} />
+  ) : (
+    <Dialog open={showSetupTOTPDialog} onOpenChange={setShowSetupTOTPDialog}>
+      <DialogTrigger asChild>
+        <Button type="button" variant="outline" size="sm">
+          Add
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Setup TOTP</DialogTitle>
+          <DialogDescription>
+            Scan the QR code below with your preferred authenticator app. Then,
+            enter the 6 digit code that the app provides to continue. You can
+            also copy the secret below and paste it into your app.
+          </DialogDescription>
+        </DialogHeader>
+        {isSettingUpTOTP ? (
+          <div className="flex h-72 w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
+            <Loader className="animate-spin" />
+          </div>
+        ) : totp?.totp_url ? (
+          <div className="flex w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
+            <div className="flex items-center gap-2">
+              <p>{totp.secret}</p>
+              <CopyButton
+                value={totp.secret}
+                aria-label="Copy secret to clipboard"
+                className="size-6"
+                variant="ghost"
+              />
+            </div>
+            <div className="flex justify-center rounded-lg bg-white p-4">
+              <QRCode value={totp.totp_url} size={208} />
+            </div>
+          </div>
+        ) : null}
+        <form
+          className="mt-3 flex w-full flex-col gap-5"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <DialogTrigger asChild>
-            <Button type="button" variant="outline" size="sm">
-              Add
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Setup TOTP</DialogTitle>
-              <DialogDescription>
-                Scan the QR code below with your preferred authenticator app.
-                Then, enter the 6 digit code that the app provides to continue.
-                You can also copy the secret below and paste it into your app.
-              </DialogDescription>
-            </DialogHeader>
-            {isSettingUpTOTP ? (
-              <div className="flex h-72 w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
+          <div className="flex w-full items-center justify-center">
+            <Controller
+              name="code"
+              control={control}
+              render={({ field }) => (
+                <InputOTP
+                  {...field}
+                  aria-label="Enter 6 digit code from your authenticator app"
+                  maxLength={otpFields.length}
+                  pattern={REGEXP_ONLY_DIGITS}
+                  autoFocus
+                  onComplete={(value) => {
+                    field.onChange(value);
+                    handleSubmit(onSubmit)();
+                  }}
+                >
+                  <InputOTPGroup>
+                    {otpFields.map((_, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <InputOTPSlot key={index} index={index} />
+                    ))}
+                  </InputOTPGroup>
+                </InputOTP>
+              )}
+            />
+          </div>
+          {errors.code ? (
+            <p className="text-destructive text-sm">{errors.code.message}</p>
+          ) : null}
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit" disabled={isConfirmingTOTP}>
+              {isConfirmingTOTP ? (
                 <Loader className="animate-spin" />
-              </div>
-            ) : totp?.totp_url ? (
-              <div className="flex w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
-                <div className="flex items-center gap-2">
-                  <p>{totp.secret}</p>
-                  <CopyButton
-                    value={totp.secret}
-                    aria-label="Copy secret to clipboard"
-                    className="size-6"
-                    variant="ghost"
-                  />
-                </div>
-                <div className="flex justify-center rounded-lg bg-white p-4">
-                  <QRCode value={totp.totp_url} size={208} />
-                </div>
-              </div>
-            ) : null}
-            <form
-              className="mt-3 flex w-full flex-col gap-5"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div className="flex w-full items-center justify-center">
-                <Controller
-                  name="code"
-                  control={control}
-                  render={({ field }) => (
-                    <InputOTP
-                      {...field}
-                      aria-label="Enter 6 digit code from your authenticator app"
-                      maxLength={otpFields.length}
-                      pattern={REGEXP_ONLY_DIGITS}
-                      autoFocus
-                      onComplete={(value) => {
-                        field.onChange(value);
-                        handleSubmit(onSubmit)();
-                      }}
-                    >
-                      <InputOTPGroup>
-                        {otpFields.map((_, index) => (
-                          // eslint-disable-next-line react/no-array-index-key
-                          <InputOTPSlot key={index} index={index} />
-                        ))}
-                      </InputOTPGroup>
-                    </InputOTP>
-                  )}
-                />
-              </div>
-              {errors.code ? (
-                <p className="text-destructive text-sm">
-                  {errors.code.message}
-                </p>
-              ) : null}
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </DialogClose>
-                <Button type="submit" disabled={isConfirmingTOTP}>
-                  {isConfirmingTOTP ? (
-                    <Loader className="animate-spin" />
-                  ) : (
-                    "Confirm"
-                  )}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      )}
-    </Activity>
+              ) : (
+                "Confirm"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

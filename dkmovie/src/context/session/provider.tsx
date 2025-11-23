@@ -127,7 +127,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
   return (
     <SessionContext.Provider value={contextValues}>
       {isReAuthenticationNeeded ? (
-        <ReAuthenticateDialog onReAuthenticated={onReAuthenticatedCallback} />
+        <ReAuthenticateDialog
+          onReAuthenticated={onReAuthenticatedCallback}
+          cancel={() => {
+            setOnReAuthenticatedCallback(
+              // eslint-disable-next-line unicorn/consistent-function-scoping
+              () => () => setIsReAuthenticationNeeded(false),
+            );
+            setIsReAuthenticationNeeded(false);
+          }}
+        />
       ) : null}
       {children}
     </SessionContext.Provider>
