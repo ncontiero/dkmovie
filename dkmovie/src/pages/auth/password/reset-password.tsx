@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router";
+import { type SubmitHandler, Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Button } from "@/components/ui/button";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
@@ -14,53 +19,42 @@ import {
   type ResetPasswordSchema,
   resetPassword,
   resetPasswordSchema,
-  verifyResetKey,
 } from "@/http/auth/password";
 import { HTTPError } from "@/http/client";
 
 export default function ResetPasswordPage() {
   const { setSession } = useSession();
-  const { key } = useParams();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const { error: verifyKeyError } = useQuery({
-    queryKey: ["reset-password", key],
-    queryFn: async () => {
-      if (!key) throw new Error("Missing reset key");
-      return await verifyResetKey(key);
-    },
-    enabled: !!key,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-  });
+  const codesSlot = Array.from({ length: 8 });
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      key: "",
+      password: "",
+      passwordConfirmation: "",
+    },
   });
 
-  if (verifyKeyError) {
-    toast.error("Invalid password reset link.", {
-      description: "Please request a new password reset email.",
-    });
-    navigate("/auth/sign-in");
-    return null;
-  }
-
   const onSubmit: SubmitHandler<ResetPasswordSchema> = async (data) => {
-    if (!key) return;
     try {
-      await resetPassword(key, data);
-      setSession(null);
-      toast.success("Password reset successful.", {
-        description: "You can now sign in with your new password.",
-      });
-      navigate("/auth/sign-in");
+      await resetPassword(data);
     } catch (error) {
       if (error instanceof HTTPError) {
+        if (error.status === 409) {
+          toast.error(
+            "Expired or invalid verification code. Request a new one.",
+          );
+          navigate("/auth/password/forgot");
+          return;
+        }
         if (error.status === 401) {
           setSession(null);
           toast.success("Password reset successful.", {
@@ -82,10 +76,37 @@ export default function ResetPasswordPage() {
   return (
     <BaseAuthForm
       title="Reset Password"
-      description="Enter your new password."
+      description="Enter the verification code sent to your email and create a new password."
       formSubmit={handleSubmit(onSubmit)}
       type="reset-password"
     >
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex items-center justify-center">
+          <Controller
+            name="key"
+            control={control}
+            render={({ field }) => (
+              <InputOTP
+                {...field}
+                aria-label="Enter your verification code"
+                maxLength={codesSlot.length}
+                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                autoFocus
+              >
+                <InputOTPGroup>
+                  {codesSlot.map((_, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <InputOTPSlot key={index} index={index} />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+            )}
+          />
+        </div>
+        {errors.key ? (
+          <p className="text-destructive text-sm">{errors.key.message}</p>
+        ) : null}
+      </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="password">Password</Label>
         <PasswordInput

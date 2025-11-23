@@ -57,10 +57,7 @@ export function Router() {
             path="forgot"
             Component={lazyComponentMap.auth.forgotPassword}
           />
-          <Route
-            path="reset/:key"
-            Component={lazyComponentMap.auth.resetPassword}
-          />
+          <Route path="reset" Component={lazyComponentMap.auth.resetPassword} />
         </Route>
       </Route>
       <Route path="/account">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -16,11 +16,13 @@ import {
   forgotPasswordSchema,
 } from "@/http/auth/password";
 import { HTTPError } from "@/http/client";
+import { passwordResetByCodeFlow } from "@/utils/auth-flows";
 
 export default function ForgotPasswordPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const email = searchParams.get("email");
 
@@ -38,10 +40,11 @@ export default function ForgotPasswordPage() {
   const onSubmit: SubmitHandler<ForgotPasswordSchema> = async (data) => {
     try {
       await forgotPassword(data);
-      toast.success("Password reset email sent.", {
-        description: "Please check your inbox for further instructions.",
-      });
     } catch (error) {
+      if (passwordResetByCodeFlow(error)) {
+        toast.success("Check your email for the verification code.");
+        navigate("/auth/password/reset");
+      }
       if (error instanceof HTTPError) {
         console.error(error.data);
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);

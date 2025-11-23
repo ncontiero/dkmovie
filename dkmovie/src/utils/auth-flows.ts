@@ -40,3 +40,15 @@ export function needEmailVerification(error: Error | unknown) {
   if (isNeeded) return true;
   return false;
 }
+
+export function passwordResetByCodeFlow(error: Error | unknown) {
+  const flows = getErrorFlows(error);
+  if (
+    flows.some(
+      (flow: Flow) => flow.id === "password_reset_by_code" && flow.is_pending,
+    )
+  ) {
+    return true;
+  }
+  return false;
+}

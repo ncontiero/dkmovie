@@ -20,6 +20,7 @@ export async function verifyResetKey(key: string) {
 
 export const resetPasswordSchema = z
   .object({
+    key: z.string().min(1, { message: "Code is required." }),
     password: passwordSchema,
     passwordConfirmation: z.string().min(1, {
       message: "Password confirmation is required.",
@@ -32,9 +33,6 @@ export const resetPasswordSchema = z
 
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
-export async function resetPassword(key: string, data: ResetPasswordSchema) {
-  return await authHttpClient.post(`/password/reset`, {
-    key,
-    password: data.password,
-  });
+export async function resetPassword(data: ResetPasswordSchema) {
+  return await authHttpClient.post(`/password/reset`, data);
 }
