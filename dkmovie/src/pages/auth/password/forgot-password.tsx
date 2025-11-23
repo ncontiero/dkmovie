@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -17,6 +18,9 @@ import { HTTPError } from "@/http/client";
 
 export default function ForgotPasswordPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
+  const [searchParams] = useSearchParams();
+
+  const email = searchParams.get("email");
 
   const {
     register,
@@ -24,6 +28,9 @@ export default function ForgotPasswordPage() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: email || "",
+    },
   });
 
   const onSubmit: SubmitHandler<ForgotPasswordSchema> = async (data) => {
