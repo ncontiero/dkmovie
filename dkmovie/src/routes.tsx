@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from "react";
+import { lazy, useEffect } from "react";
 import { Route, Routes } from "react-router";
 
 const lazyComponentMap = {
@@ -36,9 +36,7 @@ type ErrorPage = keyof typeof lazyComponentMap.error;
 declare const pageError: ErrorPage | null;
 
 export function Router() {
-  // eslint-disable-next-line react/hook-use-state
-  const [pageErrorScript] = useState(pageError);
-  const PageError = pageErrorScript && lazyComponentMap.error[pageErrorScript];
+  const PageError = pageError && lazyComponentMap.error[pageError];
 
   useEffect(() => {
     document.querySelector("#pageErrorScript")?.remove();
