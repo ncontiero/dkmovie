@@ -13,7 +13,7 @@ interface Get2FAAuthenticatorRecoveryCodes extends Get2FAAuthenticatorBase {
   total_code_count: number;
   unused_code_count: number;
 }
-interface Get2FAAuthenticatorWebAuthn extends Get2FAAuthenticatorBase {
+export interface Get2FAAuthenticatorWebAuthn extends Get2FAAuthenticatorBase {
   id: number;
   name: string;
   is_passwordless?: boolean;
@@ -52,6 +52,9 @@ export async function setUpTOTP() {
 
 interface ConfirmTOTPResponse {
   data: Get2FAAuthenticatorTOTP;
+  meta: {
+    recovery_codes_generated?: boolean;
+  };
 }
 
 export const confirmTOTPSchema = z.object({

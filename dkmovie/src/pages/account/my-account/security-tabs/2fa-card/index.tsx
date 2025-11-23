@@ -6,12 +6,17 @@ import {
   CardTitle,
 } from "@/components/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+
 import { useSession } from "@/hooks/use-session";
-import { get2FAAuthenticators } from "@/http/account/2fa";
+import {
+  type Get2FAAuthenticatorWebAuthn,
+  get2FAAuthenticators,
+} from "@/http/account/2fa";
+import { AddPasskey } from "./passkey/add-passkey";
+import { PasskeysList } from "./passkey/passkeys-list";
 import { RemoveTOTP } from "./totp/remove-totp";
 import { SetupTOTP } from "./totp/setup-totp";
-import { ViewRecoveryCodes } from "./totp/view-codes";
+import { ViewRecoveryCodes } from "./view-recovery-codes";
 
 export function TwoFactorAuthenticationCard() {
   const { session } = useSession();
@@ -31,6 +36,10 @@ export function TwoFactorAuthenticationCard() {
     authenticators?.some((a) => a.type === "webauthn") || false;
   const hasRecoveryCodes =
     authenticators?.some((a) => a.type === "recovery_codes") || false;
+
+  const webauthnAuthenticators = authenticators?.filter(
+    (a) => a.type === "webauthn",
+  ) as Get2FAAuthenticatorWebAuthn[];
 
   return (
     <Card className="mt-10">
@@ -63,17 +72,22 @@ export function TwoFactorAuthenticationCard() {
               </div>
               {hasTOTP ? <RemoveTOTP /> : <SetupTOTP />}
             </div>
-            <div className="flex items-center justify-between rounded-b-lg border-x border-b p-4">
-              <div>
-                <h4 className="font-semibold">Passkeys</h4>
-                <p className="text-muted-foreground text-sm">
-                  Use a passkey to sign in to your account. Passkeys are secure,
-                  fast, and easy to use.
-                </p>
+            <div className="rounded-b-lg border-x border-b p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold">Passkeys</h4>
+                  <p className="text-muted-foreground text-sm">
+                    Use a passkey to sign in to your account. Passkeys are
+                    secure, fast, and easy to use.
+                  </p>
+                </div>
+                <AddPasskey />
               </div>
-              <Button type="button" variant="outline" size="sm">
-                {hasPasskeys ? "Edit" : "Add"}
-              </Button>
+              {webauthnAuthenticators ? (
+                <div>
+                  <PasskeysList passkeys={webauthnAuthenticators} />
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="mt-4 flex items-center justify-between rounded-lg border p-4">

@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,21 +11,12 @@ import {
 import { RecoveryCodesContent } from "./content";
 
 interface RecoveryCodeDialogProps {
-  readonly userId: number;
+  readonly onOpenChange?: (open: boolean) => void;
 }
 
-export function RecoveryCodesDialog({ userId }: RecoveryCodeDialogProps) {
-  const queryClient = useQueryClient();
-
+export function RecoveryCodesDialog({ onOpenChange }: RecoveryCodeDialogProps) {
   return (
-    <Dialog
-      defaultOpen
-      onOpenChange={(open) => {
-        if (!open) {
-          queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
-        }
-      }}
-    >
+    <Dialog defaultOpen onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Recovery Codes</DialogTitle>

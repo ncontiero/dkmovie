@@ -1,6 +1,7 @@
 import type { BaseSyntheticEvent, PropsWithChildren } from "react";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
+import { PasskeyAuthButton } from "./passkey-auth-button";
 import { ProviderButton } from "./provider-button";
 
 interface BaseAuthFormProps extends PropsWithChildren {
@@ -37,12 +38,13 @@ export function BaseAuthForm({
           </div>
           {type === "sign-in" || type === "sign-up" ? (
             <>
-              <div className="flex items-center justify-center">
-                <ProviderButton />
+              <div className="flex flex-col items-center justify-center gap-2">
+                <ProviderButton className="w-full" />
+                {type === "sign-in" && <PasskeyAuthButton className="w-full" />}
               </div>
               <div className="text-muted-foreground flex items-center justify-center text-sm">
                 <Separator className="flex-1" />
-                <p className="mx-3">Or sign in with</p>
+                <p className="mx-3">Or {type} in with</p>
                 <Separator className="flex-1" />
               </div>
             </>
@@ -52,6 +54,13 @@ export function BaseAuthForm({
           <form onSubmit={formSubmit} className="space-y-6">
             {children}
           </form>
+          {type === "2fa" && (
+            <PasskeyAuthButton
+              className="h-0 w-full p-0"
+              variant="link"
+              text="Use passkey instead"
+            />
+          )}
           {type === "forgot-password" && !isAuthenticated ? (
             <>
               <div className="flex items-center justify-center">
@@ -61,8 +70,9 @@ export function BaseAuthForm({
                 </p>
                 <Separator className="flex-1" />
               </div>
-              <div className="flex items-center justify-center">
-                <ProviderButton />
+              <div className="flex flex-col items-center justify-center gap-2">
+                <ProviderButton className="w-full" />
+                <PasskeyAuthButton className="w-full" />
               </div>
             </>
           ) : null}

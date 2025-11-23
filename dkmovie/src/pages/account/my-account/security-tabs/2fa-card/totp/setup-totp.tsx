@@ -64,11 +64,16 @@ export function SetupTOTP() {
 
   const onSubmit: SubmitHandler<ConfirmTOTPSchema> = async (data) => {
     try {
-      await confirmTOTP(data);
+      const res = await confirmTOTP(data);
+      toast.success("Setup TOTP successfully");
+      if (res?.meta?.recovery_codes_generated) {
+        setIsToGetRecoveryCodes(true);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
+        setShowSetupTOTPDialog(false);
+      }
       queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
       queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
-      toast.success("Setup TOTP successfully");
-      setIsToGetRecoveryCodes(true);
     } catch (error) {
       if (error instanceof HTTPError) {
         if (error.status === 400) {
@@ -90,7 +95,14 @@ export function SetupTOTP() {
   if (isReAuthenticating) return null;
 
   return isToGetRecoveryCodes && userId ? (
-    <RecoveryCodesDialog userId={userId} />
+    <RecoveryCodesDialog
+      onOpenChange={(open) => {
+        if (!open) {
+          queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
+        }
+        setIsToGetRecoveryCodes(open);
+      }}
+    />
   ) : (
     <Dialog open={showSetupTOTPDialog} onOpenChange={setShowSetupTOTPDialog}>
       <DialogTrigger asChild>

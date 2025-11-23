@@ -5,13 +5,12 @@ import { getCookie } from "@/utils/get-cookie";
 import { GoogleIcon } from "./icons/google";
 import { type ButtonProps, Button } from "./ui/button";
 
-interface ProviderButtonProps {
+interface ProviderButtonProps extends ButtonProps {
   readonly provider?: string;
   readonly process?: "login" | "connect";
   readonly text?: string;
   readonly addIcon?: boolean;
   readonly iconToUse?: ReactNode;
-  readonly buttonProps?: ButtonProps;
 }
 
 const providersIconsMap = {
@@ -38,7 +37,7 @@ export function ProviderButton({
   provider = "google",
   addIcon = true,
   iconToUse,
-  buttonProps,
+  ...buttonProps
 }: ProviderButtonProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,6 +51,7 @@ export function ProviderButton({
       method="POST"
       action={actionUrl}
       onSubmit={() => setIsSubmitting(true)}
+      className={buttonProps.className}
     >
       <input type="hidden" name="provider" value={provider} />
       <input
