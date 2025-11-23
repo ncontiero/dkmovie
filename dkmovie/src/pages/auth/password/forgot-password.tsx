@@ -9,6 +9,7 @@ import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSession } from "@/hooks/use-session";
 import {
   type ForgotPasswordSchema,
   forgotPassword,
@@ -18,6 +19,7 @@ import { HTTPError } from "@/http/client";
 
 export default function ForgotPasswordPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
+  const { isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
 
   const email = searchParams.get("email");
@@ -57,6 +59,7 @@ export default function ForgotPasswordPage() {
       description="Enter your email to reset your password."
       formSubmit={handleSubmit(onSubmit)}
       type="forgot-password"
+      isAuthenticated={isAuthenticated}
     >
       <Meta title="Forgot Password" />
       <div className="flex flex-col gap-2">

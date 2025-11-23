@@ -52,7 +52,7 @@ export function BaseAuthForm({
           <form onSubmit={formSubmit} className="space-y-6">
             {children}
           </form>
-          {type === "forgot-password" ? (
+          {type === "forgot-password" && !isAuthenticated ? (
             <>
               <div className="flex items-center justify-center">
                 <Separator className="flex-1" />
