@@ -2,9 +2,10 @@ import { useState } from "react";
 
 import { type SubmitHandler, useForm } from "react-hook-form";
 
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader, Plus } from "lucide-react";
+import { Edit, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,11 +31,11 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
   const [showDialog, setShowDialog] = useState(false);
   const queryClient = useQueryClient();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(changeEmailSchema),
@@ -45,11 +46,9 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
       const res = await changeEmail(data);
       queryClient.setQueryData(["user-emails", userId], res.data);
       toast.success("Email added!", {
-        description: "You will receive an email with a verification link soon.",
+        description: "You will receive an email with a verification code.",
       });
-      setApiErrors([]);
-      setShowDialog(false);
-      reset();
+      navigate("/account/verify-email");
     } catch (error) {
       if (error instanceof HTTPError) {
         console.error(error.data);
@@ -66,7 +65,7 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
         <Button type="button" size="sm">
-          <Plus />
+          <Edit />
           Change email
         </Button>
       </DialogTrigger>
@@ -75,7 +74,7 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
           <DialogTitle>Change Email</DialogTitle>
           <DialogDescription>
             Change to a new email address. You will receive an email with a
-            verification link.
+            verification code.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

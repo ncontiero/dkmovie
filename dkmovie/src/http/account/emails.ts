@@ -28,7 +28,3 @@ export type ChangeEmailSchema = z.infer<typeof changeEmailSchema>;
 export async function changeEmail(data: ChangeEmailSchema) {
   return await authAccountHttpClient.post<EmailResponse>("/email", data);
 }
-
-export async function resentEmailVerification(email: string) {
-  return await authAccountHttpClient.put("/email", { email });
-}

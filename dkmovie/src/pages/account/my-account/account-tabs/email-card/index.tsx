@@ -1,7 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
-import { toast } from "sonner";
-
+import { useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -10,14 +7,11 @@ import {
   CardFooterDescription,
   CardTitle,
 } from "@/components/card";
-
+import { ResendEmailCodeButton } from "@/components/resend-email-code-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/hooks/use-session";
-import { getUserEmails, resentEmailVerification } from "@/http/account/emails";
-import { HTTPError } from "@/http/client";
+import { getUserEmails } from "@/http/account/emails";
 import { ChangeEmailDialog } from "./change-email-dialog";
 
 export function UserEmailCard() {
@@ -36,29 +30,6 @@ export function UserEmailCard() {
         if (b.primary) return 1;
         return 0;
       });
-    },
-  });
-
-  const {
-    mutate: resendEmailVerificationMutation,
-    isPending: isResendEmailVerificationPending,
-  } = useMutation({
-    mutationFn: async (email: string) => {
-      return await resentEmailVerification(email);
-    },
-    onSuccess: () => {
-      toast.success("Email verification resent successfully");
-    },
-    onError: (error) => {
-      if (error instanceof HTTPError) {
-        if (error.status === 403) {
-          toast.error("Too many requests. Please try again later.");
-          return;
-        }
-        toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
-        return;
-      }
-      toast.error(error.message);
     },
   });
 
@@ -94,23 +65,7 @@ export function UserEmailCard() {
                   {primary ? <Badge variant="success">Primary</Badge> : null}
                 </div>
                 <div className="flex items-center gap-2">
-                  {!verified ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        resendEmailVerificationMutation(email);
-                      }}
-                      disabled={isResendEmailVerificationPending}
-                    >
-                      {isResendEmailVerificationPending ? (
-                        <Loader className="animate-spin" />
-                      ) : (
-                        "Resend verification email"
-                      )}
-                    </Button>
-                  ) : null}
+                  {!verified ? <ResendEmailCodeButton /> : null}
                 </div>
               </div>
             ))

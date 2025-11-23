@@ -72,7 +72,7 @@ export function Router() {
           />
         </Route>
         <Route
-          path="verify-email/:key"
+          path="verify-email"
           Component={lazyComponentMap.account.verifyEmail}
         />
         <Route

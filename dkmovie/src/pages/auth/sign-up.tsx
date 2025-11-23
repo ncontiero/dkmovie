@@ -24,7 +24,6 @@ export default function SignUpPage() {
   const {
     handleSubmit,
     register,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(signUpSchema),
@@ -48,7 +47,7 @@ export default function SignUpPage() {
         toast.success("Account created successfully!", {
           description: "Please check your email to verify your account.",
         });
-        reset();
+        navigate(`/account/verify-email?next=${nextPath}`);
         return;
       }
 

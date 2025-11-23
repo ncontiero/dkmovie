@@ -1,0 +1,54 @@
+import { useNavigate } from "react-router";
+import { useMutation } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
+import { toast } from "sonner";
+import { resentEmailVerification } from "@/http/auth/verify-email";
+import { HTTPError } from "@/http/client";
+import { type ButtonProps, Button } from "./ui/button";
+
+export function ResendEmailCodeButton(props: ButtonProps) {
+  const navigate = useNavigate();
+
+  const {
+    mutate: resendEmailVerificationMutation,
+    isPending: isResendEmailVerificationPending,
+  } = useMutation({
+    mutationFn: async () => {
+      return await resentEmailVerification();
+    },
+    onSuccess: () => {
+      toast.success("Email verification resent successfully");
+      navigate("/account/verify-email");
+    },
+    onError: (error) => {
+      if (error instanceof HTTPError) {
+        if (error.status === 403 || error.status === 429) {
+          toast.error("Too many requests. Please try again later.");
+          return;
+        }
+        toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
+        return;
+      }
+      toast.error(error.message);
+    },
+  });
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      onClick={() => {
+        resendEmailVerificationMutation();
+      }}
+      disabled={isResendEmailVerificationPending}
+      {...props}
+    >
+      {isResendEmailVerificationPending ? (
+        <Loader className="animate-spin" />
+      ) : (
+        "Resend verification email"
+      )}
+    </Button>
+  );
+}

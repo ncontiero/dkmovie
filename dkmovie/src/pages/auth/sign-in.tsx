@@ -14,7 +14,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
 import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
-import { need2FA } from "@/utils/auth-flows";
+import { need2FA, needEmailVerification } from "@/utils/auth-flows";
 
 const especialNextPaths = [
   `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
@@ -51,6 +51,13 @@ export default function SignInPage() {
         navigate(nextPath);
       }
     } catch (error) {
+      if (needEmailVerification(error)) {
+        toast.success("You need to verify your email address.", {
+          description: "Please check your email to verify your account.",
+        });
+        navigate(`/account/verify-email?next=${nextPath}`);
+        return;
+      }
       if (need2FA(error)) navigate(`/auth/2fa?next=${nextPath}`);
       if (error instanceof HTTPError) {
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
