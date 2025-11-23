@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { useSession } from "@/hooks/use-session";
 import {
   type TwoFactorAuthSchema,
@@ -30,14 +34,18 @@ export default function TwoFactorAuthenticationPage() {
 
   const {
     handleSubmit,
-    register,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(twoFactorAuthSchema),
+    defaultValues: {
+      code: "",
+    },
   });
 
   if (isAuthenticated) return null;
 
+  const otpFields = Array.from({ length: 6 });
   const nextPathParam = searchParams.get("next") ?? "/";
   const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
 
@@ -71,8 +79,32 @@ export default function TwoFactorAuthenticationPage() {
     >
       <Meta title="Two Factor Authentication" />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="code">Code</Label>
-        <Input type="text" id="code" {...register("code")} />
+        <div className="flex w-full items-center justify-center">
+          <Controller
+            name="code"
+            control={control}
+            render={({ field }) => (
+              <InputOTP
+                {...field}
+                aria-label="Enter 6 digit code from your authenticator app"
+                maxLength={otpFields.length}
+                pattern={REGEXP_ONLY_DIGITS}
+                autoFocus
+                onComplete={(value) => {
+                  field.onChange(value);
+                  handleSubmit(onSubmit)();
+                }}
+              >
+                <InputOTPGroup>
+                  {otpFields.map((_, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <InputOTPSlot key={index} index={index} />
+                  ))}
+                </InputOTPGroup>
+              </InputOTP>
+            )}
+          />
+        </div>
         {errors.code ? (
           <p className="text-destructive text-sm">{errors.code.message}</p>
         ) : null}

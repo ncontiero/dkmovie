@@ -1,6 +1,8 @@
-import { type FormEvent, Activity, useState } from "react";
+import { Activity, useState } from "react";
+import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import QRCode from "react-qr-code";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -23,7 +25,12 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useSession } from "@/hooks/use-session";
-import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
+import {
+  type ConfirmTOTPSchema,
+  confirmTOTP,
+  confirmTOTPSchema,
+  setUpTOTP,
+} from "@/http/account/2fa";
 import { HTTPError } from "@/http/client";
 import { needReAuthentication } from "@/utils/auth-flows";
 
@@ -33,11 +40,9 @@ export function SetupTOTP() {
     useSession();
   const [showSetupTOTPDialog, setShowSetupTOTPDialog] = useState(false);
   const [isToGetRecoveryCodes, setIsToGetRecoveryCodes] = useState(false);
-  const [code, setCode] = useState("");
 
   const userId = session?.user.id;
   const otpFields = Array.from({ length: 6 });
-  const isCodeValid = code.length === otpFields.length;
 
   const { data: totp, isLoading: isSettingUpTOTP } = useQuery({
     queryKey: ["setup-totp", userId],
@@ -46,39 +51,40 @@ export function SetupTOTP() {
     enabled: showSetupTOTPDialog,
   });
 
-  const { mutate: confirmTOTPMutation, isPending: isConfirmingTOTP } =
-    useMutation({
-      mutationFn: async (code: string) => await confirmTOTP(code),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
-        queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
-        toast.success("Setup TOTP successfully");
-        setIsToGetRecoveryCodes(true);
-      },
-      onError: (error) => {
-        if (error instanceof HTTPError) {
-          if (error.status === 400) {
-            toast.error(
-              error.data?.errors.map((e: any) => e.message).join(", "),
-            );
-            return;
-          }
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting: isConfirmingTOTP },
+  } = useForm({
+    resolver: zodResolver(confirmTOTPSchema),
+    defaultValues: {
+      code: "",
+    },
+  });
 
-          if (needReAuthentication(error)) {
-            initializeReAuthentication(() => confirmTOTPMutation(code));
-            return;
-          }
+  const onSubmit: SubmitHandler<ConfirmTOTPSchema> = async (data) => {
+    try {
+      await confirmTOTP(data);
+      queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
+      queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
+      toast.success("Setup TOTP successfully");
+      setIsToGetRecoveryCodes(true);
+    } catch (error) {
+      if (error instanceof HTTPError) {
+        if (error.status === 400) {
+          toast.error(error.data?.errors.map((e: any) => e.message).join(", "));
+          return;
         }
 
-        console.error(error);
-        toast.error("Something went wrong");
-      },
-    });
+        if (needReAuthentication(error)) {
+          initializeReAuthentication(() => handleSubmit(onSubmit)());
+          return;
+        }
+      }
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isCodeValid) return;
-    confirmTOTPMutation(code);
+      console.error(error);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -126,34 +132,46 @@ export function SetupTOTP() {
             ) : null}
             <form
               className="mt-3 flex w-full flex-col gap-5"
-              onSubmit={onSubmit}
+              onSubmit={handleSubmit(onSubmit)}
             >
               <div className="flex w-full items-center justify-center">
-                <InputOTP
-                  maxLength={otpFields.length}
-                  pattern={REGEXP_ONLY_DIGITS}
-                  value={code}
-                  onChange={setCode}
-                  aria-label="Enter 6 digit code from your authenticator app"
-                >
-                  <InputOTPGroup>
-                    {otpFields.map((_, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <InputOTPSlot key={index} index={index} />
-                    ))}
-                  </InputOTPGroup>
-                </InputOTP>
+                <Controller
+                  name="code"
+                  control={control}
+                  render={({ field }) => (
+                    <InputOTP
+                      {...field}
+                      aria-label="Enter 6 digit code from your authenticator app"
+                      maxLength={otpFields.length}
+                      pattern={REGEXP_ONLY_DIGITS}
+                      autoFocus
+                      onComplete={(value) => {
+                        field.onChange(value);
+                        handleSubmit(onSubmit)();
+                      }}
+                    >
+                      <InputOTPGroup>
+                        {otpFields.map((_, index) => (
+                          // eslint-disable-next-line react/no-array-index-key
+                          <InputOTPSlot key={index} index={index} />
+                        ))}
+                      </InputOTPGroup>
+                    </InputOTP>
+                  )}
+                />
               </div>
+              {errors.code ? (
+                <p className="text-destructive text-sm">
+                  {errors.code.message}
+                </p>
+              ) : null}
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">
                     Cancel
                   </Button>
                 </DialogClose>
-                <Button
-                  type="submit"
-                  disabled={!isCodeValid || isConfirmingTOTP}
-                >
+                <Button type="submit" disabled={isConfirmingTOTP}>
                   {isConfirmingTOTP ? (
                     <Loader className="animate-spin" />
                   ) : (

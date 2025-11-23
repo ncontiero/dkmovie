@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { ResendEmailCodeButton } from "@/components/resend-email-code-button";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { useSession } from "@/hooks/use-session";
 import {
   type VerifyEmailSchema,
@@ -31,11 +35,16 @@ export default function VerifyEmail() {
 
   const {
     handleSubmit,
-    register,
+    control,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(verifyEmailSchema),
+    defaultValues: {
+      key: "",
+    },
   });
+
+  const codesSlot = Array.from({ length: 6 });
 
   const onSubmit: SubmitHandler<VerifyEmailSchema> = async (data) => {
     try {
@@ -69,13 +78,29 @@ export default function VerifyEmail() {
       type="verify-email"
     >
       <Meta title="Verify your email" />
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="code">Code</Label>
-        <Input
-          type="text"
-          id="code"
-          placeholder="Enter code here"
-          {...register("key")}
+      <div className="flex items-center justify-center">
+        <Controller
+          name="key"
+          control={control}
+          render={({ field }) => (
+            <InputOTP
+              {...field}
+              aria-label="Enter your verification code"
+              maxLength={codesSlot.length}
+              pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+              autoFocus
+              onComplete={() => {
+                handleSubmit(onSubmit)();
+              }}
+            >
+              <InputOTPGroup>
+                {codesSlot.map((_, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <InputOTPSlot key={index} index={index} />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+          )}
         />
         {errors.key ? (
           <p className="text-destructive text-sm">{errors.key.message}</p>
@@ -88,17 +113,20 @@ export default function VerifyEmail() {
           ))}
         </ul>
       ) : null}
+      <div className="-mt-4 flex items-center justify-center">
+        <ResendEmailCodeButton
+          variant="link"
+          text="Didn't receive a code? Resend"
+        />
+      </div>
       <Button
         type="submit"
-        className="mt-2 w-full"
+        className="w-full"
         size="sm"
         disabled={isSubmitting}
       >
         {isSubmitting ? <Loader className="animate-spin" /> : "Verify Email"}
       </Button>
-      <div className="flex items-center justify-center">
-        <ResendEmailCodeButton />
-      </div>
     </BaseAuthForm>
   );
 }

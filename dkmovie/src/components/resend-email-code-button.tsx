@@ -6,7 +6,10 @@ import { resentEmailVerification } from "@/http/auth/verify-email";
 import { HTTPError } from "@/http/client";
 import { type ButtonProps, Button } from "./ui/button";
 
-export function ResendEmailCodeButton(props: ButtonProps) {
+export function ResendEmailCodeButton({
+  text,
+  ...props
+}: ButtonProps & { readonly text?: string }) {
   const navigate = useNavigate();
 
   const {
@@ -47,7 +50,7 @@ export function ResendEmailCodeButton(props: ButtonProps) {
       {isResendEmailVerificationPending ? (
         <Loader className="animate-spin" />
       ) : (
-        "Resend verification email"
+        text || "Resend verification email"
       )}
     </Button>
   );
