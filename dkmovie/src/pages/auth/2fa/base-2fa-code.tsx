@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader } from "lucide-react";
@@ -13,6 +13,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Link } from "@/components/ui/link";
 import { useSession } from "@/hooks/use-session";
 import {
   type TwoFactorAuthSchema,
@@ -21,16 +22,20 @@ import {
 } from "@/http/auth/2fa";
 import { HTTPError } from "@/http/client";
 
-const especialNextPaths = [
-  `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
-  "/api/docs",
-];
+interface BaseAuthFormWithCodeProps {
+  readonly type: "totp" | "recovery-code";
+}
 
-export default function TwoFactorAuthenticationPage() {
+export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { setSession, isAuthenticated } = useSession();
-  const [searchParams] = useSearchParams();
+  const { setSession } = useSession();
   const navigate = useNavigate();
+
+  const description =
+    type === "totp"
+      ? "Please enter the code from your authenticator app"
+      : "Please enter one of your recovery codes";
+  const otpFields = Array.from({ length: type === "totp" ? 6 : 8 });
 
   const {
     handleSubmit,
@@ -43,22 +48,11 @@ export default function TwoFactorAuthenticationPage() {
     },
   });
 
-  if (isAuthenticated) return null;
-
-  const otpFields = Array.from({ length: 6 });
-  const nextPathParam = searchParams.get("next") ?? "/";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
-
   const onSubmit: SubmitHandler<TwoFactorAuthSchema> = async (data) => {
     try {
       const res = await confirm2FA(data);
       setSession(res);
-
-      if (especialNextPaths.includes(nextPath)) {
-        location.assign(nextPath);
-      } else {
-        navigate(nextPath);
-      }
+      navigate("/account", { replace: true });
     } catch (error) {
       if (error instanceof HTTPError) {
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
@@ -73,7 +67,7 @@ export default function TwoFactorAuthenticationPage() {
   return (
     <BaseAuthForm
       title="Two Factor Authentication"
-      description="Please enter the code from your authenticator app"
+      description={description}
       formSubmit={handleSubmit(onSubmit)}
       type="2fa"
     >
@@ -86,7 +80,11 @@ export default function TwoFactorAuthenticationPage() {
             render={({ field }) => (
               <InputOTP
                 {...field}
-                aria-label="Enter 6 digit code from your authenticator app"
+                aria-label={
+                  type === "totp"
+                    ? "Enter 6 digit code from your authenticator app"
+                    : "Enter one of your recovery codes"
+                }
                 maxLength={otpFields.length}
                 pattern={REGEXP_ONLY_DIGITS}
                 autoFocus
@@ -124,6 +122,11 @@ export default function TwoFactorAuthenticationPage() {
       >
         {isSubmitting ? <Loader className="animate-spin" /> : "Sign In"}
       </Button>
+      <div className="flex items-center justify-center">
+        <Link to="/auth/2fa" size="sm">
+          Use another method
+        </Link>
+      </div>
     </BaseAuthForm>
   );
 }

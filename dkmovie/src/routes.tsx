@@ -7,7 +7,11 @@ const lazyComponentMap = {
   auth: {
     signUp: lazy(() => import("./pages/auth/sign-up")),
     signIn: lazy(() => import("./pages/auth/sign-in")),
-    twoFactorAuthentication: lazy(() => import("./pages/auth/2fa")),
+    mfa: {
+      index: lazy(() => import("./pages/auth/2fa")),
+      totp: lazy(() => import("./pages/auth/2fa/totp")),
+      recoveryCodes: lazy(() => import("./pages/auth/2fa/recovery-code")),
+    },
     forgotPassword: lazy(() => import("./pages/auth/password/forgot-password")),
     resetPassword: lazy(() => import("./pages/auth/password/reset-password")),
   },
@@ -48,10 +52,14 @@ export function Router() {
       <Route path="/auth">
         <Route path="sign-up" Component={lazyComponentMap.auth.signUp} />
         <Route path="sign-in" Component={lazyComponentMap.auth.signIn} />
-        <Route
-          path="2fa"
-          Component={lazyComponentMap.auth.twoFactorAuthentication}
-        />
+        <Route path="2fa">
+          <Route index Component={lazyComponentMap.auth.mfa.index} />
+          <Route path="totp" Component={lazyComponentMap.auth.mfa.totp} />
+          <Route
+            path="recovery-codes"
+            Component={lazyComponentMap.auth.mfa.recoveryCodes}
+          />
+        </Route>
         <Route path="password">
           <Route
             path="forgot"

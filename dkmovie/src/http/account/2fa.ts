@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { authAccountHttpClient, HTTPError } from "../client";
 
-type TwoFactorAuthenticatorType = "totp" | "recovery_codes" | "webauthn";
+export type TwoFactorAuthenticatorType = "totp" | "recovery_codes" | "webauthn";
 
 interface Get2FAAuthenticatorBase {
   last_used_at: number;

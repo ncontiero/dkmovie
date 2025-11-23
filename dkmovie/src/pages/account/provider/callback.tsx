@@ -1,14 +1,18 @@
 import { useEffect, useEffectEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { useSession } from "@/hooks/use-session";
 
 export default function ProviderCallbackPage() {
+  const { initialize2FAIfNecessary } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  initialize2FAIfNecessary();
 
   const error = searchParams.get("error");
   const onMount = useEffectEvent(() => {
     if (!error) {
-      navigate("/account");
+      navigate("/account/security");
     }
   });
 

@@ -3,10 +3,11 @@ import { HTTPError } from "@/http/client";
 interface Flow {
   id: string;
   is_pending?: boolean;
+  types?: string[];
 }
 
 const flowsToReauthenticate = ["reauthenticate", "mfa_reauthenticate"];
-const flowsTo2FA = ["mfa_authenticate"];
+export const flowsTo2FA = ["mfa_authenticate"];
 
 export function getErrorFlows(error: Error | unknown): Flow[] {
   if (error instanceof HTTPError && error.status === 401) {

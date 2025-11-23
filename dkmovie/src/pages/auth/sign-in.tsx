@@ -14,7 +14,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
 import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
-import { need2FA, needEmailVerification } from "@/utils/auth-flows";
+import { needEmailVerification } from "@/utils/auth-flows";
 
 const especialNextPaths = [
   `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
@@ -23,7 +23,8 @@ const especialNextPaths = [
 
 export default function SignInPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { setSession, isAuthenticated } = useSession();
+  const { setSession, isAuthenticated, initialize2FAIfNecessary } =
+    useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -58,7 +59,8 @@ export default function SignInPage() {
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
       }
-      if (need2FA(error)) navigate(`/auth/2fa?next=${nextPath}`);
+      initialize2FAIfNecessary(error);
+
       if (error instanceof HTTPError) {
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
         return;

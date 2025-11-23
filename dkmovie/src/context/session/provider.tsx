@@ -1,7 +1,9 @@
+import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
 import {
   type PropsWithChildren,
   useCallback,
   useEffect,
+  useEffectEvent,
   useMemo,
   useState,
 } from "react";
@@ -15,11 +17,11 @@ import {
   logout as logoutApi,
 } from "@/http/auth/session";
 import { HTTPError } from "@/http/client";
-import { need2FA } from "@/utils/auth-flows";
+import { flowsTo2FA, getErrorFlows, need2FA } from "@/utils/auth-flows";
 import { type SessionContextProps, SessionContext } from "./context";
 
 const protectedRoutes = ["/account", "/account/security"];
-const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
+const authRoutes = ["/auth/sign-in", "/auth/sign-up", "/auth/2fa"];
 const signInRoute = "/auth/sign-in";
 
 export function SessionProvider({ children }: PropsWithChildren) {
@@ -31,6 +33,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [onReAuthenticatedCallback, setOnReAuthenticatedCallback] = useState(
     () => () => setIsReAuthenticationNeeded(false),
   );
+  const [sessionMFATypes, setSessionMFATypes] = useState<
+    TwoFactorAuthenticatorType[]
+  >([]);
 
   const {
     data: session = null,
@@ -48,6 +53,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       }
       return count < 3;
     },
+    refetchOnWindowFocus: false,
   });
 
   const isAuthenticated = session?.meta.is_authenticated || false;
@@ -88,12 +94,44 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoadingSession) return;
-    if (need2FA(sessionError)) {
-      navigate(`/auth/2fa?next=${pathname}`);
+  const handleMFATypes = useCallback((error: unknown) => {
+    if (need2FA(error)) {
+      const flows = getErrorFlows(error);
+      const types =
+        flows.find((flow) => flowsTo2FA.includes(flow.id))?.types || [];
+      setSessionMFATypes(types as TwoFactorAuthenticatorType[]);
       return;
     }
+
+    setSessionMFATypes([]);
+  }, []);
+
+  const handleMFATypesEvent = useEffectEvent(handleMFATypes);
+
+  useEffect(() => {
+    if (sessionError) {
+      handleMFATypesEvent(sessionError);
+    }
+  }, [handleMFATypes, sessionError]);
+
+  const initialize2FAIfNecessary = useCallback(
+    (error?: unknown) => {
+      const errorToUse = error || sessionError;
+      handleMFATypes(errorToUse);
+      if (need2FA(errorToUse)) {
+        navigate(`/auth/2fa?next=${pathname}`);
+        return;
+      }
+
+      if (pathname.startsWith("/auth/2fa")) {
+        navigate(isAuthenticated ? "/account" : signInRoute);
+      }
+    },
+    [handleMFATypes, isAuthenticated, navigate, pathname, sessionError],
+  );
+
+  useEffect(() => {
+    if (isLoadingSession) return;
 
     if (!isAuthenticated && protectedRoutes.includes(pathname)) {
       navigate(signInRoute);
@@ -106,21 +144,25 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const contextValues = useMemo(
     (): SessionContextProps => ({
       session: session?.data || null,
+      sessionMFATypes,
       isAuthenticated,
       isLoadingSession,
       logout: logoutMutation,
       setSession,
       initializeReAuthentication,
       isReAuthenticating: isReAuthenticationNeeded,
+      initialize2FAIfNecessary,
     }),
     [
-      session?.data,
+      initialize2FAIfNecessary,
+      initializeReAuthentication,
       isAuthenticated,
       isLoadingSession,
-      logoutMutation,
-      setSession,
-      initializeReAuthentication,
       isReAuthenticationNeeded,
+      logoutMutation,
+      session?.data,
+      sessionMFATypes,
+      setSession,
     ],
   );
 

@@ -54,13 +54,6 @@ export function BaseAuthForm({
           <form onSubmit={formSubmit} className="space-y-6">
             {children}
           </form>
-          {type === "2fa" && (
-            <PasskeyAuthButton
-              className="h-0 w-full p-0"
-              variant="link"
-              text="Use passkey instead"
-            />
-          )}
           {type === "forgot-password" && !isAuthenticated ? (
             <>
               <div className="flex items-center justify-center">
