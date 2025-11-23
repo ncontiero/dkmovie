@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -11,22 +11,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
 import { needEmailVerification } from "@/utils/auth-flows";
 
-const especialNextPaths = [
-  `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
-  "/api/docs",
-];
-
 export default function SignInPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { setSession, isAuthenticated, initialize2FAIfNecessary } =
     useSession();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { nextPath, navigateToNextPath } = useNextPath();
 
   const {
     handleSubmit,
@@ -38,19 +34,11 @@ export default function SignInPage() {
 
   if (isAuthenticated) return null;
 
-  const nextPathParam = searchParams.get("next") ?? "/";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
-
   const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
     try {
       const res = await signIn(data);
       setSession(res);
-
-      if (especialNextPaths.includes(nextPath)) {
-        location.assign(nextPath);
-      } else {
-        navigate(nextPath);
-      }
+      navigateToNextPath();
     } catch (error) {
       if (needEmailVerification(error)) {
         toast.success("You need to verify your email address.", {
@@ -59,7 +47,7 @@ export default function SignInPage() {
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
       }
-      initialize2FAIfNecessary(error);
+      initialize2FAIfNecessary(error, nextPath);
 
       if (error instanceof HTTPError) {
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);

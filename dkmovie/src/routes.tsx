@@ -10,7 +10,7 @@ const lazyComponentMap = {
     mfa: {
       index: lazy(() => import("./pages/auth/2fa")),
       totp: lazy(() => import("./pages/auth/2fa/totp")),
-      recoveryCodes: lazy(() => import("./pages/auth/2fa/recovery-code")),
+      recoveryCodes: lazy(() => import("./pages/auth/2fa/recovery-codes")),
     },
     forgotPassword: lazy(() => import("./pages/auth/password/forgot-password")),
     resetPassword: lazy(() => import("./pages/auth/password/reset-password")),

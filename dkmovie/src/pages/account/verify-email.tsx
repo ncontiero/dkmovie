@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
@@ -15,6 +15,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import {
   type VerifyEmailSchema,
@@ -27,11 +28,8 @@ export default function VerifyEmail() {
   const queryClient = useQueryClient();
   const { setSession } = useSession();
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const nextPathParam = searchParams.get("next") ?? "/account";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/account";
+  const { navigateToNextPath } = useNextPath();
 
   const {
     handleSubmit,
@@ -52,7 +50,7 @@ export default function VerifyEmail() {
       setSession(res);
       queryClient.invalidateQueries({ queryKey: ["user-emails"] });
       toast.success("Email verified successfully.");
-      navigate(nextPath);
+      navigateToNextPath();
     } catch (error) {
       if (error instanceof HTTPError) {
         if (error.status === 409) {

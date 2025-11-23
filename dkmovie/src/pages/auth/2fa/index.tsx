@@ -3,10 +3,12 @@ import { RectangleEllipsis, Smartphone } from "lucide-react";
 import { Meta } from "@/components/meta";
 import { PasskeyAuthButton } from "@/components/passkey-auth-button";
 import { Button } from "@/components/ui/button";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 
 export default function MultiFactorAuthenticationPage() {
   const { isAuthenticated, sessionMFATypes } = useSession();
+  const { nextPath } = useNextPath();
 
   if (isAuthenticated) {
     return null;
@@ -31,7 +33,7 @@ export default function MultiFactorAuthenticationPage() {
             {hasWebAuthn ? <PasskeyAuthButton className="w-full" /> : null}
             {hasTOTP ? (
               <Button asChild variant="outline" size="sm" className="w-full">
-                <Link to="/auth/2fa/totp">
+                <Link to={`/auth/2fa/totp?next=${nextPath}`}>
                   <Smartphone />
                   Continue with TOTP
                 </Link>
@@ -39,7 +41,7 @@ export default function MultiFactorAuthenticationPage() {
             ) : null}
             {hasRecoveryCodes ? (
               <Button asChild variant="outline" size="sm" className="w-full">
-                <Link to="/auth/2fa/recovery-codes">
+                <Link to={`/auth/2fa/recovery-codes?next=${nextPath}`}>
                   <RectangleEllipsis />
                   Continue with Recovery Codes
                 </Link>

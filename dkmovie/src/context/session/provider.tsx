@@ -115,11 +115,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
   }, [handleMFATypes, sessionError]);
 
   const initialize2FAIfNecessary = useCallback(
-    (error?: unknown) => {
+    (error?: unknown, nextPath?: string) => {
       const errorToUse = error || sessionError;
       handleMFATypes(errorToUse);
       if (need2FA(errorToUse)) {
-        navigate(`/auth/2fa?next=${pathname}`);
+        navigate(`/auth/2fa?next=${nextPath}`);
         return;
       }
 
@@ -134,7 +134,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     if (isLoadingSession) return;
 
     if (!isAuthenticated && protectedRoutes.includes(pathname)) {
-      navigate(signInRoute);
+      navigate(`${signInRoute}?next=${pathname}`);
     }
     if (isAuthenticated && authRoutes.includes(pathname)) {
       navigate("/account");

@@ -12,7 +12,7 @@ export interface SessionContextProps {
   setSession: (newSession?: CurrentSessionResponse | null) => void;
   logout: () => void;
   initializeReAuthentication: (callback?: () => void) => void;
-  initialize2FAIfNecessary: (error?: unknown) => void;
+  initialize2FAIfNecessary: (error?: unknown, nextPath?: string) => void;
 }
 
 export const SessionContext = createContext<SessionContextProps>({

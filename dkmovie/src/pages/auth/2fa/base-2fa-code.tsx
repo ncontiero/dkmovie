@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader } from "lucide-react";
@@ -14,6 +13,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Link } from "@/components/ui/link";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import {
   type TwoFactorAuthSchema,
@@ -29,7 +29,7 @@ interface BaseAuthFormWithCodeProps {
 export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { setSession } = useSession();
-  const navigate = useNavigate();
+  const { navigateToNextPath } = useNextPath();
 
   const description =
     type === "totp"
@@ -52,7 +52,7 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
     try {
       const res = await confirm2FA(data);
       setSession(res);
-      navigate("/account", { replace: true });
+      navigateToNextPath();
     } catch (error) {
       if (error instanceof HTTPError) {
         setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);

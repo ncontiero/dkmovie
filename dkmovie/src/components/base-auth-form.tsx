@@ -1,6 +1,7 @@
 import type { BaseSyntheticEvent, PropsWithChildren } from "react";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
+import { useNextPath } from "@/hooks/use-next-path";
 import { PasskeyAuthButton } from "./passkey-auth-button";
 import { ProviderButton } from "./provider-button";
 
@@ -26,6 +27,10 @@ export function BaseAuthForm({
   isAuthenticated = false,
   type = "sign-in",
 }: BaseAuthFormProps) {
+  const { nextPath } = useNextPath();
+
+  const nextPathParam = nextPath ? `?next=${nextPath}` : "";
+
   return (
     <main className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md rounded-lg border shadow-lg">
@@ -75,28 +80,28 @@ export function BaseAuthForm({
             {type === "sign-in" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">
                 Don&apos;t have an account?{" "}
-                <Link to="/auth/sign-up" size="sm">
+                <Link to={`/auth/sign-up${nextPathParam}`} size="sm">
                   Sign up
                 </Link>
               </p>
             ) : type === "sign-up" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">
                 Already have an account?{" "}
-                <Link to="/auth/sign-in" size="sm">
+                <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
                   Sign in
                 </Link>
               </p>
             ) : type === "forgot-password" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">
                 Remember your password?{" "}
-                <Link to="/auth/sign-in" size="sm">
+                <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
                   Sign in
                 </Link>
               </p>
             ) : type === "reset-password" ? (
               <p className="text-muted-foreground text-center text-sm font-medium">
                 Go back to{" "}
-                <Link to="/auth/sign-in" size="sm">
+                <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
                   Sign in
                 </Link>
               </p>

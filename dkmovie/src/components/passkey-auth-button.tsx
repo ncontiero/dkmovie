@@ -1,7 +1,8 @@
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { KeySquare, Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import {
   type GetWebAuthnRequestType,
@@ -24,10 +25,7 @@ export function PasskeyAuthButton({
 }: PasskeyAuthButtonProps) {
   const { setSession } = useSession();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  const nextPathParam = searchParams.get("next") ?? "/";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
+  const { nextPath, navigateToNextPath } = useNextPath();
 
   const {
     mutate: authenticateWithWebAuthnMutation,
@@ -45,8 +43,8 @@ export function PasskeyAuthButton({
     },
     onSuccess: (res) => {
       setSession(res);
-      navigate(nextPath);
       toast.success("You have been authenticated with passkey");
+      navigateToNextPath();
     },
     onError: (error) => {
       if (error instanceof HTTPError) {
@@ -54,7 +52,7 @@ export function PasskeyAuthButton({
           toast.success("You need to verify your email address.", {
             description: "Please check your email to verify your account.",
           });
-          navigate(`/account/verify-email`);
+          navigate(`/account/verify-email?next=${nextPath}`);
           return;
         }
 

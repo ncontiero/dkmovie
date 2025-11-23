@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { type SignUpSchema, signUp, signUpSchema } from "@/http/auth/sign-up";
 import { HTTPError } from "@/http/client";
@@ -18,8 +19,8 @@ import { needEmailVerification } from "@/utils/auth-flows";
 export default function SignUpPage() {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { isAuthenticated, setSession } = useSession();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { nextPath, navigateToNextPath } = useNextPath();
 
   const {
     handleSubmit,
@@ -31,9 +32,6 @@ export default function SignUpPage() {
 
   if (isAuthenticated) return null;
 
-  const nextPathParam = searchParams.get("next") ?? "/";
-  const nextPath = nextPathParam.startsWith("/") ? nextPathParam : "/";
-
   const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
     try {
       const res = await signUp(data);
@@ -41,7 +39,7 @@ export default function SignUpPage() {
       toast.success("Account created successfully!", {
         description: "Please check your email to verify your account.",
       });
-      navigate(nextPath);
+      navigateToNextPath();
     } catch (error) {
       if (needEmailVerification(error)) {
         toast.success("Account created successfully!", {
