@@ -1,12 +1,11 @@
-import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { reAuth } from "@/http/auth/re-auth";
-import { HTTPError } from "@/http/client";
 import { type ReAuthSchema, reAuthSchema } from "@/schemas/auth/re-auth";
+import { getErrorMessage } from "@/utils/errors";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -29,7 +28,6 @@ export function ReAuthenticateDialog({
   cancel,
 }: ReauthenticateDialogProps) {
   const queryClient = useQueryClient();
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
 
   const {
     register,
@@ -46,9 +44,9 @@ export function ReAuthenticateDialog({
       toast.success("Re-authenticated successfully");
       onReAuthenticated();
     } catch (error) {
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -76,13 +74,6 @@ export function ReAuthenticateDialog({
               </p>
             ) : null}
           </div>
-          {apiErrors.length > 0 && (
-            <ul className="text-destructive mt-2 list-inside list-disc text-sm">
-              {apiErrors.map((error) => (
-                <li key={error}>{error}</li>
-              ))}
-            </ul>
-          )}
           <DialogFooter>
             <Button
               type="button"

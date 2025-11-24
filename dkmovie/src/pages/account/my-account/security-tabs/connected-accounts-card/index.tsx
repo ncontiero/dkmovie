@@ -13,8 +13,8 @@ import {
   disconnectProvider,
   getConnectedProviders,
 } from "@/http/account/providers";
-import { HTTPError } from "@/http/client";
 import { getSocialAccounts } from "@/http/get-config";
+import { getErrorMessage } from "@/utils/errors";
 import { AccountCard, AccountCardSkeleton } from "./account-card";
 
 export function ConnectedAccountsCard() {
@@ -58,12 +58,9 @@ export function ConnectedAccountsCard() {
       queryClient.setQueryData(["connected-accounts", session?.user.id], data);
     },
     onError: (error) => {
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        toast.error(
-          error.data.errors?.map((e: any) => e.message).join(", ") ||
-            error.data.message,
-        );
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
