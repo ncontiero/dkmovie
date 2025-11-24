@@ -20,11 +20,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/hooks/use-session";
 import {
-  type AddWebAuthCredentialsSchema,
   addWebAuthCredentials,
-  addWebAuthCredentialsSchema,
   getWebAuthCredentials,
 } from "@/http/account/passkey";
+import {
+  type AddPasskeySchema,
+  addPasskeySchema,
+} from "@/schemas/account/passkey";
 import { needReAuthentication } from "@/utils/auth-flows";
 
 export function AddPasskey() {
@@ -40,10 +42,10 @@ export function AddPasskey() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(addWebAuthCredentialsSchema),
+    resolver: zodResolver(addPasskeySchema),
   });
 
-  const onSubmit: SubmitHandler<AddWebAuthCredentialsSchema> = async (data) => {
+  const onSubmit: SubmitHandler<AddPasskeySchema> = async (data) => {
     try {
       const credentials = await getWebAuthCredentials();
       const publicKey = PublicKeyCredential.parseCreationOptionsFromJSON(

@@ -16,13 +16,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  type UpdateMeSchema,
-  getMe,
-  updateMe,
-  updateMeSchema,
-} from "@/http/account/me";
+import { getMe, updateMe } from "@/http/account/me";
 import { HTTPError } from "@/http/client";
+import { type UpdateMeSchema, updateMeSchema } from "@/schemas/account/me";
 
 export function FullNameCard() {
   const queryClient = useQueryClient();

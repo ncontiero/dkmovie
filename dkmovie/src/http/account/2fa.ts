@@ -1,4 +1,4 @@
-import { z } from "zod";
+import type { ConfirmTOTPSchema } from "@/schemas/account/2fa";
 import { authAccountHttpClient, HTTPError } from "../client";
 
 export type TwoFactorAuthenticatorType = "totp" | "recovery_codes" | "webauthn";
@@ -56,11 +56,6 @@ interface ConfirmTOTPResponse {
     recovery_codes_generated?: boolean;
   };
 }
-
-export const confirmTOTPSchema = z.object({
-  code: z.string().min(1, { message: "Code is required." }),
-});
-export type ConfirmTOTPSchema = z.infer<typeof confirmTOTPSchema>;
 
 export async function confirmTOTP(data: ConfirmTOTPSchema) {
   return await authAccountHttpClient.post<ConfirmTOTPResponse>(

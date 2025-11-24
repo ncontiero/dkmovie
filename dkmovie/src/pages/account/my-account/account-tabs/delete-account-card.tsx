@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Card, CardContent, CardFooter } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,15 +19,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/hooks/use-session";
 import { deleteMyAccount } from "@/http/account/me";
-import { emailSchema } from "@/utils/schemas";
-
-const confirmDeleteAccountSchema = z.object({
-  confirmEmail: emailSchema,
-  confirmText: z.literal("delete my account", {
-    error: "You must type 'delete my account' to confirm.",
-  }),
-});
-type ConfirmDeleteAccountSchema = z.infer<typeof confirmDeleteAccountSchema>;
+import {
+  type ConfirmDeleteAccountSchema,
+  confirmDeleteAccountSchema,
+} from "@/schemas/account/delete-account";
 
 export function DeleteAccountCard() {
   const { session, setSession } = useSession();

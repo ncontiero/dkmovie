@@ -1,4 +1,4 @@
-import { z } from "zod";
+import type { AddPasskeySchema } from "@/schemas/account/passkey";
 import { authAccountHttpClient } from "../client";
 
 export interface GetWebAuthnCredentialResponse {
@@ -14,13 +14,6 @@ export async function getWebAuthCredentials(passwordless: boolean = true) {
   );
 }
 
-export const addWebAuthCredentialsSchema = z.object({
-  name: z.string().optional().default("WebAuthn"),
-});
-export type AddWebAuthCredentialsSchema = z.infer<
-  typeof addWebAuthCredentialsSchema
->;
-
 interface AddWebAuthCredentialsResponse {
   meta: {
     recovery_codes_generated?: boolean;
@@ -29,7 +22,7 @@ interface AddWebAuthCredentialsResponse {
 
 export async function addWebAuthCredentials(
   credential: unknown,
-  data: AddWebAuthCredentialsSchema,
+  data: AddPasskeySchema,
 ) {
   return await authAccountHttpClient.post<AddWebAuthCredentialsResponse>(
     "/authenticators/webauthn",
@@ -48,7 +41,7 @@ export async function deleteWebAuthCredentials(ids: number[]) {
 
 export async function renameWebAuthCredentials(
   id: number,
-  data: AddWebAuthCredentialsSchema,
+  data: AddPasskeySchema,
 ) {
   return await authAccountHttpClient.put("/authenticators/webauthn", {
     id,

@@ -37,11 +37,13 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "@/hooks/use-session";
 import {
-  type AddWebAuthCredentialsSchema,
-  addWebAuthCredentialsSchema,
   deleteWebAuthCredentials,
   renameWebAuthCredentials,
 } from "@/http/account/passkey";
+import {
+  type AddPasskeySchema,
+  addPasskeySchema,
+} from "@/schemas/account/passkey";
 import { needReAuthentication } from "@/utils/auth-flows";
 
 interface PasskeyItemProps {
@@ -81,13 +83,13 @@ function PasskeyItem({
     register,
     formState: { errors, isSubmitting: isSubmittingForm },
   } = useForm({
-    resolver: zodResolver(addWebAuthCredentialsSchema),
+    resolver: zodResolver(addPasskeySchema),
     defaultValues: {
       name: passkey.name,
     },
   });
 
-  const onSubmit: SubmitHandler<AddWebAuthCredentialsSchema> = async (data) => {
+  const onSubmit: SubmitHandler<AddPasskeySchema> = async (data) => {
     try {
       await renameWebAuthCredentials(passkey.id, data);
       toast.success("Passkey renamed successfully");

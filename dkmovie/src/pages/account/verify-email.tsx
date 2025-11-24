@@ -17,12 +17,12 @@ import {
 } from "@/components/ui/input-otp";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
+import { verifyEmail } from "@/http/auth/verify-email";
+import { HTTPError } from "@/http/client";
 import {
   type VerifyEmailSchema,
-  verifyEmail,
   verifyEmailSchema,
-} from "@/http/auth/verify-email";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/auth/verify-email";
 
 export default function VerifyEmail() {
   const queryClient = useQueryClient();

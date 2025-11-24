@@ -15,12 +15,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
+import { resetPassword } from "@/http/auth/password";
+import { HTTPError } from "@/http/client";
 import {
   type ResetPasswordSchema,
-  resetPassword,
   resetPasswordSchema,
-} from "@/http/auth/password";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/auth/password";
 
 export default function ResetPasswordPage() {
   const { setSession } = useSession();

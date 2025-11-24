@@ -27,12 +27,12 @@ import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
+import { changePassword } from "@/http/account/password";
+import { HTTPError } from "@/http/client";
 import {
   type ChangePasswordSchema,
-  changePassword,
   changePasswordSchema,
-} from "@/http/account/password";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/account/password";
 
 export function PasswordCard() {
   const queryClient = useQueryClient();

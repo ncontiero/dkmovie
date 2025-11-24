@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
-import { type ReAuthSchema, reAuth, reAuthSchema } from "@/http/auth/re-auth";
+import { reAuth } from "@/http/auth/re-auth";
 import { HTTPError } from "@/http/client";
+import { type ReAuthSchema, reAuthSchema } from "@/schemas/auth/re-auth";
 import { Button } from "./ui/button";
 import {
   Dialog,

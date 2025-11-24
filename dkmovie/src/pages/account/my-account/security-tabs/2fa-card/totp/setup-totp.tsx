@@ -25,13 +25,12 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useSession } from "@/hooks/use-session";
+import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
+import { HTTPError } from "@/http/client";
 import {
   type ConfirmTOTPSchema,
-  confirmTOTP,
   confirmTOTPSchema,
-  setUpTOTP,
-} from "@/http/account/2fa";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
 
 export function SetupTOTP() {

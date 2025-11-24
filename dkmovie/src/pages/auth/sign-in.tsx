@@ -13,8 +13,9 @@ import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
-import { type SignInSchema, signIn, signInSchema } from "@/http/auth/sign-in";
+import { signIn } from "@/http/auth/sign-in";
 import { HTTPError } from "@/http/client";
+import { type SignInSchema, signInSchema } from "@/schemas/auth/sign-in";
 import { needEmailVerification } from "@/utils/auth-flows";
 
 export default function SignInPage() {

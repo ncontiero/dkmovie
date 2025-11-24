@@ -15,12 +15,12 @@ import {
 import { Link } from "@/components/ui/link";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
+import { confirm2FA } from "@/http/auth/2fa";
+import { HTTPError } from "@/http/client";
 import {
   type TwoFactorAuthSchema,
-  confirm2FA,
   twoFactorAuthSchema,
-} from "@/http/auth/2fa";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/auth/2fa";
 
 interface BaseAuthFormWithCodeProps {
   readonly type: "totp" | "recovery-code";

@@ -1,11 +1,10 @@
-import { z } from "zod";
+import { email, string } from "zod";
 
-export const emailSchema = z.email({
+export const emailSchema = email({
   message: "Please enter a valid email address.",
 });
 
-export const passwordSchema = z
-  .string()
+export const passwordSchema = string()
   .min(8, "Password must be at least 8 characters long")
   .max(64, "Password must be at most 64 characters long")
   .regex(

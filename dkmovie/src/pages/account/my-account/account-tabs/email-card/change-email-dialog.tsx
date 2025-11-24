@@ -20,12 +20,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { changeEmail } from "@/http/account/emails";
+import { HTTPError } from "@/http/client";
 import {
   type ChangeEmailSchema,
-  changeEmail,
   changeEmailSchema,
-} from "@/http/account/emails";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/account/email";
 
 export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
   const [showDialog, setShowDialog] = useState(false);

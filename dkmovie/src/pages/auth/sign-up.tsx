@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
-import { type SignUpSchema, signUp, signUpSchema } from "@/http/auth/sign-up";
+import { signUp } from "@/http/auth/sign-up";
 import { HTTPError } from "@/http/client";
+import { type SignUpSchema, signUpSchema } from "@/schemas/auth/sign-up";
 import { needEmailVerification } from "@/utils/auth-flows";
 
 export default function SignUpPage() {

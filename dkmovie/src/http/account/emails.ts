@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { emailSchema } from "@/utils/schemas";
+import type { ChangeEmailSchema } from "@/schemas/account/email";
 import { authAccountHttpClient } from "../client";
 
 export interface Email {
@@ -19,11 +18,6 @@ export async function getUserEmails() {
     return [];
   }
 }
-
-export const changeEmailSchema = z.object({
-  email: emailSchema,
-});
-export type ChangeEmailSchema = z.infer<typeof changeEmailSchema>;
 
 export async function changeEmail(data: ChangeEmailSchema) {
   return await authAccountHttpClient.post<EmailResponse>("/email", data);

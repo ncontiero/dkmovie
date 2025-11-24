@@ -10,12 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/hooks/use-session";
+import { forgotPassword } from "@/http/auth/password";
+import { HTTPError } from "@/http/client";
 import {
   type ForgotPasswordSchema,
-  forgotPassword,
   forgotPasswordSchema,
-} from "@/http/auth/password";
-import { HTTPError } from "@/http/client";
+} from "@/schemas/auth/password";
 import { passwordResetByCodeFlow } from "@/utils/auth-flows";
 
 export default function ForgotPasswordPage() {
