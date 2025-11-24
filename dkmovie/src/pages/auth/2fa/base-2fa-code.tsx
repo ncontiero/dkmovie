@@ -1,5 +1,7 @@
+import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
 import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader } from "lucide-react";
@@ -28,14 +30,9 @@ interface BaseAuthFormWithCodeProps {
 
 export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
   const [apiErrors, setApiErrors] = useState<string[]>([]);
-  const { setSession } = useSession();
+  const { setSession, sessionMFATypes } = useSession();
   const { navigateToNextPath } = useNextPath();
-
-  const description =
-    type === "totp"
-      ? "Please enter the code from your authenticator app"
-      : "Please enter one of your recovery codes";
-  const otpFields = Array.from({ length: type === "totp" ? 6 : 8 });
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -47,6 +44,17 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
       code: "",
     },
   });
+
+  if (!sessionMFATypes.includes(type as TwoFactorAuthenticatorType)) {
+    navigate("/auth/2fa", { replace: true });
+    return null;
+  }
+
+  const description =
+    type === "totp"
+      ? "Please enter the code from your authenticator app"
+      : "Please enter one of your recovery codes";
+  const otpFields = Array.from({ length: type === "totp" ? 6 : 8 });
 
   const onSubmit: SubmitHandler<TwoFactorAuthSchema> = async (data) => {
     try {
