@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,12 +12,11 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/http/auth/sign-up";
-import { HTTPError } from "@/http/client";
 import { type SignUpSchema, signUpSchema } from "@/schemas/auth/sign-up";
 import { needEmailVerification } from "@/utils/auth-flows";
+import { getErrorMessage } from "@/utils/errors";
 
 export default function SignUpPage() {
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { isAuthenticated, setSession } = useSession();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
@@ -50,9 +48,9 @@ export default function SignUpPage() {
         return;
       }
 
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -105,13 +103,6 @@ export default function SignUpPage() {
           </p>
         ) : null}
       </div>
-      {apiErrors.length > 0 ? (
-        <ul className="text-destructive text-sm">
-          {apiErrors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      ) : null}
       <Button
         type="submit"
         className="mt-2 w-full"

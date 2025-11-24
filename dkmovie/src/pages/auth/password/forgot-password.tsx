@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,15 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/hooks/use-session";
 import { forgotPassword } from "@/http/auth/password";
-import { HTTPError } from "@/http/client";
 import {
   type ForgotPasswordSchema,
   forgotPasswordSchema,
 } from "@/schemas/auth/password";
 import { passwordResetByCodeFlow } from "@/utils/auth-flows";
+import { getErrorMessage } from "@/utils/errors";
 
 export default function ForgotPasswordPage() {
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -45,9 +43,10 @@ export default function ForgotPasswordPage() {
         toast.success("Check your email for the verification code.");
         navigate("/auth/password/reset");
       }
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -77,13 +76,6 @@ export default function ForgotPasswordPage() {
           <p className="text-destructive text-sm">{errors.email.message}</p>
         ) : null}
       </div>
-      {apiErrors.length > 0 ? (
-        <ul className="text-destructive text-sm">
-          {apiErrors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      ) : null}
       <Button
         type="submit"
         className="mt-2 w-full"

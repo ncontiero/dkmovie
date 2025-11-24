@@ -9,8 +9,8 @@ import {
   authenticateWithWebAuthn,
   getWebAuthnCredentials,
 } from "@/http/auth/passkey";
-import { HTTPError } from "@/http/client";
 import { needEmailVerification } from "@/utils/auth-flows";
+import { getErrorMessage } from "@/utils/errors";
 import { type ButtonProps, Button } from "./ui/button";
 
 interface PasskeyAuthButtonProps extends ButtonProps {
@@ -47,19 +47,18 @@ export function PasskeyAuthButton({
       navigateToNextPath();
     },
     onError: (error) => {
-      if (error instanceof HTTPError) {
-        if (needEmailVerification(error)) {
-          toast.success("You need to verify your email address.", {
-            description: "Please check your email to verify your account.",
-          });
-          navigate(`/account/verify-email?next=${nextPath}`);
-          return;
-        }
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
+        return;
+      }
 
-        if (error.status === 400) {
-          toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
-          return;
-        }
+      if (needEmailVerification(error)) {
+        toast.success("You need to verify your email address.", {
+          description: "Please check your email to verify your account.",
+        });
+        navigate(`/account/verify-email?next=${nextPath}`);
+        return;
       }
 
       toast.error("Failed to authenticate with passkey");

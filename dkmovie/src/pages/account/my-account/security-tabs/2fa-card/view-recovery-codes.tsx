@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { useSession } from "@/hooks/use-session";
 import { regenerateRecoveryCodes } from "@/http/account/2fa";
-import { HTTPError } from "@/http/client";
 import { needReAuthentication } from "@/utils/auth-flows";
+import { getErrorMessage } from "@/utils/errors";
 
 export function ViewRecoveryCodes() {
   const queryClient = useQueryClient();
@@ -35,17 +35,15 @@ export function ViewRecoveryCodes() {
       queryClient.setQueryData(["recovery-codes", userId], data);
     },
     onError: (error) => {
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        if (error.status === 400) {
-          toast.error(error.data?.errors.map((e: any) => e.message).join(", "));
-          return;
-        }
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
+        return;
+      }
 
-        if (needReAuthentication(error)) {
-          initializeReAuthentication(regenerateRecoveryCodesMutation);
-          return;
-        }
+      if (needReAuthentication(error)) {
+        initializeReAuthentication(regenerateRecoveryCodesMutation);
+        return;
       }
 
       console.error(error);

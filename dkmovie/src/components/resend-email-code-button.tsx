@@ -4,6 +4,7 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { resentEmailVerification } from "@/http/auth/verify-email";
 import { HTTPError } from "@/http/client";
+import { getErrorMessage } from "@/utils/errors";
 import { type ButtonProps, Button } from "./ui/button";
 
 export function ResendEmailCodeButton({
@@ -27,11 +28,16 @@ export function ResendEmailCodeButton({
       if (error instanceof HTTPError) {
         if (error.status === 403 || error.status === 429) {
           toast.error("Too many requests. Please try again later.");
-          return;
         }
-        toast.error(error.data?.errors.map((e: any) => e.message).join("\n"));
         return;
       }
+
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
+        return;
+      }
+
       toast.error(error.message);
     },
   });

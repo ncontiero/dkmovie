@@ -1,5 +1,4 @@
 import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
-import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,18 +17,17 @@ import { Link } from "@/components/ui/link";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { confirm2FA } from "@/http/auth/2fa";
-import { HTTPError } from "@/http/client";
 import {
   type TwoFactorAuthSchema,
   twoFactorAuthSchema,
 } from "@/schemas/auth/2fa";
+import { getErrorMessage } from "@/utils/errors";
 
 interface BaseAuthFormWithCodeProps {
   readonly type: "totp" | "recovery-code";
 }
 
 export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const { setSession, sessionMFATypes } = useSession();
   const { navigateToNextPath } = useNextPath();
   const navigate = useNavigate();
@@ -62,8 +60,9 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
       setSession(res);
       navigateToNextPath();
     } catch (error) {
-      if (error instanceof HTTPError) {
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -115,13 +114,6 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
           <p className="text-destructive text-sm">{errors.code.message}</p>
         ) : null}
       </div>
-      {apiErrors.length > 0 ? (
-        <ul className="text-destructive text-sm">
-          {apiErrors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      ) : null}
       <Button
         type="submit"
         className="mt-2 w-full"

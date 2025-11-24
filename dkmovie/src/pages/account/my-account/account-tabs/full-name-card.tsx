@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -17,12 +16,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getMe, updateMe } from "@/http/account/me";
-import { HTTPError } from "@/http/client";
 import { type UpdateMeSchema, updateMeSchema } from "@/schemas/account/me";
+import { getErrorMessage } from "@/utils/errors";
 
 export function FullNameCard() {
   const queryClient = useQueryClient();
-  const [apiErrors, setApiErrors] = useState<string | null>(null);
 
   const { data: user } = useQuery({
     queryKey: ["user"],
@@ -50,12 +48,11 @@ export function FullNameCard() {
     try {
       const res = await updateMe(data);
       queryClient.setQueryData(["user"], res);
-      setApiErrors(null);
       toast.success("Full name updated!");
     } catch (error) {
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        setApiErrors(error.data?.message);
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -82,9 +79,6 @@ export function FullNameCard() {
             <p className="text-destructive mt-1 text-sm">
               {errors.name.message}
             </p>
-          ) : null}
-          {apiErrors ? (
-            <span className="text-destructive mt-1 text-sm">{apiErrors}</span>
           ) : null}
           <CardDescription>
             Please enter your full name, or a display name you are comfortable

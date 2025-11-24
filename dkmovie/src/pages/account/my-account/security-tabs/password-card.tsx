@@ -28,17 +28,17 @@ import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
 import { changePassword } from "@/http/account/password";
-import { HTTPError } from "@/http/client";
 import {
   type ChangePasswordSchema,
   changePasswordSchema,
 } from "@/schemas/account/password";
+import { getErrorMessage } from "@/utils/errors";
 
 export function PasswordCard() {
   const queryClient = useQueryClient();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const { session } = useSession();
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
+
   const user = session?.user;
   const hasUsablePassword = user?.has_usable_password ?? false;
 
@@ -73,13 +73,12 @@ export function PasswordCard() {
           hasUsablePassword ? "updated" : "set"
         }.`,
       });
-      setApiErrors([]);
       setShowPasswordDialog(false);
       reset();
     } catch (error) {
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -180,11 +179,6 @@ export function PasswordCard() {
                   </span>
                 ) : null}
               </div>
-              {apiErrors ? (
-                <span className="text-destructive mt-2 text-sm">
-                  {apiErrors}
-                </span>
-              ) : null}
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">

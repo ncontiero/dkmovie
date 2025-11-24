@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,11 +22,11 @@ import {
   type VerifyEmailSchema,
   verifyEmailSchema,
 } from "@/schemas/auth/verify-email";
+import { getErrorMessage } from "@/utils/errors";
 
 export default function VerifyEmail() {
   const queryClient = useQueryClient();
   const { setSession } = useSession();
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const navigate = useNavigate();
   const { navigateToNextPath } = useNextPath();
 
@@ -58,8 +57,9 @@ export default function VerifyEmail() {
           navigate("/account");
           return;
         }
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+
+        const errors = getErrorMessage(error);
+        if (errors) toast.error(errors);
         return;
       }
 
@@ -104,13 +104,6 @@ export default function VerifyEmail() {
           <p className="text-destructive text-sm">{errors.key.message}</p>
         ) : null}
       </div>
-      {apiErrors.length > 0 ? (
-        <ul className="text-destructive text-sm">
-          {apiErrors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      ) : null}
       <div className="-mt-4 flex items-center justify-center">
         <ResendEmailCodeButton
           variant="link"

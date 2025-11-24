@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,10 +20,10 @@ import {
   type ResetPasswordSchema,
   resetPasswordSchema,
 } from "@/schemas/auth/password";
+import { getErrorMessage } from "@/utils/errors";
 
 export default function ResetPasswordPage() {
   const { setSession } = useSession();
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const codesSlot = Array.from({ length: 8 });
@@ -63,8 +62,9 @@ export default function ResetPasswordPage() {
           navigate("/auth/sign-in");
           return;
         }
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+
+        const errors = getErrorMessage(error);
+        if (errors) toast.error(errors);
         return;
       }
 
@@ -131,13 +131,6 @@ export default function ResetPasswordPage() {
           </p>
         ) : null}
       </div>
-      {apiErrors.length > 0 ? (
-        <ul className="text-destructive text-sm">
-          {apiErrors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      ) : null}
       <Button
         type="submit"
         className="mt-2 w-full"

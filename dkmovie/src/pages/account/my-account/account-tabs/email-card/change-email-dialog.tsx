@@ -21,16 +21,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { changeEmail } from "@/http/account/emails";
-import { HTTPError } from "@/http/client";
 import {
   type ChangeEmailSchema,
   changeEmailSchema,
 } from "@/schemas/account/email";
+import { getErrorMessage } from "@/utils/errors";
 
 export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
   const [showDialog, setShowDialog] = useState(false);
   const queryClient = useQueryClient();
-  const [apiErrors, setApiErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const {
@@ -50,9 +49,9 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
       });
       navigate("/account/verify-email");
     } catch (error) {
-      if (error instanceof HTTPError) {
-        console.error(error.data);
-        setApiErrors(error.data?.errors?.map((e: any) => e.message) || []);
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
         return;
       }
 
@@ -88,9 +87,6 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
             />
             {errors.email ? (
               <p className="text-destructive text-sm">{errors.email.message}</p>
-            ) : null}
-            {apiErrors ? (
-              <span className="text-destructive mt-1 text-sm">{apiErrors}</span>
             ) : null}
           </div>
           <DialogFooter>

@@ -26,12 +26,12 @@ import {
 } from "@/components/ui/input-otp";
 import { useSession } from "@/hooks/use-session";
 import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
-import { HTTPError } from "@/http/client";
 import {
   type ConfirmTOTPSchema,
   confirmTOTPSchema,
 } from "@/schemas/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
+import { getErrorMessage } from "@/utils/errors";
 
 export function SetupTOTP() {
   const queryClient = useQueryClient();
@@ -74,16 +74,15 @@ export function SetupTOTP() {
       queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
       queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
     } catch (error) {
-      if (error instanceof HTTPError) {
-        if (error.status === 400) {
-          toast.error(error.data?.errors.map((e: any) => e.message).join(", "));
-          return;
-        }
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
+        return;
+      }
 
-        if (needReAuthentication(error)) {
-          initializeReAuthentication(() => handleSubmit(onSubmit)());
-          return;
-        }
+      if (needReAuthentication(error)) {
+        initializeReAuthentication(() => handleSubmit(onSubmit)());
+        return;
       }
 
       console.error(error);
