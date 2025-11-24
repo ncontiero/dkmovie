@@ -139,7 +139,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     if (isAuthenticated && authRoutes.includes(pathname)) {
       navigate("/account");
     }
-  }, [isAuthenticated, isLoadingSession, navigate, pathname, sessionError]);
+  }, [isAuthenticated, isLoadingSession, navigate, pathname]);
 
   const contextValues = useMemo(
     (): SessionContextProps => ({
