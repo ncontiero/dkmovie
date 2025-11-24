@@ -20,10 +20,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function ViewRecoveryCodes() {
   const queryClient = useQueryClient();
-  const { session, initializeReAuthentication, isReAuthenticating } =
-    useSession();
-
-  const userId = session?.user.id;
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
 
   const {
     mutate: regenerateRecoveryCodesMutation,
@@ -32,7 +29,7 @@ export function ViewRecoveryCodes() {
     mutationFn: async () => await regenerateRecoveryCodes(),
     onSuccess: (data) => {
       toast.success(`Recovery codes regenerated successfully`);
-      queryClient.setQueryData(["recovery-codes", userId], data);
+      queryClient.setQueryData(["recovery-codes"], data);
     },
     onError: (error) => {
       const errors = getErrorMessage(error);

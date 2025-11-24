@@ -27,7 +27,7 @@ import {
 } from "@/schemas/account/email";
 import { getErrorMessage } from "@/utils/errors";
 
-export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
+export function ChangeEmailDialog() {
   const [showDialog, setShowDialog] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ export function ChangeEmailDialog({ userId }: { readonly userId: number }) {
   const onSubmit: SubmitHandler<ChangeEmailSchema> = async (data) => {
     try {
       const res = await changeEmail(data);
-      queryClient.setQueryData(["user-emails", userId], res.data);
+      queryClient.setQueryData(["user-emails"], res.data);
       toast.success("Email added!", {
         description: "You will receive an email with a verification code.",
       });

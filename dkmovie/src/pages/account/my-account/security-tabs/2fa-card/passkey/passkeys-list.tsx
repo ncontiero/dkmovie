@@ -51,7 +51,6 @@ interface PasskeyItemProps {
   readonly deletePasskey: (ids: number[]) => void;
   readonly isDeleting: boolean;
   readonly initializeReAuthentication: (callback: () => void) => void;
-  readonly userId?: number;
 }
 
 function PasskeyItem({
@@ -59,7 +58,6 @@ function PasskeyItem({
   deletePasskey,
   isDeleting,
   initializeReAuthentication,
-  userId,
 }: PasskeyItemProps) {
   const queryClient = useQueryClient();
   const createdAt = new Date(passkey.created_at * 1000);
@@ -93,7 +91,7 @@ function PasskeyItem({
     try {
       await renameWebAuthCredentials(passkey.id, data);
       toast.success("Passkey renamed successfully");
-      queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
+      queryClient.invalidateQueries({ queryKey: ["2fa"] });
     } catch (error) {
       if (needReAuthentication(error)) {
         initializeReAuthentication(() => {
@@ -229,15 +227,14 @@ interface PasskeysListProps {
 
 export function PasskeysList({ passkeys }: PasskeysListProps) {
   const queryClient = useQueryClient();
-  const { session, initializeReAuthentication, isReAuthenticating } =
-    useSession();
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
   const [open, setOpen] = useState(false);
 
   const { mutate: deletePasskey, isPending: isDeleting } = useMutation({
     mutationFn: async (ids: number[]) => await deleteWebAuthCredentials(ids),
     onSuccess: () => {
       toast.success("Passkey deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["2fa", session?.user.id] });
+      queryClient.invalidateQueries({ queryKey: ["2fa"] });
     },
     onError: (error, ids) => {
       if (needReAuthentication(error)) {
@@ -270,7 +267,6 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
                   deletePasskey={deletePasskey}
                   isDeleting={isDeleting}
                   initializeReAuthentication={initializeReAuthentication}
-                  userId={session?.user.id}
                 />
               ))}
           </ul>

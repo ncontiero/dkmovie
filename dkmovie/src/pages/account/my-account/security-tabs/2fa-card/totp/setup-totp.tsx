@@ -35,16 +35,14 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function SetupTOTP() {
   const queryClient = useQueryClient();
-  const { session, initializeReAuthentication, isReAuthenticating } =
-    useSession();
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
   const [showSetupTOTPDialog, setShowSetupTOTPDialog] = useState(false);
   const [isToGetRecoveryCodes, setIsToGetRecoveryCodes] = useState(false);
 
-  const userId = session?.user.id;
   const otpFields = Array.from({ length: 6 });
 
   const { data: totp, isLoading: isSettingUpTOTP } = useQuery({
-    queryKey: ["setup-totp", userId],
+    queryKey: ["setup-totp"],
     queryFn: async () => await setUpTOTP(),
     staleTime: 1000 * 60 * 10,
     enabled: showSetupTOTPDialog,
@@ -68,11 +66,11 @@ export function SetupTOTP() {
       if (res?.meta?.recovery_codes_generated) {
         setIsToGetRecoveryCodes(true);
       } else {
-        queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
+        queryClient.invalidateQueries({ queryKey: ["2fa"] });
         setShowSetupTOTPDialog(false);
       }
-      queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
-      queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
+      queryClient.invalidateQueries({ queryKey: ["setup-totp"] });
+      queryClient.invalidateQueries({ queryKey: ["recovery-codes"] });
     } catch (error) {
       const errors = getErrorMessage(error);
       if (errors) {
@@ -92,11 +90,11 @@ export function SetupTOTP() {
 
   if (isReAuthenticating) return null;
 
-  return isToGetRecoveryCodes && userId ? (
+  return isToGetRecoveryCodes ? (
     <RecoveryCodesDialog
       onOpenChange={(open) => {
         if (!open) {
-          queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
+          queryClient.invalidateQueries({ queryKey: ["2fa"] });
         }
         setIsToGetRecoveryCodes(open);
       }}

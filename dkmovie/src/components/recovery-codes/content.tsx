@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { Loader } from "lucide-react";
 import { useSession } from "@/hooks/use-session";
 import { getRecoveryCodes } from "@/http/account/2fa";
@@ -7,8 +6,7 @@ import { needReAuthentication } from "@/utils/auth-flows";
 import { CopyButton } from "../ui/copy-button";
 
 export function RecoveryCodesContent() {
-  const { session, initializeReAuthentication, isReAuthenticating } =
-    useSession();
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
 
   const {
     data: recoveryCodes,
@@ -16,7 +14,7 @@ export function RecoveryCodesContent() {
     error: getRecoveryCodesError,
     refetch: getRecoveryCodesRefetch,
   } = useQuery({
-    queryKey: ["recovery-codes", session?.user.id],
+    queryKey: ["recovery-codes"],
     queryFn: async () => await getRecoveryCodes(),
     select: (data) => data.data,
   });

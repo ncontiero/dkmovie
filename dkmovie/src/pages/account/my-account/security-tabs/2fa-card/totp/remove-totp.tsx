@@ -19,18 +19,15 @@ import { needReAuthentication } from "@/utils/auth-flows";
 
 export function RemoveTOTP() {
   const queryClient = useQueryClient();
-  const { session, initializeReAuthentication, isReAuthenticating } =
-    useSession();
-
-  const userId = session?.user.id;
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
 
   const { mutate: deleteTOTPMutation, isPending: isDeletingTOTP } = useMutation(
     {
       mutationFn: async () => await deleteTOTP(),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["setup-totp", userId] });
-        queryClient.invalidateQueries({ queryKey: ["recovery-codes", userId] });
-        queryClient.invalidateQueries({ queryKey: ["2fa", userId] });
+        queryClient.invalidateQueries({ queryKey: ["setup-totp"] });
+        queryClient.invalidateQueries({ queryKey: ["recovery-codes"] });
+        queryClient.invalidateQueries({ queryKey: ["2fa"] });
         toast.success("Removed TOTP successfully");
       },
       onError: (error) => {

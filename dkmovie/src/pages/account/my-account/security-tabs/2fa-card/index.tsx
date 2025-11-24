@@ -6,8 +6,6 @@ import {
   CardTitle,
 } from "@/components/card";
 import { Badge } from "@/components/ui/badge";
-
-import { useSession } from "@/hooks/use-session";
 import {
   type Get2FAAuthenticatorWebAuthn,
   get2FAAuthenticators,
@@ -19,17 +17,12 @@ import { SetupTOTP } from "./totp/setup-totp";
 import { ViewRecoveryCodes } from "./view-recovery-codes";
 
 export function TwoFactorAuthenticationCard() {
-  const { session } = useSession();
-
   const { data: authenticators } = useQuery({
-    queryKey: ["2fa", session?.user.id],
+    queryKey: ["2fa"],
     queryFn: async () => await get2FAAuthenticators(),
     select: ({ data }) => data,
     staleTime: 1000 * 60 * 60,
-    enabled: !!session?.user?.id,
   });
-
-  if (!session?.user) return null;
 
   const hasTOTP = authenticators?.some((a) => a.type === "totp") || false;
   const hasPasskeys =

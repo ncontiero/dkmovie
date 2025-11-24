@@ -10,16 +10,12 @@ import {
 import { ResendEmailCodeButton } from "@/components/resend-email-code-button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSession } from "@/hooks/use-session";
 import { getUserEmails } from "@/http/account/emails";
 import { ChangeEmailDialog } from "./change-email-dialog";
 
 export function UserEmailCard() {
-  const { session } = useSession();
-  const userId = session?.user.id;
-
   const { data: userEmails, isLoading: isUserEmailsLoading } = useQuery({
-    queryKey: ["user-emails", userId],
+    queryKey: ["user-emails"],
     queryFn: async () => {
       return await getUserEmails();
     },
@@ -32,8 +28,6 @@ export function UserEmailCard() {
       });
     },
   });
-
-  if (!userId) return null;
 
   return (
     <Card className="mt-10">
@@ -77,7 +71,7 @@ export function UserEmailCard() {
           Email must be verified to be able to login with them or be used as
           primary email.
         </CardFooterDescription>
-        <ChangeEmailDialog userId={userId} />
+        <ChangeEmailDialog />
       </CardFooter>
     </Card>
   );

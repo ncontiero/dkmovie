@@ -31,8 +31,7 @@ import { needReAuthentication } from "@/utils/auth-flows";
 
 export function AddPasskey() {
   const queryClient = useQueryClient();
-  const { session, initializeReAuthentication, isReAuthenticating } =
-    useSession();
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
   const [showDialog, setShowDialog] = useState(false);
   const [recoveryCodesGenerated, setRecoveryCodesGenerated] = useState(false);
 
@@ -81,9 +80,7 @@ export function AddPasskey() {
     <RecoveryCodesDialog
       onOpenChange={(open) => {
         if (!open) {
-          queryClient.invalidateQueries({
-            queryKey: ["2fa", session?.user.id],
-          });
+          queryClient.invalidateQueries({ queryKey: ["2fa"] });
         }
         setRecoveryCodesGenerated(open);
       }}

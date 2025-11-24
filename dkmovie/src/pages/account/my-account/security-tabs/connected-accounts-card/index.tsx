@@ -32,7 +32,7 @@ export function ConnectedAccountsCard() {
   );
 
   const { data: providers, isLoading: isProvidersLoading } = useQuery({
-    queryKey: ["connected-accounts", session?.user.id],
+    queryKey: ["connected-accounts"],
     queryFn: async () => {
       return await getConnectedProviders();
     },
@@ -55,7 +55,7 @@ export function ConnectedAccountsCard() {
     },
     onSuccess: ({ data }) => {
       toast.success("Provider disconnected successfully");
-      queryClient.setQueryData(["connected-accounts", session?.user.id], data);
+      queryClient.setQueryData(["connected-accounts"], data);
     },
     onError: (error) => {
       const errors = getErrorMessage(error);
