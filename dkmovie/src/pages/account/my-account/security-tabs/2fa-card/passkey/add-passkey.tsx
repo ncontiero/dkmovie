@@ -58,6 +58,7 @@ export function AddPasskey() {
       if (res?.meta?.recovery_codes_generated) {
         setRecoveryCodesGenerated(true);
       }
+      queryClient.invalidateQueries({ queryKey: ["2fa"] });
       setShowDialog(false);
       reset();
     } catch (error) {
@@ -77,14 +78,7 @@ export function AddPasskey() {
   if (isReAuthenticating) return null;
 
   return recoveryCodesGenerated ? (
-    <RecoveryCodesDialog
-      onOpenChange={(open) => {
-        if (!open) {
-          queryClient.invalidateQueries({ queryKey: ["2fa"] });
-        }
-        setRecoveryCodesGenerated(open);
-      }}
-    />
+    <RecoveryCodesDialog />
   ) : (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
