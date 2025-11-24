@@ -74,7 +74,7 @@ export default function TitlePage() {
         return null;
       }
     },
-    staleTime: 60 * 60 * 1000,
+    staleTime: 1000 * 60 * 60,
   });
 
   const { data: relatedMovies = [], isLoading: relatedMoviesLoading } =
@@ -90,7 +90,7 @@ export default function TitlePage() {
           return [];
         }
       },
-      staleTime: 60 * 60 * 1000,
+      staleTime: 1000 * 60 * 60,
     });
 
   const durationFormatted = useMemo(() => {

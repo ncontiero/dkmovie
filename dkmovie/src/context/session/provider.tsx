@@ -16,7 +16,6 @@ import {
   getCurrentSession,
   logout as logoutApi,
 } from "@/http/auth/session";
-import { HTTPError } from "@/http/client";
 import { flowsTo2FA, getErrorFlows, need2FA } from "@/utils/auth-flows";
 import { type SessionContextProps, SessionContext } from "./context";
 
@@ -46,14 +45,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     queryFn: async () => {
       return await getCurrentSession();
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: (count, error) => {
-      if (error instanceof HTTPError && error.status === 401) {
-        return false;
-      }
-      return count < 3;
-    },
-    refetchOnWindowFocus: false,
   });
 
   const isAuthenticated = session?.meta.is_authenticated || false;

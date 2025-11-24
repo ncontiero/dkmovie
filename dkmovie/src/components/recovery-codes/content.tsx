@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useSession } from "@/hooks/use-session";
 import { getRecoveryCodes } from "@/http/account/2fa";
-import { HTTPError } from "@/http/client";
 import { needReAuthentication } from "@/utils/auth-flows";
 import { CopyButton } from "../ui/copy-button";
 
@@ -19,14 +18,7 @@ export function RecoveryCodesContent() {
   } = useQuery({
     queryKey: ["recovery-codes", session?.user.id],
     queryFn: async () => await getRecoveryCodes(),
-    staleTime: 1000 * 60 * 10,
     select: (data) => data.data,
-    retry: (count, error) => {
-      if (error instanceof HTTPError && error.status === 401) {
-        return false;
-      }
-      return count < 3;
-    },
   });
 
   if (needReAuthentication(getRecoveryCodesError)) {

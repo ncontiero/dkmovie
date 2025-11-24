@@ -27,7 +27,7 @@ export function FullNameCard() {
     queryFn: async () => {
       return await getMe();
     },
-    staleTime: 60 * 60 * 1000,
+    staleTime: 1000 * 60 * 60,
   });
 
   const {

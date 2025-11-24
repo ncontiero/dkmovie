@@ -25,7 +25,6 @@ export function SessionsCard() {
           (b.last_seen_at || b.created_at) - (a.last_seen_at || a.created_at)
         );
       }),
-    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const { mutate: deleteSessionsMutation } = useMutation({

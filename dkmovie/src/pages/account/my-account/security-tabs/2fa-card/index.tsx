@@ -25,7 +25,7 @@ export function TwoFactorAuthenticationCard() {
     queryKey: ["2fa", session?.user.id],
     queryFn: async () => await get2FAAuthenticators(),
     select: ({ data }) => data,
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 60,
     enabled: !!session?.user?.id,
   });
 

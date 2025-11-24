@@ -36,7 +36,7 @@ export function ConnectedAccountsCard() {
     queryFn: async () => {
       return await getConnectedProviders();
     },
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: Infinity,
     select: (data) => data.data,
   });
 

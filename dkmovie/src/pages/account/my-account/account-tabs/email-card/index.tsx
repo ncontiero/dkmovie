@@ -23,7 +23,7 @@ export function UserEmailCard() {
     queryFn: async () => {
       return await getUserEmails();
     },
-    staleTime: 60 * 60 * 1000,
+    staleTime: 1000 * 60 * 60,
     select: (data) => {
       return data.sort((a, b) => {
         if (a.primary) return -1;
