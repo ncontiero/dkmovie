@@ -281,7 +281,7 @@ MFA_SUPPORTED_TYPES = ["totp", "webauthn", "recovery_codes"]
 HEADLESS_CLIENTS = ("browser",)
 HEADLESS_FRONTEND_URLS = {
     "account_confirm_email": "/account/verify-email/{key}",
-    "account_reset_password": "/auth/password/reset",
+    "account_reset_password": "/auth/password/forgot",
     "account_reset_password_from_key": "/auth/password/reset/{key}",
     "account_signup": "/auth/sign-up",
     "socialaccount_login_error": "/account/provider/callback",
