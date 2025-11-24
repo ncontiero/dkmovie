@@ -12,7 +12,9 @@
     "dev": "rspack serve -c rspack/dev.config.ts",
     "dev:email": "pnpm --filter=@dkmovie/emails run dev",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
