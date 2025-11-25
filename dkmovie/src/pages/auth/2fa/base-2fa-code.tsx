@@ -24,7 +24,7 @@ import {
 import { getErrorMessage } from "@/utils/errors";
 
 interface BaseAuthFormWithCodeProps {
-  readonly type: "totp" | "recovery-code";
+  readonly type: "totp" | "recovery_codes";
 }
 
 export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
