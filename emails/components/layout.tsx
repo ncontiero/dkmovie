@@ -8,15 +8,17 @@ import {
   Html,
   pixelBasedPreset,
   Preview,
+  Section,
   Tailwind,
 } from "@react-email/components";
+import { SITE_NAME } from "@/utils/constants";
 import { Footer } from "./footer";
 import { Header } from "./header";
-import { Text } from "./text";
 
 export interface LayoutProps extends PropsWithChildren {
   readonly previewText: string;
   readonly title?: string;
+  readonly siteName?: string;
 }
 
 const tailwindConfig: TailwindConfig = {
@@ -27,6 +29,10 @@ const tailwindConfig: TailwindConfig = {
         border: "#e5e7eb",
         background: "#fff",
         foreground: "#121212",
+        primary: {
+          DEFAULT: "#7f22fe",
+          foreground: "#f9fafb",
+        },
         secondary: {
           DEFAULT: "#f3f4f6",
           foreground: "#121212",
@@ -35,36 +41,45 @@ const tailwindConfig: TailwindConfig = {
           DEFAULT: "#f5f5f5",
           foreground: "#666",
         },
+        destructive: {
+          DEFAULT: "#ef4444",
+          foreground: "#f9fafb",
+        },
       },
     },
   },
 };
 
-export function Layout({ title, previewText, children }: LayoutProps) {
+export function Layout({
+  title,
+  previewText,
+  children,
+  siteName = SITE_NAME,
+}: LayoutProps) {
   return (
     <Html>
       <Tailwind config={tailwindConfig}>
         <Head />
         <Preview>{previewText}</Preview>
 
-        <Body className="bg-background m-auto font-sans">
-          <Container className="md:border-border mx-auto my-10 max-w-[600px] rounded-[6px] border border-solid border-transparent p-5">
-            <Header />
+        <Body className="bg-background m-auto px-2 font-sans">
+          <Container className="border-border mx-auto my-10 max-w-[500px] rounded-[6px] border border-solid p-5">
+            <Header siteName={siteName} />
 
-            {title ? (
-              <Heading
-                as="h2"
-                className="text-foreground my-5 text-center text-[26px] font-semibold"
-              >
-                {title}
-              </Heading>
-            ) : null}
+            <Section>
+              {title ? (
+                <Heading
+                  as="h2"
+                  className="text-foreground my-6 text-center text-2xl font-semibold"
+                >
+                  {title}
+                </Heading>
+              ) : null}
 
-            <Text>Hello, User!</Text>
-            {children}
+              {children}
+            </Section>
 
-            <br />
-            <Footer />
+            <Footer siteName={siteName} />
           </Container>
         </Body>
       </Tailwind>

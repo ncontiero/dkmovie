@@ -1,12 +1,16 @@
-import { Heading, Hr, Section } from "@react-email/components";
+import { Heading, Section } from "@react-email/components";
+import { SITE_NAME } from "@/utils/constants";
 
-export function Header() {
-  const projectName = "DkMovie";
+interface HeaderProps {
+  readonly siteName?: string;
+}
 
+export function Header({ siteName = SITE_NAME }: HeaderProps) {
   return (
-    <Section className="text-center">
-      <Heading className="my-3">{projectName}</Heading>
-      <Hr />
+    <Section>
+      <Heading className="text-primary mx-0 mt-7 mb-5 p-0 text-center text-3xl font-bold">
+        {siteName}
+      </Heading>
     </Section>
   );
 }
