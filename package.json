@@ -40,17 +40,17 @@
     "swiper": "^12.0.3",
     "tailwind-merge": "3.4.0",
     "ua-parser-js": "^2.0.6",
-    "zod": "^4.1.12"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@ncontiero/eslint-config": "6.5.0",
+    "@ncontiero/eslint-config": "6.5.1",
     "@rspack/cli": "^1.6.4",
     "@rspack/core": "^1.6.4",
     "@rspack/plugin-react-refresh": "^1.5.3",
     "@tailwindcss/postcss": "4.1.17",
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@types/node": "^24.10.1",
-    "@types/react": "19.2.6",
+    "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "eslint": "^9.39.1",
     "postcss": "^8.5.6",
