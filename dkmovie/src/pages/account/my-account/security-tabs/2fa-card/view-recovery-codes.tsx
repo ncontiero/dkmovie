@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
@@ -20,6 +21,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function ViewRecoveryCodes() {
   const queryClient = useQueryClient();
+  const [showDialog, setShowDialog] = useState(false);
   const { initializeReAuthentication, isReAuthenticating } = useSession();
 
   const {
@@ -39,7 +41,13 @@ export function ViewRecoveryCodes() {
       }
 
       if (needReAuthentication(error)) {
-        initializeReAuthentication(regenerateRecoveryCodesMutation);
+        initializeReAuthentication(
+          () => {
+            setShowDialog(true);
+            regenerateRecoveryCodesMutation();
+          },
+          () => setShowDialog(false),
+        );
         return;
       }
 
@@ -51,7 +59,7 @@ export function ViewRecoveryCodes() {
   if (isReAuthenticating) return null;
 
   return (
-    <Dialog>
+    <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           View
@@ -66,7 +74,9 @@ export function ViewRecoveryCodes() {
             authentication codes.
           </DialogDescription>
         </DialogHeader>
-        <RecoveryCodesContent />
+        <RecoveryCodesContent
+          onReAuthenticationCancel={() => setShowDialog(false)}
+        />
         <DialogFooter className="sm:justify-between">
           <Button
             type="button"

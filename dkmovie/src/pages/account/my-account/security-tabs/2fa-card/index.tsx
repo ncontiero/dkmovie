@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import type { Get2FAAuthenticatorWebAuthn } from "@/http/account/2fa";
 import {
   Card,
   CardContent,
@@ -6,10 +6,7 @@ import {
   CardTitle,
 } from "@/components/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  type Get2FAAuthenticatorWebAuthn,
-  get2FAAuthenticators,
-} from "@/http/account/2fa";
+import { useFetchAuthenticators } from "@/hooks/fetch/use-fetch-authenticators";
 import { AddPasskey } from "./passkey/add-passkey";
 import { PasskeysList } from "./passkey/passkeys-list";
 import { RemoveTOTP } from "./totp/remove-totp";
@@ -17,12 +14,7 @@ import { SetupTOTP } from "./totp/setup-totp";
 import { ViewRecoveryCodes } from "./view-recovery-codes";
 
 export function TwoFactorAuthenticationCard() {
-  const { data: authenticators } = useQuery({
-    queryKey: ["2fa"],
-    queryFn: async () => await get2FAAuthenticators(),
-    select: ({ data }) => data,
-    staleTime: 1000 * 60 * 60,
-  });
+  const { data: authenticators } = useFetchAuthenticators();
 
   const hasTOTP = authenticators?.some((a) => a.type === "totp") || false;
   const hasPasskeys =

@@ -32,6 +32,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [onReAuthenticatedCallback, setOnReAuthenticatedCallback] = useState(
     () => () => setIsReAuthenticationNeeded(false),
   );
+  const [onReAuthenticationCancel, setOnReAuthenticationCancel] = useState(
+    () => () => {
+      setOnReAuthenticatedCallback(
+        // eslint-disable-next-line unicorn/consistent-function-scoping
+        () => () => setIsReAuthenticationNeeded(false),
+      );
+      setIsReAuthenticationNeeded(false);
+    },
+  );
   const [sessionMFATypes, setSessionMFATypes] = useState<
     TwoFactorAuthenticatorType[]
   >([]);
@@ -72,17 +81,28 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [queryClient],
   );
 
-  const initializeReAuthentication = useCallback((callback?: () => void) => {
-    toast.error("You need to re-authenticate to continue");
-    setIsReAuthenticationNeeded(true);
-    if (callback) {
-      // eslint-disable-next-line unicorn/consistent-function-scoping
-      setOnReAuthenticatedCallback(() => () => {
-        setIsReAuthenticationNeeded(false);
-        callback();
-      });
-    }
-  }, []);
+  const initializeReAuthentication: SessionContextProps["initializeReAuthentication"] =
+    useCallback((onReAuthenticated, onCancel) => {
+      setIsReAuthenticationNeeded(true);
+      if (onReAuthenticated) {
+        // eslint-disable-next-line unicorn/consistent-function-scoping
+        setOnReAuthenticatedCallback(() => () => {
+          setIsReAuthenticationNeeded(false);
+          onReAuthenticated();
+        });
+      }
+      if (onCancel) {
+        // eslint-disable-next-line unicorn/consistent-function-scoping
+        setOnReAuthenticationCancel(() => () => {
+          setOnReAuthenticatedCallback(
+            // eslint-disable-next-line unicorn/consistent-function-scoping
+            () => () => setIsReAuthenticationNeeded(false),
+          );
+          setIsReAuthenticationNeeded(false);
+          onCancel();
+        });
+      }
+    }, []);
 
   const handleMFATypes = useCallback((error: unknown) => {
     if (need2FA(error)) {
@@ -161,13 +181,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       {isReAuthenticationNeeded ? (
         <ReAuthenticateDialog
           onReAuthenticated={onReAuthenticatedCallback}
-          cancel={() => {
-            setOnReAuthenticatedCallback(
-              // eslint-disable-next-line unicorn/consistent-function-scoping
-              () => () => setIsReAuthenticationNeeded(false),
-            );
-            setIsReAuthenticationNeeded(false);
-          }}
+          cancel={onReAuthenticationCancel}
         />
       ) : null}
       {children}

@@ -5,7 +5,13 @@ import { getRecoveryCodes } from "@/http/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
 import { CopyButton } from "../ui/copy-button";
 
-export function RecoveryCodesContent() {
+interface RecoveryCodesContentProps {
+  readonly onReAuthenticationCancel?: () => void;
+}
+
+export function RecoveryCodesContent({
+  onReAuthenticationCancel,
+}: RecoveryCodesContentProps) {
   const { initializeReAuthentication, isReAuthenticating } = useSession();
 
   const {
@@ -20,7 +26,10 @@ export function RecoveryCodesContent() {
   });
 
   if (needReAuthentication(getRecoveryCodesError)) {
-    initializeReAuthentication(getRecoveryCodesRefetch);
+    initializeReAuthentication(
+      getRecoveryCodesRefetch,
+      onReAuthenticationCancel,
+    );
     return;
   }
 

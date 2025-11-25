@@ -16,11 +16,15 @@ import { type ButtonProps, Button } from "./ui/button";
 interface PasskeyAuthButtonProps extends ButtonProps {
   readonly text?: string;
   readonly flow?: GetWebAuthnRequestType;
+  readonly isToNavigateToNextPath?: boolean;
+  readonly onAuthenticated?: () => void;
 }
 
 export function PasskeyAuthButton({
   text,
   flow = "login",
+  isToNavigateToNextPath = true,
+  onAuthenticated,
   ...props
 }: PasskeyAuthButtonProps) {
   const { setSession } = useSession();
@@ -43,8 +47,9 @@ export function PasskeyAuthButton({
     },
     onSuccess: (res) => {
       setSession(res);
-      toast.success("You have been authenticated with passkey");
-      navigateToNextPath();
+      toast.success("Successfully authenticated with passkey");
+      if (isToNavigateToNextPath) navigateToNextPath();
+      if (onAuthenticated) onAuthenticated();
     },
     onError: (error) => {
       const errors = getErrorMessage(error);

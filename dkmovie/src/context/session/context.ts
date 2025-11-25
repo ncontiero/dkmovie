@@ -11,7 +11,10 @@ export interface SessionContextProps {
   isReAuthenticating: boolean;
   setSession: (newSession?: CurrentSessionResponse | null) => void;
   logout: () => void;
-  initializeReAuthentication: (callback?: () => void) => void;
+  initializeReAuthentication: (
+    onReAuthenticated?: () => void,
+    onCancel?: () => void,
+  ) => void;
   initialize2FAIfNecessary: (error?: unknown, nextPath?: string) => void;
 }
 
