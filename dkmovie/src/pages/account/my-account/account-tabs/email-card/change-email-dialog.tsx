@@ -20,15 +20,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSession } from "@/hooks/use-session";
 import { changeEmail } from "@/http/account/emails";
 import {
   type ChangeEmailSchema,
   changeEmailSchema,
 } from "@/schemas/account/email";
+import { needReAuthentication } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export function ChangeEmailDialog() {
   const [showDialog, setShowDialog] = useState(false);
+  const { initializeReAuthentication, isReAuthenticating } = useSession();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -49,6 +52,14 @@ export function ChangeEmailDialog() {
       });
       navigate("/account/verify-email");
     } catch (error) {
+      if (needReAuthentication(error)) {
+        initializeReAuthentication(
+          () => setShowDialog(true),
+          () => setShowDialog(false),
+        );
+        return;
+      }
+
       const errors = getErrorMessage(error);
       if (errors) {
         toast.error(errors);
@@ -59,6 +70,8 @@ export function ChangeEmailDialog() {
       toast.error("Something went wrong!");
     }
   };
+
+  if (isReAuthenticating) return null;
 
   return (
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
