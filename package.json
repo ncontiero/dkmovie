@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rspack build -c rspack/prod.config.ts",
-    "build:email": "pnpm --filter=@dkmovie/emails run export:all",
+    "build:email": "pnpm --filter=@dkmovie/emails run export",
     "dev": "rspack serve -c rspack/dev.config.ts",
     "dev:email": "pnpm --filter=@dkmovie/emails run dev",
     "lint": "eslint .",

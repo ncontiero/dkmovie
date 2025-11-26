@@ -1,9 +1,9 @@
 import { Section } from "@react-email/components";
 import { Button } from "@/components/button";
+import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
+import { Text } from "@/components/text";
 import { SITE_NAME } from "@/utils/constants";
-import { Layout } from "../components/layout";
-import { Text } from "../components/text";
 
 interface UnknownAccountProps {
   readonly siteName?: string;

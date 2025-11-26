@@ -1,8 +1,8 @@
+import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { RequestOrigins } from "@/components/request-origins";
+import { Text } from "@/components/text";
 import { SITE_NAME, USERNAME } from "@/utils/constants";
-import { Layout } from "../../components/layout";
-import { Text } from "../../components/text";
 
 interface AccountDisconnectedProps {
   readonly username?: string;

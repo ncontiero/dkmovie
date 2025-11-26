@@ -1,11 +1,11 @@
 import { Section } from "@react-email/components";
 import { Button } from "@/components/button";
+import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { RequestOrigins } from "@/components/request-origins";
+import { Text } from "@/components/text";
 import { SITE_NAME, USERNAME } from "@/utils/constants";
 import { resolveUrl } from "@/utils/urls";
-import { Layout } from "../components/layout";
-import { Text } from "../components/text";
 
 export interface PasswordChangedProps {
   readonly username?: string;

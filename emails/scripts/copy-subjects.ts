@@ -2,7 +2,7 @@ import path from "node:path";
 import fs from "fs-extra";
 import { glob } from "tinyglobby";
 
-const SOURCE_DIR = path.join(process.cwd(), "auth-emails");
+const SOURCE_DIR = path.join(process.cwd(), "emails/account");
 const DEST_DIR = path.join(
   process.cwd(),
   "../dkmovie/templates/emails/account",

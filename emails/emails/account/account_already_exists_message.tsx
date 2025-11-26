@@ -1,9 +1,9 @@
 import { Link, Section } from "@react-email/components";
 import { Button } from "@/components/button";
+import { Layout } from "@/components/layout";
+import { Text } from "@/components/text";
 import { SITE_NAME, USERNAME } from "@/utils/constants";
 import { resolveUrl } from "@/utils/urls";
-import { Layout } from "../components/layout";
-import { Text } from "../components/text";
 
 interface AccountAlreadyExistsEmailProps {
   readonly username?: string;

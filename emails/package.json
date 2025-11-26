@@ -6,10 +6,7 @@
     "build": "email build",
     "dev": "email dev -p 3001",
     "copy:subjects": "tsx scripts/copy-subjects.ts",
-    "export": "email export",
-    "export:default": "pnpm export --outDir ../dkmovie/templates/emails",
-    "export:auth": "pnpm export --dir ./auth-emails --outDir ../dkmovie/templates/emails/account",
-    "export:all": "pnpm export:default && pnpm export:auth && pnpm copy:subjects"
+    "export": "email export --outDir ../dkmovie/templates/emails && pnpm copy:subjects"
   },
   "dependencies": {
     "@react-email/components": "1.0.1",
