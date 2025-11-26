@@ -55,13 +55,17 @@ CSRF_COOKIE_NAME = "__Secure-csrftoken"
 SECURE_HSTS_SECONDS = 60
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-include-subdomains
 SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
-    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", cast=bool, default=True,
+    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS",
+    cast=bool,
+    default=True,
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-preload
 SECURE_HSTS_PRELOAD = config("DJANGO_SECURE_HSTS_PRELOAD", cast=bool, default=True)
 # https://docs.djangoproject.com/en/dev/ref/middleware/#x-content-type-options-nosniff
 SECURE_CONTENT_TYPE_NOSNIFF = config(
-    "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", cast=bool, default=True,
+    "DJANGO_SECURE_CONTENT_TYPE_NOSNIFF",
+    cast=bool,
+    default=True,
 )
 
 
@@ -89,6 +93,7 @@ AWS_S3_MAX_MEMORY_SIZE = config(
 AWS_S3_REGION_NAME = config("DJANGO_AWS_S3_REGION_NAME", default=None)
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
 AWS_S3_CUSTOM_DOMAIN = config("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
+AWS_S3_ENDPOINT_URL = config("DJANGO_AWS_S3_ENDPOINT_URL", default=None)
 aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
 # STATIC & MEDIA
