@@ -9,11 +9,7 @@ import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { ResendEmailCodeButton } from "@/components/resend-email-code-button";
 import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { CodeInput } from "@/components/ui/input-otp";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { verifyEmail } from "@/http/auth/verify-email";
@@ -40,8 +36,6 @@ export default function VerifyEmail() {
       key: "",
     },
   });
-
-  const codesSlot = Array.from({ length: 6 });
 
   const onSubmit: SubmitHandler<VerifyEmailSchema> = async (data) => {
     try {
@@ -81,23 +75,15 @@ export default function VerifyEmail() {
           name="key"
           control={control}
           render={({ field }) => (
-            <InputOTP
+            <CodeInput
               {...field}
               aria-label="Enter your verification code"
-              maxLength={codesSlot.length}
               pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
               autoFocus
               onComplete={() => {
                 handleSubmit(onSubmit)();
               }}
-            >
-              <InputOTPGroup>
-                {codesSlot.map((_, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <InputOTPSlot key={index} index={index} />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
+            />
           )}
         />
         {errors.key ? (

@@ -4,7 +4,7 @@ import {
   forwardRef,
   useContext,
 } from "react";
-import { OTPInput, OTPInputContext } from "input-otp";
+import { type OTPInputProps, OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -73,4 +73,26 @@ const InputOTPSeparator = forwardRef<
 ));
 InputOTPSeparator.displayName = "InputOTPSeparator";
 
-export { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot };
+type CodeInputProps = Omit<OTPInputProps, "maxLength"> & {
+  readonly codeLength?: number;
+};
+
+const CodeInput = forwardRef<ComponentRef<typeof OTPInput>, CodeInputProps>(
+  ({ codeLength = 6, render: _render, ...props }, ref) => {
+    const codesSlot = Array.from({ length: codeLength });
+
+    return (
+      <InputOTP ref={ref} {...props} maxLength={codesSlot.length}>
+        <InputOTPGroup>
+          {codesSlot.map((_, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <InputOTPSlot key={index} index={index} />
+          ))}
+        </InputOTPGroup>
+      </InputOTP>
+    );
+  },
+);
+CodeInput.displayName = "CodeInput";
+
+export { CodeInput, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot };

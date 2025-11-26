@@ -7,11 +7,7 @@ import { toast } from "sonner";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { CodeInput } from "@/components/ui/input-otp";
 import { Link } from "@/components/ui/link";
 import { useMFA } from "@/hooks/use-mfa";
 import { useNextPath } from "@/hooks/use-next-path";
@@ -53,7 +49,6 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
     type === "totp"
       ? "Please enter the code from your authenticator app"
       : "Please enter one of your recovery codes";
-  const otpFields = Array.from({ length: type === "totp" ? 6 : 8 });
 
   const onSubmit: SubmitHandler<TwoFactorAuthSchema> = async (data) => {
     try {
@@ -86,28 +81,16 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
             name="code"
             control={control}
             render={({ field }) => (
-              <InputOTP
+              <CodeInput
                 {...field}
-                aria-label={
-                  type === "totp"
-                    ? "Enter 6 digit code from your authenticator app"
-                    : "Enter one of your recovery codes"
-                }
-                maxLength={otpFields.length}
+                aria-label={description}
+                codeLength={type === "totp" ? 6 : 8}
                 pattern={REGEXP_ONLY_DIGITS}
                 autoFocus
-                onComplete={(value) => {
-                  field.onChange(value);
+                onComplete={() => {
                   handleSubmit(onSubmit)();
                 }}
-              >
-                <InputOTPGroup>
-                  {otpFields.map((_, index) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <InputOTPSlot key={index} index={index} />
-                  ))}
-                </InputOTPGroup>
-              </InputOTP>
+              />
             )}
           />
         </div>

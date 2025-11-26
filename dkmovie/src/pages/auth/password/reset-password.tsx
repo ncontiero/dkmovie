@@ -6,11 +6,7 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Button } from "@/components/ui/button";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { CodeInput } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useSession } from "@/hooks/use-session";
@@ -25,8 +21,6 @@ import { getErrorMessage } from "@/utils/errors";
 export default function ResetPasswordPage() {
   const { setSession } = useSession();
   const navigate = useNavigate();
-
-  const codesSlot = Array.from({ length: 8 });
 
   const {
     register,
@@ -86,20 +80,16 @@ export default function ResetPasswordPage() {
             name="key"
             control={control}
             render={({ field }) => (
-              <InputOTP
+              <CodeInput
                 {...field}
                 aria-label="Enter your verification code"
-                maxLength={codesSlot.length}
+                codeLength={8}
                 pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                 autoFocus
-              >
-                <InputOTPGroup>
-                  {codesSlot.map((_, index) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <InputOTPSlot key={index} index={index} />
-                  ))}
-                </InputOTPGroup>
-              </InputOTP>
+                onComplete={() => {
+                  handleSubmit(onSubmit)();
+                }}
+              />
             )}
           />
         </div>
