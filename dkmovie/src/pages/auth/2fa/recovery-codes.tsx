@@ -1,5 +1,5 @@
-import { BaseAuthFormWithCode } from "./base-2fa-code";
+import { AuthWithCode } from "@/components/auth-with-code";
 
 export default function AuthWithRecoveryCodePage() {
-  return <BaseAuthFormWithCode type="recovery_codes" />;
+  return <AuthWithCode type="2fa" codeType="recovery_codes" />;
 }

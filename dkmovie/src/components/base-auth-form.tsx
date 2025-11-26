@@ -6,7 +6,7 @@ import { PasskeyAuthButton } from "./passkey-auth-button";
 import { ProviderButton } from "./provider-button";
 
 interface BaseAuthFormProps extends PropsWithChildren {
-  readonly formSubmit: (e?: BaseSyntheticEvent) => Promise<void>;
+  readonly formSubmit?: (e?: BaseSyntheticEvent) => Promise<void>;
   readonly title: string;
   readonly description: string;
   readonly isAuthenticated?: boolean;
@@ -56,9 +56,13 @@ export function BaseAuthForm({
           ) : (
             <Separator />
           )}
-          <form onSubmit={formSubmit} className="space-y-6">
-            {children}
-          </form>
+          {formSubmit ? (
+            <form onSubmit={formSubmit} className="space-y-6">
+              {children}
+            </form>
+          ) : (
+            children
+          )}
           {type === "forgot-password" && !isAuthenticated ? (
             <>
               <div className="flex items-center justify-center">

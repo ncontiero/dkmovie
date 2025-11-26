@@ -4,6 +4,7 @@ import { useState } from "react";
 import { LockKeyhole, RectangleEllipsis, Smartphone } from "lucide-react";
 import { useFetchAuthenticators } from "@/hooks/fetch/use-fetch-authenticators";
 import { useSession } from "@/hooks/use-session";
+import { AuthWithCode } from "../auth-with-code";
 import { PasskeyAuthButton } from "../passkey-auth-button";
 import { Button } from "../ui/button";
 import {
@@ -14,7 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { BaseAuthFormWithCode } from "./base-2fa-code";
 import { ReAuthenticateWithPassword } from "./with-password";
 
 type ReAuthWith = null | "password" | TwoFactorAuthenticatorType;
@@ -102,9 +102,17 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
         {reAuthWith === "password" ? (
           <ReAuthenticateWithPassword {...props} />
         ) : reAuthWith === "totp" ? (
-          <BaseAuthFormWithCode type="totp" {...props} />
+          <AuthWithCode
+            codeType="totp"
+            type="reauthenticate"
+            reAuthentication={props}
+          />
         ) : reAuthWith === "recovery_codes" ? (
-          <BaseAuthFormWithCode type="recovery_codes" {...props} />
+          <AuthWithCode
+            codeType="recovery_codes"
+            type="reauthenticate"
+            reAuthentication={props}
+          />
         ) : (
           <DialogFooter>
             <Button type="button" variant="outline" onClick={props.onCancel}>
