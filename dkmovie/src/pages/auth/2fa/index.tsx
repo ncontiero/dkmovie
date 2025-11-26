@@ -3,20 +3,16 @@ import { RectangleEllipsis, Smartphone } from "lucide-react";
 import { Meta } from "@/components/meta";
 import { PasskeyAuthButton } from "@/components/passkey-auth-button";
 import { Button } from "@/components/ui/button";
+import { useMFA } from "@/hooks/use-mfa";
 import { useNextPath } from "@/hooks/use-next-path";
-import { useSession } from "@/hooks/use-session";
 
 export default function MultiFactorAuthenticationPage() {
-  const { isAuthenticated, sessionMFATypes } = useSession();
+  const { mFATypes } = useMFA();
   const { nextPath } = useNextPath();
 
-  if (isAuthenticated) {
-    return null;
-  }
-
-  const hasWebAuthn = sessionMFATypes.includes("webauthn");
-  const hasTOTP = sessionMFATypes.includes("totp");
-  const hasRecoveryCodes = sessionMFATypes.includes("recovery_codes");
+  const hasWebAuthn = mFATypes.includes("webauthn");
+  const hasTOTP = mFATypes.includes("totp");
+  const hasRecoveryCodes = mFATypes.includes("recovery_codes");
 
   return (
     <main className="flex min-h-screen items-center justify-center">

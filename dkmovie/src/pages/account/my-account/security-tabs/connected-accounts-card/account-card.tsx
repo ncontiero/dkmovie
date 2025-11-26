@@ -1,3 +1,4 @@
+import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
 import type { SocialAccount } from "@/http/get-config";
 import { Loader } from "lucide-react";
 import { ProviderButton, ProviderIcon } from "@/components/provider-button";
@@ -29,6 +30,7 @@ interface AccountCardProps {
     accountId: string;
   }) => void;
   readonly isDisconnectingProvider?: boolean;
+  readonly initializeReAuthentication: InitializeReAuthentication;
 }
 
 export function AccountCard({
@@ -38,6 +40,7 @@ export function AccountCard({
   hasPassword = false,
   isDisconnectingProvider = false,
   disconnectProvider,
+  initializeReAuthentication,
 }: AccountCardProps) {
   return (
     <div className="rounded-lg border p-4">
@@ -66,6 +69,7 @@ export function AccountCard({
             addIcon={false}
             process="connect"
             provider={account.id}
+            initializeReAuthentication={initializeReAuthentication}
           />
         ) : hasPassword ? (
           <AlertDialog>

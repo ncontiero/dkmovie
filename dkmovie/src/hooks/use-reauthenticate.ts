@@ -6,7 +6,7 @@ export const useReAuthenticate = () => {
   if (context === undefined) {
     console.warn("ReAuthenticateContext is undefined in useReAuthenticate()");
     throw new Error(
-      `useReAuthenticate must be used within a ReAuthenticateContextProvider.`,
+      `useReAuthenticate must be used within a ReAuthenticateProvider.`,
     );
   }
   return context;

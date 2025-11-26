@@ -1,4 +1,3 @@
-import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +13,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Link } from "@/components/ui/link";
+import { useMFA } from "@/hooks/use-mfa";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { confirm2FA } from "@/http/auth/2fa";
@@ -28,7 +28,8 @@ interface BaseAuthFormWithCodeProps {
 }
 
 export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
-  const { setSession, sessionMFATypes } = useSession();
+  const { setSession } = useSession();
+  const { mFATypes } = useMFA();
   const { navigateToNextPath } = useNextPath();
   const navigate = useNavigate();
 
@@ -43,7 +44,7 @@ export function BaseAuthFormWithCode({ type }: BaseAuthFormWithCodeProps) {
     },
   });
 
-  if (!sessionMFATypes.includes(type as TwoFactorAuthenticatorType)) {
+  if (!mFATypes.includes(type)) {
     navigate("/auth/2fa", { replace: true });
     return null;
   }

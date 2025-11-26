@@ -1,4 +1,5 @@
-import { type ReactNode, useState } from "react";
+import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
+import { type ReactNode, useRef, useState } from "react";
 import { Loader } from "lucide-react";
 import { apiAuthBasePath } from "@/http/client";
 import { getCookie } from "@/utils/get-cookie";
@@ -11,6 +12,7 @@ interface ProviderButtonProps extends ButtonProps {
   readonly text?: string;
   readonly addIcon?: boolean;
   readonly iconToUse?: ReactNode;
+  readonly initializeReAuthentication?: InitializeReAuthentication;
 }
 
 const providersIconsMap = {
@@ -37,8 +39,10 @@ export function ProviderButton({
   provider = "google",
   addIcon = true,
   iconToUse,
+  initializeReAuthentication,
   ...buttonProps
 }: ProviderButtonProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const icon = iconToUse ?? <ProviderIcon provider={provider} />;
@@ -48,9 +52,20 @@ export function ProviderButton({
 
   return (
     <form
+      ref={formRef}
       method="POST"
       action={actionUrl}
-      onSubmit={() => setIsSubmitting(true)}
+      onSubmit={(e) => {
+        setIsSubmitting(true);
+        if (!initializeReAuthentication) return;
+
+        e.preventDefault();
+        initializeReAuthentication({
+          onReAuthenticated: () => {
+            formRef.current?.submit();
+          },
+        });
+      }}
       className={buttonProps.className}
     >
       <input type="hidden" name="provider" value={provider} />

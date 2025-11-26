@@ -8,18 +8,21 @@ import {
   CardFooterDescription,
   CardTitle,
 } from "@/components/card";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { useSession } from "@/hooks/use-session";
 import {
   disconnectProvider,
   getConnectedProviders,
 } from "@/http/account/providers";
 import { getSocialAccounts } from "@/http/get-config";
+import { needReAuthentication } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 import { AccountCard, AccountCardSkeleton } from "./account-card";
 
 export function ConnectedAccountsCard() {
-  const queryClient = useQueryClient();
   const { session } = useSession();
+  const { initializeReAuthentication } = useReAuthenticate();
+  const queryClient = useQueryClient();
 
   const { data: socialAccounts, isLoading: isSocialAccountsLoading } = useQuery(
     {
@@ -57,7 +60,15 @@ export function ConnectedAccountsCard() {
       toast.success("Provider disconnected successfully");
       queryClient.setQueryData(["connected-accounts"], data);
     },
-    onError: (error) => {
+    onError: (error, variables) => {
+      if (needReAuthentication(error)) {
+        initializeReAuthentication({
+          onReAuthenticated: () => {
+            disconnectProviderMutation(variables);
+          },
+        });
+        return;
+      }
       const errors = getErrorMessage(error);
       if (errors) {
         toast.error(errors);
@@ -87,6 +98,7 @@ export function ConnectedAccountsCard() {
                   hasPassword={session?.user.has_usable_password}
                   disconnectProvider={disconnectProviderMutation}
                   isDisconnectingProvider={isDisconnectingProvider}
+                  initializeReAuthentication={initializeReAuthentication}
                 />
               ))}
               {socialAccounts
@@ -104,6 +116,7 @@ export function ConnectedAccountsCard() {
                     hasPassword={session?.user.has_usable_password}
                     disconnectProvider={disconnectProviderMutation}
                     isDisconnectingProvider={isDisconnectingProvider}
+                    initializeReAuthentication={initializeReAuthentication}
                   />
                 ))}
             </>

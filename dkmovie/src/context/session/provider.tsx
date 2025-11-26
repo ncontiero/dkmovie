@@ -1,21 +1,13 @@
-import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
-import {
-  type PropsWithChildren,
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type PropsWithChildren, useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useFetchSession } from "@/hooks/fetch/use-fetch-session";
 import {
   type CurrentSessionResponse,
-  getCurrentSession,
   logout as logoutApi,
 } from "@/http/auth/session";
-import { flowsTo2FA, getErrorFlows, need2FA } from "@/utils/auth-flows";
+import { MFAProvider } from "../mfa/provider";
 import { type SessionContextProps, SessionContext } from "./context";
 
 const protectedRoutes = ["/account", "/account/security"];
@@ -26,20 +18,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [sessionMFATypes, setSessionMFATypes] = useState<
-    TwoFactorAuthenticatorType[]
-  >([]);
 
   const {
     data: session = null,
     isLoading: isLoadingSession,
     error: sessionError,
-  } = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      return await getCurrentSession();
-    },
-  });
+  } = useFetchSession();
 
   const isAuthenticated = session?.meta.is_authenticated || false;
 
@@ -66,42 +50,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [queryClient],
   );
 
-  const handleMFATypes = useCallback((error: unknown) => {
-    if (need2FA(error)) {
-      const flows = getErrorFlows(error);
-      const types =
-        flows.find((flow) => flowsTo2FA.includes(flow.id))?.types || [];
-      setSessionMFATypes(types as TwoFactorAuthenticatorType[]);
-      return;
-    }
-
-    setSessionMFATypes([]);
-  }, []);
-
-  const handleMFATypesEvent = useEffectEvent(handleMFATypes);
-
-  useEffect(() => {
-    if (sessionError) {
-      handleMFATypesEvent(sessionError);
-    }
-  }, [handleMFATypes, sessionError]);
-
-  const initialize2FAIfNecessary = useCallback(
-    (error?: unknown, nextPath?: string) => {
-      const errorToUse = error || sessionError;
-      handleMFATypes(errorToUse);
-      if (need2FA(errorToUse)) {
-        navigate(`/auth/2fa?next=${nextPath}`);
-        return;
-      }
-
-      if (pathname.startsWith("/auth/2fa")) {
-        navigate(isAuthenticated ? "/account" : signInRoute);
-      }
-    },
-    [handleMFATypes, isAuthenticated, navigate, pathname, sessionError],
-  );
-
   useEffect(() => {
     if (isLoadingSession) return;
 
@@ -116,27 +64,23 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const contextValues = useMemo(
     (): SessionContextProps => ({
       session: session?.data || null,
-      sessionMFATypes,
       isAuthenticated,
       isLoadingSession,
       logout: logoutMutation,
       setSession,
-      initialize2FAIfNecessary,
     }),
     [
-      initialize2FAIfNecessary,
       isAuthenticated,
       isLoadingSession,
       logoutMutation,
       session?.data,
-      sessionMFATypes,
       setSession,
     ],
   );
 
   return (
     <SessionContext.Provider value={contextValues}>
-      {children}
+      <MFAProvider sessionError={sessionError}>{children}</MFAProvider>
     </SessionContext.Provider>
   );
 }

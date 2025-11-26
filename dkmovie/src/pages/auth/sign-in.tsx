@@ -10,16 +10,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useMFA } from "@/hooks/use-mfa";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/http/auth/sign-in";
 import { type SignInSchema, signInSchema } from "@/schemas/auth/sign-in";
-import { needEmailVerification } from "@/utils/auth-flows";
+import { need2FA, needEmailVerification } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export default function SignInPage() {
-  const { setSession, isAuthenticated, initialize2FAIfNecessary } =
-    useSession();
+  const { setSession, isAuthenticated } = useSession();
+  const { initializeMFAIfNecessary } = useMFA();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
 
@@ -46,7 +47,11 @@ export default function SignInPage() {
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
       }
-      initialize2FAIfNecessary(error, nextPath);
+
+      if (need2FA(error)) {
+        initializeMFAIfNecessary(error, nextPath);
+        return;
+      }
 
       const errors = getErrorMessage(error);
       if (errors) {

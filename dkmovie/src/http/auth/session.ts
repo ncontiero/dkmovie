@@ -1,5 +1,4 @@
 import type { Session } from "@/utils/types";
-import { need2FA } from "@/utils/auth-flows";
 import { authHttpClient } from "../client";
 
 export interface CurrentSessionResponse {
@@ -10,12 +9,7 @@ export interface CurrentSessionResponse {
 }
 
 export async function getCurrentSession() {
-  try {
-    return await authHttpClient.get<CurrentSessionResponse>("/session");
-  } catch (error) {
-    if (need2FA(error)) throw error;
-    return null;
-  }
+  return await authHttpClient.get<CurrentSessionResponse>("/session");
 }
 
 export async function logout() {

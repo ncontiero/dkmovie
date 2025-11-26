@@ -1,21 +1,17 @@
-import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
 import type { CurrentSessionResponse } from "@/http/auth/session";
 import type { Session } from "@/utils/types";
 import { createContext } from "react";
 
 export interface SessionContextProps {
   session: Session | null;
-  sessionMFATypes: TwoFactorAuthenticatorType[];
   isAuthenticated: boolean;
   isLoadingSession: boolean;
   setSession: (newSession?: CurrentSessionResponse | null) => void;
   logout: () => void;
-  initialize2FAIfNecessary: (error?: unknown, nextPath?: string) => void;
 }
 
 export const SessionContext = createContext<SessionContextProps>({
   session: null,
-  sessionMFATypes: [],
   isAuthenticated: false,
   isLoadingSession: true,
   setSession: () => {
@@ -23,8 +19,5 @@ export const SessionContext = createContext<SessionContextProps>({
   },
   logout: () => {
     throw new Error("logout function not implemented");
-  },
-  initialize2FAIfNecessary: () => {
-    throw new Error("initialize2FAIfNecessary function not implemented");
   },
 });
