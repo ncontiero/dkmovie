@@ -1,4 +1,4 @@
-import type { ReauthenticateProps } from "./types";
+import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
@@ -20,14 +20,14 @@ import { getErrorMessage } from "@/utils/errors";
 import { DialogFooter } from "../ui/dialog";
 import { Label } from "../ui/label";
 
-interface BaseAuthFormWithCodeProps extends ReauthenticateProps {
+interface BaseAuthFormWithCodeProps extends ReAuthenticationProps {
   readonly type: "totp" | "recovery_codes";
 }
 
 export function BaseAuthFormWithCode({
   type,
   onReAuthenticated,
-  cancel,
+  onCancel,
 }: BaseAuthFormWithCodeProps) {
   const { setSession } = useSession();
 
@@ -110,7 +110,7 @@ export function BaseAuthFormWithCode({
           type="button"
           variant="outline"
           disabled={isSubmitting}
-          onClick={cancel}
+          onClick={onCancel}
         >
           Cancel
         </Button>

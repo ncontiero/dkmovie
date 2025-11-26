@@ -1,5 +1,5 @@
+import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
-import type { ReauthenticateProps } from "./types";
 import { useState } from "react";
 import { LockKeyhole, RectangleEllipsis, Smartphone } from "lucide-react";
 import { useFetchAuthenticators } from "@/hooks/fetch/use-fetch-authenticators";
@@ -19,27 +19,23 @@ import { ReAuthenticateWithPassword } from "./with-password";
 
 type ReAuthWith = null | "password" | TwoFactorAuthenticatorType;
 
-export function ReAuthenticateDialog({
-  cancel,
-  ...props
-}: ReauthenticateProps) {
+export function ReAuthenticateDialog(props: ReAuthenticationProps) {
   const { session } = useSession();
   const [reAuthWith, setReAuthWith] = useState<ReAuthWith>(null);
 
   const { data: authenticators } = useFetchAuthenticators();
 
+  function have(type: TwoFactorAuthenticatorType) {
+    return (
+      authenticators?.some((authenticator) => authenticator.type === type) ||
+      false
+    );
+  }
+
   const havePassword = session?.user.has_usable_password || false;
-  const havePasskey =
-    authenticators?.some(
-      (authenticator) => authenticator.type === "webauthn",
-    ) || false;
-  const haveTOTP =
-    authenticators?.some((authenticator) => authenticator.type === "totp") ||
-    false;
-  const haveRecoveryCodes =
-    authenticators?.some(
-      (authenticator) => authenticator.type === "recovery_codes",
-    ) || false;
+  const havePasskey = have("webauthn");
+  const haveTOTP = have("totp");
+  const haveRecoveryCodes = have("recovery_codes");
 
   return (
     <Dialog defaultOpen open>
@@ -104,18 +100,14 @@ export function ReAuthenticateDialog({
           ) : null}
         </div>
         {reAuthWith === "password" ? (
-          <ReAuthenticateWithPassword cancel={cancel} {...props} />
+          <ReAuthenticateWithPassword {...props} />
         ) : reAuthWith === "totp" ? (
-          <BaseAuthFormWithCode type="totp" cancel={cancel} {...props} />
+          <BaseAuthFormWithCode type="totp" {...props} />
         ) : reAuthWith === "recovery_codes" ? (
-          <BaseAuthFormWithCode
-            type="recovery_codes"
-            cancel={cancel}
-            {...props}
-          />
+          <BaseAuthFormWithCode type="recovery_codes" {...props} />
         ) : (
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={cancel}>
+            <Button type="button" variant="outline" onClick={props.onCancel}>
               Cancel
             </Button>
           </DialogFooter>

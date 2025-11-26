@@ -10,7 +10,6 @@ import {
 import { useLocation, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ReAuthenticateDialog } from "@/components/reauthenticate";
 import {
   type CurrentSessionResponse,
   getCurrentSession,
@@ -27,20 +26,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [isReAuthenticationNeeded, setIsReAuthenticationNeeded] =
-    useState(false);
-  const [onReAuthenticatedCallback, setOnReAuthenticatedCallback] = useState(
-    () => () => setIsReAuthenticationNeeded(false),
-  );
-  const [onReAuthenticationCancel, setOnReAuthenticationCancel] = useState(
-    () => () => {
-      setOnReAuthenticatedCallback(
-        // eslint-disable-next-line unicorn/consistent-function-scoping
-        () => () => setIsReAuthenticationNeeded(false),
-      );
-      setIsReAuthenticationNeeded(false);
-    },
-  );
   const [sessionMFATypes, setSessionMFATypes] = useState<
     TwoFactorAuthenticatorType[]
   >([]);
@@ -80,29 +65,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     },
     [queryClient],
   );
-
-  const initializeReAuthentication: SessionContextProps["initializeReAuthentication"] =
-    useCallback((onReAuthenticated, onCancel) => {
-      setIsReAuthenticationNeeded(true);
-      if (onReAuthenticated) {
-        // eslint-disable-next-line unicorn/consistent-function-scoping
-        setOnReAuthenticatedCallback(() => () => {
-          setIsReAuthenticationNeeded(false);
-          onReAuthenticated();
-        });
-      }
-      if (onCancel) {
-        // eslint-disable-next-line unicorn/consistent-function-scoping
-        setOnReAuthenticationCancel(() => () => {
-          setOnReAuthenticatedCallback(
-            // eslint-disable-next-line unicorn/consistent-function-scoping
-            () => () => setIsReAuthenticationNeeded(false),
-          );
-          setIsReAuthenticationNeeded(false);
-          onCancel();
-        });
-      }
-    }, []);
 
   const handleMFATypes = useCallback((error: unknown) => {
     if (need2FA(error)) {
@@ -159,16 +121,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
       isLoadingSession,
       logout: logoutMutation,
       setSession,
-      initializeReAuthentication,
-      isReAuthenticating: isReAuthenticationNeeded,
       initialize2FAIfNecessary,
     }),
     [
       initialize2FAIfNecessary,
-      initializeReAuthentication,
       isAuthenticated,
       isLoadingSession,
-      isReAuthenticationNeeded,
       logoutMutation,
       session?.data,
       sessionMFATypes,
@@ -178,12 +136,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   return (
     <SessionContext.Provider value={contextValues}>
-      {isReAuthenticationNeeded ? (
-        <ReAuthenticateDialog
-          onReAuthenticated={onReAuthenticatedCallback}
-          cancel={onReAuthenticationCancel}
-        />
-      ) : null}
       {children}
     </SessionContext.Provider>
   );

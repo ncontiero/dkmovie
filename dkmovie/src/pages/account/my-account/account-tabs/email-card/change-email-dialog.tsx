@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSession } from "@/hooks/use-session";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { changeEmail } from "@/http/account/emails";
 import {
   type ChangeEmailSchema,
@@ -31,7 +31,8 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function ChangeEmailDialog() {
   const [showDialog, setShowDialog] = useState(false);
-  const { initializeReAuthentication, isReAuthenticating } = useSession();
+  const { initializeReAuthentication, isReAuthenticating } =
+    useReAuthenticate();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -50,13 +51,13 @@ export function ChangeEmailDialog() {
       toast.success("Email added!", {
         description: "You will receive an email with a verification code.",
       });
-      navigate("/account/verify-email");
+      navigate("/account/verify-email?next=/account");
     } catch (error) {
       if (needReAuthentication(error)) {
-        initializeReAuthentication(
-          () => setShowDialog(true),
-          () => setShowDialog(false),
-        );
+        initializeReAuthentication({
+          onReAuthenticated: () => setShowDialog(true),
+          onCancel: () => setShowDialog(false),
+        });
         return;
       }
 

@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useSession } from "@/hooks/use-session";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { regenerateRecoveryCodes } from "@/http/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
@@ -22,7 +22,8 @@ import { getErrorMessage } from "@/utils/errors";
 export function ViewRecoveryCodes() {
   const queryClient = useQueryClient();
   const [showDialog, setShowDialog] = useState(false);
-  const { initializeReAuthentication, isReAuthenticating } = useSession();
+  const { initializeReAuthentication, isReAuthenticating } =
+    useReAuthenticate();
 
   const {
     mutate: regenerateRecoveryCodesMutation,
@@ -41,13 +42,13 @@ export function ViewRecoveryCodes() {
       }
 
       if (needReAuthentication(error)) {
-        initializeReAuthentication(
-          () => {
+        initializeReAuthentication({
+          onReAuthenticated: () => {
             setShowDialog(true);
             regenerateRecoveryCodesMutation();
           },
-          () => setShowDialog(false),
-        );
+          onCancel: () => setShowDialog(false),
+        });
         return;
       }
 

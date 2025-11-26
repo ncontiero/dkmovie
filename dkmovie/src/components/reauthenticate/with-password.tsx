@@ -1,9 +1,9 @@
-import type { ReauthenticateProps } from "./types";
+import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useSession } from "@/hooks/use-session";
 import { reAuth } from "@/http/auth/re-auth";
 import { type ReAuthSchema, reAuthSchema } from "@/schemas/auth/re-auth";
 import { getErrorMessage } from "@/utils/errors";
@@ -14,9 +14,9 @@ import { PasswordInput } from "../ui/password-input";
 
 export function ReAuthenticateWithPassword({
   onReAuthenticated,
-  cancel,
-}: ReauthenticateProps) {
-  const queryClient = useQueryClient();
+  onCancel,
+}: ReAuthenticationProps) {
+  const { setSession } = useSession();
 
   const {
     register,
@@ -29,7 +29,7 @@ export function ReAuthenticateWithPassword({
   const onSubmit: SubmitHandler<ReAuthSchema> = async (data) => {
     try {
       const res = await reAuth(data);
-      queryClient.setQueryData(["session"], res);
+      setSession(res);
       toast.success("Re-authenticated successfully");
       onReAuthenticated();
     } catch (error) {
@@ -58,7 +58,7 @@ export function ReAuthenticateWithPassword({
           type="button"
           variant="outline"
           disabled={isSubmitting}
-          onClick={cancel}
+          onClick={onCancel}
         >
           Cancel
         </Button>

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
-import { useSession } from "@/hooks/use-session";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { getRecoveryCodes } from "@/http/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
 import { CopyButton } from "../ui/copy-button";
@@ -12,7 +12,8 @@ interface RecoveryCodesContentProps {
 export function RecoveryCodesContent({
   onReAuthenticationCancel,
 }: RecoveryCodesContentProps) {
-  const { initializeReAuthentication, isReAuthenticating } = useSession();
+  const { initializeReAuthentication, isReAuthenticating } =
+    useReAuthenticate();
 
   const {
     data: recoveryCodes,
@@ -26,11 +27,11 @@ export function RecoveryCodesContent({
   });
 
   if (needReAuthentication(getRecoveryCodesError)) {
-    initializeReAuthentication(
-      getRecoveryCodesRefetch,
-      onReAuthenticationCancel,
-    );
-    return;
+    initializeReAuthentication({
+      onReAuthenticated: getRecoveryCodesRefetch,
+      onCancel: onReAuthenticationCancel,
+    });
+    return null;
   }
 
   if (isReAuthenticating) return null;

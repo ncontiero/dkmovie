@@ -8,13 +8,8 @@ export interface SessionContextProps {
   sessionMFATypes: TwoFactorAuthenticatorType[];
   isAuthenticated: boolean;
   isLoadingSession: boolean;
-  isReAuthenticating: boolean;
   setSession: (newSession?: CurrentSessionResponse | null) => void;
   logout: () => void;
-  initializeReAuthentication: (
-    onReAuthenticated?: () => void,
-    onCancel?: () => void,
-  ) => void;
   initialize2FAIfNecessary: (error?: unknown, nextPath?: string) => void;
 }
 
@@ -23,15 +18,11 @@ export const SessionContext = createContext<SessionContextProps>({
   sessionMFATypes: [],
   isAuthenticated: false,
   isLoadingSession: true,
-  isReAuthenticating: false,
   setSession: () => {
     throw new Error("setSession function not implemented");
   },
   logout: () => {
     throw new Error("logout function not implemented");
-  },
-  initializeReAuthentication: () => {
-    throw new Error("initializeReAuthentication function not implemented");
   },
   initialize2FAIfNecessary: () => {
     throw new Error("initialize2FAIfNecessary function not implemented");

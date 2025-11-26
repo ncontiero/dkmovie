@@ -24,7 +24,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useSession } from "@/hooks/use-session";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
 import {
   type ConfirmTOTPSchema,
@@ -35,7 +35,8 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function SetupTOTP() {
   const queryClient = useQueryClient();
-  const { initializeReAuthentication, isReAuthenticating } = useSession();
+  const { initializeReAuthentication, isReAuthenticating } =
+    useReAuthenticate();
   const [showSetupTOTPDialog, setShowSetupTOTPDialog] = useState(false);
   const [isToGetRecoveryCodes, setIsToGetRecoveryCodes] = useState(false);
 
@@ -79,7 +80,10 @@ export function SetupTOTP() {
       }
 
       if (needReAuthentication(error)) {
-        initializeReAuthentication(() => handleSubmit(onSubmit)());
+        initializeReAuthentication({
+          onReAuthenticated: () => handleSubmit(onSubmit)(),
+          onCancel: () => setShowSetupTOTPDialog(false),
+        });
         return;
       }
 

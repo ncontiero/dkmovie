@@ -1,3 +1,5 @@
+export type NonUndefined<T> = T;
+
 export interface User {
   id: number;
   name: string;

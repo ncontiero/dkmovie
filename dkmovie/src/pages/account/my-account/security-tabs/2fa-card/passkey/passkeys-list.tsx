@@ -1,5 +1,6 @@
+import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
 import type { Get2FAAuthenticatorWebAuthn } from "@/http/account/2fa";
-import { Activity, useState } from "react";
+import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -35,7 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useSession } from "@/hooks/use-session";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import {
   deleteWebAuthCredentials,
   renameWebAuthCredentials,
@@ -50,7 +51,7 @@ interface PasskeyItemProps {
   readonly passkey: Get2FAAuthenticatorWebAuthn;
   readonly deletePasskey: (ids: number[]) => void;
   readonly isDeleting: boolean;
-  readonly initializeReAuthentication: (callback: () => void) => void;
+  readonly initializeReAuthentication: InitializeReAuthentication;
 }
 
 function PasskeyItem({
@@ -60,6 +61,8 @@ function PasskeyItem({
   initializeReAuthentication,
 }: PasskeyItemProps) {
   const queryClient = useQueryClient();
+  const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+
   const createdAt = new Date(passkey.created_at * 1000);
   const lastUsedAt = passkey.last_used_at
     ? new Date(passkey.last_used_at * 1000)
@@ -92,10 +95,17 @@ function PasskeyItem({
       await renameWebAuthCredentials(passkey.id, data);
       toast.success("Passkey renamed successfully");
       queryClient.invalidateQueries({ queryKey: ["2fa"] });
+      setIsRenameDialogOpen(false);
     } catch (error) {
       if (needReAuthentication(error)) {
-        initializeReAuthentication(() => {
-          handleSubmit(onSubmit)();
+        initializeReAuthentication({
+          onReAuthenticated: () => {
+            setIsRenameDialogOpen(true);
+            handleSubmit(onSubmit)();
+          },
+          onCancel: () => {
+            setIsRenameDialogOpen(false);
+          },
         });
         return;
       }
@@ -117,7 +127,7 @@ function PasskeyItem({
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Dialog>
+        <Dialog open={isRenameDialogOpen} onOpenChange={setIsRenameDialogOpen}>
           <DialogTrigger asChild>
             <Button
               type="button"
@@ -227,7 +237,7 @@ interface PasskeysListProps {
 
 export function PasskeysList({ passkeys }: PasskeysListProps) {
   const queryClient = useQueryClient();
-  const { initializeReAuthentication, isReAuthenticating } = useSession();
+  const { initializeReAuthentication } = useReAuthenticate();
   const [open, setOpen] = useState(false);
 
   const { mutate: deletePasskey, isPending: isDeleting } = useMutation({
@@ -238,7 +248,9 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
     },
     onError: (error, ids) => {
       if (needReAuthentication(error)) {
-        initializeReAuthentication(() => deletePasskey(ids));
+        initializeReAuthentication({
+          onReAuthenticated: () => deletePasskey(ids),
+        });
         return;
       }
       toast.error("Failed to delete passkey");
@@ -246,32 +258,28 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
   });
 
   return (
-    <Activity mode={isReAuthenticating ? "hidden" : "visible"}>
-      <Collapsible open={open} onOpenChange={setOpen} className="mt-2 w-full">
-        <CollapsibleTrigger className="text-muted-foreground flex items-center gap-1 text-sm [&>svg]:size-4">
-          <span>{passkeys.length} passkeys registered</span>
-          <ChevronDown className={`${open ? "rotate-180" : ""} duration-200`} />
-          <span className="sr-only">
-            {open ? "Close" : "Open"} passkeys list
-          </span>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <Separator className="my-3" />
-          <ul className="space-y-3">
-            {passkeys
-              .sort((a, b) => b.created_at - a.created_at)
-              .map((key) => (
-                <PasskeyItem
-                  key={key.id}
-                  passkey={key}
-                  deletePasskey={deletePasskey}
-                  isDeleting={isDeleting}
-                  initializeReAuthentication={initializeReAuthentication}
-                />
-              ))}
-          </ul>
-        </CollapsibleContent>
-      </Collapsible>
-    </Activity>
+    <Collapsible open={open} onOpenChange={setOpen} className="mt-2 w-full">
+      <CollapsibleTrigger className="text-muted-foreground flex items-center gap-1 text-sm [&>svg]:size-4">
+        <span>{passkeys.length} passkeys registered</span>
+        <ChevronDown className={`${open ? "rotate-180" : ""} duration-200`} />
+        <span className="sr-only">{open ? "Close" : "Open"} passkeys list</span>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <Separator className="my-3" />
+        <ul className="space-y-3">
+          {passkeys
+            .sort((a, b) => b.created_at - a.created_at)
+            .map((key) => (
+              <PasskeyItem
+                key={key.id}
+                passkey={key}
+                deletePasskey={deletePasskey}
+                isDeleting={isDeleting}
+                initializeReAuthentication={initializeReAuthentication}
+              />
+            ))}
+        </ul>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

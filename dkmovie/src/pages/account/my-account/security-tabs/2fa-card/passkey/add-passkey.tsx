@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSession } from "@/hooks/use-session";
+import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import {
   addWebAuthCredentials,
   getWebAuthCredentials,
@@ -31,7 +31,8 @@ import { needReAuthentication } from "@/utils/auth-flows";
 
 export function AddPasskey() {
   const queryClient = useQueryClient();
-  const { initializeReAuthentication, isReAuthenticating } = useSession();
+  const { initializeReAuthentication, isReAuthenticating } =
+    useReAuthenticate();
   const [showDialog, setShowDialog] = useState(false);
   const [recoveryCodesGenerated, setRecoveryCodesGenerated] = useState(false);
 
@@ -54,6 +55,7 @@ export function AddPasskey() {
         publicKey,
       })) as PublicKeyCredential;
       const res = await addWebAuthCredentials(credential.toJSON(), data);
+
       toast.success("Passkey added successfully");
       if (res?.meta?.recovery_codes_generated) {
         setRecoveryCodesGenerated(true);
@@ -63,9 +65,14 @@ export function AddPasskey() {
       reset();
     } catch (error) {
       if (needReAuthentication(error)) {
-        initializeReAuthentication(() => {
-          setShowDialog(true);
-          handleSubmit(onSubmit)();
+        initializeReAuthentication({
+          onReAuthenticated: () => {
+            setShowDialog(true);
+            handleSubmit(onSubmit)();
+          },
+          onCancel: () => {
+            setShowDialog(false);
+          },
         });
         return;
       }
