@@ -35,7 +35,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       toast.loading("Logging out...", { id: "logout" });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.clear();
       toast.success("Logged out successfully", { id: "logout" });
     },
     onError: () => {
