@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=dkmovie
+POSTGRES_USER=7xe9AWjgHXbOt4I5yazQeXIUH8DJ18kQ
+POSTGRES_PASSWORD=wOsi2eDgJYjgQVG1DCnqiyOvPGxi7nsPhPqqNQuhkOklL1c4T1BFQST2YMkHuJlU
