@@ -42,6 +42,7 @@ export default function ForgotPasswordPage() {
       if (passwordResetByCodeFlow(error)) {
         toast.success("Check your email for the verification code.");
         navigate("/auth/password/reset");
+        return;
       }
 
       const errors = getErrorMessage(error);

@@ -48,6 +48,7 @@ export default function ResetPasswordPage() {
           navigate("/auth/password/forgot");
           return;
         }
+
         if (error.status === 401) {
           setSession(null);
           toast.success("Password reset successful.", {

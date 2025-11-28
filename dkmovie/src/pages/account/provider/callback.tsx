@@ -13,6 +13,7 @@ export default function ProviderCallbackPage() {
 
     if (!error) {
       navigate("/account/security");
+      return;
     }
   });
 
