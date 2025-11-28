@@ -1,5 +1,7 @@
 import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
+import type { ProvidersResponse } from "@/http/account/providers";
 import type { SocialAccount } from "@/http/get-config";
+import type { DisconnectProviderMutation } from "./type";
 import { Loader } from "lucide-react";
 import { ProviderButton, ProviderIcon } from "@/components/provider-button";
 import {
@@ -19,29 +21,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface AccountCardProps {
   readonly account: SocialAccount;
-  readonly accountId?: string;
-  readonly isConnected?: boolean;
+  readonly provider?: ProvidersResponse["data"][0];
   readonly hasPassword?: boolean;
-  readonly disconnectProvider: ({
-    provider,
-    accountId,
-  }: {
-    provider: string;
-    accountId: string;
-  }) => void;
+  readonly disconnectProvider: (props: DisconnectProviderMutation) => void;
   readonly isDisconnectingProvider?: boolean;
   readonly initializeReAuthentication: InitializeReAuthentication;
 }
 
 export function AccountCard({
   account,
-  accountId,
-  isConnected = true,
+  provider,
   hasPassword = false,
   isDisconnectingProvider = false,
   disconnectProvider,
   initializeReAuthentication,
 }: AccountCardProps) {
+  const isConnected = !!provider;
+  const accountId = provider?.uid;
+
   return (
     <div className="rounded-lg border p-4">
       <div className="flex items-center justify-between">

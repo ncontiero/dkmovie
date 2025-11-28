@@ -1,3 +1,4 @@
+import type { DisconnectProviderMutation } from "./type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -8,13 +9,13 @@ import {
   CardFooterDescription,
   CardTitle,
 } from "@/components/card";
+import { useFetchSocialAccounts } from "@/hooks/fetch/use-fetch-social-accounts";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { useSession } from "@/hooks/use-session";
 import {
   disconnectProvider,
   getConnectedProviders,
 } from "@/http/account/providers";
-import { getSocialAccounts } from "@/http/get-config";
 import { needReAuthentication } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 import { AccountCard, AccountCardSkeleton } from "./account-card";
@@ -24,21 +25,12 @@ export function ConnectedAccountsCard() {
   const { initializeReAuthentication } = useReAuthenticate();
   const queryClient = useQueryClient();
 
-  const { data: socialAccounts, isLoading: isSocialAccountsLoading } = useQuery(
-    {
-      queryKey: ["social-accounts"],
-      queryFn: async () => {
-        return await getSocialAccounts();
-      },
-      staleTime: Infinity,
-    },
-  );
+  const { data: socialAccounts, isLoading: isSocialAccountsLoading } =
+    useFetchSocialAccounts();
 
   const { data: providers, isLoading: isProvidersLoading } = useQuery({
     queryKey: ["connected-accounts"],
-    queryFn: async () => {
-      return await getConnectedProviders();
-    },
+    queryFn: getConnectedProviders,
     staleTime: Infinity,
     select: (data) => data.data,
   });
@@ -47,13 +39,7 @@ export function ConnectedAccountsCard() {
     mutate: disconnectProviderMutation,
     isPending: isDisconnectingProvider,
   } = useMutation({
-    mutationFn: async ({
-      provider,
-      accountId,
-    }: {
-      provider: string;
-      accountId: string;
-    }) => {
+    mutationFn: async ({ provider, accountId }: DisconnectProviderMutation) => {
       return await disconnectProvider(provider, accountId);
     },
     onSuccess: ({ data }) => {
@@ -69,6 +55,7 @@ export function ConnectedAccountsCard() {
         });
         return;
       }
+
       const errors = getErrorMessage(error);
       if (errors) {
         toast.error(errors);
@@ -89,37 +76,19 @@ export function ConnectedAccountsCard() {
           {isSocialAccountsLoading || isProvidersLoading ? (
             <AccountCardSkeleton />
           ) : (
-            <>
-              {providers?.map(({ provider, uid }) => (
-                <AccountCard
-                  key={provider.id}
-                  accountId={uid}
-                  account={provider}
-                  hasPassword={session?.user.has_usable_password}
-                  disconnectProvider={disconnectProviderMutation}
-                  isDisconnectingProvider={isDisconnectingProvider}
-                  initializeReAuthentication={initializeReAuthentication}
-                />
-              ))}
-              {socialAccounts
-                ?.filter(
-                  (account) =>
-                    !providers?.some(
-                      ({ provider }) => provider.id === account.id,
-                    ),
-                )
-                .map((account) => (
-                  <AccountCard
-                    key={account.id}
-                    account={account}
-                    isConnected={false}
-                    hasPassword={session?.user.has_usable_password}
-                    disconnectProvider={disconnectProviderMutation}
-                    isDisconnectingProvider={isDisconnectingProvider}
-                    initializeReAuthentication={initializeReAuthentication}
-                  />
-                ))}
-            </>
+            socialAccounts?.map((account) => (
+              <AccountCard
+                key={account.id}
+                provider={providers?.find(
+                  ({ provider }) => provider.id === account.id,
+                )}
+                account={account}
+                hasPassword={session?.user.has_usable_password}
+                disconnectProvider={disconnectProviderMutation}
+                isDisconnectingProvider={isDisconnectingProvider}
+                initializeReAuthentication={initializeReAuthentication}
+              />
+            ))
           )}
         </div>
       </CardContent>

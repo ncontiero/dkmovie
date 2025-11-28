@@ -1,6 +1,8 @@
 import type { BaseSyntheticEvent, PropsWithChildren } from "react";
+import { Loader2 } from "lucide-react";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
+import { useFetchSocialAccounts } from "@/hooks/fetch/use-fetch-social-accounts";
 import { useNextPath } from "@/hooks/use-next-path";
 import { PasskeyAuthButton } from "./passkey-auth-button";
 import { ProviderButton } from "./provider-button";
@@ -27,90 +29,116 @@ export function BaseAuthForm({
   isAuthenticated = false,
   type = "sign-in",
 }: BaseAuthFormProps) {
-  const { nextPath } = useNextPath();
+  const { data: socialAccounts, isLoading: isSocialAccountsLoading } =
+    useFetchSocialAccounts();
 
+  const { nextPath } = useNextPath();
   const nextPathParam = nextPath ? `?next=${nextPath}` : "";
 
   return (
     <main className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md rounded-lg border shadow-lg">
-        <div className="space-y-6 p-6 sm:p-8">
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-xl font-semibold">{title}</h1>
-            <p className="text-muted-foreground text-sm font-medium">
-              {description}
-            </p>
+        {isSocialAccountsLoading ? (
+          <div className="flex h-[630px] items-center justify-center">
+            <Loader2 className="text-primary size-20 animate-spin" />
           </div>
-          {type === "sign-in" || type === "sign-up" ? (
-            <>
-              <div className="flex flex-col items-center justify-center gap-2">
-                <ProviderButton className="w-full" />
-                {type === "sign-in" && <PasskeyAuthButton className="w-full" />}
-              </div>
-              <div className="text-muted-foreground flex items-center justify-center text-sm">
-                <Separator className="flex-1" />
-                <p className="mx-3">Or {type} in with</p>
-                <Separator className="flex-1" />
-              </div>
-            </>
-          ) : (
-            <Separator />
-          )}
-          {formSubmit ? (
-            <form onSubmit={formSubmit} className="space-y-6">
-              {children}
-            </form>
-          ) : (
-            children
-          )}
-          {type === "forgot-password" && !isAuthenticated ? (
-            <>
-              <div className="flex items-center justify-center">
-                <Separator className="flex-1" />
-                <p className="text-muted-foreground mx-3 text-sm">
-                  Or, sign in with another method
+        ) : (
+          <>
+            <div className="space-y-6 p-6 sm:p-8">
+              <div className="flex flex-col items-center gap-2 text-center">
+                <h1 className="text-xl font-semibold">{title}</h1>
+                <p className="text-muted-foreground text-sm font-medium">
+                  {description}
                 </p>
-                <Separator className="flex-1" />
               </div>
-              <div className="flex flex-col items-center justify-center gap-2">
-                <ProviderButton className="w-full" />
-                <PasskeyAuthButton className="w-full" />
+              {type === "sign-in" || type === "sign-up" ? (
+                <>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    {socialAccounts?.map((provider) => (
+                      <ProviderButton
+                        key={provider.id}
+                        className="w-full"
+                        provider={provider.id}
+                        text={`Continue with ${provider.name}`}
+                      />
+                    ))}
+                    {type === "sign-in" && (
+                      <PasskeyAuthButton className="w-full" />
+                    )}
+                  </div>
+                  <div className="text-muted-foreground flex items-center justify-center text-sm">
+                    <Separator className="flex-1" />
+                    <p className="mx-3">Or {type} in with</p>
+                    <Separator className="flex-1" />
+                  </div>
+                </>
+              ) : (
+                <Separator />
+              )}
+              {formSubmit ? (
+                <form onSubmit={formSubmit} className="space-y-6">
+                  {children}
+                </form>
+              ) : (
+                children
+              )}
+              {type === "forgot-password" && !isAuthenticated ? (
+                <>
+                  <div className="flex items-center justify-center">
+                    <Separator className="flex-1" />
+                    <p className="text-muted-foreground mx-3 text-sm">
+                      Or, sign in with another method
+                    </p>
+                    <Separator className="flex-1" />
+                  </div>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    {socialAccounts?.map((provider) => (
+                      <ProviderButton
+                        key={provider.id}
+                        className="w-full"
+                        provider={provider.id}
+                        text={`Continue with ${provider.name}`}
+                      />
+                    ))}
+                    <PasskeyAuthButton className="w-full" />
+                  </div>
+                </>
+              ) : null}
+            </div>
+            {!isAuthenticated && type !== "2fa" && type !== "verify-email" && (
+              <div className="border-t px-9 py-4">
+                {type === "sign-in" ? (
+                  <p className="text-muted-foreground text-center text-sm font-medium">
+                    Don&apos;t have an account?{" "}
+                    <Link to={`/auth/sign-up${nextPathParam}`} size="sm">
+                      Sign up
+                    </Link>
+                  </p>
+                ) : type === "sign-up" ? (
+                  <p className="text-muted-foreground text-center text-sm font-medium">
+                    Already have an account?{" "}
+                    <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
+                      Sign in
+                    </Link>
+                  </p>
+                ) : type === "forgot-password" ? (
+                  <p className="text-muted-foreground text-center text-sm font-medium">
+                    Remember your password?{" "}
+                    <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
+                      Sign in
+                    </Link>
+                  </p>
+                ) : type === "reset-password" ? (
+                  <p className="text-muted-foreground text-center text-sm font-medium">
+                    Go back to{" "}
+                    <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
+                      Sign in
+                    </Link>
+                  </p>
+                ) : null}
               </div>
-            </>
-          ) : null}
-        </div>
-        {!isAuthenticated && type !== "2fa" && type !== "verify-email" && (
-          <div className="border-t px-9 py-4">
-            {type === "sign-in" ? (
-              <p className="text-muted-foreground text-center text-sm font-medium">
-                Don&apos;t have an account?{" "}
-                <Link to={`/auth/sign-up${nextPathParam}`} size="sm">
-                  Sign up
-                </Link>
-              </p>
-            ) : type === "sign-up" ? (
-              <p className="text-muted-foreground text-center text-sm font-medium">
-                Already have an account?{" "}
-                <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                  Sign in
-                </Link>
-              </p>
-            ) : type === "forgot-password" ? (
-              <p className="text-muted-foreground text-center text-sm font-medium">
-                Remember your password?{" "}
-                <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                  Sign in
-                </Link>
-              </p>
-            ) : type === "reset-password" ? (
-              <p className="text-muted-foreground text-center text-sm font-medium">
-                Go back to{" "}
-                <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                  Sign in
-                </Link>
-              </p>
-            ) : null}
-          </div>
+            )}
+          </>
         )}
       </div>
     </main>

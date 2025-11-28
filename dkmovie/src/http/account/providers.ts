@@ -1,7 +1,7 @@
 import type { SocialAccount } from "../get-config";
 import { authAccountHttpClient } from "../client";
 
-interface ProvidersResponse {
+export interface ProvidersResponse {
   data: { provider: SocialAccount; uid: string }[];
 }
 
