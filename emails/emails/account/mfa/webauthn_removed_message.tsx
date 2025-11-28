@@ -1,30 +1,22 @@
+import { HelloText } from "@/components/hello-text";
 import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { RequestOrigins } from "@/components/request-origins";
 import { Text } from "@/components/text";
-import { SITE_NAME, USERNAME } from "@/utils/constants";
+import { translate, translateWithSiteName } from "@/utils/translate";
 
-interface WebauthnRemovedProps {
-  readonly username?: string;
-  readonly siteName?: string;
-}
-
-export default function WebauthnRemoved({
-  username = USERNAME,
-  siteName = SITE_NAME,
-}: WebauthnRemovedProps) {
-  const title = "Security Key Removed";
-  const text = `Hello, ${username}. A security key has been removed from your ${siteName} account.`;
+export default function WebauthnRemoved() {
+  const title = translate("Security Key Removed");
+  const text = translate("A security key has been removed from your account.");
 
   return (
-    <Layout title={title} previewText={text} siteName={siteName}>
-      <Text>
-        Hello, <strong>{username}</strong>.
-      </Text>
+    <Layout title={title} previewText={text}>
+      <HelloText />
 
-      <Text>
-        A security key has been removed from your <strong>{siteName}</strong>{" "}
-        account.
+      <Text className="mt-2 text-sm">
+        {translateWithSiteName(
+          "A security key has been removed from your <strong>{{site_name}}</strong> account.",
+        )}
       </Text>
 
       <NotMakeThisChange />

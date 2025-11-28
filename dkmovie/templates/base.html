@@ -1,13 +1,14 @@
-{% load static %}
+{% load static i18n %}
 {% load render_bundle webpack_static from webpack_loader %}
 
 <!doctype html>
-<html class="opacity-0" lang="en">
+{% get_current_language as LANGUAGE_CODE %}
+<html class="opacity-0" lang="{{ LANGUAGE_CODE }}">
   <head>
     <meta charset="utf-8" />
     <meta content="ie=edge" http-equiv="x-ua-compatible" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A Django project of films and series." />
+    <meta name="description" content="{% trans 'A Django project of films and series.' %}" />
     <meta name="author" content="Nicolas Contiero" />
     <title>DKMovie</title>
     <link type="image/svg+xml" href="{% webpack_static 'assets/favicon.svg' %}" rel="icon" />

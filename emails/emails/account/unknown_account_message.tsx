@@ -1,51 +1,54 @@
 import { Section } from "@react-email/components";
 import { Button } from "@/components/button";
+import { HelloText } from "@/components/hello-text";
 import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { Text } from "@/components/text";
-import { SITE_NAME } from "@/utils/constants";
+import { translate, translateWithSiteName } from "@/utils/translate";
 
 interface UnknownAccountProps {
-  readonly siteName?: string;
-  readonly email?: string;
   readonly signupUrl?: string;
 }
 
 export default function UnknownAccount({
-  siteName = SITE_NAME,
-  email = "{{ email }}",
   signupUrl = "{{ signup_url }}",
 }: UnknownAccountProps) {
-  const title = "Account Not Found";
-  const text = `Hello. You are receiving this email because you, or someone else, tried to access or reset a password for an account associated with ${email}. However, we do not have any record of an account with this email address in our database.`;
+  const title = translate("Account Not Found");
+  const text = translate(
+    "You are receiving this email because you, or someone else, tried to access or reset a password for an account.",
+  );
 
   return (
-    <Layout title={title} previewText={text} siteName={siteName}>
-      <Text className="mb-0 text-sm">Hello.</Text>
+    <Layout title={title} previewText={text}>
+      <HelloText />
 
       <Text className="mt-2 mb-0 text-sm">
-        You are receiving this email because you, or someone else, tried to
-        access or reset a password for an account associated with{" "}
-        <strong>{email}</strong>.
+        {translate(
+          "You are receiving this email because you, or someone else, tried to access or reset a password for an account associated with <strong>{{email}}</strong>.",
+        )}
       </Text>
 
       <Text className="mt-2 mb-0 text-sm">
-        However, we do not have any record of an account with this email address
-        in our database.
+        {translate(
+          "However, we do not have any record of an account with this email address in our database.",
+        )}
       </Text>
 
       <Text className="mt-2 text-sm">
-        If you would like to join <strong>{siteName}</strong>, you can sign up
-        for a new account using the link below.
+        {translateWithSiteName(
+          "If you would like to join <strong>{{site_name}}</strong>, you can sign up for a new account using the link below.",
+        )}
       </Text>
 
       <Section className="my-8 text-center">
-        <Button href={signupUrl}>Create an Account</Button>
+        <Button href={signupUrl}>{translate("Create an Account")}</Button>
       </Section>
 
       <NotMakeThisChange
         isNotRequested={false}
-        text="This email can be safely ignored if you did not try to access our site. It is likely a typo by someone else entering their email address."
+        text={translate(
+          "This email can be safely ignored if you did not try to access our site. It is likely a typo by someone else entering their email address.",
+        )}
         addSupportContact={false}
       />
     </Layout>

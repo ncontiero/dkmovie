@@ -1,22 +1,19 @@
 import { Section } from "@react-email/components";
 import { Button } from "@/components/button";
+import { HelloText } from "@/components/hello-text";
 import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { RequestOrigins } from "@/components/request-origins";
 import { Text } from "@/components/text";
-import { SITE_NAME, USERNAME } from "@/utils/constants";
+import { translate, translateWithSiteName } from "@/utils/translate";
 import { resolveUrl } from "@/utils/urls";
 
 export interface PasswordChangedProps {
-  readonly username?: string;
-  readonly siteName?: string;
   readonly isResetPassword?: boolean;
   readonly isPasswordSet?: boolean;
 }
 
 export default function PasswordChanged({
-  username = USERNAME,
-  siteName = SITE_NAME,
   isResetPassword = false,
   isPasswordSet = false,
 }: PasswordChangedProps) {
@@ -24,31 +21,31 @@ export default function PasswordChanged({
     ? "Reset"
     : isPasswordSet
       ? "Set"
-      : "Change";
+      : "Changed";
 
-  const title = `Password ${titleAction} Successful`;
-  const text = `Hello, ${username}. This email is to confirm that the password for your ${siteName} account has been successfully ${titleAction.toLowerCase()}.`;
+  const title = translate(`Password ${titleAction} Successfully`);
+  const text = translate(
+    `This email is to confirm that your password has been successfully ${titleAction.toLowerCase()}.`,
+  );
 
   const loginUrl = resolveUrl("/auth/sign-in");
 
   return (
-    <Layout title={title} previewText={text} siteName={siteName}>
-      <Text className="mb-0 text-sm">
-        Hello, <strong>{username}</strong>.
-      </Text>
+    <Layout title={title} previewText={text}>
+      <HelloText />
 
       <Text className="mt-2 mb-0 text-sm">
-        This email is to confirm that the password for your{" "}
-        <strong>{siteName}</strong> account has been successfully{" "}
-        {titleAction.toLowerCase()}.
+        {translateWithSiteName(
+          `This email is to confirm that the password for your <strong>{{site_name}}</strong> account has been successfully ${titleAction.toLowerCase()}.`,
+        )}
       </Text>
 
       <Text className="mt-2 text-sm">
-        You can now log in using your new password.
+        {translate("You can now log in using your new password.")}
       </Text>
 
       <Section className="my-8 text-center">
-        <Button href={loginUrl}>Log In</Button>
+        <Button href={loginUrl}>{translate("Log In")}</Button>
       </Section>
 
       <NotMakeThisChange addResetPassword />

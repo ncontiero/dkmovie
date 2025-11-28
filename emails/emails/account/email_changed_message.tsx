@@ -1,41 +1,39 @@
 import { Section } from "@react-email/components";
+import { HelloText } from "@/components/hello-text";
 import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { RequestOrigins } from "@/components/request-origins";
 import { Text } from "@/components/text";
-import { SITE_NAME, USERNAME } from "@/utils/constants";
+import { translate, translateWithSiteName } from "@/utils/translate";
 
 interface EmailChangedProps {
-  readonly username?: string;
   readonly oldEmail?: string;
   readonly newEmail?: string;
-  readonly siteName?: string;
 }
 
 export default function EmailChanged({
-  username = USERNAME,
   oldEmail = "{{ from_email }}",
   newEmail = "{{ to_email }}",
-  siteName = SITE_NAME,
 }: EmailChangedProps) {
-  const title = "Email Changed";
-  const text = `Hello, ${username}. We are sending this message to confirm that the email address associated with your ${siteName} account has been changed.`;
+  const title = translate("Email Changed");
+  const text = translate(
+    "We are sending this message to confirm that your email address has been changed.",
+  );
 
   return (
-    <Layout title={title} previewText={text} siteName={siteName}>
-      <Text className="mb-0 text-sm">
-        Hello, <strong>{username}</strong>.
-      </Text>
+    <Layout title={title} previewText={text}>
+      <HelloText />
 
       <Text className="mt-2 text-sm">
-        We are sending this message to confirm that the email address associated
-        with your <strong>{siteName}</strong> account has been changed.
+        {translateWithSiteName(
+          "We are sending this message to confirm that the email address associated with your <strong>{{site_name}}</strong> account has been changed.",
+        )}
       </Text>
 
       <Section className="bg-muted border-border my-5 rounded-sm border p-3.5">
         <Text className="m-0 mb-2.5 text-sm">
           <strong className="text-muted-foreground text-xs tracking-wider uppercase">
-            From:
+            {translate("From:")}
           </strong>
           <br />
           <span className="font-mono text-base">{oldEmail}</span>
@@ -45,7 +43,7 @@ export default function EmailChanged({
 
         <Text className="m-0 text-sm">
           <strong className="text-muted-foreground text-xs tracking-wider uppercase">
-            To:
+            {translate("To:")}
           </strong>
           <br />
           <span className="font-mono text-base font-semibold">{newEmail}</span>
@@ -53,7 +51,7 @@ export default function EmailChanged({
       </Section>
 
       <Text className="text-sm">
-        If you made this change, no further action is required.
+        {translate("If you made this change, no further action is required.")}
       </Text>
 
       <NotMakeThisChange addResetPassword />

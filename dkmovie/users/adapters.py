@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import typing
 
 from allauth.account.adapter import DefaultAccountAdapter
@@ -13,16 +12,8 @@ if typing.TYPE_CHECKING:
     from .models import User
 
 
-logger = logging.getLogger(__name__)
-
-
 class AccountAdapter(DefaultAccountAdapter):
     def send_mail(self, template_prefix, email, context):
-        """
-        Overrides the default send_mail method to change the template directory.
-        Default path is 'account/email'.
-        We want to change it to 'emails/account'.
-        """
         # Check if the standard path is in the prefix and replace it
         if "account/email" in template_prefix:
             template_prefix = template_prefix.replace("account/email", "emails/account")
@@ -36,7 +27,7 @@ class AccountAdapter(DefaultAccountAdapter):
                 "socialemails/account",
                 "emails/account/socialaccount",
             )
-        # Call the parent class method with the new prefix
+
         super().send_mail(template_prefix, email, context)
 
 

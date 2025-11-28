@@ -16,7 +16,7 @@ import { Footer } from "./footer";
 import { Header } from "./header";
 
 export interface LayoutProps extends PropsWithChildren {
-  readonly previewText: string;
+  readonly previewText?: string;
   readonly title?: string;
   readonly siteName?: string;
 }
@@ -57,32 +57,38 @@ export function Layout({
   siteName = SITE_NAME,
 }: LayoutProps) {
   return (
-    <Html>
-      <Tailwind config={tailwindConfig}>
-        <Head />
-        <Preview>{previewText}</Preview>
+    <>
+      {`{% load i18n account %}`}
+      {`{% get_current_language as LANGUAGE_CODE %}`}
+      {`{% autoescape off %}`}
+      <Html lang="{{ LANGUAGE_CODE }}">
+        <Tailwind config={tailwindConfig}>
+          <Head />
+          {previewText ? <Preview>{previewText}</Preview> : null}
 
-        <Body className="bg-background m-auto px-2 font-sans">
-          <Container className="border-border mx-auto my-10 max-w-[500px] rounded-[6px] border border-solid p-5">
-            <Header siteName={siteName} />
+          <Body className="bg-background m-auto px-2 font-sans">
+            <Container className="border-border mx-auto my-10 max-w-[500px] rounded-[6px] border border-solid p-5">
+              <Header siteName={siteName} />
 
-            <Section>
-              {title ? (
-                <Heading
-                  as="h2"
-                  className="text-foreground my-6 text-center text-2xl font-semibold"
-                >
-                  {title}
-                </Heading>
-              ) : null}
+              <Section>
+                {title ? (
+                  <Heading
+                    as="h2"
+                    className="text-foreground my-6 text-center text-2xl font-semibold"
+                  >
+                    {title}
+                  </Heading>
+                ) : null}
 
-              {children}
-            </Section>
+                {children}
+              </Section>
 
-            <Footer siteName={siteName} />
-          </Container>
-        </Body>
-      </Tailwind>
-    </Html>
+              <Footer siteName={siteName} />
+            </Container>
+          </Body>
+        </Tailwind>
+      </Html>
+      {`{% endautoescape %}`}
+    </>
   );
 }

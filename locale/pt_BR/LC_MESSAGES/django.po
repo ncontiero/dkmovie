@@ -1,0 +1,529 @@
+# Translations for the DkMovie project
+# Copyright (C) 2025 Nicolas Contiero
+# Nicolas Contiero <contact@ncontiero.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-28 02:11+0000\n"
+"Language: pt-BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "English"
+msgstr "Inglês"
+
+msgid "Portuguese"
+msgstr "Português"
+
+msgid "You're not allowed to access this page."
+msgstr "Você não tem permissão para acessar esta página."
+
+msgid "Looks like something went wrong!"
+msgstr "Parece que algo deu errado!"
+
+msgid "A Django project of films and series."
+msgstr "Um projeto Django de filmes e séries."
+
+#, python-format
+msgid "We noticed a registration attempt using the email %(email)s."
+msgstr "Detectamos uma tentativa de registro usando o e-mail %(email)s."
+
+msgid "Account Already Exists"
+msgstr "Conta já existe"
+
+#, python-format
+msgid "Hello, &lt;strong&gt;%(name)s&lt;/strong&gt;!"
+msgstr "Olá, <strong>%(name)s</strong>!"
+
+msgid "Hello."
+msgstr "Olá."
+
+msgid "We noticed a registration attempt using the email"
+msgstr "Detectamos uma tentativa de registro usando o e-mail"
+
+#, python-format
+msgid ""
+"However, an account already exists on &lt;strong&gt;%(site_name)s&lt;/"
+"strong&gt; with this address."
+msgstr ""
+"No entanto, já existe uma conta no <strong>%(site_name)s</strong> com este "
+"endereço."
+
+msgid ""
+"If you tried to create this account, you can log in now to access your "
+"favorite movies and series."
+msgstr ""
+"Se você tentou criar esta conta, você pode logar agora para acessar seus "
+"filmes e séries favoritos."
+
+msgid "Log in"
+msgstr "Entrar"
+
+msgid "Forgot your password? No problem."
+msgstr "Esqueceu sua senha? Não se preocupe."
+
+msgid "Click here to reset your password."
+msgstr "Clique aqui para redefinir sua senha."
+
+msgid ""
+"If you didn&#x27;t try to create an account recently, you can safely ignore "
+"this email."
+msgstr ""
+"Se você não tentou criar uma conta recentemente, você pode ignorar este e-"
+"mail."
+
+msgid "All rights reserved."
+msgstr "Todos os direitos reservados."
+
+msgid "Your favorite streaming portal."
+msgstr "Seu portal de streaming favorito."
+
+msgid ""
+"We are sending this message to confirm that your email address has been "
+"changed."
+msgstr ""
+"Enviamos esta mensagem para confirmar que o seu endereço de e-mail foi "
+"alterado."
+
+msgid "Email Changed"
+msgstr "E-mail alterado"
+
+#, python-format
+msgid ""
+"We are sending this message to confirm that the email address associated "
+"with your &lt;strong&gt;%(site_name)s&lt;/strong&gt; account has been "
+"changed."
+msgstr ""
+"Enviamos esta mensagem para confirmar que o endereço de e-mail associado à "
+"sua conta no <strong>%(site_name)s</strong> foi alterado."
+
+msgid "From:"
+msgstr "De:"
+
+msgid "To:"
+msgstr "Para:"
+
+msgid "If you made this change, no further action is required."
+msgstr "Se você fez essa alteração, não é necessário nenhuma ação adicional."
+
+msgid "Didn&#x27;t make this change?"
+msgstr "Não fez essa alteração?"
+
+msgid ""
+"If you do not recognize this change then please take proper security "
+"precautions immediately."
+msgstr ""
+"Caso não reconheça esta alteração, tome imediatamente as devidas precauções "
+"de segurança."
+
+msgid "Reset Password"
+msgstr "Redefinir senha"
+
+msgid "Contact Support"
+msgstr "Contate o suporte"
+
+msgid "The change to your account originated from:"
+msgstr "A alteração em sua conta teve origem em:"
+
+msgid "IP Address:"
+msgstr "Endereço IP:"
+
+msgid "User Agent:"
+msgstr ""
+
+msgid "Date:"
+msgstr "Data:"
+
+msgid "Please verify your email address."
+msgstr "Por favor, verifique seu endereço de e-mail."
+
+msgid "Confirm Your Email"
+msgstr "Confirme seu endereço de e-mail"
+
+#, python-format
+msgid ""
+"Please use the verification code below to confirm your email address on &lt;"
+"strong&gt;%(site_name)s&lt;/strong&gt;."
+msgstr ""
+"Por favor, use o código de verificação abaixo para confirmar seu endereço de "
+"e-mail no <strong>%(site_name)s</strong>."
+
+msgid "Verification Code"
+msgstr "Código de verificação"
+
+msgid "Verify Email"
+msgstr "Verificar e-mail"
+
+msgid "Or you can copy and paste this link into your browser:"
+msgstr "Ou você pode copiar e colar este link no seu navegador:"
+
+msgid "Didn&#x27;t request this?"
+msgstr "Você não solicitou isso?"
+
+msgid ""
+"If you didn&#x27;t request this, you can safely ignore this email. It&#x27;s "
+"possible someone entered your email address by mistake."
+msgstr ""
+"Se você não solicitou isso, pode ignorar este e-mail com segurança. É "
+"possível que alguém tenha digitado seu endereço de e-mail por engano."
+
+#, python-format
+msgid ""
+"Please use the verification code below to confirm your email address and "
+"finish setting up your account on &lt;strong&gt;%(site_name)s&lt;/strong&gt;."
+msgstr ""
+"Por favor, utilize o código de verificação abaixo para confirmar seu "
+"endereço de e-mail e concluir a configuração da sua conta em "
+"<strong>%(site_name)s</strong>."
+
+#, python-format
+msgid ""
+"If you didn&#x27;t create an account with %(site_name)s, you can safely "
+"ignore this email. It&#x27;s possible someone entered your email address by "
+"mistake."
+msgstr ""
+"Se você não criou uma conta em %(site_name)s, pode ignorar este e-mail com "
+"segurança. É possível que alguém tenha digitado seu endereço de e-mail por "
+"engano."
+
+msgid "Please Confirm Your Email Address to Complete Registration"
+msgstr "Por favor, confirme seu endereço de e-mail para completar o cadastro"
+
+msgid "Please Confirm Your Email Address"
+msgstr "Por favor, confirme seu endereço de e-mail"
+
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated for "
+"your account."
+msgstr ""
+"Um novo conjunto de códigos de recuperação de Autenticação de Dois Fatores foi "
+"gerado para sua conta."
+
+msgid "Recovery Codes Generated"
+msgstr "Códigos de Recuperação Gerados"
+
+#, python-format
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated for "
+"your &lt;strong&gt;%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"Um novo conjunto de códigos de recuperação de Autenticação de Dois Fatores foi "
+"gerado para sua conta <strong>%(site_name)s</strong>."
+
+msgid "New Recovery Codes Generated"
+msgstr "Novos códigos de recuperação gerados"
+
+msgid "An authenticator app has been activated for your account."
+msgstr "Um aplicativo autenticador foi ativado para sua conta."
+
+msgid "Authenticator App Activated"
+msgstr "Aplicativo autenticador ativado"
+
+#, python-format
+msgid ""
+"An authenticator app has been activated for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"Um aplicativo autenticador foi ativado para sua conta no <strong>%(site_name)s</strong>."
+
+msgid "An authenticator app has been deactivated for your account."
+msgstr "Um aplicativo autenticador foi desativado para sua conta."
+
+msgid "Authenticator App Deactivated"
+msgstr "Aplicativo autenticador desativado"
+
+#, python-format
+msgid ""
+"An authenticator app has been deactivated for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"Um aplicativo autenticador foi desativado para sua conta no <strong>%(site_name)s</strong>."
+
+msgid "A new security key has been added to your account."
+msgstr "Uma nova chave de segurança foi adicionada à sua conta."
+
+msgid "Security Key Added"
+msgstr "Chave de segurança adicionada"
+
+#, python-format
+msgid ""
+"A new security key has been added to your &lt;strong&gt;%(site_name)s&lt;/"
+"strong&gt; account."
+msgstr ""
+"Uma nova chave de segurança foi adicionada à sua conta no <strong>%(site_name)s</strong>."
+
+msgid "A security key has been removed from your account."
+msgstr "Uma chave de segurança foi removida da sua conta."
+
+msgid "Security Key Removed"
+msgstr "Chave de segurança removida"
+
+#, python-format
+msgid ""
+"A security key has been removed from your &lt;strong&gt;%(site_name)s&lt;/"
+"strong&gt; account."
+msgstr ""
+"Uma chave de segurança foi removida da sua conta no <strong>%(site_name)s</strong>."
+
+msgid ""
+"This email is to confirm that your password has been successfully changed."
+msgstr "Este e-mail é para confirmar que a sua senha foi alterada com sucesso."
+
+msgid "Password Changed Successfully"
+msgstr "Senha alterada com sucesso"
+
+#, python-format
+msgid ""
+"This email is to confirm that the password for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account has been successfully changed."
+msgstr ""
+"Este e-mail é para confirmar que a senha para a sua conta no "
+"<strong>%(site_name)s</strong> foi alterada com sucesso."
+
+msgid "You can now log in using your new password."
+msgstr "Agora você pode logar usando sua nova senha."
+
+msgid "Log In"
+msgstr "Entrar"
+
+msgid "We received a request to reset your password."
+msgstr "Recebemos uma solicitação para redefinir sua senha."
+
+msgid "Reset Your Password"
+msgstr "Redefinir sua senha"
+
+#, python-format
+msgid ""
+"We received a request to reset the password for your account on &lt;"
+"strong&gt;%(site_name)s&lt;/strong&gt;. Use the code below to proceed with "
+"the password reset."
+msgstr ""
+"Recebemos uma solicitação para redefinir a senha para sua conta no "
+"<strong>%(site_name)s</strong>. Use o código abaixo para prosseguir com a "
+"redefinição de senha."
+
+msgid "Reset Code"
+msgstr "Código de redefinição"
+
+msgid ""
+"If you did not request this, please ignore this email. Your password will "
+"remain unchanged, and no further action is required."
+msgstr ""
+"Se você não solicitou isso, por favor, ignore este e-mail. Sua senha "
+"permanecerá inalterada e não será necessária nenhuma ação adicional."
+
+msgid "Password Reset Code"
+msgstr "Código de redefinição de senha"
+
+msgid ""
+"This email is to confirm that your password has been successfully reset."
+msgstr ""
+"Este e-mail é para confirmar que a sua senha foi redefinida com sucesso."
+
+msgid "Password Reset Successfully"
+msgstr "Senha redefinida com sucesso"
+
+#, python-format
+msgid ""
+"This email is to confirm that the password for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account has been successfully reset."
+msgstr ""
+"Este e-mail é para confirmar que a senha para a sua conta no "
+"<strong>%(site_name)s</strong> foi redefinida com sucesso."
+
+msgid "This email is to confirm that your password has been successfully set."
+msgstr "Este e-mail é para confirmar que a sua senha foi definida com sucesso."
+
+msgid "Password Set Successfully"
+msgstr "Senha definida com sucesso"
+
+#, python-format
+msgid ""
+"This email is to confirm that the password for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account has been successfully set."
+msgstr ""
+"Este e-mail é para confirmar que a senha para a sua conta no "
+"<strong>%(site_name)s</strong> foi definida com sucesso."
+
+#, python-format
+msgid ""
+"A third-party account from %(provider)s has been connected to your account."
+msgstr "Uma conta de terceiros de %(provider)s foi conectada à sua conta."
+
+msgid "Account Connected"
+msgstr "Conta conectada"
+
+#, python-format
+msgid ""
+"A third-party account from &lt;strong&gt;%(provider)s&lt;/strong&gt; has "
+"been connected to your &lt;strong&gt;%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"Uma conta de terceiros de <strong>%(provider)s</strong> foi conectada à sua "
+"conta no <strong>%(site_name)s</strong>."
+
+msgid "Third-Party Account Connected"
+msgstr "Conta de terceiros conectada"
+
+#, python-format
+msgid ""
+"A third-party account from %(provider)s has been disconnected from your "
+"account."
+msgstr "Uma conta de terceiros de %(provider)s foi desconectada da sua conta."
+
+msgid "Account Disconnected"
+msgstr "Conta desconectada"
+
+#, python-format
+msgid ""
+"The third-party account from &lt;strong&gt;%(provider)s&lt;/strong&gt; has "
+"been disconnected from your &lt;strong&gt;%(site_name)s&lt;/strong&gt; "
+"account."
+msgstr ""
+"A conta de terceiros de <strong>%(provider)s</strong> foi desconectada da "
+"sua conta no <strong>%(site_name)s</strong>."
+
+msgid "Third-Party Account Disconnected"
+msgstr "Conta de terceiros desconectada"
+
+msgid ""
+"You are receiving this email because you, or someone else, tried to access "
+"or reset a password for an account."
+msgstr ""
+"Você está recebendo este e-mail porque você, ou alguém, tentou acessar ou "
+"redefinir a senha para uma conta."
+
+msgid "Account Not Found"
+msgstr "Conta não encontrada"
+
+#, python-format
+msgid ""
+"You are receiving this email because you, or someone else, tried to access "
+"or reset a password for an account associated with &lt;strong&gt;"
+"%(email)s&lt;/strong&gt;."
+msgstr ""
+"Você está recebendo este e-mail porque você, ou alguém, tentou acessar ou "
+"redefinir a senha para uma conta associada com <strong>%(email)s</strong>."
+
+msgid ""
+"However, we do not have any record of an account with this email address in "
+"our database."
+msgstr ""
+"No entanto, não temos nenhum registro de uma conta com este endereço de e-"
+"mail em nosso banco de dados."
+
+#, python-format
+msgid ""
+"If you would like to join &lt;strong&gt;%(site_name)s&lt;/strong&gt;, you "
+"can sign up for a new account using the link below."
+msgstr ""
+"Se você gostaria de se juntar a <strong>%(site_name)s</strong>, você pode se "
+"cadastrar em uma nova conta usando o link abaixo."
+
+msgid "Create an Account"
+msgstr "Criar uma conta"
+
+msgid ""
+"This email can be safely ignored if you did not try to access our site. It "
+"is likely a typo by someone else entering their email address."
+msgstr ""
+"Este e-mail pode ser ignorado com segurança se você não tentou acessar nosso "
+"site. Provavelmente é um erro de digitação de outra pessoa ao inserir o "
+"endereço de e-mail."
+
+msgid "Unknown Account"
+msgstr "Conta desconhecida"
+
+msgid "Main Information"
+msgstr "Informações principais"
+
+msgid "Media"
+msgstr "Mídia"
+
+msgid "Classification"
+msgstr "Classificação"
+
+msgid "More Information"
+msgstr "Mais informações"
+
+msgid "Unique identifier for the genre"
+msgstr "Identificador único para o gênero"
+
+msgid "A unique identifier for the genre"
+msgstr "Um identificador único para o gênero"
+
+msgid "Name of the genre (e.g., Action, Comedy)"
+msgstr "Nome do gênero (ex: Ação, Comédia)"
+
+msgid "Genre"
+msgstr "Gênero"
+
+msgid "Genres"
+msgstr "Gêneros"
+
+msgid "Movie"
+msgstr "Filme"
+
+msgid "Series"
+msgstr "Série"
+
+msgid "Unique identifier for the title"
+msgstr "Identificador único para o título"
+
+msgid "The official title of the movie or series"
+msgstr "O título oficial do filme ou série"
+
+msgid "A brief summary or synopsis"
+msgstr "Um breve resumo ou sinopse"
+
+msgid "The type of content (Movie or Series)"
+msgstr "O tipo de conteúdo (Filme ou Série)"
+
+msgid "The original release date"
+msgstr "A data de lançamento original"
+
+msgid "The duration in minutes"
+msgstr "A duração em minutos"
+
+msgid "The average rating out of 10"
+msgstr "A avaliação média de 10"
+
+msgid "Select one or more genres for this title"
+msgstr "Selecione um ou mais gêneros para este título"
+
+msgid "List of main cast members"
+msgstr "Lista dos principais membros do elenco"
+
+msgid "Vertical poster image (portrait)"
+msgstr "Imagem de pôster vertical (retrato)"
+
+msgid "Horizontal cover image (backdrop)"
+msgstr "Imagem de capa horizontal (plano de fundo)"
+
+msgid "Link to the official YouTube trailer"
+msgstr "Link para o trailer oficial do YouTube"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Titles"
+msgstr "Títulos"
+
+msgid "Personal info"
+msgstr "Informações pessoais"
+
+msgid "Permissions"
+msgstr "Permissões"
+
+msgid "Important dates"
+msgstr "Datas importantes"
+
+msgid "Name of User"
+msgstr "Nome de usuário"
+
+msgid "email address"
+msgstr "endereço de e-mail"

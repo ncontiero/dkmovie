@@ -1,30 +1,22 @@
+import { HelloText } from "@/components/hello-text";
 import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { RequestOrigins } from "@/components/request-origins";
 import { Text } from "@/components/text";
-import { SITE_NAME, USERNAME } from "@/utils/constants";
+import { translate, translateWithSiteName } from "@/utils/translate";
 
-interface WebauthnAddedProps {
-  readonly username?: string;
-  readonly siteName?: string;
-}
-
-export default function WebauthnAdded({
-  username = USERNAME,
-  siteName = SITE_NAME,
-}: WebauthnAddedProps) {
-  const title = "New Security Key Added";
-  const text = `Hello, ${username}. A new security key has been added to your ${siteName} account.`;
+export default function WebauthnAdded() {
+  const title = translate("Security Key Added");
+  const text = translate("A new security key has been added to your account.");
 
   return (
-    <Layout title={title} previewText={text} siteName={siteName}>
-      <Text>
-        Hello, <strong>{username}</strong>.
-      </Text>
+    <Layout title={title} previewText={text}>
+      <HelloText />
 
-      <Text>
-        A new security key has been added to your <strong>{siteName}</strong>{" "}
-        account.
+      <Text className="mt-2 text-sm">
+        {translateWithSiteName(
+          "A new security key has been added to your <strong>{{site_name}}</strong> account.",
+        )}
       </Text>
 
       <NotMakeThisChange />

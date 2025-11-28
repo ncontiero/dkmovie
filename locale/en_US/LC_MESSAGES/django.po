@@ -1,0 +1,513 @@
+# Translations for the DkMovie project
+# Copyright (C) 2025 Nicolas Contiero
+# Nicolas Contiero <contact@ncontiero.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-28 02:11+0000\n"
+"Language: en-US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "English"
+msgstr ""
+
+msgid "Portuguese"
+msgstr ""
+
+msgid "You're not allowed to access this page."
+msgstr ""
+
+msgid "Looks like something went wrong!"
+msgstr ""
+
+msgid "A Django project of films and series."
+msgstr ""
+
+#, python-format
+msgid "We noticed a registration attempt using the email %(email)s."
+msgstr ""
+
+msgid "Account Already Exists"
+msgstr ""
+
+#, python-format
+msgid "Hello, &lt;strong&gt;%(name)s&lt;/strong&gt;!"
+msgstr "Hello, <strong>%(name)s</strong>!"
+
+msgid "Hello."
+msgstr ""
+
+msgid "We noticed a registration attempt using the email"
+msgstr ""
+
+#, python-format
+msgid ""
+"However, an account already exists on &lt;strong&gt;%(site_name)s&lt;/"
+"strong&gt; with this address."
+msgstr ""
+"However, an account already exists on <strong>%(site_name)s</strong> with "
+"this address."
+
+msgid ""
+"If you tried to create this account, you can log in now to access your "
+"favorite movies and series."
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Forgot your password? No problem."
+msgstr ""
+
+msgid "Click here to reset your password."
+msgstr ""
+
+msgid ""
+"If you didn&#x27;t try to create an account recently, you can safely ignore "
+"this email."
+msgstr ""
+"If you didn't try to create an account recently, you can safely ignore this "
+"email."
+
+msgid "All rights reserved."
+msgstr ""
+
+msgid "Your favorite streaming portal."
+msgstr ""
+
+msgid ""
+"We are sending this message to confirm that your email address has been "
+"changed."
+msgstr ""
+
+msgid "Email Changed"
+msgstr ""
+
+#, python-format
+msgid ""
+"We are sending this message to confirm that the email address associated "
+"with your &lt;strong&gt;%(site_name)s&lt;/strong&gt; account has been "
+"changed."
+msgstr ""
+"We are sending this message to confirm that the email address associated "
+"with your <strong>%(site_name)s</strong> account has been changed."
+
+msgid "From:"
+msgstr ""
+
+msgid "To:"
+msgstr ""
+
+msgid "If you made this change, no further action is required."
+msgstr ""
+
+msgid "Didn&#x27;t make this change?"
+msgstr "Didn't make this change?"
+
+msgid ""
+"If you do not recognize this change then please take proper security "
+"precautions immediately."
+msgstr ""
+
+msgid "Reset Password"
+msgstr ""
+
+msgid "Contact Support"
+msgstr ""
+
+msgid "The change to your account originated from:"
+msgstr ""
+
+msgid "IP Address:"
+msgstr ""
+
+msgid "User Agent:"
+msgstr ""
+
+msgid "Date:"
+msgstr ""
+
+msgid "Please verify your email address."
+msgstr ""
+
+msgid "Confirm Your Email"
+msgstr ""
+
+#, python-format
+msgid ""
+"Please use the verification code below to confirm your email address on &lt;"
+"strong&gt;%(site_name)s&lt;/strong&gt;."
+msgstr ""
+"Please use the verification code below to confirm your email address on "
+"<strong>%(site_name)s</strong>."
+
+msgid "Verification Code"
+msgstr ""
+
+msgid "Verify Email"
+msgstr ""
+
+msgid "Or you can copy and paste this link into your browser:"
+msgstr ""
+
+msgid "Didn&#x27;t request this?"
+msgstr "Didn't request this?"
+
+msgid ""
+"If you didn&#x27;t request this, you can safely ignore this email. It&#x27;s "
+"possible someone entered your email address by mistake."
+msgstr ""
+"If you didn't request this, you can safely ignore this email. It&#x27;s "
+"possible someone entered your email address by mistake."
+
+#, python-format
+msgid ""
+"Please use the verification code below to confirm your email address and "
+"finish setting up your account on &lt;strong&gt;%(site_name)s&lt;/strong&gt;."
+msgstr ""
+"Please use the verification code below to confirm your email address and "
+"finish setting up your account on <strong>%(site_name)s</strong>."
+
+#, python-format
+msgid ""
+"If you didn&#x27;t create an account with %(site_name)s, you can safely "
+"ignore this email. It&#x27;s possible someone entered your email address by "
+"mistake."
+msgstr ""
+"If you didn't create an account with %(site_name)s, you can safely ignore "
+"this email. It's possible someone entered your email address by mistake."
+
+msgid "Please Confirm Your Email Address to Complete Registration"
+msgstr ""
+
+msgid "Please Confirm Your Email Address"
+msgstr ""
+
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated for "
+"your account."
+msgstr ""
+
+msgid "Recovery Codes Generated"
+msgstr ""
+
+#, python-format
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated for "
+"your &lt;strong&gt;%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"A new set of Two-Factor Authentication recovery codes has been generated for "
+"your <strong>%(site_name)s</strong> account."
+
+msgid "New Recovery Codes Generated"
+msgstr ""
+
+msgid "An authenticator app has been activated for your account."
+msgstr ""
+
+msgid "Authenticator App Activated"
+msgstr ""
+
+#, python-format
+msgid ""
+"An authenticator app has been activated for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"An authenticator app has been activated for your <strong>%(site_name)s</"
+"strong> account."
+
+msgid "An authenticator app has been deactivated for your account."
+msgstr ""
+
+msgid "Authenticator App Deactivated"
+msgstr ""
+
+#, python-format
+msgid ""
+"An authenticator app has been deactivated for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"An authenticator app has been deactivated for your <strong>%(site_name)s</"
+"strong> account."
+
+msgid "A new security key has been added to your account."
+msgstr ""
+
+msgid "Security Key Added"
+msgstr ""
+
+#, python-format
+msgid ""
+"A new security key has been added to your &lt;strong&gt;%(site_name)s&lt;/"
+"strong&gt; account."
+msgstr ""
+"A new security key has been added to your <strong>%(site_name)s</strong> "
+"account."
+
+msgid "A security key has been removed from your account."
+msgstr ""
+
+msgid "Security Key Removed"
+msgstr ""
+
+#, python-format
+msgid ""
+"A security key has been removed from your &lt;strong&gt;%(site_name)s&lt;/"
+"strong&gt; account."
+msgstr ""
+"A security key has been removed from your <strong>%(site_name)s</strong> "
+"account."
+
+msgid ""
+"This email is to confirm that your password has been successfully changed."
+msgstr ""
+
+msgid "Password Changed Successfully"
+msgstr ""
+
+#, python-format
+msgid ""
+"This email is to confirm that the password for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account has been successfully changed."
+msgstr ""
+"This email is to confirm that the password for your <strong>%(site_name)s</"
+"strong> account has been successfully changed."
+
+msgid "You can now log in using your new password."
+msgstr ""
+
+msgid "Log In"
+msgstr ""
+
+msgid "We received a request to reset your password."
+msgstr ""
+
+msgid "Reset Your Password"
+msgstr ""
+
+#, python-format
+msgid ""
+"We received a request to reset the password for your account on &lt;"
+"strong&gt;%(site_name)s&lt;/strong&gt;. Use the code below to proceed with "
+"the password reset."
+msgstr ""
+"We received a request to reset the password for your account on "
+"<strong>%(site_name)s</strong>. Use the code below to proceed with the "
+"password reset."
+
+msgid "Reset Code"
+msgstr ""
+
+msgid ""
+"If you did not request this, please ignore this email. Your password will "
+"remain unchanged, and no further action is required."
+msgstr ""
+
+msgid "Password Reset Code"
+msgstr ""
+
+msgid ""
+"This email is to confirm that your password has been successfully reset."
+msgstr ""
+
+msgid "Password Reset Successfully"
+msgstr ""
+
+#, python-format
+msgid ""
+"This email is to confirm that the password for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account has been successfully reset."
+msgstr ""
+"This email is to confirm that the password for your <strong>%(site_name)s</"
+"strong> account has been successfully reset."
+
+msgid "This email is to confirm that your password has been successfully set."
+msgstr ""
+
+msgid "Password Set Successfully"
+msgstr ""
+
+#, python-format
+msgid ""
+"This email is to confirm that the password for your &lt;strong&gt;"
+"%(site_name)s&lt;/strong&gt; account has been successfully set."
+msgstr ""
+"This email is to confirm that the password for your <strong>%(site_name)s</"
+"strong> account has been successfully set."
+
+#, python-format
+msgid ""
+"A third-party account from %(provider)s has been connected to your account."
+msgstr ""
+
+msgid "Account Connected"
+msgstr ""
+
+#, python-format
+msgid ""
+"A third-party account from &lt;strong&gt;%(provider)s&lt;/strong&gt; has "
+"been connected to your &lt;strong&gt;%(site_name)s&lt;/strong&gt; account."
+msgstr ""
+"A third-party account from <strong>%(provider)s</strong> has been connected "
+"to your <strong>%(site_name)s</strong> account."
+
+msgid "Third-Party Account Connected"
+msgstr ""
+
+#, python-format
+msgid ""
+"A third-party account from %(provider)s has been disconnected from your "
+"account."
+msgstr ""
+
+msgid "Account Disconnected"
+msgstr ""
+
+#, python-format
+msgid ""
+"The third-party account from &lt;strong&gt;%(provider)s&lt;/strong&gt; has "
+"been disconnected from your &lt;strong&gt;%(site_name)s&lt;/strong&gt; "
+"account."
+msgstr ""
+"The third-party account from <strong>%(provider)s</strong> has been "
+"disconnected from your <strong>%(site_name)s</strong> account."
+
+msgid "Third-Party Account Disconnected"
+msgstr ""
+
+msgid ""
+"You are receiving this email because you, or someone else, tried to access "
+"or reset a password for an account."
+msgstr ""
+
+msgid "Account Not Found"
+msgstr ""
+
+#, python-format
+msgid ""
+"You are receiving this email because you, or someone else, tried to access "
+"or reset a password for an account associated with &lt;strong&gt;"
+"%(email)s&lt;/strong&gt;."
+msgstr ""
+"You are receiving this email because you, or someone else, tried to access "
+"or reset a password for an account associated with <strong>%(email)s</"
+"strong>."
+
+msgid ""
+"However, we do not have any record of an account with this email address in "
+"our database."
+msgstr ""
+
+#, python-format
+msgid ""
+"If you would like to join &lt;strong&gt;%(site_name)s&lt;/strong&gt;, you "
+"can sign up for a new account using the link below."
+msgstr ""
+"If you would like to join <strong>%(site_name)s</strong>, you can sign up "
+"for a new account using the link below."
+
+msgid "Create an Account"
+msgstr ""
+
+msgid ""
+"This email can be safely ignored if you did not try to access our site. It "
+"is likely a typo by someone else entering their email address."
+msgstr ""
+
+msgid "Unknown Account"
+msgstr ""
+
+msgid "Main Information"
+msgstr ""
+
+msgid "Media"
+msgstr ""
+
+msgid "Classification"
+msgstr ""
+
+msgid "More Information"
+msgstr ""
+
+msgid "Unique identifier for the genre"
+msgstr ""
+
+msgid "A unique identifier for the genre"
+msgstr ""
+
+msgid "Name of the genre (e.g., Action, Comedy)"
+msgstr ""
+
+msgid "Genre"
+msgstr ""
+
+msgid "Genres"
+msgstr ""
+
+msgid "Movie"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Unique identifier for the title"
+msgstr ""
+
+msgid "The official title of the movie or series"
+msgstr ""
+
+msgid "A brief summary or synopsis"
+msgstr ""
+
+msgid "The type of content (Movie or Series)"
+msgstr ""
+
+msgid "The original release date"
+msgstr ""
+
+msgid "The duration in minutes"
+msgstr ""
+
+msgid "The average rating out of 10"
+msgstr ""
+
+msgid "Select one or more genres for this title"
+msgstr ""
+
+msgid "List of main cast members"
+msgstr ""
+
+msgid "Vertical poster image (portrait)"
+msgstr ""
+
+msgid "Horizontal cover image (backdrop)"
+msgstr ""
+
+msgid "Link to the official YouTube trailer"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Titles"
+msgstr ""
+
+msgid "Personal info"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Important dates"
+msgstr ""
+
+msgid "Name of User"
+msgstr ""
+
+msgid "email address"
+msgstr ""

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block head %}
 <script id="pageErrorScript">
   const pageError = "forbidden";
-  console.error("{% if exception %}{{ exception }}{% else %}You're not allowed to access this page.{% endif %}");
+  console.error(`{% if exception %}{{ exception }}{% else %}{% trans "You're not allowed to access this page." %}{% endif %}`);
 </script>
 {% endblock head %}

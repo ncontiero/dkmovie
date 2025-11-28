@@ -1,41 +1,36 @@
 import { Link, Section } from "@react-email/components";
 import { Button } from "@/components/button";
+import { HelloText } from "@/components/hello-text";
 import { Layout } from "@/components/layout";
 import { NotMakeThisChange } from "@/components/not-make-this-change";
 import { Text } from "@/components/text";
-import { SITE_NAME, USERNAME } from "@/utils/constants";
+import { translate, translateWithSiteName } from "@/utils/translate";
 import { resolveUrl } from "@/utils/urls";
 
 interface PasswordResetCodeProps {
-  readonly username?: string;
-  readonly siteName?: string;
   readonly code?: string;
 }
 
 export default function PasswordResetCode({
-  username = USERNAME,
-  siteName = SITE_NAME,
   code = "{{ code }}",
 }: PasswordResetCodeProps) {
-  const title = "Reset Your Password";
-  const text = `Hello, ${username}. We received a request to reset the password for your ${siteName} account.`;
+  const title = translate("Reset Your Password");
+  const text = translate("We received a request to reset your password.");
   const resetUrl = resolveUrl("/auth/password/reset", { code });
 
   return (
-    <Layout title={title} previewText={text} siteName={siteName}>
-      <Text className="mb-0 text-sm">
-        Hello, <strong>{username}</strong>.
-      </Text>
+    <Layout title={title} previewText={text}>
+      <HelloText />
 
       <Text className="mt-2 text-sm">
-        We received a request to reset the password for your account on{" "}
-        <strong>{siteName}</strong>. Use the code below to proceed with the
-        password reset.
+        {translateWithSiteName(
+          `We received a request to reset the password for your account on <strong>{{site_name}}</strong>. Use the code below to proceed with the password reset.`,
+        )}
       </Text>
 
       <Section className="bg-muted border-border my-5 rounded-sm border p-5 text-center">
         <Text className="text-muted-foreground m-0 mb-2.5 text-xs font-bold tracking-wider uppercase">
-          Reset Code
+          {translate("Reset Code")}
         </Text>
         <Text className="text-foreground m-0 font-mono text-3xl font-bold tracking-[8px]">
           {code}
@@ -43,11 +38,11 @@ export default function PasswordResetCode({
       </Section>
 
       <Section className="mt-2.5 mb-8 text-center">
-        <Button href={resetUrl}>Reset Password</Button>
+        <Button href={resetUrl}>{translate("Reset Password")}</Button>
       </Section>
 
       <Text className="mb-0 text-sm">
-        Or you can copy and paste this link into your browser:
+        {translate("Or you can copy and paste this link into your browser:")}
       </Text>
       <Text className="text-primary mt-1 text-xs break-all">
         <Link href={resetUrl} className="text-primary underline">
@@ -56,7 +51,9 @@ export default function PasswordResetCode({
       </Text>
 
       <NotMakeThisChange
-        text="If you did not request this, please ignore this email. Your password will remain unchanged, and no further action is required."
+        text={translate(
+          "If you did not request this, please ignore this email. Your password will remain unchanged, and no further action is required.",
+        )}
         addSupportContact={false}
         isNotRequested={false}
       />

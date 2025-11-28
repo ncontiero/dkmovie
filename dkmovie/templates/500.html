@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block head %}
 <script id="pageErrorScript">
   const pageError = "serverError";
-  console.error("Looks like something went wrong!");
+  console.error("{% trans 'Looks like something went wrong!' %}");
 </script>
 {% endblock head %}
