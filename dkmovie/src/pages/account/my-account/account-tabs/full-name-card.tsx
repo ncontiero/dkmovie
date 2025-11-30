@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import {
   Card,
   CardContent,
@@ -17,9 +18,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getMe, updateMe } from "@/http/account/me";
 import { type UpdateMeSchema, updateMeSchema } from "@/schemas/account/me";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, translateZodError } from "@/utils/errors";
 
 export function FullNameCard() {
+  const t = useTranslations("accountPage.updateUserName");
+  const errorsT = useTranslations("errors");
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -36,7 +39,19 @@ export function FullNameCard() {
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(updateMeSchema),
+    resolver: zodResolver(updateMeSchema, {
+      error: (iss) =>
+        translateZodError({
+          iss,
+          messages: {
+            name: {
+              too_small: t("errors.minCharacter"),
+              too_big: t("errors.maxCharacter"),
+            },
+          },
+          defaultError: errorsT("invalid"),
+        }),
+    }),
     values: {
       name: user?.name || "",
     },
@@ -48,7 +63,7 @@ export function FullNameCard() {
     try {
       const res = await updateMe(data);
       queryClient.setQueryData(["user"], res);
-      toast.success("Full name updated!");
+      toast.success(t("success"));
     } catch (error) {
       const errors = getErrorMessage(error);
       if (errors) {
@@ -57,7 +72,7 @@ export function FullNameCard() {
       }
 
       console.error(error);
-      toast.error("Something went wrong!");
+      toast.error(errorsT("unexpected"));
     }
   };
 
@@ -66,13 +81,13 @@ export function FullNameCard() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="flex flex-col p-4 sm:p-6">
           <Label htmlFor="full-name">
-            <CardTitle>Full Name</CardTitle>
+            <CardTitle>{t("fullName")}</CardTitle>
           </Label>
           <Input
             id="full-name"
             type="text"
             className="mt-4"
-            placeholder="Your full name"
+            placeholder={t("fullName")}
             {...register("name")}
           />
           {errors.name ? (
@@ -80,21 +95,16 @@ export function FullNameCard() {
               {errors.name.message}
             </p>
           ) : null}
-          <CardDescription>
-            Please enter your full name, or a display name you are comfortable
-            with.
-          </CardDescription>
+          <CardDescription>{t("description")}</CardDescription>
         </CardContent>
         <CardFooter>
-          <CardFooterDescription>
-            Please use 255 characters at maximum.
-          </CardFooterDescription>
+          <CardFooterDescription>{t("useMaxCharacter")}</CardFooterDescription>
           <Button
             type="submit"
             size="sm"
             disabled={isSubmitting || user?.name === watchedValues.name}
           >
-            {isSubmitting ? <Loader className="animate-spin" /> : "Save"}
+            {isSubmitting ? <Loader className="animate-spin" /> : t("save")}
           </Button>
         </CardFooter>
       </form>

@@ -1,11 +1,8 @@
-import { type output, literal, object } from "zod";
-import { emailSchema } from "../base";
+import { type output, email, object, string } from "zod";
 
 export const confirmDeleteAccountSchema = object({
-  confirmEmail: emailSchema,
-  confirmText: literal("delete my account", {
-    error: "You must type 'delete my account' to confirm.",
-  }),
+  confirmEmail: email(),
+  confirmText: string(),
 });
 
 export type ConfirmDeleteAccountSchema = output<

@@ -3,10 +3,11 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { useSession } from "@/hooks/use-session";
 import { reAuth } from "@/http/auth/re-auth";
 import { type ReAuthSchema, reAuthSchema } from "@/schemas/auth/re-auth";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, translateZodError } from "@/utils/errors";
 import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -16,6 +17,8 @@ export function ReAuthenticateWithPassword({
   onReAuthenticated,
   onCancel,
 }: ReAuthenticationProps) {
+  const t = useTranslations("auth");
+  const errorsT = useTranslations("errors");
   const { setSession } = useSession();
 
   const {
@@ -23,14 +26,21 @@ export function ReAuthenticateWithPassword({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(reAuthSchema),
+    resolver: zodResolver(reAuthSchema, {
+      error: (iss) =>
+        translateZodError({
+          iss,
+          messages: { password: errorsT("passwordIsRequired") },
+          defaultError: errorsT("invalid"),
+        }),
+    }),
   });
 
   const onSubmit: SubmitHandler<ReAuthSchema> = async (data) => {
     try {
       const res = await reAuth(data);
       setSession(res);
-      toast.success("Re-authenticated successfully");
+      toast.success(t("reAuth.reAuthenticated"));
       onReAuthenticated();
     } catch (error) {
       const errors = getErrorMessage(error);
@@ -40,14 +50,14 @@ export function ReAuthenticateWithPassword({
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorsT("unexpected"));
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <PasswordInput id="password" {...register("password")} />
         {errors.password ? (
           <p className="text-destructive text-sm">{errors.password.message}</p>
@@ -60,13 +70,13 @@ export function ReAuthenticateWithPassword({
           disabled={isSubmitting}
           onClick={onCancel}
         >
-          Cancel
+          {t("cancel")}
         </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? (
             <Loader className="animate-spin" />
           ) : (
-            "Re-authenticate"
+            t("reAuth.submit")
           )}
         </Button>
       </DialogFooter>

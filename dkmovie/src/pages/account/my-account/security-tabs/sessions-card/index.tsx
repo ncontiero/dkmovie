@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import {
   Card,
   CardContent,
@@ -12,6 +13,7 @@ import { deleteSessions, getSessions } from "@/http/account/sessions";
 import { SessionCard, SessionCardSkeleton } from "./session-card";
 
 export function SessionsCard() {
+  const t = useTranslations("securityPage.session");
   const queryClient = useQueryClient();
 
   const { data: sessions = [], isLoading } = useQuery({
@@ -32,18 +34,18 @@ export function SessionsCard() {
       return await deleteSessions(sessionIds);
     },
     onMutate: () => {
-      toast.loading("Terminating selected sessions...", {
+      toast.loading(t("loading"), {
         id: "terminate-sessions",
       });
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["sessions"], data);
-      toast.success("Selected sessions have been terminated.", {
+      toast.success(t("success"), {
         id: "terminate-sessions",
       });
     },
     onError: () => {
-      toast.error("Failed to terminate selected sessions.", {
+      toast.error(t("failed"), {
         id: "terminate-sessions",
       });
     },
@@ -52,8 +54,8 @@ export function SessionsCard() {
   return (
     <Card className="mt-10">
       <CardContent>
-        <CardTitle>Active Sessions</CardTitle>
-        <CardDescription>Manage your active sessions.</CardDescription>
+        <CardTitle>{t("activeSessions")}</CardTitle>
+        <CardDescription>{t("manageSessions")}</CardDescription>
         <div className="mt-4 flex flex-col gap-2">
           {isLoading ? (
             <SessionCardSkeleton />
@@ -69,10 +71,7 @@ export function SessionsCard() {
         </div>
       </CardContent>
       <CardFooter>
-        <CardFooterDescription>
-          Review and manage your active sessions to ensure your account&apos;s
-          security.
-        </CardFooterDescription>
+        <CardFooterDescription>{t("cardDescription")}</CardFooterDescription>
       </CardFooter>
     </Card>
   );

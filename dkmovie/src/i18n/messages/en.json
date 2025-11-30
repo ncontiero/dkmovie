@@ -1,0 +1,307 @@
+{
+  "langs": {
+    "en": "English",
+    "pt-br": "Portuguese"
+  },
+  "metadata": {
+    "description": "A Django project of films and series."
+  },
+  "header": {
+    "changeLang": "Change language",
+    "toggleTheme": "Toggle theme",
+    "links": {
+      "home": "Home",
+      "movies": "Movies",
+      "series": "Series"
+    },
+    "userMenu": {
+      "label": "User menu",
+      "myAccount": "My account",
+      "logout": "Logout",
+      "signIn": "Sign in",
+      "signUp": "Sign up"
+    }
+  },
+  "heroSection": {
+    "watchNow": "Watch Now",
+    "moreInformation": "More Information"
+  },
+  "recoveryCodes": {
+    "title": "Recovery Codes",
+    "description": "Copy and store these recovery code in case you lose your device.",
+    "actions": {
+      "copy": "Copy",
+      "done": "Done"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "password": "Password",
+    "cancel": "Cancel",
+    "continueWith": {
+      "password": "Continue with password",
+      "totp": "Continue with Authenticator App",
+      "recoveryCodes": "Continue with Recovery Codes",
+      "passkey": "Continue with Passkey",
+      "provider": "Continue with {provider}",
+      "or": "Or continue with",
+      "anotherMethod": "Or, sign in with another method"
+    },
+    "reAuth": {
+      "submit": "Re-authenticate",
+      "title": "Re-authenticate to continue",
+      "description": "You need to re-authenticate to perform this action.",
+      "reAuthenticated": "Re-authenticated successfully"
+    },
+    "mfa": {
+      "title": "Two Factor Authentication",
+      "useAnotherMethod": "Use another method",
+      "totp": "Please enter the code from your authenticator app",
+      "recoveryCodes": "Please enter one of your recovery codes"
+    },
+    "passkey": {
+      "authenticated": "Successfully authenticated with passkey",
+      "failed": "Failed to authenticate with passkey"
+    },
+    "emailVerification": {
+      "verifyEmail": {
+        "success": "Email verified successfully.",
+        "dontHave": "You don't have email to verify.",
+        "title": "Verify your email",
+        "description": "Please verify your email address to continue.",
+        "enterYourCode": "Enter your verification code",
+        "dintReceive": "Didn't receive a code? Resend",
+        "verifyEmail": "Verify Email"
+      },
+      "needVerification": {
+        "title": "You need to verify your email address.",
+        "description": "Please check your email to verify your account."
+      },
+      "resend": {
+        "send": "Resend verification email",
+        "success": "Email verification resent successfully",
+        "tooManyRequests": "Too many requests. Please try again later."
+      }
+    },
+    "formFooter": {
+      "dontHaveAccount": "Don't have an account?",
+      "haveAccount": "Already have an account?",
+      "rememberPassword": "Remember your password?",
+      "goBackTo": "Go back to"
+    },
+    "logOut": {
+      "failed": "Failed to log out"
+    }
+  },
+  "providerCallbackError": {
+    "title": "Authentication Error",
+    "description": "There was an error during authentication. Please try again."
+  },
+  "accountPage": {
+    "title": "Account Management",
+    "description": "Update your profile and manage your account settings.",
+    "tabs": {
+      "account": {
+        "label": "Account",
+        "title": "My Account",
+        "description": "Manage your account settings."
+      },
+      "security": {
+        "label": "Security",
+        "title": "Security",
+        "description": "Manage your password and authentication settings."
+      }
+    },
+    "updateUserName": {
+      "description": "Please enter your full name, or a display name you are comfortable with.",
+      "useMaxCharacter": "Please use 255 characters at maximum.",
+      "save": "Save",
+      "fullName": "Full Name",
+      "success": "Full name updated!",
+      "errors": {
+        "minCharacter": "Name must be at least 4 characters long",
+        "maxCharacter": "Name must be less than 255 characters long"
+      }
+    },
+    "email": {
+      "title": "Email",
+      "description": "Manage the email address you want to use to log in to your account.",
+      "cardDescription": "Email must be verified to be able to login with them or be used as primary email.",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "primary": "Primary",
+      "change": {
+        "title": "Change email",
+        "description": "Change to a new email address. You will receive an email with a verification code.",
+        "label": "Email",
+        "cancel": "Cancel",
+        "change": "Change",
+        "success": "Email added!",
+        "successDescription": "You will receive an email with a verification code."
+      }
+    },
+    "deleteAccount": {
+      "title": "Delete Account",
+      "description": "Permanently delete your account and all associated data. This action is not reversible, so please continue with caution.",
+      "dialogDescription": "DkMovie will permanently delete your account and all associated data. <span>This action is irreversible</span>. Are you sure you want to proceed?",
+      "enterYourEmail": "Enter your email <b>{email}</b> to continue:",
+      "confirmText": "delete my account",
+      "enterDeleteMyAccount": "To verify, type <b>delete my account</b> below:",
+      "incorrectText": "You must type 'delete my account' to confirm.",
+      "incorrectEmail": "The email you entered does not match your account email.",
+      "success": "Account deleted successfully.",
+      "failed": "There was an error deleting your account. Please try again.",
+      "cancel": "Cancel",
+      "confirmDelete": "Confirm Delete"
+    }
+  },
+  "securityPage": {
+    "changePassword": {
+      "card": {
+        "title": "Password",
+        "description": "Change your password regularly to keep your account secure.",
+        "nonPasswordDescription": "You don't have a password set.",
+        "forgotPassword": "Forgot password? Click here to reset it.",
+        "change": "Change password",
+        "set": "Set password",
+        "changeDialogDescription": "Change your account password regularly to keep your account secure.",
+        "setDialogDescription": "Set a new password for your account."
+      },
+      "form": {
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm your new password",
+        "cancel": "Cancel"
+      },
+      "success": {
+        "updated": "Password updated!",
+        "set": "Password set!"
+      },
+      "errors": {
+        "currentPasswordIsRequired": "Current password is required.",
+        "confirmPasswordIsRequired": "Password confirmation is required.",
+        "passwordsDoNotMatch": "Passwords do not match."
+      }
+    },
+    "session": {
+      "activeSessions": "Active Sessions",
+      "manageSessions": "Manage your active sessions.",
+      "cardDescription": "Review and manage your active sessions to ensure your account's security.",
+      "loading": "Terminating selected sessions...",
+      "success": "Selected sessions have been terminated.",
+      "failed": "Failed to terminate selected sessions. ",
+      "current": "Current",
+      "lastSeen": "Last seen",
+      "terminateSession": "Terminate session from {deviceType}",
+      "unknown": "Unknown",
+      "unknownDevice": "Unknown device"
+    },
+    "socialAccount": {
+      "title": "Connected Accounts",
+      "description": "Manage your connected accounts.",
+      "cardDescription": "You can connect additional accounts to your account and manage them here.",
+      "disconnected": "Provider disconnected successfully",
+      "disconnect": "Disconnect",
+      "connect": "Connect",
+      "disconnectAccount": "Disconnect {accountName} account",
+      "disconnectAccountDescription": "Are you sure you want to disconnect your {accountName} account? You will no longer be able to sign in with this account.",
+      "connected": "Connected",
+      "notConnected": "Not Connected",
+      "youCanSignIn": "You can sign in with your {accountName} account",
+      "signInWithYourAccount": "Sign in with your {accountName} account",
+      "cancel": "Cancel"
+    },
+    "2fa": {
+      "title": "Two-Factor Authentication",
+      "description": "Add an extra layer of security to your account by enabling two-factor authentication.",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "appAuthenticator": {
+        "title": "Authenticator App (TOTP)",
+        "description": "Generate codes using an app like Google Authenticator or Okta Verify.",
+        "totpRemoved": "TOTP removed successfully",
+        "remove": "Remove",
+        "removeTOTP": "Remove TOTP",
+        "areYouSure": "Are you sure you want to remove your TOTP?",
+        "cancel": "Cancel",
+        "totpSetupSuccessfully": "TOTP setup successfully",
+        "add": "Add",
+        "setupTOTP": "Setup TOTP",
+        "dialogDescription": "Scan the QR code below with your preferred authenticator app. Then, enter the 6 digit code that the app provides to continue. You can also copy the secret below and paste it into your app.",
+        "copySecret": "Copy secret to clipboard",
+        "enter6Digits": "Enter 6 digit code from your authenticator app",
+        "confirm": "Confirm"
+      },
+      "passkey": {
+        "title": "Passkeys",
+        "description": "Use a passkey to sign in to your account. Passkeys are secure, fast, and easy to use.",
+        "addSuccessfully": "Passkey added successfully",
+        "addFailed": "Failed to add passkey",
+        "add": "Add",
+        "addPasskey": "Add passkey",
+        "addPasskeyDescription": "Add a passkey to your account. Passkeys are secure, fast, and easy to use.",
+        "name": "Name",
+        "myPasskey": "My passkey",
+        "cancel": "Cancel",
+        "renamedSuccessfully": "Passkey renamed successfully",
+        "renameFailed": "Failed to rename passkey",
+        "createdOn": "Created on {date}",
+        "lastUsedOn": "Last used on {date}",
+        "editPasskeyName": "Edit {name}",
+        "editPasskey": "Edit Passkey",
+        "editYourPasskey": "Edit your passkey <b>{passkeyName}</b> name.",
+        "save": "Save",
+        "deletePasskeyName": "Delete {name}",
+        "deletePasskey": "Delete Passkey",
+        "deleteDescription": "Are you sure you want to delete your <b>{passkeyName}</b> passkey? By removing this passkey you will no longer be able to use it to sign-in to your account.",
+        "delete": "Delete",
+        "deleteSuccessfully": "Passkey deleted successfully",
+        "deleteFailed": "Failed to delete passkey",
+        "passkeysRegistered": "{count, plural, =1 {1 passkey registered} other {# passkeys registered}}",
+        "openPasskeysList": "Open passkeys list",
+        "closePasskeysList": "Close passkeys list"
+      },
+      "recoveryCodes": {
+        "title": "Recovery Codes",
+        "description": "Use recovery codes to recover your account if you lose access to your device.",
+        "dialogDescription": "Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes.",
+        "regeneratedSuccessfully": "Recovery codes regenerated successfully",
+        "regenerateFailed": "Failed to regenerate recovery codes",
+        "view": "View",
+        "regenerate": "Regenerate",
+        "close": "Close"
+      }
+    }
+  },
+  "pageError": {
+    "return": "Return to Homepage"
+  },
+  "errors": {
+    "unexpected": "An unexpected error occurred. Please try again.",
+    "invalid": "Invalid data",
+    "codeIsRequired": "Code is required",
+    "passwordIsRequired": "Password is required",
+    "invalidEmail": "Please enter a valid email address.",
+    "password": {
+      "minCharacter": "Password must be at least 8 characters long",
+      "maxCharacter": "Password must be at most 64 characters long",
+      "regex": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    }
+  },
+  "footer": {
+    "faq": "Frequently Asked Questions",
+    "privacy": "Privacy",
+    "speedTest": "Speed Test",
+    "help": "Help",
+    "helpCenter": "Help Center",
+    "termsOfUse": "Terms of Use",
+    "contact": "Contact",
+    "account": "Account",
+    "myAccount": "My Account",
+    "preferences": "Preferences",
+    "media": "Media",
+    "legalNotices": "Legal Notices",
+    "allRightsReserved": "All rights reserved"
+  }
+}

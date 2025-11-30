@@ -1,5 +1,6 @@
 import type { BaseSyntheticEvent, PropsWithChildren } from "react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
 import { useFetchSocialAccounts } from "@/hooks/fetch/use-fetch-social-accounts";
@@ -29,6 +30,7 @@ export function BaseAuthForm({
   isAuthenticated = false,
   type = "sign-in",
 }: BaseAuthFormProps) {
+  const t = useTranslations("auth");
   const { data: socialAccounts, isLoading: isSocialAccountsLoading } =
     useFetchSocialAccounts();
 
@@ -59,7 +61,9 @@ export function BaseAuthForm({
                         key={provider.id}
                         className="w-full"
                         provider={provider.id}
-                        text={`Continue with ${provider.name}`}
+                        text={t("continueWith.provider", {
+                          provider: provider.name,
+                        })}
                       />
                     ))}
                     {type === "sign-in" && (
@@ -68,7 +72,7 @@ export function BaseAuthForm({
                   </div>
                   <div className="text-muted-foreground flex items-center justify-center text-sm">
                     <Separator className="flex-1" />
-                    <p className="mx-3">Or {type} in with</p>
+                    <p className="mx-3">{t("continueWith.or")}</p>
                     <Separator className="flex-1" />
                   </div>
                 </>
@@ -87,7 +91,7 @@ export function BaseAuthForm({
                   <div className="flex items-center justify-center">
                     <Separator className="flex-1" />
                     <p className="text-muted-foreground mx-3 text-sm">
-                      Or, sign in with another method
+                      {t("continueWith.anotherMethod")}
                     </p>
                     <Separator className="flex-1" />
                   </div>
@@ -97,7 +101,9 @@ export function BaseAuthForm({
                         key={provider.id}
                         className="w-full"
                         provider={provider.id}
-                        text={`Continue with ${provider.name}`}
+                        text={t("continueWith.provider", {
+                          provider: provider.name,
+                        })}
                       />
                     ))}
                     <PasskeyAuthButton className="w-full" />
@@ -109,30 +115,30 @@ export function BaseAuthForm({
               <div className="border-t px-9 py-4">
                 {type === "sign-in" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
-                    Don&apos;t have an account?{" "}
+                    {t("formFooter.dontHaveAccount")}{" "}
                     <Link to={`/auth/sign-up${nextPathParam}`} size="sm">
-                      Sign up
+                      {t("signUp")}
                     </Link>
                   </p>
                 ) : type === "sign-up" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
-                    Already have an account?{" "}
+                    {t("formFooter.haveAccount")}{" "}
                     <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                      Sign in
+                      {t("signIn")}
                     </Link>
                   </p>
                 ) : type === "forgot-password" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
-                    Remember your password?{" "}
+                    {t("formFooter.rememberPassword")}{" "}
                     <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                      Sign in
+                      {t("signIn")}
                     </Link>
                   </p>
                 ) : type === "reset-password" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
-                    Go back to{" "}
+                    {t("formFooter.goBackTo")}{" "}
                     <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                      Sign in
+                      {t("signIn")}
                     </Link>
                   </p>
                 ) : null}

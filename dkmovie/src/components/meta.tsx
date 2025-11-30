@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslations } from "use-intl";
 
 interface MetaProps {
   readonly overrideTitle?: boolean;
@@ -10,7 +11,6 @@ interface MetaProps {
 
 const metaValues: MetaProps = {
   title: "DKMovie",
-  description: "A Django project of films and series.",
 };
 
 function createMetaTag(props: Record<string, string>) {
@@ -48,7 +48,9 @@ export function Meta({
   imageAlt,
   ...props
 }: MetaProps) {
-  const description = props.description ?? metaValues.description!;
+  const t = useTranslations("metadata");
+
+  const description = props.description ?? t("description");
   const baseUrl = window.location.origin;
   const imageUrl = image && `${baseUrl}${image}`;
 

@@ -2,6 +2,7 @@ import { type PropsWithChildren, useCallback, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { useFetchSession } from "@/hooks/fetch/use-fetch-session";
 import {
   type CurrentSessionResponse,
@@ -15,6 +16,7 @@ const authRoutes = ["/auth/sign-in", "/auth/sign-up", "/auth/2fa"];
 const signInRoute = "/auth/sign-in";
 
 export function SessionProvider({ children }: PropsWithChildren) {
+  const t = useTranslations("auth.logOut");
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -28,18 +30,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const isAuthenticated = session?.meta.is_authenticated || false;
 
   const { mutate: logoutMutation } = useMutation({
-    mutationFn: async () => {
-      return await logoutApi();
-    },
-    onMutate: () => {
-      toast.loading("Logging out...", { id: "logout" });
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      toast.success("Logged out successfully", { id: "logout" });
-    },
+    mutationFn: logoutApi,
     onError: () => {
-      toast.error("Failed to log out", { id: "logout" });
+      toast.error(t("failed"));
     },
   });
 

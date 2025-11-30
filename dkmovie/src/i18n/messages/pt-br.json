@@ -1,0 +1,307 @@
+{
+  "langs": {
+    "en": "Inglês",
+    "pt-br": "Português"
+  },
+  "metadata": {
+    "description": "Um projeto Django de filmes e séries."
+  },
+  "header": {
+    "changeLang": "Alterar idioma",
+    "toggleTheme": "Alterar tema",
+    "links": {
+      "home": "Início",
+      "movies": "Filmes",
+      "series": "Séries"
+    },
+    "userMenu": {
+      "label": "Menu do usuário",
+      "myAccount": "Minha conta",
+      "logout": "Sair",
+      "signIn": "Entrar",
+      "signUp": "Cadastrar"
+    }
+  },
+  "heroSection": {
+    "watchNow": "Assistir agora",
+    "moreInformation": "Mais informações"
+  },
+  "recoveryCodes": {
+    "title": "Códigos de recuperação",
+    "description": "Copie e armazene esses códigos de recuperação em caso de perder seu dispositivo.",
+    "actions": {
+      "copy": "Copiar",
+      "done": "Pronto"
+    }
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "password": "Senha",
+    "cancel": "Cancelar",
+    "continueWith": {
+      "password": "Continuar com senha",
+      "totp": "Continuar com aplicativo de autenticação",
+      "recoveryCodes": "Continuar com códigos de recuperação",
+      "passkey": "Continuar com chave de acesso",
+      "provider": "Continuar com {provider}",
+      "or": "Ou continuar com",
+      "anotherMethod": "Ou, entre com outro método"
+    },
+    "reAuth": {
+      "submit": "Re-autenticar",
+      "title": "Re-autenticar para continuar",
+      "description": "Você precisa re-autenticar para realizar esta ação.",
+      "reAuthenticated": "Re-autenticado com sucesso"
+    },
+    "mfa": {
+      "title": "Autenticação de dois fatores",
+      "useAnotherMethod": "Use outro método",
+      "totp": "Por favor, insira o código do seu aplicativo de autenticação",
+      "recoveryCodes": "Por favor, insira um dos seus códigos de recuperação"
+    },
+    "passkey": {
+      "authenticated": "Autenticado com chave de acesso com sucesso",
+      "failed": "Falha ao autenticar com chave de acesso"
+    },
+    "emailVerification": {
+      "verifyEmail": {
+        "success": "E-mail verificado com sucesso.",
+        "dontHave": "Você não tem e-mail para verificar.",
+        "title": "Verificar seu e-mail",
+        "description": "Por favor, verifique seu endereço de e-mail para continuar.",
+        "enterYourCode": "Insira o seu código de verificação",
+        "dintReceive": "Não recebeu um código? Reenviar",
+        "verifyEmail": "Verificar E-mail"
+      },
+      "needVerification": {
+        "title": "Você precisa verificar seu endereço de e-mail.",
+        "description": "Por favor, verifique seu e-mail para verificar sua conta."
+      },
+      "resend": {
+        "send": "Reenviar e-mail de verificação",
+        "success": "E-mail de verificação reenviado com sucesso",
+        "tooManyRequests": "Muitas solicitações. Por favor, tente novamente mais tarde."
+      }
+    },
+    "formFooter": {
+      "dontHaveAccount": "Não tem uma conta?",
+      "haveAccount": "Já tem uma conta?",
+      "rememberPassword": "Lembrou de sua senha?",
+      "goBackTo": "Voltar para"
+    },
+    "logOut": {
+      "failed": "Falha ao sair"
+    }
+  },
+  "providerCallbackError": {
+    "title": "Erro de autenticação",
+    "description": "Ocorreu um erro durante a autenticação. Por favor, tente novamente."
+  },
+  "accountPage": {
+    "title": "Gerenciamento de conta",
+    "description": "Atualize seu perfil e gerencie suas configurações de conta.",
+    "tabs": {
+      "account": {
+        "label": "Conta",
+        "title": "Minha Conta",
+        "description": "Gerencie as configurações da sua conta."
+      },
+      "security": {
+        "label": "Segurança",
+        "title": "Segurança",
+        "description": "Gerencie sua senha e configurações de autenticação."
+      }
+    },
+    "updateUserName": {
+      "description": "Por favor, digite seu nome completo ou um nome com o qual você se sinta confortável.",
+      "useMaxCharacter": "Por favor, utilize no máximo 255 caracteres.",
+      "save": "Salvar",
+      "fullName": "Nome Completo",
+      "success": "Nome completo atualizado!",
+      "errors": {
+        "minCharacter": "O nome deve ter no mínimo 4 caracteres",
+        "maxCharacter": "O nome deve ter no máximo 255 caracteres"
+      }
+    },
+    "email": {
+      "title": "E-mail",
+      "description": "Gerencie o endereço de e-mail que você deseja usar para acessar sua conta.",
+      "cardDescription": "O e-mail precisa ser verificado para que seja possível fazer login com ele ou usá-lo como e-mail principal.",
+      "verified": "Verificado",
+      "unverified": "Não verificado",
+      "primary": "Primário",
+      "change": {
+        "title": "Alterar e-mail",
+        "description": "Altere para um novo endereço de e-mail. Você receberá um e-mail com um código de verificação.",
+        "label": "E-mail",
+        "cancel": "Cancelar",
+        "change": "Alterar",
+        "success": "E-mail adicionado!",
+        "successDescription": "Você receberá um e-mail com um código de verificação."
+      }
+    },
+    "deleteAccount": {
+      "title": "Deletar conta",
+      "description": "Permanentemente deletar sua conta e todos os dados associados. Esta ação não é reversível, então por favor, continue com cuidado.",
+      "dialogDescription": "DkMovie irá deletar permanentemente sua conta e todos os dados associados. <span>Esta ação é irreversível</span>. Você tem certeza que deseja prosseguir?",
+      "enterYourEmail": "Insira seu e-mail <b>{email}</b> para continuar:",
+      "confirmText": "deletar minha conta",
+      "enterDeleteMyAccount": "Para verificar, digite <b>deletar minha conta</b> abaixo:",
+      "incorrectText": "Você deve digitar 'deletar minha conta' para confirmar.",
+      "incorrectEmail": "O e-mail informado não corresponde ao seu endereço de e-mail de conta.",
+      "success": "Conta deletada com sucesso.",
+      "failed": "Ocorreu um erro ao deletar sua conta. Por favor, tente novamente.",
+      "cancel": "Cancelar",
+      "confirmDelete": "Confirmar exclusão"
+    }
+  },
+  "securityPage": {
+    "changePassword": {
+      "card": {
+        "title": "Senha",
+        "description": "Troque regularmente sua senha para manter sua conta segura.",
+        "nonPasswordDescription": "Você não tem uma senha definida.",
+        "forgotPassword": "Esqueceu a senha? Clique aqui para redefinir.",
+        "change": "Alterar senha",
+        "set": "Definir senha",
+        "changeDialogDescription": "Altere a senha da sua conta regularmente para mantê-la segura.",
+        "setDialogDescription": "Defina uma nova senha para sua conta."
+      },
+      "form": {
+        "currentPassword": "Senha atual",
+        "newPassword": "Nova senha",
+        "confirmPassword": "Confirmar nova senha",
+        "cancel": "Cancelar"
+      },
+      "success": {
+        "updated": "Senha atualizada!",
+        "set": "Senha definida!"
+      },
+      "errors": {
+        "currentPasswordIsRequired": "A senha atual é obrigatória.",
+        "confirmPasswordIsRequired": "A confirmação de senha é obrigatória.",
+        "passwordsDoNotMatch": "As senhas não correspondem."
+      }
+    },
+    "session": {
+      "activeSessions": "Sessões ativas",
+      "manageSessions": "Gerencie suas sessões ativas.",
+      "cardDescription": "Revise e gerencie suas sessões ativas para garantir a segurança da sua conta.",
+      "loading": "Terminando sessões selecionadas...",
+      "success": "As sessões selecionadas foram encerradas.",
+      "failed": "Falha ao encerrar as sessões selecionadas.",
+      "current": "Atual",
+      "lastSeen": "Último acesso",
+      "terminateSession": "Encerrar sessão de {deviceType}",
+      "unknown": "Desconhecido",
+      "unknownDevice": "Dispositivo desconhecido"
+    },
+    "socialAccount": {
+      "title": "Contas conectadas",
+      "description": "Gerencie suas contas conectadas.",
+      "cardDescription": "Você pode conectar contas adicionais à sua conta e gerenciar-as aqui.",
+      "disconnected": "Conta do provedor desconectada com sucesso",
+      "disconnect": "Desconectar",
+      "connect": "Conectar",
+      "disconnectAccount": "Desconectar conta {accountName}",
+      "disconnectAccountDescription": "Tem certeza de que deseja desconectar sua conta {accountName}? Você não poderá mais fazer login com esta conta.",
+      "connected": "Conectado",
+      "notConnected": "Não conectado",
+      "youCanSignIn": "Você pode entrar com sua conta {accountName}",
+      "signInWithYourAccount": "Entre com sua conta {accountName}",
+      "cancel": "Cancelar"
+    },
+    "2fa": {
+      "title": "Autenticação de dois fatores",
+      "description": "Adicione uma camada de segurança extra para sua conta adicionando autenticação de dois fatores.",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "appAuthenticator": {
+        "title": "Aplicativo de autenticação (TOTP)",
+        "description": "Gere códigos usando um aplicativo como Google Authenticator ou Okta Verify.",
+        "totpRemoved": "TOTP removido com sucesso",
+        "remove": "Remover",
+        "removeTOTP": "Remover TOTP",
+        "areYouSure": "Tem certeza de que deseja remover seu TOTP?",
+        "cancel": "Cancelar",
+        "totpSetupSuccessfully": "TOTP configurado com sucesso",
+        "add": "Adicionar",
+        "setupTOTP": "Configurar TOTP",
+        "dialogDescription": "Escaneie o QR code abaixo com o seu aplicativo autenticador preferido. Em seguida, insira o código de 6 dígitos que o aplicativo fornece para continuar. Você também pode copiar o segredo abaixo e colá-lo em seu aplicativo.",
+        "copySecret": "Copiar segredo para a área de transferência",
+        "enter6Digits": "Insira o código de 6 dígitos do seu aplicativo autenticador",
+        "confirm": "Confirmar"
+      },
+      "passkey": {
+        "title": "Chaves de acesso",
+        "description": "Use uma chave de acesso para fazer login na sua conta. As chaves de acesso são seguras, rápidas e fáceis de usar.",
+        "addSuccessfully": "Chave de acesso adicionada com sucesso",
+        "addFailed": "Falha ao adicionar chave de acesso",
+        "add": "Adicionar",
+        "addPasskey": "Adicionar chave de acesso",
+        "addPasskeyDescription": "Adicione uma chave de acesso à sua conta. As chaves de acesso são seguras, rápidas e fáceis de usar.",
+        "name": "Nome",
+        "myPasskey": "Minha chave de acesso",
+        "cancel": "Cancelar",
+        "renamedSuccessfully": "Chave de acesso renomeada com sucesso",
+        "renameFailed": "Falha ao renomear chave de acesso",
+        "createdOn": "Criado em {date}",
+        "lastUsedOn": "Última utilização em {date}",
+        "editPasskeyName": "Editar {name}",
+        "editPasskey": "Editar Chave de Acesso",
+        "editYourPasskey": "Editar o nome da chave de acesso <b>{passkeyName}</b>.",
+        "save": "Salvar",
+        "deletePasskeyName": "Excluir {name}",
+        "deletePasskey": "Excluir Chave de Acesso",
+        "deleteDescription": "Tem certeza de que deseja excluir sua chave de acesso <b>{passkeyName}</b>? Ao removê-la você não poderá mais usá-la para fazer login na sua conta.",
+        "delete": "Excluir",
+        "deleteSuccessfully": "Chave de acesso excluída com sucesso",
+        "deleteFailed": "Falha ao excluir chave de acesso",
+        "passkeysRegistered": "{count, plural, =1 {1 chave de acesso registrada} other {# chaves de acesso registradas}}",
+        "openPasskeysList": "Abrir lista de chaves de acesso",
+        "closePasskeysList": "Fechar lista de chaves de acesso"
+      },
+      "recoveryCodes": {
+        "title": "Códigos de recuperação",
+        "description": "Use códigos de recuperação para recuperar sua conta se perder o acesso a seu dispositivo.",
+        "dialogDescription": "Os códigos de recuperação podem ser usados para acessar sua conta no caso de perder o acesso ao seu dispositivo e não conseguir receber códigos de autenticação de dois fatores.",
+        "regeneratedSuccessfully": "Códigos de recuperação gerados com sucesso",
+        "regenerateFailed": "Falha ao gerar códigos de recuperação",
+        "view": "Ver",
+        "regenerate": "Gerar novamente",
+        "close": "Fechar"
+      }
+    }
+  },
+  "pageError": {
+    "return": "Voltar para a página inicial"
+  },
+  "errors": {
+    "unexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    "invalid": "Dados inválidos",
+    "codeIsRequired": "O código é obrigatório",
+    "passwordIsRequired": "A senha é obrigatória",
+    "invalidEmail": "Por favor, insira um endereço de e-mail válido.",
+    "password": {
+      "minCharacter": "A senha deve ter no mínimo 8 caracteres",
+      "maxCharacter": "A senha deve ter no máximo 64 caracteres",
+      "regex": "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial"
+    }
+  },
+  "footer": {
+    "faq": "Perguntas frequentes",
+    "privacy": "Privacidade",
+    "speedTest": "Teste de velocidade",
+    "help": "Ajuda",
+    "helpCenter": "Centro de ajuda",
+    "termsOfUse": "Termos de uso",
+    "contact": "Contato",
+    "account": "Conta",
+    "myAccount": "Minha conta",
+    "preferences": "Preferências",
+    "media": "Mídia",
+    "legalNotices": "Avisos legais",
+    "allRightsReserved": "Todos os direitos reservados"
+  }
+}

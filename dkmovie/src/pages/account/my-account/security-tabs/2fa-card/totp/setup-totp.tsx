@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { RecoveryCodesDialog } from "@/components/recovery-codes/dialog";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
@@ -34,6 +35,8 @@ import { needReAuthentication } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export function SetupTOTP() {
+  const t = useTranslations("securityPage.2fa.appAuthenticator");
+  const errorsT = useTranslations("errors");
   const queryClient = useQueryClient();
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -63,7 +66,7 @@ export function SetupTOTP() {
   const onSubmit: SubmitHandler<ConfirmTOTPSchema> = async (data) => {
     try {
       const res = await confirmTOTP(data);
-      toast.success("Setup TOTP successfully");
+      toast.success(t("totpSetupSuccessfully"));
       if (res?.meta?.recovery_codes_generated) {
         setIsToGetRecoveryCodes(true);
       } else {
@@ -88,7 +91,7 @@ export function SetupTOTP() {
       }
 
       console.error(error);
-      toast.error("Something went wrong");
+      toast.error(errorsT("unexpected"));
     }
   };
 
@@ -107,17 +110,13 @@ export function SetupTOTP() {
     <Dialog open={showSetupTOTPDialog} onOpenChange={setShowSetupTOTPDialog}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          Add
+          {t("add")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Setup TOTP</DialogTitle>
-          <DialogDescription>
-            Scan the QR code below with your preferred authenticator app. Then,
-            enter the 6 digit code that the app provides to continue. You can
-            also copy the secret below and paste it into your app.
-          </DialogDescription>
+          <DialogTitle>{t("setupTOTP")}</DialogTitle>
+          <DialogDescription>{t("dialogDescription")}</DialogDescription>
         </DialogHeader>
         {isSettingUpTOTP ? (
           <div className="flex h-72 w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
@@ -129,7 +128,7 @@ export function SetupTOTP() {
               <p>{totp.secret}</p>
               <CopyButton
                 value={totp.secret}
-                aria-label="Copy secret to clipboard"
+                aria-label={t("copySecret")}
                 className="size-6"
                 variant="ghost"
               />
@@ -150,7 +149,7 @@ export function SetupTOTP() {
               render={({ field }) => (
                 <InputOTP
                   {...field}
-                  aria-label="Enter 6 digit code from your authenticator app"
+                  aria-label={t("enter6Digits")}
                   maxLength={otpFields.length}
                   pattern={REGEXP_ONLY_DIGITS}
                   autoFocus
@@ -175,14 +174,14 @@ export function SetupTOTP() {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isConfirmingTOTP}>
               {isConfirmingTOTP ? (
                 <Loader className="animate-spin" />
               ) : (
-                "Confirm"
+                t("confirm")
               )}
             </Button>
           </DialogFooter>

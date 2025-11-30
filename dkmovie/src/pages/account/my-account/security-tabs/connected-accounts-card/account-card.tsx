@@ -3,6 +3,7 @@ import type { ProvidersResponse } from "@/http/account/providers";
 import type { SocialAccount } from "@/http/get-config";
 import type { DisconnectProviderMutation } from "./type";
 import { Loader } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { ProviderButton, ProviderIcon } from "@/components/provider-button";
 import {
   AlertDialog,
@@ -36,6 +37,7 @@ export function AccountCard({
   disconnectProvider,
   initializeReAuthentication,
 }: AccountCardProps) {
+  const t = useTranslations("securityPage.socialAccount");
   const isConnected = !!provider;
   const accountId = provider?.uid;
 
@@ -50,19 +52,19 @@ export function AccountCard({
               <Badge
                 variant={isConnected ? "defaultOutline" : "destructiveOutline"}
               >
-                {isConnected ? "Connected" : "Not Connected"}
+                {isConnected ? t("connected") : t("notConnected")}
               </Badge>
             </p>
             <p className="text-muted-foreground text-sm">
               {isConnected
-                ? `You can sign in with your ${account.name} account`
-                : `Sign in with your ${account.name} account`}
+                ? t("youCanSignIn", { accountName: account.name })
+                : t("signInWithYourAccount", { accountName: account.name })}
             </p>
           </div>
         </div>
         {!isConnected || !accountId ? (
           <ProviderButton
-            text="Connect"
+            text={t("connect")}
             addIcon={false}
             process="connect"
             provider={account.id}
@@ -80,24 +82,24 @@ export function AccountCard({
                 {isDisconnectingProvider ? (
                   <Loader className="animate-spin" />
                 ) : (
-                  "Disconnect"
+                  t("disconnect")
                 )}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  Disconnect {account.name} account
+                  {t("disconnectAccount", { accountName: account.name })}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to disconnect your {account.name}{" "}
-                  account? You will no longer be able to sign in with this
-                  account.
+                  {t("disconnectAccountDescription", {
+                    accountName: account.name,
+                  })}
                 </AlertDialogDescription>
                 <AlertDialogFooter className="mt-4">
                   <AlertDialogCancel asChild>
                     <Button type="button" variant="outline">
-                      Cancel
+                      {t("cancel")}
                     </Button>
                   </AlertDialogCancel>
                   <AlertDialogAction asChild>
@@ -107,7 +109,7 @@ export function AccountCard({
                         disconnectProvider({ provider: account.id, accountId })
                       }
                     >
-                      Disconnect
+                      {t("disconnect")}
                     </Button>
                   </AlertDialogAction>
                 </AlertDialogFooter>

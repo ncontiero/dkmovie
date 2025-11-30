@@ -1,8 +1,7 @@
-import { type output, object } from "zod";
-import { emailSchema } from "../base";
+import { type output, email, object } from "zod";
 
 export const changeEmailSchema = object({
-  email: emailSchema,
+  email: email(),
 });
 
 export type ChangeEmailSchema = output<typeof changeEmailSchema>;

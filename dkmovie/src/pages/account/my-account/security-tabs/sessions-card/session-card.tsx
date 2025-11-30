@@ -1,9 +1,11 @@
 import type { SessionItem } from "@/http/account/sessions";
 import { Laptop, Smartphone, X } from "lucide-react";
 import { UAParser } from "ua-parser-js";
+import { useTranslations } from "use-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIntl } from "@/hooks/use-intl";
 
 interface SessionCardProps {
   readonly session: SessionItem;
@@ -14,9 +16,19 @@ export function SessionCard({
   session,
   deleteSessionsMutation,
 }: SessionCardProps) {
+  const { lang } = useIntl();
+  const t = useTranslations("securityPage.session");
   const lastSeenDate = new Date(
     (session.last_seen_at || session.created_at) * 1000,
   );
+  const lastSeenFormatted = lastSeenDate.toLocaleString(lang, {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 
   const { device, browser, os } = UAParser(session.user_agent);
   const deviceType = device.type;
@@ -28,9 +40,9 @@ export function SessionCard({
       <div className="flex flex-col gap-2.5">
         <div className="flex items-center gap-3">
           <DeviceIcon />
-          <p className="font-semibold">{os.name || "Unknown"}</p>
+          <p className="font-semibold">{os.name || t("unknown")}</p>
           {session.is_current ? (
-            <Badge variant="defaultOutline">Current</Badge>
+            <Badge variant="defaultOutline">{t("current")}</Badge>
           ) : null}
         </div>
         <div className="text-muted-foreground flex flex-col gap-1 text-sm">
@@ -38,7 +50,9 @@ export function SessionCard({
             {browser.name} {browser.version}
           </p>
           <p>{session.ip}</p>
-          <p>Last seen: {lastSeenDate.toLocaleString()}</p>
+          <p>
+            {t("lastSeen")}: {lastSeenFormatted}
+          </p>
         </div>
       </div>
       {!session.is_current && (
@@ -51,7 +65,9 @@ export function SessionCard({
         >
           <X />
           <span className="sr-only">
-            Terminate session from {deviceType || "unknown device"}
+            {t("terminateSession", {
+              deviceType: deviceType || t("unknownDevice"),
+            })}
           </span>
         </Button>
       )}

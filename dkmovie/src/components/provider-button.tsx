@@ -9,7 +9,7 @@ import { type ButtonProps, Button } from "./ui/button";
 interface ProviderButtonProps extends ButtonProps {
   readonly provider?: string;
   readonly process?: "login" | "connect";
-  readonly text?: string;
+  readonly text: string;
   readonly addIcon?: boolean;
   readonly iconToUse?: ReactNode;
   readonly initializeReAuthentication?: InitializeReAuthentication;
@@ -35,7 +35,7 @@ export function ProviderIcon({
 
 export function ProviderButton({
   process = "login",
-  text = "Continue with Google",
+  text,
   provider = "google",
   addIcon = true,
   iconToUse,

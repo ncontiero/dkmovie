@@ -1,10 +1,12 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { ShieldAlert, User } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReAuthenticateProvider } from "@/context/reauthenticate/provider";
 
 export default function MyAccountLayout() {
+  const t = useTranslations("accountPage");
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -13,9 +15,9 @@ export default function MyAccountLayout() {
       <div className="text-foreground container mx-auto mt-30 flex min-h-screen max-w-7xl">
         <main className="w-full">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">Account Management</h1>
+            <h1 className="text-3xl font-bold">{t("title")}</h1>
             <p className="text-muted-foreground text-lg font-medium">
-              Update your profile and manage your account settings.
+              {t("description")}
             </p>
           </div>
           <Separator className="my-6 h-0.5" />
@@ -29,11 +31,11 @@ export default function MyAccountLayout() {
               <TabsList className="overflow-x-scroll md:overflow-x-auto">
                 <TabsTrigger value="/account">
                   <User />
-                  Account
+                  {t("tabs.account.label")}
                 </TabsTrigger>
                 <TabsTrigger value="/account/security">
                   <ShieldAlert />
-                  Security
+                  {t("tabs.security.label")}
                 </TabsTrigger>
               </TabsList>
             </div>

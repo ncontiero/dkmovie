@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { getRecoveryCodes } from "@/http/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
@@ -12,6 +13,7 @@ interface RecoveryCodesContentProps {
 export function RecoveryCodesContent({
   onReAuthenticationCancel,
 }: RecoveryCodesContentProps) {
+  const t = useTranslations("recoveryCodes.actions");
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
 
@@ -59,7 +61,7 @@ export function RecoveryCodesContent({
       </div>
       <div className="bg-secondary/80 lg flex items-center justify-end rounded-b border-t p-2">
         <CopyButton value={codes.join("\n")} variant="outline" size="sm">
-          Copy
+          {t("copy")}
         </CopyButton>
       </div>
     </div>

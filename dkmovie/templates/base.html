@@ -13,6 +13,9 @@
     <title>DKMovie</title>
     <link type="image/svg+xml" href="{% webpack_static 'assets/favicon.svg' %}" rel="icon" />
 
+    <script id="initialLanguageScript">
+      const LANGUAGE_CODE = "{{ LANGUAGE_CODE }}";
+    </script>
     {% block head %}
     <script id="pageErrorScript">
       const pageError = null;

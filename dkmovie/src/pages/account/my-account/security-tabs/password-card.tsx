@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader, LockKeyhole } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import {
   Card,
   CardContent,
@@ -35,6 +36,8 @@ import {
 import { getErrorMessage } from "@/utils/errors";
 
 export function PasswordCard() {
+  const t = useTranslations("securityPage.changePassword");
+  const errorsT = useTranslations("errors");
   const queryClient = useQueryClient();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const { session } = useSession();
@@ -68,11 +71,9 @@ export function PasswordCard() {
       if (!hasUsablePassword) {
         queryClient.invalidateQueries({ queryKey: ["session"] });
       }
-      toast.success(`Password ${hasUsablePassword ? "updated" : "set"}!`, {
-        description: `Your password has been ${
-          hasUsablePassword ? "updated" : "set"
-        }.`,
-      });
+      toast.success(
+        hasUsablePassword ? t("success.updated") : t("success.set"),
+      );
       setShowPasswordDialog(false);
       reset();
     } catch (error) {
@@ -83,18 +84,18 @@ export function PasswordCard() {
       }
 
       console.error(error);
-      toast.error("Something went wrong!");
+      toast.error(errorsT("unexpected"));
     }
   };
 
   return (
     <Card>
       <CardContent>
-        <CardTitle>Password</CardTitle>
+        <CardTitle>{t("card.title")}</CardTitle>
         <CardDescription>
           {hasUsablePassword
-            ? "Change your account password regularly to keep your account secure."
-            : "You don't have a password set."}
+            ? t("card.description")
+            : t("card.nonPasswordDescription")}
         </CardDescription>
         {hasUsablePassword ? (
           <div className="mt-4 flex items-center gap-3 rounded-lg border p-4">
@@ -111,25 +112,25 @@ export function PasswordCard() {
               size="sm"
               variant="muted"
             >
-              Forgot password? Click here to reset it.
+              {t("card.forgotPassword")}
             </Link>
           </CardFooterDescription>
         ) : null}
         <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
           <DialogTrigger asChild>
             <Button type="button" size="sm">
-              {hasUsablePassword ? "Change password" : "Set password"}
+              {hasUsablePassword ? t("card.change") : t("card.set")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {hasUsablePassword ? "Change Password" : "Set Password"}
+                {hasUsablePassword ? t("card.change") : t("card.set")}
               </DialogTitle>
               <DialogDescription>
                 {hasUsablePassword
-                  ? "Change your account password regularly to keep your account secure."
-                  : "Set a new password for your account."}
+                  ? t("card.changeDialogDescription")
+                  : t("card.setDialogDescription")}
               </DialogDescription>
             </DialogHeader>
             <form
@@ -138,10 +139,11 @@ export function PasswordCard() {
             >
               {hasUsablePassword ? (
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="current-password">Current password</Label>
+                  <Label htmlFor="current-password">
+                    {t("form.currentPassword")}
+                  </Label>
                   <PasswordInput
                     id="current-password"
-                    placeholder="Type your current password..."
                     {...register("current_password")}
                   />
                   {errors.current_password ? (
@@ -152,10 +154,9 @@ export function PasswordCard() {
                 </div>
               ) : null}
               <div className="flex flex-col gap-2">
-                <Label htmlFor="new-password">New password</Label>
+                <Label htmlFor="new-password">{t("form.newPassword")}</Label>
                 <PasswordInput
                   id="new-password"
-                  placeholder="Type your new password..."
                   {...register("new_password")}
                 />
                 {errors.new_password ? (
@@ -166,11 +167,10 @@ export function PasswordCard() {
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="confirm-new-password">
-                  Confirm your new password
+                  {t("form.confirmPassword")}
                 </Label>
                 <PasswordInput
                   id="confirm-new-password"
-                  placeholder="Type your new password again..."
                   {...register("password_confirmation")}
                 />
                 {errors.password_confirmation ? (
@@ -182,16 +182,16 @@ export function PasswordCard() {
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">
-                    Cancel
+                    {t("form.cancel")}
                   </Button>
                 </DialogClose>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <Loader className="animate-spin" />
                   ) : hasUsablePassword ? (
-                    "Change password"
+                    t("card.change")
                   ) : (
-                    "Set password"
+                    t("card.set")
                   )}
                 </Button>
               </DialogFooter>

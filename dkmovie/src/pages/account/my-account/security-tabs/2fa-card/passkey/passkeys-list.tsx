@@ -1,11 +1,12 @@
 import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
 import type { Get2FAAuthenticatorWebAuthn } from "@/http/account/2fa";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Edit, Loader, Trash } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,6 +37,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useIntl } from "@/hooks/use-intl";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import {
   deleteWebAuthCredentials,
@@ -54,12 +56,18 @@ interface PasskeyItemProps {
   readonly initializeReAuthentication: InitializeReAuthentication;
 }
 
+function richTextBold(chunks: ReactNode) {
+  return <b>{chunks}</b>;
+}
+
 function PasskeyItem({
   passkey,
   deletePasskey,
   isDeleting,
   initializeReAuthentication,
 }: PasskeyItemProps) {
+  const { lang } = useIntl();
+  const t = useTranslations("securityPage.2fa.passkey");
   const queryClient = useQueryClient();
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
 
@@ -68,12 +76,12 @@ function PasskeyItem({
     ? new Date(passkey.last_used_at * 1000)
     : null;
 
-  const createdAtFormatted = createdAt.toLocaleDateString("en-US", {
+  const createdAtFormatted = createdAt.toLocaleDateString(lang, {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
-  const lastUsedAtFormatted = lastUsedAt?.toLocaleDateString("en-US", {
+  const lastUsedAtFormatted = lastUsedAt?.toLocaleDateString(lang, {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -93,7 +101,7 @@ function PasskeyItem({
   const onSubmit: SubmitHandler<AddPasskeySchema> = async (data) => {
     try {
       await renameWebAuthCredentials(passkey.id, data);
-      toast.success("Passkey renamed successfully");
+      toast.success(t("renamedSuccessfully"));
       queryClient.invalidateQueries({ queryKey: ["2fa"] });
       setIsRenameDialogOpen(false);
     } catch (error) {
@@ -111,7 +119,7 @@ function PasskeyItem({
       }
 
       console.error(error);
-      toast.error("Failed to rename passkey");
+      toast.error(t("renameFailed"));
     }
   };
 
@@ -120,9 +128,9 @@ function PasskeyItem({
       <div className="text-foreground/60 space-y-1 text-xs">
         <p>{passkey.name}</p>
         <p>
-          <span>Created on {createdAtFormatted}</span>{" "}
-          {lastUsedAt ? (
-            <span>• Last used on {lastUsedAtFormatted}</span>
+          <span>{t("createdOn", { date: createdAtFormatted })}</span>{" "}
+          {lastUsedAtFormatted ? (
+            <span>• {t("lastUsedOn", { date: lastUsedAtFormatted })}</span>
           ) : null}
         </p>
       </div>
@@ -141,14 +149,19 @@ function PasskeyItem({
               ) : (
                 <Edit />
               )}
-              <span className="sr-only">Edit {passkey.name}</span>
+              <span className="sr-only">
+                {t("editPasskeyName", { name: passkey.name })}
+              </span>
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Passkey</DialogTitle>
+              <DialogTitle>{t("editPasskey")}</DialogTitle>
               <DialogDescription>
-                Edit your passkey <b>{passkey.name}</b> name.
+                {t.rich("editYourPasskey", {
+                  b: richTextBold,
+                  passkeyName: passkey.name,
+                })}
               </DialogDescription>
             </DialogHeader>
             <form
@@ -156,7 +169,9 @@ function PasskeyItem({
               onSubmit={handleSubmit(onSubmit)}
             >
               <div className="flex flex-col gap-2">
-                <Label htmlFor={`passkey-name-${passkey.id}`}>Name</Label>
+                <Label htmlFor={`passkey-name-${passkey.id}`}>
+                  {t("name")}
+                </Label>
                 <Input
                   id={`passkey-name-${passkey.id}`}
                   type="text"
@@ -171,14 +186,14 @@ function PasskeyItem({
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">
-                    Cancel
+                    {t("cancel")}
                   </Button>
                 </DialogClose>
                 <Button type="submit" disabled={isSubmittingForm}>
                   {isSubmittingForm ? (
                     <Loader className="animate-spin" />
                   ) : (
-                    "Save"
+                    t("save")
                   )}
                 </Button>
               </DialogFooter>
@@ -195,22 +210,25 @@ function PasskeyItem({
               disabled={isDeleting}
             >
               {isDeleting ? <Loader className="animate-spin" /> : <Trash />}
-              <span className="sr-only">Delete {passkey.name}</span>
+              <span className="sr-only">
+                {t("deletePasskeyName", { name: passkey.name })}
+              </span>
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Passkey</AlertDialogTitle>
+              <AlertDialogTitle>{t("deletePasskey")}</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete your <b>{passkey.name}</b>{" "}
-                passkey? By removing this passkey you will no longer be able to
-                use it to sign-in to your account.
+                {t.rich("deleteDescription", {
+                  b: richTextBold,
+                  passkeyName: passkey.name,
+                })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel asChild>
                 <Button type="button" variant="outline">
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </AlertDialogCancel>
               <AlertDialogAction asChild>
@@ -220,7 +238,11 @@ function PasskeyItem({
                   onClick={() => deletePasskey([passkey.id])}
                   disabled={isDeleting}
                 >
-                  {isDeleting ? <Loader className="animate-spin" /> : "Delete"}
+                  {isDeleting ? (
+                    <Loader className="animate-spin" />
+                  ) : (
+                    t("delete")
+                  )}
                 </Button>
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -236,6 +258,7 @@ interface PasskeysListProps {
 }
 
 export function PasskeysList({ passkeys }: PasskeysListProps) {
+  const t = useTranslations("securityPage.2fa.passkey");
   const queryClient = useQueryClient();
   const { initializeReAuthentication } = useReAuthenticate();
   const [open, setOpen] = useState(false);
@@ -243,7 +266,7 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
   const { mutate: deletePasskey, isPending: isDeleting } = useMutation({
     mutationFn: async (ids: number[]) => await deleteWebAuthCredentials(ids),
     onSuccess: () => {
-      toast.success("Passkey deleted successfully");
+      toast.success(t("deleteSuccessfully"));
       queryClient.invalidateQueries({ queryKey: ["2fa"] });
     },
     onError: (error, ids) => {
@@ -253,16 +276,18 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
         });
         return;
       }
-      toast.error("Failed to delete passkey");
+      toast.error(t("deleteFailed"));
     },
   });
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="mt-2 w-full">
       <CollapsibleTrigger className="text-muted-foreground flex items-center gap-1 text-sm [&>svg]:size-4">
-        <span>{passkeys.length} passkeys registered</span>
+        <span>{t("passkeysRegistered", { count: passkeys.length })}</span>
         <ChevronDown className={`${open ? "rotate-180" : ""} duration-200`} />
-        <span className="sr-only">{open ? "Close" : "Open"} passkeys list</span>
+        <span className="sr-only">
+          {open ? t("closePasskeysList") : t("openPasskeysList")}
+        </span>
       </CollapsibleTrigger>
       <CollapsibleContent>
         <Separator className="my-3" />

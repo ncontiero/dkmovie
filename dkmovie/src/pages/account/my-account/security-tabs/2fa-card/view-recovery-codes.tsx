@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { RecoveryCodesContent } from "@/components/recovery-codes/content";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ import { needReAuthentication } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export function ViewRecoveryCodes() {
+  const t = useTranslations("securityPage.2fa.recoveryCodes");
   const queryClient = useQueryClient();
   const [showDialog, setShowDialog] = useState(false);
   const { initializeReAuthentication, isReAuthenticating } =
@@ -31,7 +33,7 @@ export function ViewRecoveryCodes() {
   } = useMutation({
     mutationFn: async () => await regenerateRecoveryCodes(),
     onSuccess: (data) => {
-      toast.success(`Recovery codes regenerated successfully`);
+      toast.success(t("regeneratedSuccessfully"));
       queryClient.setQueryData(["recovery-codes"], data);
     },
     onError: (error) => {
@@ -53,7 +55,7 @@ export function ViewRecoveryCodes() {
       }
 
       console.error(error);
-      toast.error(`Failed to regenerate recovery codes`);
+      toast.error(t("regenerateFailed"));
     },
   });
 
@@ -63,17 +65,13 @@ export function ViewRecoveryCodes() {
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          View
+          {t("view")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Recovery Codes</DialogTitle>
-          <DialogDescription>
-            Recovery codes can be used to access your account in the event you
-            lose access to your device and cannot receive two-factor
-            authentication codes.
-          </DialogDescription>
+          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogDescription>{t("dialogDescription")}</DialogDescription>
         </DialogHeader>
         <RecoveryCodesContent
           onReAuthenticationCancel={() => setShowDialog(false)}
@@ -88,12 +86,12 @@ export function ViewRecoveryCodes() {
             {isRegeneratingRecoveryCodes ? (
               <Loader className="animate-spin" />
             ) : (
-              "Regenerate"
+              t("regenerate")
             )}
           </Button>
           <DialogClose asChild>
             <Button type="button" variant="outline">
-              Close
+              {t("close")}
             </Button>
           </DialogClose>
         </DialogFooter>

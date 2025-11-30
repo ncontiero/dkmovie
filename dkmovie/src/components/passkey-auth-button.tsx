@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { KeySquare, Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import {
@@ -27,6 +28,7 @@ export function PasskeyAuthButton({
   onAuthenticated,
   ...props
 }: PasskeyAuthButtonProps) {
+  const t = useTranslations("auth");
   const { setSession } = useSession();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
@@ -47,7 +49,7 @@ export function PasskeyAuthButton({
     },
     onSuccess: (res) => {
       setSession(res);
-      toast.success("Successfully authenticated with passkey");
+      toast.success(t("passkey.authenticated"));
       if (isToNavigateToNextPath) navigateToNextPath();
       if (onAuthenticated) onAuthenticated();
     },
@@ -59,14 +61,14 @@ export function PasskeyAuthButton({
       }
 
       if (needEmailVerification(error)) {
-        toast.success("You need to verify your email address.", {
-          description: "Please check your email to verify your account.",
+        toast.success(t("emailVerification.needVerification.title"), {
+          description: t("emailVerification.needVerification.description"),
         });
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
       }
 
-      toast.error("Failed to authenticate with passkey");
+      toast.error(t("passkey.failed"));
       console.error(error);
     },
   });
@@ -85,7 +87,7 @@ export function PasskeyAuthButton({
       ) : (
         <KeySquare />
       )}
-      {text || "Continue with Passkey"}
+      {text || t("continueWith.passkey")}
     </Button>
   );
 }

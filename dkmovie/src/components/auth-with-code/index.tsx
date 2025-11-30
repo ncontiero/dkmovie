@@ -3,6 +3,7 @@ import type { AuthWithCodeProps } from "./types";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { confirm2FA } from "@/http/auth/2fa";
@@ -11,7 +12,8 @@ import {
   type TwoFactorAuthSchema,
   twoFactorAuthSchema,
 } from "@/schemas/auth/2fa";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, translateZodError } from "@/utils/errors";
+import { AuthenticateWithCode } from "./authenticate";
 import { CodeInput } from "./code-input";
 import { ReAuthWithCode } from "./reauthenticate";
 
@@ -26,6 +28,8 @@ export function AuthWithCode({
   type,
   reAuthentication,
 }: AuthenticationWithCodeProps) {
+  const t = useTranslations("auth.mfa");
+  const errorT = useTranslations("errors");
   const { setSession } = useSession();
   const { navigateToNextPath } = useNextPath();
 
@@ -34,7 +38,14 @@ export function AuthWithCode({
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(twoFactorAuthSchema),
+    resolver: zodResolver(twoFactorAuthSchema, {
+      error: (iss) =>
+        translateZodError({
+          iss,
+          messages: { code: errorT("codeIsRequired") },
+          defaultError: errorT("invalid"),
+        }),
+    }),
     defaultValues: {
       code: "",
     },
@@ -46,10 +57,7 @@ export function AuthWithCode({
     );
   }
 
-  const description =
-    codeType === "totp"
-      ? "Please enter the code from your authenticator app"
-      : "Please enter one of your recovery codes";
+  const description = codeType === "totp" ? t("totp") : t("recoveryCodes");
 
   const onSubmitType = (data: TwoFactorAuthSchema) => {
     const fn = type === "2fa" ? confirm2FA : reAuth2FA;
@@ -74,7 +82,7 @@ export function AuthWithCode({
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorT("unexpected"));
     }
   };
 
@@ -97,7 +105,23 @@ export function AuthWithCode({
             }}
           />
         </ReAuthWithCode>
-      ) : null}
+      ) : (
+        <AuthenticateWithCode
+          description={description}
+          type={codeType}
+          isSubmitting={isSubmitting}
+        >
+          <CodeInput
+            control={control}
+            description={description}
+            errors={errors}
+            type={codeType}
+            onComplete={() => {
+              handleSubmit(onSubmit)();
+            }}
+          />
+        </AuthenticateWithCode>
+      )}
     </form>
   );
 }

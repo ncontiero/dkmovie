@@ -2,6 +2,7 @@ import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import type { PropsWithChildren } from "react";
 import { Loader } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -19,6 +20,7 @@ export function ReAuthWithCode({
   children,
   isSubmitting = false,
 }: ReAuthWithCodeProps) {
+  const t = useTranslations("auth");
   if (!onCancel) {
     throw new Error("onCancel is required for ReAuthWithCode component");
   }
@@ -36,13 +38,13 @@ export function ReAuthWithCode({
           disabled={isSubmitting}
           onClick={onCancel}
         >
-          Cancel
+          {t("cancel")}
         </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? (
             <Loader className="animate-spin" />
           ) : (
-            "Re-authenticate"
+            t("reAuth.submit")
           )}
         </Button>
       </DialogFooter>

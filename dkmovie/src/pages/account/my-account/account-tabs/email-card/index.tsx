@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "use-intl";
 import {
   Card,
   CardContent,
@@ -14,6 +15,8 @@ import { getUserEmails } from "@/http/account/emails";
 import { ChangeEmailDialog } from "./change-email-dialog";
 
 export function UserEmailCard() {
+  const t = useTranslations("accountPage.email");
+
   const { data: userEmails, isLoading: isUserEmailsLoading } = useQuery({
     queryKey: ["user-emails"],
     queryFn: async () => {
@@ -32,10 +35,8 @@ export function UserEmailCard() {
   return (
     <Card className="mt-10">
       <CardContent className="flex flex-col p-4 sm:p-6">
-        <CardTitle>Email</CardTitle>
-        <CardDescription>
-          Manage the email address you want to use to log in to your account.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
         <div className="mt-4 flex flex-col gap-2">
           {isUserEmailsLoading ? (
             <Skeleton className="flex h-14 items-center gap-2 px-4">
@@ -52,11 +53,15 @@ export function UserEmailCard() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm">{email}</span>
                   {verified ? (
-                    <Badge variant="defaultOutline">Verified</Badge>
+                    <Badge variant="defaultOutline">{t("verified")}</Badge>
                   ) : (
-                    <Badge variant="destructiveOutline">Unverified</Badge>
+                    <Badge variant="destructiveOutline">
+                      {t("unverified")}
+                    </Badge>
                   )}
-                  {primary ? <Badge variant="success">Primary</Badge> : null}
+                  {primary ? (
+                    <Badge variant="success">{t("primary")}</Badge>
+                  ) : null}
                 </div>
                 <div className="flex items-center gap-2">
                   {!verified ? <ResendEmailCodeButton /> : null}
@@ -67,10 +72,7 @@ export function UserEmailCard() {
         </div>
       </CardContent>
       <CardFooter>
-        <CardFooterDescription>
-          Email must be verified to be able to login with them or be used as
-          primary email.
-        </CardFooterDescription>
+        <CardFooterDescription>{t("cardDescription")}</CardFooterDescription>
         <ChangeEmailDialog />
       </CardFooter>
     </Card>

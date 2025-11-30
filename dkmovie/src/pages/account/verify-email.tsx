@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { ResendEmailCodeButton } from "@/components/resend-email-code-button";
@@ -18,9 +19,11 @@ import {
   type VerifyEmailSchema,
   verifyEmailSchema,
 } from "@/schemas/auth/verify-email";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, translateZodError } from "@/utils/errors";
 
 export default function VerifyEmail() {
+  const t = useTranslations("auth.emailVerification.verifyEmail");
+  const errorT = useTranslations("errors");
   const queryClient = useQueryClient();
   const { setSession } = useSession();
   const navigate = useNavigate();
@@ -31,7 +34,14 @@ export default function VerifyEmail() {
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(verifyEmailSchema),
+    resolver: zodResolver(verifyEmailSchema, {
+      error: (iss) =>
+        translateZodError({
+          iss,
+          messages: { key: errorT("codeIsRequired") },
+          defaultError: errorT("invalid"),
+        }),
+    }),
     defaultValues: {
       key: "",
     },
@@ -42,12 +52,12 @@ export default function VerifyEmail() {
       const res = await verifyEmail(data);
       setSession(res);
       queryClient.invalidateQueries({ queryKey: ["user-emails"] });
-      toast.success("Email verified successfully.");
+      toast.success(t("success"));
       navigateToNextPath();
     } catch (error) {
       if (error instanceof HTTPError) {
         if (error.status === 409) {
-          toast.error("You don't have email to verify.");
+          toast.error(t("dontHave"));
           navigate("/account");
           return;
         }
@@ -58,43 +68,42 @@ export default function VerifyEmail() {
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorT("unexpected"));
     }
   };
 
   return (
     <BaseAuthForm
-      title="Verify your email"
-      description="Please verify your email address to continue."
+      title={t("title")}
+      description={t("description")}
       formSubmit={handleSubmit(onSubmit)}
       type="verify-email"
     >
-      <Meta title="Verify your email" />
-      <div className="flex items-center justify-center">
-        <Controller
-          name="key"
-          control={control}
-          render={({ field }) => (
-            <CodeInput
-              {...field}
-              aria-label="Enter your verification code"
-              pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-              autoFocus
-              onComplete={() => {
-                handleSubmit(onSubmit)();
-              }}
-            />
-          )}
-        />
+      <Meta title={t("title")} />
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex items-center justify-center">
+          <Controller
+            name="key"
+            control={control}
+            render={({ field }) => (
+              <CodeInput
+                {...field}
+                aria-label={t("enterYourCode")}
+                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                autoFocus
+                onComplete={() => {
+                  handleSubmit(onSubmit)();
+                }}
+              />
+            )}
+          />
+        </div>
         {errors.key ? (
           <p className="text-destructive text-sm">{errors.key.message}</p>
         ) : null}
       </div>
       <div className="-mt-4 flex items-center justify-center">
-        <ResendEmailCodeButton
-          variant="link"
-          text="Didn't receive a code? Resend"
-        />
+        <ResendEmailCodeButton variant="link" text={t("dintReceive")} />
       </div>
       <Button
         type="submit"
@@ -102,7 +111,7 @@ export default function VerifyEmail() {
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Verify Email"}
+        {isSubmitting ? <Loader className="animate-spin" /> : t("verifyEmail")}
       </Button>
     </BaseAuthForm>
   );

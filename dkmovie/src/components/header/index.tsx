@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Bell, Search, User } from "lucide-react";
+import { useTranslations } from "use-intl";
 import faviconSvg from "@/assets/favicon.svg";
 import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
@@ -11,13 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { ChangeLang } from "./change-lang";
 import { ThemeToggle } from "./theme-toggle";
-
-const links: { title: string; href: string }[] = [
-  { title: "Home", href: "/" },
-  { title: "Movies", href: "/movies" },
-  { title: "Series", href: "/series" },
-];
 
 const pagesToAddScrollEffect = ["/", "/title/"];
 // For Sign In and Sign Up links
@@ -27,10 +23,17 @@ export function Header() {
   const { isAuthenticated, logout } = useSession();
   const { pathname } = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
+  const t = useTranslations("header");
 
   const addScrollEffect = pagesToAddScrollEffect.some((page) =>
     page === "/" ? pathname === "/" : pathname.startsWith(page),
   );
+
+  const links: { title: string; href: string }[] = [
+    { title: t("links.home"), href: "/" },
+    { title: t("links.movies"), href: "/movies" },
+    { title: t("links.series"), href: "/series" },
+  ];
 
   useEffect(() => {
     if (!addScrollEffect) return;
@@ -130,6 +133,7 @@ export function Header() {
                   variant="invert"
                   size="icon"
                   className="hover:bg-foreground/20 rounded-full"
+                  aria-label={t("userMenu.label")}
                 >
                   <User />
                 </Button>
@@ -141,13 +145,13 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
-                      <Link to={`/account`}>My Account</Link>
+                      <Link to={`/account`}>{t("userMenu.myAccount")}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       onClick={() => logout()}
                     >
-                      Log out
+                      {t("userMenu.logout")}
                     </DropdownMenuItem>
                   </>
                 ) : (
@@ -156,16 +160,21 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
-                      <Link to={`/auth/sign-in${nextPath}`}>Sign In</Link>
+                      <Link to={`/auth/sign-in${nextPath}`}>
+                        {t("userMenu.signIn")}
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                     >
-                      <Link to={`/auth/sign-up${nextPath}`}>Sign Up</Link>
+                      <Link to={`/auth/sign-up${nextPath}`}>
+                        {t("userMenu.signUp")}
+                      </Link>
                     </DropdownMenuItem>
                   </>
                 )}
+                <ChangeLang />
               </DropdownMenuContent>
             </DropdownMenu>
             <ThemeToggle />

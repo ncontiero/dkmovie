@@ -12,3 +12,27 @@ export function getErrorMessage(error: unknown) {
 
   return;
 }
+
+interface TranslateZodErrorProps {
+  iss: any;
+  messages: Record<string, string> | Record<string, Record<string, string>>;
+  defaultError: string;
+}
+
+export function translateZodError({
+  iss,
+  messages,
+  defaultError,
+}: TranslateZodErrorProps) {
+  const path = iss?.path?.join(".");
+  if (!path) return { message: defaultError };
+
+  const code = iss?.code;
+  const message = messages[path];
+
+  const codeMessage = typeof message === "object" ? message[code] : undefined;
+  if (codeMessage) return { message: codeMessage };
+
+  if (typeof message === "string") return { message };
+  return { message: defaultError };
+}

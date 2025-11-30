@@ -9,3 +9,7 @@ class UserSchemaOut(Schema):
 
 class UserSchemaIn(Schema):
     name: str
+
+
+class LanguageSchema(Schema):
+    language: str

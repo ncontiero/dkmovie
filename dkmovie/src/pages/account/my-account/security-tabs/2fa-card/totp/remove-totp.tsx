@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,8 @@ import { deleteTOTP } from "@/http/account/2fa";
 import { needReAuthentication } from "@/utils/auth-flows";
 
 export function RemoveTOTP() {
+  const t = useTranslations("securityPage.2fa.appAuthenticator");
+  const errorsT = useTranslations("errors");
   const queryClient = useQueryClient();
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -29,7 +32,7 @@ export function RemoveTOTP() {
         queryClient.invalidateQueries({ queryKey: ["setup-totp"] });
         queryClient.invalidateQueries({ queryKey: ["recovery-codes"] });
         queryClient.invalidateQueries({ queryKey: ["2fa"] });
-        toast.success("Removed TOTP successfully");
+        toast.success(t("totpRemoved"));
       },
       onError: (error) => {
         if (needReAuthentication(error)) {
@@ -40,7 +43,7 @@ export function RemoveTOTP() {
         }
 
         console.error(error);
-        toast.error("Something went wrong");
+        toast.error(errorsT("unexpected"));
       },
     },
   );
@@ -51,20 +54,18 @@ export function RemoveTOTP() {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          Remove
+          {t("remove")}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Remove TOTP</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to remove your TOTP?
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t("removeTOTP")}</AlertDialogTitle>
+          <AlertDialogDescription>{t("areYouSure")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
             <Button type="button" variant="outline">
-              Cancel
+              {t("cancel")}
             </Button>
           </AlertDialogCancel>
           <AlertDialogAction asChild>
@@ -74,7 +75,11 @@ export function RemoveTOTP() {
               disabled={isDeletingTOTP}
               onClick={() => deleteTOTPMutation()}
             >
-              {isDeletingTOTP ? <Loader className="animate-spin" /> : "Remove"}
+              {isDeletingTOTP ? (
+                <Loader className="animate-spin" />
+              ) : (
+                t("remove")
+              )}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

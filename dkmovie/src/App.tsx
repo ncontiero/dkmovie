@@ -6,6 +6,7 @@ import { Footer } from "./components/footer";
 import { Header } from "./components/header";
 import { LoadingPage } from "./components/loading-page";
 import { Toaster } from "./components/ui/sonner";
+import { IntlProvider } from "./context/intl/provider";
 import { SessionProvider } from "./context/session/provider";
 import { queryClient } from "./lib/query";
 import { Router } from "./routes";
@@ -18,16 +19,18 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <SessionProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark">
-            <Header />
-            <Toaster />
-            <Suspense fallback={<LoadingPage />}>
-              <Router />
-            </Suspense>
-            <Footer />
-          </ThemeProvider>
-        </SessionProvider>
+        <IntlProvider>
+          <SessionProvider>
+            <ThemeProvider attribute="class" defaultTheme="dark">
+              <Header />
+              <Toaster />
+              <Suspense fallback={<LoadingPage />}>
+                <Router />
+              </Suspense>
+              <Footer />
+            </ThemeProvider>
+          </SessionProvider>
+        </IntlProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );

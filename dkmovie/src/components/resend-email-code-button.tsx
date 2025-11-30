@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { resentEmailVerification } from "@/http/auth/verify-email";
 import { HTTPError } from "@/http/client";
 import { getErrorMessage } from "@/utils/errors";
@@ -11,6 +12,7 @@ export function ResendEmailCodeButton({
   text,
   ...props
 }: ButtonProps & { readonly text?: string }) {
+  const t = useTranslations("auth.emailVerification.resend");
   const navigate = useNavigate();
 
   const {
@@ -21,13 +23,13 @@ export function ResendEmailCodeButton({
       return await resentEmailVerification();
     },
     onSuccess: () => {
-      toast.success("Email verification resent successfully");
+      toast.success(t("success"));
       navigate("/account/verify-email");
     },
     onError: (error) => {
       if (error instanceof HTTPError) {
         if (error.status === 403 || error.status === 429) {
-          toast.error("Too many requests. Please try again later.");
+          toast.error(t("tooManyRequests"));
         }
         return;
       }
@@ -56,7 +58,7 @@ export function ResendEmailCodeButton({
       {isResendEmailVerificationPending ? (
         <Loader className="animate-spin" />
       ) : (
-        text || "Resend verification email"
+        text || t("send")
       )}
     </Button>
   );

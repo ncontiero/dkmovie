@@ -1,5 +1,6 @@
 import type { ElementType } from "react";
 import { Link } from "react-router";
+import { useTranslations } from "use-intl";
 import { Meta } from "./meta";
 import { Button } from "./ui/button";
 
@@ -11,6 +12,8 @@ interface PageErrorProps {
 }
 
 export function PageError({ code, title, description, Icon }: PageErrorProps) {
+  const t = useTranslations("pageError");
+
   return (
     <div
       className={`bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center`}
@@ -38,7 +41,7 @@ export function PageError({ code, title, description, Icon }: PageErrorProps) {
           size="lg"
           className="font-semibold shadow-lg transition-all hover:scale-105"
         >
-          <Link to="/">Return to Homepage</Link>
+          <Link to="/">{t("return")}</Link>
         </Button>
       </div>
     </div>

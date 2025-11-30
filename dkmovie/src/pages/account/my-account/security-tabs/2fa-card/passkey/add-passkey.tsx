@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { RecoveryCodesDialog } from "@/components/recovery-codes/dialog";
-import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +13,8 @@ import {
   DialogContent,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ import {
 import { needReAuthentication } from "@/utils/auth-flows";
 
 export function AddPasskey() {
+  const t = useTranslations("securityPage.2fa.passkey");
   const queryClient = useQueryClient();
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -56,7 +58,7 @@ export function AddPasskey() {
       })) as PublicKeyCredential;
       const res = await addWebAuthCredentials(credential.toJSON(), data);
 
-      toast.success("Passkey added successfully");
+      toast.success(t("addSuccessfully"));
       if (res?.meta?.recovery_codes_generated) {
         setRecoveryCodesGenerated(true);
       }
@@ -78,7 +80,7 @@ export function AddPasskey() {
       }
 
       console.error(error);
-      toast.error("Failed to add passkey");
+      toast.error(t("addFailed"));
     }
   };
 
@@ -90,27 +92,24 @@ export function AddPasskey() {
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          Add
+          {t("add")}
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <AlertDialogHeader>
-          <DialogTitle>Add Passkey</DialogTitle>
-          <DialogDescription>
-            Add a passkey to your account. Passkeys are secure, fast, and easy
-            to use.
-          </DialogDescription>
-        </AlertDialogHeader>
+        <DialogHeader>
+          <DialogTitle>{t("addPasskey")}</DialogTitle>
+          <DialogDescription>{t("addPasskeyDescription")}</DialogDescription>
+        </DialogHeader>
         <form
           className="mt-3 flex w-full flex-col gap-5"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t("name")}</Label>
             <Input
               id="name"
               type="text"
-              placeholder="My Passkey"
+              placeholder={t("myPasskey")}
               {...register("name")}
             />
             {errors.name ? (
@@ -120,11 +119,11 @@ export function AddPasskey() {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? <Loader className="animate-spin" /> : "Add"}
+              {isSubmitting ? <Loader className="animate-spin" /> : t("add")}
             </Button>
           </DialogFooter>
         </form>

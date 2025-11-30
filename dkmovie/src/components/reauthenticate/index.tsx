@@ -2,6 +2,7 @@ import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import type { TwoFactorAuthenticatorType } from "@/http/account/2fa";
 import { useState } from "react";
 import { LockKeyhole, RectangleEllipsis, Smartphone } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { useFetchAuthenticators } from "@/hooks/fetch/use-fetch-authenticators";
 import { useSession } from "@/hooks/use-session";
 import { AuthWithCode } from "../auth-with-code";
@@ -20,6 +21,7 @@ import { ReAuthenticateWithPassword } from "./with-password";
 type ReAuthWith = null | "password" | TwoFactorAuthenticatorType;
 
 export function ReAuthenticateDialog(props: ReAuthenticationProps) {
+  const t = useTranslations("auth");
   const { session } = useSession();
   const [reAuthWith, setReAuthWith] = useState<ReAuthWith>(null);
 
@@ -41,10 +43,8 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
     <Dialog defaultOpen open>
       <DialogContent addClose={false}>
         <DialogHeader>
-          <DialogTitle>Re-authenticate to continue</DialogTitle>
-          <DialogDescription>
-            You need to re-authenticate to perform this action.
-          </DialogDescription>
+          <DialogTitle>{t("reAuth.title")}</DialogTitle>
+          <DialogDescription>{t("reAuth.description")}</DialogDescription>
         </DialogHeader>
         <div className="my-2 flex flex-col gap-2">
           {havePassword ? (
@@ -58,7 +58,7 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
               className={reAuthWith === "password" ? "bg-muted" : undefined}
             >
               <LockKeyhole />
-              Continue with password
+              {t("continueWith.password")}
             </Button>
           ) : null}
           {havePasskey ? (
@@ -79,7 +79,7 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
               className={reAuthWith === "totp" ? "bg-muted" : undefined}
             >
               <Smartphone />
-              Continue with Authenticator App
+              {t("continueWith.totp")}
             </Button>
           ) : null}
           {haveRecoveryCodes ? (
@@ -95,7 +95,7 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
               }
             >
               <RectangleEllipsis />
-              Continue with Recovery Codes
+              {t("continueWith.recoveryCodes")}
             </Button>
           ) : null}
         </div>
@@ -116,7 +116,7 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
         ) : (
           <DialogFooter>
             <Button type="button" variant="outline" onClick={props.onCancel}>
-              Cancel
+              {t("cancel")}
             </Button>
           </DialogFooter>
         )}

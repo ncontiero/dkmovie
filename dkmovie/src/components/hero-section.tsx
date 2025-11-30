@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { Info, Play } from "lucide-react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
@@ -20,6 +21,8 @@ interface HeroProps {
 }
 
 function HeroSectionItem({ content }: { readonly content: HeroContent }) {
+  const t = useTranslations("heroSection");
+
   return (
     <div className="relative h-[75vh] w-full">
       <div
@@ -47,7 +50,7 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
               >
                 <Link to={`/title/${content.id}/watch`}>
                   <Play className="fill-current" />
-                  Watch Now
+                  {t("watchNow")}
                 </Link>
               </Button>
               <Button
@@ -59,7 +62,7 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
               >
                 <Link to={`/title/${content.id}`}>
                   <Info />
-                  More Information
+                  {t("moreInformation")}
                 </Link>
               </Button>
             </div>

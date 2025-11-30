@@ -1,8 +1,10 @@
+import type { ReactNode } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { Card, CardContent, CardFooter } from "@/components/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,10 +25,24 @@ import {
   type ConfirmDeleteAccountSchema,
   confirmDeleteAccountSchema,
 } from "@/schemas/account/delete-account";
+import { translateZodError } from "@/utils/errors";
+
+function irreversibleWarning(chunks: ReactNode) {
+  return <span className="text-destructive font-bold">{chunks}</span>;
+}
+
+function labelBold(chunks: ReactNode) {
+  return <b>{chunks}</b>;
+}
 
 export function DeleteAccountCard() {
+  const t = useTranslations("accountPage.deleteAccount");
+  const errorsT = useTranslations("errors");
   const { session, setSession } = useSession();
   const navigate = useNavigate();
+
+  const userEmail = session?.user.email;
+  const confirmText = t("confirmText");
 
   const {
     register,
@@ -34,14 +50,28 @@ export function DeleteAccountCard() {
     formState: { errors, isSubmitting },
     setError,
   } = useForm({
-    resolver: zodResolver(confirmDeleteAccountSchema),
+    resolver: zodResolver(confirmDeleteAccountSchema, {
+      error: (iss) =>
+        translateZodError({
+          iss,
+          messages: { confirmEmail: errorsT("invalidEmail") },
+          defaultError: errorsT("invalid"),
+        }),
+    }),
   });
 
   const onSubmit: SubmitHandler<ConfirmDeleteAccountSchema> = async (data) => {
-    if (data.confirmEmail !== session?.user.email) {
+    if (data.confirmEmail !== userEmail) {
       setError("confirmEmail", {
         type: "manual",
-        message: "The email you entered does not match your account email.",
+        message: t("incorrectEmail"),
+      });
+      return;
+    }
+    if (data.confirmText !== confirmText) {
+      setError("confirmText", {
+        type: "manual",
+        message: t("incorrectText"),
       });
       return;
     }
@@ -49,43 +79,37 @@ export function DeleteAccountCard() {
     try {
       await deleteMyAccount();
       setSession(null);
-      toast.success("Account deleted successfully.");
+      toast.success(t("success"));
       navigate("/");
     } catch {
-      toast.error(
-        "There was an error deleting your account. Please try again.",
-      );
+      toast.error(t("failed"));
     }
   };
+
+  if (!userEmail) return null;
 
   return (
     <Card className="border-destructive mt-10">
       <CardContent className="flex flex-col p-4 sm:p-6">
-        <h3 className="text-lg font-bold">Delete Account</h3>
-        <p className="text-muted-foreground mt-2 text-sm">
-          Permanently delete your account and all associated data. This action
-          is not reversible, so please continue with caution.
-        </p>
+        <h3 className="text-lg font-bold">{t("title")}</h3>
+        <p className="text-muted-foreground mt-2 text-sm">{t("description")}</p>
       </CardContent>
       <CardFooter className="bg-destructive/20 border-destructive dark:bg-destructive/20 sm:justify-end">
         <Dialog>
           <DialogTrigger asChild>
             <Button type="button" size="sm" variant="destructive">
-              Delete Account
+              {t("title")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">
-                Delete Account
+                {t("title")}
               </DialogTitle>
               <DialogDescription className="text-base font-medium">
-                DkMovie will permanently delete your account and all associated
-                data.{" "}
-                <span className="text-destructive font-bold">
-                  This action is irreversible
-                </span>
-                . Are you sure you want to proceed?
+                {t.rich("dialogDescription", {
+                  span: irreversibleWarning,
+                })}
               </DialogDescription>
             </DialogHeader>
             <form
@@ -97,8 +121,10 @@ export function DeleteAccountCard() {
                   htmlFor="confirm-email"
                   className="gap-1 font-normal select-auto"
                 >
-                  Enter your email
-                  <b>{session?.user.email}</b> to continue:
+                  {t.rich("enterYourEmail", {
+                    email: session?.user.email,
+                    b: labelBold,
+                  })}
                 </Label>
                 <Input
                   id="confirm-email"
@@ -116,7 +142,9 @@ export function DeleteAccountCard() {
                   htmlFor="confirm-text"
                   className="gap-1 font-normal select-auto"
                 >
-                  To verify, type <b>delete my account</b> below:
+                  {t.rich("enterDeleteMyAccount", {
+                    b: labelBold,
+                  })}
                 </Label>
                 <Input
                   id="confirm-text"
@@ -131,7 +159,7 @@ export function DeleteAccountCard() {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline">{t("cancel")}</Button>
                 </DialogClose>
                 <Button
                   variant="destructive"
@@ -141,7 +169,7 @@ export function DeleteAccountCard() {
                   {isSubmitting ? (
                     <Loader className="animate-spin" />
                   ) : (
-                    "Confirm Delete"
+                    t("confirmDelete")
                   )}
                 </Button>
               </DialogFooter>

@@ -2,6 +2,7 @@ import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import type { PropsWithChildren } from "react";
 import { useNavigate } from "react-router";
 import { Loader } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { useMFA } from "@/hooks/use-mfa";
 import { BaseAuthForm } from "../base-auth-form";
 import { Meta } from "../meta";
@@ -19,6 +20,7 @@ export function AuthenticateWithCode({
   children,
   isSubmitting = false,
 }: AuthenticateWithCodeProps) {
+  const t = useTranslations("auth");
   const { mFATypes } = useMFA();
   const navigate = useNavigate();
 
@@ -27,13 +29,11 @@ export function AuthenticateWithCode({
     return null;
   }
 
+  const title = t("mfa.title");
+
   return (
-    <BaseAuthForm
-      title="Two Factor Authentication"
-      description={description}
-      type="2fa"
-    >
-      <Meta title="Two Factor Authentication" />
+    <BaseAuthForm title={title} description={description} type="2fa">
+      <Meta title={title} />
       <div className="flex flex-col gap-2">{children}</div>
       <Button
         type="submit"
@@ -41,11 +41,11 @@ export function AuthenticateWithCode({
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Sign In"}
+        {isSubmitting ? <Loader className="animate-spin" /> : t("signIn")}
       </Button>
       <div className="flex items-center justify-center">
         <Link to="/auth/2fa" size="sm">
-          Use another method
+          {t("mfa.useAnotherMethod")}
         </Link>
       </div>
     </BaseAuthForm>

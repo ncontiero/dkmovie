@@ -1,0 +1,77 @@
+import {
+  type PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { toast } from "sonner";
+import {
+  type Locale,
+  type Messages,
+  IntlProvider as IntlProviderBase,
+} from "use-intl";
+import { setLanguage } from "@/http/account/language";
+import { getErrorMessage } from "@/utils/errors";
+import { type IntlContextProps, IntlContext } from "./context";
+
+declare const LANGUAGE_CODE: Locale;
+
+export function IntlProvider({ children }: PropsWithChildren) {
+  const [currentLang, setCurrentLang] = useState<Locale>(LANGUAGE_CODE);
+  const [messages, setMessages] = useState<Messages | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadMessages = async () => {
+      try {
+        const newMessages = (
+          await import(`@/i18n/messages/${currentLang}.json`)
+        ).default;
+        if (isMounted) setMessages(newMessages);
+      } catch (error) {
+        toast.error("Failed to load messages");
+        console.error(error);
+      }
+    };
+
+    loadMessages();
+    return () => {
+      isMounted = false;
+    };
+  }, [currentLang]);
+
+  useEffect(() => {
+    document.head.querySelector("#initialLanguageScript")?.remove();
+  }, []);
+
+  const setLang = useCallback(async (lang: Locale) => {
+    try {
+      await setLanguage(lang);
+      setCurrentLang(lang);
+      document.documentElement.lang = lang;
+    } catch (error) {
+      const errors = getErrorMessage(error);
+      if (errors) {
+        toast.error(errors);
+        return;
+      }
+
+      console.error(error);
+    }
+  }, []);
+
+  const contextValues = useMemo(
+    (): IntlContextProps => ({ lang: currentLang, setLang }),
+    [currentLang, setLang],
+  );
+
+  return (
+    <IntlContext.Provider value={contextValues}>
+      <IntlProviderBase locale={currentLang} messages={messages}>
+        {children}
+      </IntlProviderBase>
+    </IntlContext.Provider>
+  );
+}

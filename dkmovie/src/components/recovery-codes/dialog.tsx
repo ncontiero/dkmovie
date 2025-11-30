@@ -1,3 +1,4 @@
+import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,19 +16,19 @@ interface RecoveryCodeDialogProps {
 }
 
 export function RecoveryCodesDialog({ onOpenChange }: RecoveryCodeDialogProps) {
+  const t = useTranslations("recoveryCodes");
+
   return (
     <Dialog defaultOpen onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Recovery Codes</DialogTitle>
-          <DialogDescription>
-            Copy and store these recovery code in case you lose your device.
-          </DialogDescription>
+          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         <RecoveryCodesContent />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button">Done</Button>
+            <Button type="button">{t("actions.done")}</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

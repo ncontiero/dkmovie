@@ -1,6 +1,7 @@
 import type { DisconnectProviderMutation } from "./type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import {
   Card,
   CardContent,
@@ -21,6 +22,8 @@ import { getErrorMessage } from "@/utils/errors";
 import { AccountCard, AccountCardSkeleton } from "./account-card";
 
 export function ConnectedAccountsCard() {
+  const t = useTranslations("securityPage.socialAccount");
+  const errorsT = useTranslations("errors");
   const { session } = useSession();
   const { initializeReAuthentication } = useReAuthenticate();
   const queryClient = useQueryClient();
@@ -43,7 +46,7 @@ export function ConnectedAccountsCard() {
       return await disconnectProvider(provider, accountId);
     },
     onSuccess: ({ data }) => {
-      toast.success("Provider disconnected successfully");
+      toast.success(t("disconnected"));
       queryClient.setQueryData(["connected-accounts"], data);
     },
     onError: (error, variables) => {
@@ -63,15 +66,15 @@ export function ConnectedAccountsCard() {
       }
 
       console.error(error);
-      toast.error("Failed to disconnect provider");
+      toast.error(errorsT("unexpected"));
     },
   });
 
   return (
     <Card className="mt-10">
       <CardContent>
-        <CardTitle>Connected Accounts</CardTitle>
-        <CardDescription>Manage your connected accounts.</CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
         <div className="mt-4 flex flex-col gap-1">
           {isSocialAccountsLoading || isProvidersLoading ? (
             <AccountCardSkeleton />
@@ -93,10 +96,7 @@ export function ConnectedAccountsCard() {
         </div>
       </CardContent>
       <CardFooter>
-        <CardFooterDescription>
-          You can connect additional accounts to your account and manage them
-          here.
-        </CardFooterDescription>
+        <CardFooterDescription>{t("cardDescription")}</CardFooterDescription>
       </CardFooter>
     </Card>
   );

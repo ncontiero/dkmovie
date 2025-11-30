@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { Edit, Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,9 +28,11 @@ import {
   changeEmailSchema,
 } from "@/schemas/account/email";
 import { needReAuthentication } from "@/utils/auth-flows";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, translateZodError } from "@/utils/errors";
 
 export function ChangeEmailDialog() {
+  const t = useTranslations("accountPage.email.change");
+  const errorsT = useTranslations("errors");
   const [showDialog, setShowDialog] = useState(false);
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -41,15 +44,22 @@ export function ChangeEmailDialog() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(changeEmailSchema),
+    resolver: zodResolver(changeEmailSchema, {
+      error: (iss) =>
+        translateZodError({
+          iss,
+          messages: { email: errorsT("invalidEmail") },
+          defaultError: errorsT("invalid"),
+        }),
+    }),
   });
 
   const onSubmit: SubmitHandler<ChangeEmailSchema> = async (data) => {
     try {
       const res = await changeEmail(data);
       queryClient.setQueryData(["user-emails"], res.data);
-      toast.success("Email added!", {
-        description: "You will receive an email with a verification code.",
+      toast.success(t("success"), {
+        description: t("successDescription"),
       });
       navigate("/account/verify-email?next=/account");
     } catch (error) {
@@ -68,7 +78,7 @@ export function ChangeEmailDialog() {
       }
 
       console.error(error);
-      toast.error("Something went wrong!");
+      toast.error(errorsT("unexpected"));
     }
   };
 
@@ -79,20 +89,17 @@ export function ChangeEmailDialog() {
       <DialogTrigger asChild>
         <Button type="button" size="sm">
           <Edit />
-          Change email
+          {t("title")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Change Email</DialogTitle>
-          <DialogDescription>
-            Change to a new email address. You will receive an email with a
-            verification code.
-          </DialogDescription>
+          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="mt-2 flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("label")}</Label>
             <Input
               id="email"
               type="email"
@@ -106,11 +113,11 @@ export function ChangeEmailDialog() {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                Cancel
+                {t("cancel")}
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? <Loader className="animate-spin" /> : "Change"}
+              {isSubmitting ? <Loader className="animate-spin" /> : t("change")}
             </Button>
           </DialogFooter>
         </form>
