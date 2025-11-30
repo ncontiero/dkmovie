@@ -5,7 +5,7 @@ export const buttonVariants = cva(
     ring-offset-background inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium
     whitespace-nowrap duration-200 focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2
     focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none
-    [&_svg]:size-4 [&_svg]:shrink-0
+    [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0
   `,
   {
     variants: {
