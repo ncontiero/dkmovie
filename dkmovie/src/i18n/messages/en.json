@@ -26,6 +26,19 @@
     "watchNow": "Watch Now",
     "moreInformation": "More Information"
   },
+  "homePage": {
+    "noTitles": "No titles found.",
+    "checkLater": "Please check back later.",
+    "trending": "Trending",
+    "popularSeries": "Popular Series"
+  },
+  "titlePage": {
+    "watch": "Watch",
+    "myList": "My List",
+    "details": "Details",
+    "cast": "Cast",
+    "moreLikeThis": "More like this"
+  },
   "recoveryCodes": {
     "title": "Recovery Codes",
     "description": "Copy and store these recovery code in case you lose your device.",
@@ -97,6 +110,49 @@
   "providerCallbackError": {
     "title": "Authentication Error",
     "description": "There was an error during authentication. Please try again."
+  },
+  "singUnPage": {
+    "title": "Create your account",
+    "description": "Welcome! Please fill in the details to get started.",
+    "accountCreated": "Account created successfully!",
+    "email": "Email",
+    "password": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm Password",
+    "singUp": "Sign Up"
+  },
+  "singInPage": {
+    "title": "Sign in",
+    "description": "Welcome back! Please sign in to continue",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "passwordPlaceholder": "Type your password"
+  },
+  "forgotPasswordPage": {
+    "title": "Forgot Password?",
+    "description": "Enter your email to reset your password.",
+    "checkYourEmail": "Check your email for the verification code.",
+    "email": "Email",
+    "resetPassword": "Reset Password"
+  },
+  "resetPasswordPage": {
+    "title": "Reset Password",
+    "description": "Enter the verification code sent to your email and create a new password.",
+    "expiredOrInvalidCode": "Expired or invalid verification code. Request a new one.",
+    "enterYourCode": "Enter your verification code",
+    "password": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm Password",
+    "passwordResetSuccessful": "Password reset successful.",
+    "passwordResetSuccessfulDescription": "You can now sign in with your new password.",
+    "resetPassword": "Reset Password"
+  },
+  "authWith2faPage": {
+    "title": "Two-Factor Authentication",
+    "description": "Your account is protected by two-factor authentication.",
+    "continueWithTOTP": "Continue with TOTP",
+    "continueWithRecoveryCodes": "Continue with Recovery Codes"
   },
   "accountPage": {
     "title": "Account Management",
@@ -275,7 +331,23 @@
     }
   },
   "pageError": {
-    "return": "Return to Homepage"
+    "return": "Return to Homepage",
+    "400": {
+      "title": "Bad Request",
+      "description": "This usually happens due to invalid syntax, a malformed URL, or a client-side error. Please check your action and try again."
+    },
+    "403": {
+      "title": "Forbidden",
+      "description": "You don't have the necessary permissions to view this page. This might be due to insufficient access rights or a restricted area."
+    },
+    "404": {
+      "title": "Page Not Found",
+      "description": "Sorry, we couldn't find the page you're looking for. It may have been moved or deleted."
+    },
+    "500": {
+      "title": "Internal Server Error",
+      "description": "We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing."
+    }
   },
   "errors": {
     "unexpected": "An unexpected error occurred. Please try again.",

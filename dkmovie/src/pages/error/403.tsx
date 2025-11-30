@@ -1,12 +1,15 @@
 import { ShieldBan } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { PageError } from "@/components/page-error";
 
 export default function ForbiddenPage() {
+  const t = useTranslations("pageError.403");
+
   return (
     <PageError
       code={403}
-      title="Forbidden"
-      description="You don't have the necessary permissions to view this page. This might be due to insufficient access rights or a restricted area."
+      title={t("title")}
+      description={t("description")}
       Icon={ShieldBan}
     />
   );

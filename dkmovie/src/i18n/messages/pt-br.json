@@ -26,6 +26,19 @@
     "watchNow": "Assistir agora",
     "moreInformation": "Mais informações"
   },
+  "homePage": {
+    "noTitles": "Nenhum título encontrado.",
+    "checkLater": "Por favor, verifique mais tarde.",
+    "trending": "Em alta",
+    "popularSeries": "Séries populares"
+  },
+  "titlePage": {
+    "watch": "Assistir",
+    "myList": "Minha lista",
+    "details": "Detalhes",
+    "cast": "Elenco",
+    "moreLikeThis": "Mais como esse"
+  },
   "recoveryCodes": {
     "title": "Códigos de recuperação",
     "description": "Copie e armazene esses códigos de recuperação em caso de perder seu dispositivo.",
@@ -97,6 +110,48 @@
   "providerCallbackError": {
     "title": "Erro de autenticação",
     "description": "Ocorreu um erro durante a autenticação. Por favor, tente novamente."
+  },
+  "singUnPage": {
+    "title": "Criar sua conta",
+    "description": "Bem-vindo! Por favor, preencha os detalhes para começar.",
+    "accountCreated": "Conta criada com sucesso!",
+    "email": "E-mail",
+    "password": "Senha",
+    "passwordPlaceholder": "Pelo menos 8 caracteres",
+    "confirmPassword": "Confirmar Senha"
+  },
+  "singInPage": {
+    "title": "Entrar",
+    "description": "Bem-vindo de volta! Por favor, entre para continuar",
+    "email": "E-mail",
+    "password": "Senha",
+    "forgotPassword": "Esqueceu sua senha?",
+    "passwordPlaceholder": "Digite sua senha"
+  },
+  "forgotPasswordPage": {
+    "title": "Esqueceu a senha?",
+    "description": "Insira o seu endereço de e-mail para redefinir sua senha.",
+    "checkYourEmail": "Verifique seu e-mail para o código de verificação.",
+    "email": "E-mail",
+    "resetPassword": "Redefinir senha"
+  },
+  "resetPasswordPage": {
+    "title": "Redefinir senha",
+    "description": "Insira o código de verificação enviado para o seu e-mail e crie uma nova senha.",
+    "expiredOrInvalidCode": "Código expirado ou inválido. Solicite um novo.",
+    "enterYourCode": "Insira o seu código de verificação",
+    "password": "Senha",
+    "passwordPlaceholder": "Pelo menos 8 caracteres",
+    "confirmPassword": "Confirmar Senha",
+    "passwordResetSuccessful": "Senha redefinida com sucesso.",
+    "passwordResetSuccessfulDescription": "Agora você pode entrar com sua nova senha.",
+    "resetPassword": "Redefinir senha"
+  },
+  "authWith2faPage": {
+    "title": "Autenticação de dois fatores",
+    "description": "Sua conta está protegida por autenticação de dois fatores.",
+    "continueWithTOTP": "Continuar com TOTP",
+    "continueWithRecoveryCodes": "Continuar com Códigos de Recuperação"
   },
   "accountPage": {
     "title": "Gerenciamento de conta",
@@ -275,7 +330,23 @@
     }
   },
   "pageError": {
-    "return": "Voltar para a página inicial"
+    "return": "Voltar para a página inicial",
+    "400": {
+      "title": "Erro de solicitação",
+      "description": "Isso geralmente ocorre devido a sintaxe inválida, URL malformado ou um erro do lado do cliente. Por favor, verifique sua ação e tente novamente."
+    },
+    "403": {
+      "title": "Acesso negado",
+      "description": "Você não tem permissão para acessar esta página. Isso pode ser causado por permissões insuficientes ou uma área restrita."
+    },
+    "404": {
+      "title": "Página não encontrada",
+      "description": "Desculpe, não encontramos a página que você está procurando. Ela pode ter sido movida ou excluída."
+    },
+    "500": {
+      "title": "Erro interno do servidor",
+      "description": "Nós rastreamos esses erros automaticamente, mas se o problema persistir, sinta-se à vontade para nos contatar. Enquanto isso, tente atualizar a página."
+    }
   },
   "errors": {
     "unexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",

@@ -1,12 +1,15 @@
 import { ServerCrash } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { PageError } from "@/components/page-error";
 
 export default function InternalServerErrorPage() {
+  const t = useTranslations("pageError.500");
+
   return (
     <PageError
       code={500}
-      title="Internal Server Error"
-      description="We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing."
+      title={t("title")}
+      description={t("description")}
       Icon={ServerCrash}
     />
   );

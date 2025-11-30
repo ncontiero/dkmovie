@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "use-intl";
 import {
   CarouselSkeleton,
   ContentCarousel,
@@ -12,6 +13,8 @@ import { Meta } from "@/components/meta";
 import { getTitles } from "@/http/get-titles";
 
 export default function HomePage() {
+  const t = useTranslations("homePage");
+
   const { data: movies = [], isLoading: moviesLoading } = useQuery({
     queryKey: ["movies"],
     queryFn: async () => {
@@ -54,10 +57,8 @@ export default function HomePage() {
   if (!movies || !series || (movies.length === 0 && series.length === 0))
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-2">
-        <h1 className="text-center text-2xl font-semibold">No titles found.</h1>
-        <p className="text-muted-foreground text-center">
-          Please check back later.
-        </p>
+        <h1 className="text-center text-2xl font-semibold">{t("noTitles")}</h1>
+        <p className="text-muted-foreground text-center">{t("checkLater")}</p>
       </main>
     );
 
@@ -84,8 +85,8 @@ export default function HomePage() {
 
       <HeroSection content={heroContent} />
       <div className="relative z-20">
-        <ContentCarousel title="Trending" items={movies} />
-        <ContentCarousel title="Popular Series" items={series} />
+        <ContentCarousel title={t("trending")} items={movies} />
+        <ContentCarousel title={t("popularSeries")} items={series} />
       </div>
     </main>
   );

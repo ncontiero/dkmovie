@@ -1,12 +1,15 @@
 import { TriangleAlert } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { PageError } from "@/components/page-error";
 
 export default function BadRequestPage() {
+  const t = useTranslations("pageError.400");
+
   return (
     <PageError
       code={400}
-      title="Bad Request"
-      description="This usually happens due to invalid syntax, a malformed URL, or a client-side error. Please check your action and try again."
+      title={t("title")}
+      description={t("description")}
       Icon={TriangleAlert}
     />
   );

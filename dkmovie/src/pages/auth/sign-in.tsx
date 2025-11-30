@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,11 @@ import { need2FA, needEmailVerification } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export default function SignInPage() {
+  const t = useTranslations("singInPage");
+  const emailVerificationT = useTranslations(
+    "auth.emailVerification.needVerification",
+  );
+  const errorsT = useTranslations("errors");
   const { setSession, isAuthenticated } = useSession();
   const { initializeMFAIfNecessary } = useMFA();
   const navigate = useNavigate();
@@ -41,8 +47,8 @@ export default function SignInPage() {
       navigateToNextPath();
     } catch (error) {
       if (needEmailVerification(error)) {
-        toast.success("You need to verify your email address.", {
-          description: "Please check your email to verify your account.",
+        toast.success(emailVerificationT("title"), {
+          description: emailVerificationT("description"),
         });
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
@@ -60,17 +66,17 @@ export default function SignInPage() {
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorsT("unexpected"));
     }
   };
 
   return (
     <BaseAuthForm
-      title="Sign in"
-      description="Welcome back! Please sign in to continue"
+      title={t("title")}
+      description={t("description")}
       formSubmit={handleSubmit(onSubmit)}
     >
-      <Meta title="Sign in" />
+      <Meta title={t("title")} />
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -85,14 +91,14 @@ export default function SignInPage() {
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t("password")}</Label>
           <Link to="/auth/password/forgot" size="sm">
-            Forgot your password?
+            {t("forgotPassword")}
           </Link>
         </div>
         <PasswordInput
           id="password"
-          placeholder="Type your password"
+          placeholder={t("passwordPlaceholder")}
           {...register("password")}
         />
         {errors.password ? (
@@ -105,7 +111,7 @@ export default function SignInPage() {
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Sign In"}
+        {isSubmitting ? <Loader className="animate-spin" /> : t("title")}
       </Button>
     </BaseAuthForm>
   );

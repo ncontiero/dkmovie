@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,11 @@ import { needEmailVerification } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export default function SignUpPage() {
+  const t = useTranslations("singUnPage");
+  const emailVerificationT = useTranslations(
+    "auth.emailVerification.needVerification",
+  );
+  const errorsT = useTranslations("errors");
   const { isAuthenticated, setSession } = useSession();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
@@ -35,14 +41,14 @@ export default function SignUpPage() {
     try {
       const res = await signUp(data);
       setSession(res);
-      toast.success("Account created successfully!", {
-        description: "Please check your email to verify your account.",
+      toast.success(t("accountCreated"), {
+        description: emailVerificationT("description"),
       });
       navigateToNextPath();
     } catch (error) {
       if (needEmailVerification(error)) {
-        toast.success("Account created successfully!", {
-          description: "Please check your email to verify your account.",
+        toast.success(t("accountCreated"), {
+          description: emailVerificationT("description"),
         });
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
@@ -55,20 +61,20 @@ export default function SignUpPage() {
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorsT("unexpected"));
     }
   };
 
   return (
     <BaseAuthForm
-      title="Create your account"
-      description="Welcome! Please fill in the details to get started."
+      title={t("title")}
+      description={t("description")}
       formSubmit={handleSubmit(onSubmit)}
       type="sign-up"
     >
-      <Meta title="Sign Up" />
+      <Meta title={t("title")} />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <Input
           type="email"
           id="email"
@@ -80,10 +86,10 @@ export default function SignUpPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <PasswordInput
           id="password"
-          placeholder="At least 8 characters"
+          placeholder={t("passwordPlaceholder")}
           {...register("password")}
         />
         {errors.password ? (
@@ -91,10 +97,10 @@ export default function SignUpPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="confirm-password">Confirm Password</Label>
+        <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
         <PasswordInput
           id="confirm-password"
-          placeholder="At least 8 characters"
+          placeholder={t("passwordPlaceholder")}
           {...register("confirmPassword")}
         />
         {errors.confirmPassword ? (
@@ -109,7 +115,7 @@ export default function SignUpPage() {
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Sign Up"}
+        {isSubmitting ? <Loader className="animate-spin" /> : t("singUp")}
       </Button>
     </BaseAuthForm>
   );

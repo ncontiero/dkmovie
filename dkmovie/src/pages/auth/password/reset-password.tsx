@@ -4,7 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
+import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { CodeInput } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
@@ -19,6 +21,8 @@ import {
 import { getErrorMessage } from "@/utils/errors";
 
 export default function ResetPasswordPage() {
+  const t = useTranslations("resetPasswordPage");
+  const errorsT = useTranslations("errors");
   const { setSession } = useSession();
   const navigate = useNavigate();
 
@@ -42,17 +46,15 @@ export default function ResetPasswordPage() {
     } catch (error) {
       if (error instanceof HTTPError) {
         if (error.status === 409) {
-          toast.error(
-            "Expired or invalid verification code. Request a new one.",
-          );
+          toast.error(t("expiredOrInvalidCode"));
           navigate("/auth/password/forgot");
           return;
         }
 
         if (error.status === 401) {
           setSession(null);
-          toast.success("Password reset successful.", {
-            description: "You can now sign in with your new password.",
+          toast.success(t("passwordResetSuccessful"), {
+            description: t("passwordResetSuccessfulDescription"),
           });
           navigate("/auth/sign-in");
           return;
@@ -64,17 +66,18 @@ export default function ResetPasswordPage() {
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorsT("unexpected"));
     }
   };
 
   return (
     <BaseAuthForm
-      title="Reset Password"
-      description="Enter the verification code sent to your email and create a new password."
+      title={t("title")}
+      description={t("description")}
       formSubmit={handleSubmit(onSubmit)}
       type="reset-password"
     >
+      <Meta title={t("title")} />
       <div className="flex flex-col items-center gap-2">
         <div className="flex items-center justify-center">
           <Controller
@@ -83,7 +86,7 @@ export default function ResetPasswordPage() {
             render={({ field }) => (
               <CodeInput
                 {...field}
-                aria-label="Enter your verification code"
+                aria-label={t("enterYourCode")}
                 codeLength={8}
                 pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                 autoFocus
@@ -99,10 +102,10 @@ export default function ResetPasswordPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <PasswordInput
           id="password"
-          placeholder="At least 8 characters"
+          placeholder={t("passwordPlaceholder")}
           {...register("password")}
         />
         {errors.password ? (
@@ -110,10 +113,10 @@ export default function ResetPasswordPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="confirm-password">Confirm Password</Label>
+        <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
         <PasswordInput
           id="confirm-password"
-          placeholder="At least 8 characters"
+          placeholder={t("passwordPlaceholder")}
           {...register("passwordConfirmation")}
         />
         {errors.passwordConfirmation ? (
@@ -128,7 +131,11 @@ export default function ResetPasswordPage() {
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Reset Password"}
+        {isSubmitting ? (
+          <Loader className="animate-spin" />
+        ) : (
+          t("resetPassword")
+        )}
       </Button>
     </BaseAuthForm>
   );

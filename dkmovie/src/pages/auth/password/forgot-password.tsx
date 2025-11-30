@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ import { passwordResetByCodeFlow } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export default function ForgotPasswordPage() {
+  const t = useTranslations("forgotPasswordPage");
+  const errorsT = useTranslations("errors");
   const { isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -40,7 +43,7 @@ export default function ForgotPasswordPage() {
       await forgotPassword(data);
     } catch (error) {
       if (passwordResetByCodeFlow(error)) {
-        toast.success("Check your email for the verification code.");
+        toast.success(t("checkYourEmail"));
         navigate("/auth/password/reset");
         return;
       }
@@ -52,25 +55,25 @@ export default function ForgotPasswordPage() {
       }
 
       console.error(error);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(errorsT("unexpected"));
     }
   };
 
   return (
     <BaseAuthForm
-      title="Forgot Password?"
-      description="Enter your email to reset your password."
+      title={t("title")}
+      description={t("description")}
       formSubmit={handleSubmit(onSubmit)}
       type="forgot-password"
       isAuthenticated={isAuthenticated}
     >
-      <Meta title="Forgot Password" />
+      <Meta title={t("title")} />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <Input
           type="email"
           id="email"
-          placeholder="your.email@example.com"
+          placeholder="email@example.com"
           {...register("email")}
         />
         {errors.email ? (
@@ -83,7 +86,11 @@ export default function ForgotPasswordPage() {
         size="sm"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : "Reset Password"}
+        {isSubmitting ? (
+          <Loader className="animate-spin" />
+        ) : (
+          t("resetPassword")
+        )}
       </Button>
     </BaseAuthForm>
   );

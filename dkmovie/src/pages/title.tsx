@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Link, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, Clock, Play, Plus } from "lucide-react";
+import { useTranslations } from "use-intl";
 import { ContentCarousel } from "@/components/content-carousel";
 import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,7 @@ function TitlePageSkeleton() {
 }
 
 export default function TitlePage() {
+  const t = useTranslations("titlePage");
   const { id } = useParams();
 
   const { data: title, isLoading } = useQuery({
@@ -177,7 +179,7 @@ export default function TitlePage() {
                   >
                     <Link to={`/title/${title.id}/watch`}>
                       <Play className="fill-current" />
-                      Watch
+                      {t("watch")}
                     </Link>
                   </Button>
                   <Button
@@ -187,7 +189,7 @@ export default function TitlePage() {
                     size="lg"
                   >
                     <Plus />
-                    My List
+                    {t("myList")}
                   </Button>
                 </div>
               </div>
@@ -201,13 +203,13 @@ export default function TitlePage() {
           </p>
 
           <h2 className="text-foreground mb-6 text-3xl font-semibold">
-            Details
+            {t("details")}
           </h2>
 
           <div className="text-muted-foreground grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="md:col-span-2">
               <h3 className="text-foreground mb-3 text-xl font-semibold">
-                Cast
+                {t("cast")}
               </h3>
               <p>{title.cast}</p>
             </div>
@@ -215,7 +217,7 @@ export default function TitlePage() {
         </div>
 
         <div className="border-border mt-8 border-t md:mt-12">
-          <ContentCarousel title="More like this" items={relatedMovies} />
+          <ContentCarousel title={t("moreLikeThis")} items={relatedMovies} />
         </div>
       </main>
     </div>
