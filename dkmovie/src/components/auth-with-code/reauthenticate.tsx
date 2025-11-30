@@ -7,7 +7,8 @@ import { DialogFooter } from "../ui/dialog";
 import { Label } from "../ui/label";
 
 interface ReAuthWithCodeProps
-  extends AuthWithCodeProps,
+  extends
+    AuthWithCodeProps,
     Partial<ReAuthenticationProps>,
     PropsWithChildren,
     AuthFormWithCodeProps {}
@@ -20,6 +21,8 @@ export function ReAuthWithCode({
   isSubmitting = false,
 }: ReAuthWithCodeProps) {
   const t = useTranslations("auth");
+  const actionsT = useTranslations("common.actions");
+
   if (!onCancel) {
     throw new Error("onCancel is required for ReAuthWithCode component");
   }
@@ -37,7 +40,7 @@ export function ReAuthWithCode({
           disabled={isSubmitting}
           onClick={onCancel}
         >
-          {t("cancel")}
+          {actionsT("cancel")}
         </Button>
         <Button type="submit" loading={isSubmitting}>
           {t("reAuth.submit")}

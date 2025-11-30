@@ -4,8 +4,7 @@ export interface ReAuthenticationProps {
   onReAuthenticated: () => void;
   onCancel: () => void;
 }
-export interface InitializeReAuthenticationProps
-  extends Partial<ReAuthenticationProps> {}
+export interface InitializeReAuthenticationProps extends Partial<ReAuthenticationProps> {}
 
 export type InitializeReAuthentication = (
   props: InitializeReAuthenticationProps,

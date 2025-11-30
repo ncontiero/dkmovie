@@ -16,19 +16,19 @@ interface RecoveryCodeDialogProps {
 }
 
 export function RecoveryCodesDialog({ onOpenChange }: RecoveryCodeDialogProps) {
-  const t = useTranslations("recoveryCodes");
+  const t = useTranslations("securityPage.2fa.recoveryCodes");
 
   return (
     <Dialog defaultOpen onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
+          <DialogDescription>{t("saveCodesDescription")}</DialogDescription>
         </DialogHeader>
         <RecoveryCodesContent />
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="button">{t("actions.done")}</Button>
+            <Button type="button">{t("done")}</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

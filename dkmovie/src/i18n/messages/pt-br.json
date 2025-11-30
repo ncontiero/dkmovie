@@ -16,13 +16,9 @@
     },
     "userMenu": {
       "label": "Menu do usuário",
-      "myAccount": "Minha conta",
-      "logout": "Sair",
-      "signIn": "Entrar",
-      "signUp": "Cadastrar"
+      "logout": "Sair"
     }
   },
-  "loading": "Carregando",
   "heroSection": {
     "watchNow": "Assistir agora",
     "moreInformation": "Mais informações"
@@ -40,19 +36,7 @@
     "cast": "Elenco",
     "moreLikeThis": "Mais como esse"
   },
-  "recoveryCodes": {
-    "title": "Códigos de recuperação",
-    "description": "Copie e armazene esses códigos de recuperação em caso de perder seu dispositivo.",
-    "actions": {
-      "copy": "Copiar",
-      "done": "Pronto"
-    }
-  },
   "auth": {
-    "signIn": "Entrar",
-    "signUp": "Cadastrar",
-    "password": "Senha",
-    "cancel": "Cancelar",
     "continueWith": {
       "password": "Continuar com senha",
       "totp": "Continuar com aplicativo de autenticação",
@@ -80,17 +64,13 @@
     },
     "emailVerification": {
       "verifyEmail": {
-        "success": "E-mail verificado com sucesso.",
-        "dontHave": "Você não tem e-mail para verificar.",
         "title": "Verificar seu e-mail",
         "description": "Por favor, verifique seu endereço de e-mail para continuar.",
         "enterYourCode": "Insira o seu código de verificação",
         "dintReceive": "Não recebeu um código? Reenviar",
-        "verifyEmail": "Verificar E-mail"
-      },
-      "needVerification": {
-        "title": "Você precisa verificar seu endereço de e-mail.",
-        "description": "Por favor, verifique seu e-mail para verificar sua conta."
+        "verifyEmail": "Verificar E-mail",
+        "success": "E-mail verificado com sucesso.",
+        "dontHave": "Você não tem e-mail para verificar."
       },
       "resend": {
         "send": "Reenviar e-mail de verificação",
@@ -112,28 +92,20 @@
     "title": "Erro de autenticação",
     "description": "Ocorreu um erro durante a autenticação. Por favor, tente novamente."
   },
-  "singUnPage": {
+  "singUpPage": {
     "title": "Criar sua conta",
     "description": "Bem-vindo! Por favor, preencha os detalhes para começar.",
-    "accountCreated": "Conta criada com sucesso!",
-    "email": "E-mail",
-    "password": "Senha",
-    "passwordPlaceholder": "Pelo menos 8 caracteres",
-    "confirmPassword": "Confirmar Senha"
+    "accountCreated": "Conta criada com sucesso!"
   },
   "singInPage": {
     "title": "Entrar",
     "description": "Bem-vindo de volta! Por favor, entre para continuar",
-    "email": "E-mail",
-    "password": "Senha",
-    "forgotPassword": "Esqueceu sua senha?",
-    "passwordPlaceholder": "Digite sua senha"
+    "forgotPassword": "Esqueceu sua senha?"
   },
   "forgotPasswordPage": {
     "title": "Esqueceu a senha?",
     "description": "Insira o seu endereço de e-mail para redefinir sua senha.",
     "checkYourEmail": "Verifique seu e-mail para o código de verificação.",
-    "email": "E-mail",
     "resetPassword": "Redefinir senha"
   },
   "resetPasswordPage": {
@@ -141,12 +113,8 @@
     "description": "Insira o código de verificação enviado para o seu e-mail e crie uma nova senha.",
     "expiredOrInvalidCode": "Código expirado ou inválido. Solicite um novo.",
     "enterYourCode": "Insira o seu código de verificação",
-    "password": "Senha",
-    "passwordPlaceholder": "Pelo menos 8 caracteres",
-    "confirmPassword": "Confirmar Senha",
     "passwordResetSuccessful": "Senha redefinida com sucesso.",
-    "passwordResetSuccessfulDescription": "Agora você pode entrar com sua nova senha.",
-    "resetPassword": "Redefinir senha"
+    "passwordResetSuccessfulDescription": "Agora você pode entrar com sua nova senha."
   },
   "authWith2faPage": {
     "title": "Autenticação de dois fatores",
@@ -172,7 +140,6 @@
     "updateUserName": {
       "description": "Por favor, digite seu nome completo ou um nome com o qual você se sinta confortável.",
       "useMaxCharacter": "Por favor, utilize no máximo 255 caracteres.",
-      "save": "Salvar",
       "fullName": "Nome Completo",
       "success": "Nome completo atualizado!",
       "errors": {
@@ -190,9 +157,6 @@
       "change": {
         "title": "Alterar e-mail",
         "description": "Altere para um novo endereço de e-mail. Você receberá um e-mail com um código de verificação.",
-        "label": "E-mail",
-        "cancel": "Cancelar",
-        "change": "Alterar",
         "success": "E-mail adicionado!",
         "successDescription": "Você receberá um e-mail com um código de verificação."
       }
@@ -208,7 +172,6 @@
       "incorrectEmail": "O e-mail informado não corresponde ao seu endereço de e-mail de conta.",
       "success": "Conta deletada com sucesso.",
       "failed": "Ocorreu um erro ao deletar sua conta. Por favor, tente novamente.",
-      "cancel": "Cancelar",
       "confirmDelete": "Confirmar exclusão"
     }
   },
@@ -227,8 +190,7 @@
       "form": {
         "currentPassword": "Senha atual",
         "newPassword": "Nova senha",
-        "confirmPassword": "Confirmar nova senha",
-        "cancel": "Cancelar"
+        "confirmPassword": "Confirmar nova senha"
       },
       "success": {
         "updated": "Senha atualizada!",
@@ -265,8 +227,7 @@
       "connected": "Conectado",
       "notConnected": "Não conectado",
       "youCanSignIn": "Você pode entrar com sua conta {accountName}",
-      "signInWithYourAccount": "Entre com sua conta {accountName}",
-      "cancel": "Cancelar"
+      "signInWithYourAccount": "Entre com sua conta {accountName}"
     },
     "2fa": {
       "title": "Autenticação de dois fatores",
@@ -280,26 +241,21 @@
         "remove": "Remover",
         "removeTOTP": "Remover TOTP",
         "areYouSure": "Tem certeza de que deseja remover seu TOTP?",
-        "cancel": "Cancelar",
         "totpSetupSuccessfully": "TOTP configurado com sucesso",
-        "add": "Adicionar",
         "setupTOTP": "Configurar TOTP",
         "dialogDescription": "Escaneie o QR code abaixo com o seu aplicativo autenticador preferido. Em seguida, insira o código de 6 dígitos que o aplicativo fornece para continuar. Você também pode copiar o segredo abaixo e colá-lo em seu aplicativo.",
         "copySecret": "Copiar segredo para a área de transferência",
-        "enter6Digits": "Insira o código de 6 dígitos do seu aplicativo autenticador",
-        "confirm": "Confirmar"
+        "enter6Digits": "Insira o código de 6 dígitos do seu aplicativo autenticador"
       },
       "passkey": {
         "title": "Chaves de acesso",
         "description": "Use uma chave de acesso para fazer login na sua conta. As chaves de acesso são seguras, rápidas e fáceis de usar.",
         "addSuccessfully": "Chave de acesso adicionada com sucesso",
         "addFailed": "Falha ao adicionar chave de acesso",
-        "add": "Adicionar",
         "addPasskey": "Adicionar chave de acesso",
         "addPasskeyDescription": "Adicione uma chave de acesso à sua conta. As chaves de acesso são seguras, rápidas e fáceis de usar.",
         "name": "Nome",
         "myPasskey": "Minha chave de acesso",
-        "cancel": "Cancelar",
         "renamedSuccessfully": "Chave de acesso renomeada com sucesso",
         "renameFailed": "Falha ao renomear chave de acesso",
         "createdOn": "Criado em {date}",
@@ -307,7 +263,6 @@
         "editPasskeyName": "Editar {name}",
         "editPasskey": "Editar Chave de Acesso",
         "editYourPasskey": "Editar o nome da chave de acesso <b>{passkeyName}</b>.",
-        "save": "Salvar",
         "deletePasskeyName": "Excluir {name}",
         "deletePasskey": "Excluir Chave de Acesso",
         "deleteDescription": "Tem certeza de que deseja excluir sua chave de acesso <b>{passkeyName}</b>? Ao removê-la você não poderá mais usá-la para fazer login na sua conta.",
@@ -321,12 +276,15 @@
       "recoveryCodes": {
         "title": "Códigos de recuperação",
         "description": "Use códigos de recuperação para recuperar sua conta se perder o acesso a seu dispositivo.",
+        "saveCodesDescription": "Copie e armazene esses códigos de recuperação em caso de perder seu dispositivo.",
         "dialogDescription": "Os códigos de recuperação podem ser usados para acessar sua conta no caso de perder o acesso ao seu dispositivo e não conseguir receber códigos de autenticação de dois fatores.",
         "regeneratedSuccessfully": "Códigos de recuperação gerados com sucesso",
         "regenerateFailed": "Falha ao gerar códigos de recuperação",
         "view": "Ver",
         "regenerate": "Gerar novamente",
-        "close": "Fechar"
+        "close": "Close",
+        "copy": "Copy",
+        "done": "Done"
       }
     }
   },
@@ -349,16 +307,40 @@
       "description": "Nós rastreamos esses erros automaticamente, mas se o problema persistir, sinta-se à vontade para nos contatar. Enquanto isso, tente atualizar a página."
     }
   },
-  "errors": {
-    "unexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",
-    "invalid": "Dados inválidos",
-    "codeIsRequired": "O código é obrigatório",
-    "passwordIsRequired": "A senha é obrigatória",
-    "invalidEmail": "Por favor, insira um endereço de e-mail válido.",
-    "password": {
-      "minCharacter": "A senha deve ter no mínimo 8 caracteres",
-      "maxCharacter": "A senha deve ter no máximo 64 caracteres",
-      "regex": "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial"
+  "common": {
+    "signIn": "Entrar",
+    "signUp": "Criar conta",
+    "myAccount": "Minha conta",
+    "loading": "Carregando",
+    "actions": {
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "save": "Salvar",
+      "change": "Alterar",
+      "add": "Adicionar"
+    },
+    "fields": {
+      "email": "E-mail",
+      "password": "Senha",
+      "confirmPassword": "Confirmar senha",
+      "passwordPlaceholder": "No mínimo 8 caracteres",
+      "emailPlaceholder": "seu.email@exemplo.com"
+    },
+    "emailVerification": {
+      "title": "Você precisa verificar seu endereço de e-mail.",
+      "description": "Por favor, verifique seu e-mail para verificar sua conta."
+    },
+    "errors": {
+      "unexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+      "invalid": "Dados inválidos",
+      "codeIsRequired": "O código é obrigatório",
+      "passwordIsRequired": "A senha é obrigatória",
+      "invalidEmail": "Por favor, insira um endereço de e-mail válido.",
+      "password": {
+        "minCharacter": "A senha deve ter no mínimo 8 caracteres",
+        "maxCharacter": "A senha deve ter no máximo 64 caracteres",
+        "regex": "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial"
+      }
     }
   },
   "footer": {

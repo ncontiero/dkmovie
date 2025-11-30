@@ -29,7 +29,7 @@ export function AuthWithCode({
   reAuthentication,
 }: AuthenticationWithCodeProps) {
   const t = useTranslations("auth.mfa");
-  const errorT = useTranslations("errors");
+  const errorT = useTranslations("common.errors");
   const { setSession } = useSession();
   const { navigateToNextPath } = useNextPath();
 

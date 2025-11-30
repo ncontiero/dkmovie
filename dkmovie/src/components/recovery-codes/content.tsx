@@ -13,7 +13,7 @@ interface RecoveryCodesContentProps {
 export function RecoveryCodesContent({
   onReAuthenticationCancel,
 }: RecoveryCodesContentProps) {
-  const t = useTranslations("recoveryCodes.actions");
+  const t = useTranslations("securityPage.2fa.recoveryCodes");
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
 

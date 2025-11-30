@@ -29,6 +29,7 @@ export function PasskeyAuthButton({
   ...props
 }: PasskeyAuthButtonProps) {
   const t = useTranslations("auth");
+  const emailVerificationT = useTranslations("common.emailVerification");
   const { setSession } = useSession();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
@@ -61,8 +62,8 @@ export function PasskeyAuthButton({
       }
 
       if (needEmailVerification(error)) {
-        toast.success(t("emailVerification.needVerification.title"), {
-          description: t("emailVerification.needVerification.description"),
+        toast.success(emailVerificationT("title"), {
+          description: emailVerificationT("description"),
         });
         navigate(`/account/verify-email?next=${nextPath}`);
         return;

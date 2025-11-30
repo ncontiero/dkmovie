@@ -20,10 +20,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export default function SignInPage() {
   const t = useTranslations("singInPage");
-  const emailVerificationT = useTranslations(
-    "auth.emailVerification.needVerification",
-  );
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const { setSession, isAuthenticated } = useSession();
   const { initializeMFAIfNecessary } = useMFA();
   const navigate = useNavigate();
@@ -46,8 +43,8 @@ export default function SignInPage() {
       navigateToNextPath();
     } catch (error) {
       if (needEmailVerification(error)) {
-        toast.success(emailVerificationT("title"), {
-          description: emailVerificationT("description"),
+        toast.success(commonT("emailVerification.title"), {
+          description: commonT("emailVerification.description"),
         });
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
@@ -65,7 +62,7 @@ export default function SignInPage() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -77,11 +74,11 @@ export default function SignInPage() {
     >
       <Meta title={t("title")} />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{commonT("fields.email")}</Label>
         <Input
           type="email"
           id="email"
-          placeholder="your.email@example.com"
+          placeholder={commonT("fields.emailPlaceholder")}
           {...register("email")}
         />
         {errors.email ? (
@@ -90,14 +87,14 @@ export default function SignInPage() {
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password">{t("password")}</Label>
+          <Label htmlFor="password">{commonT("fields.password")}</Label>
           <Link to="/auth/password/forgot" size="sm">
             {t("forgotPassword")}
           </Link>
         </div>
         <PasswordInput
           id="password"
-          placeholder={t("passwordPlaceholder")}
+          placeholder={commonT("fields.passwordPlaceholder")}
           {...register("password")}
         />
         {errors.password ? (

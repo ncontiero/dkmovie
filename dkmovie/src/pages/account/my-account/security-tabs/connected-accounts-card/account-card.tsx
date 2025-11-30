@@ -37,6 +37,7 @@ export function AccountCard({
   initializeReAuthentication,
 }: AccountCardProps) {
   const t = useTranslations("securityPage.socialAccount");
+  const actionsT = useTranslations("common.actions");
   const isConnected = !!provider;
   const accountId = provider?.uid;
 
@@ -94,7 +95,7 @@ export function AccountCard({
                 <AlertDialogFooter className="mt-4">
                   <AlertDialogCancel asChild>
                     <Button type="button" variant="outline">
-                      {t("cancel")}
+                      {actionsT("cancel")}
                     </Button>
                   </AlertDialogCancel>
                   <AlertDialogAction asChild>

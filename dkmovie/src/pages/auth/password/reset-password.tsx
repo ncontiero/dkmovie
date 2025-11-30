@@ -21,7 +21,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export default function ResetPasswordPage() {
   const t = useTranslations("resetPasswordPage");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const { setSession } = useSession();
   const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ export default function ResetPasswordPage() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -101,10 +101,10 @@ export default function ResetPasswordPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">{t("password")}</Label>
+        <Label htmlFor="password">{commonT("fields.password")}</Label>
         <PasswordInput
           id="password"
-          placeholder={t("passwordPlaceholder")}
+          placeholder={commonT("fields.passwordPlaceholder")}
           {...register("password")}
         />
         {errors.password ? (
@@ -112,10 +112,12 @@ export default function ResetPasswordPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
+        <Label htmlFor="confirm-password">
+          {commonT("fields.confirmPassword")}
+        </Label>
         <PasswordInput
           id="confirm-password"
-          placeholder={t("passwordPlaceholder")}
+          placeholder={commonT("fields.passwordPlaceholder")}
           {...register("passwordConfirmation")}
         />
         {errors.passwordConfirmation ? (
@@ -130,7 +132,7 @@ export default function ResetPasswordPage() {
         size="sm"
         loading={isSubmitting}
       >
-        {t("resetPassword")}
+        {t("title")}
       </Button>
     </BaseAuthForm>
   );

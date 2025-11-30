@@ -17,11 +17,8 @@ import { needEmailVerification } from "@/utils/auth-flows";
 import { getErrorMessage } from "@/utils/errors";
 
 export default function SignUpPage() {
-  const t = useTranslations("singUnPage");
-  const emailVerificationT = useTranslations(
-    "auth.emailVerification.needVerification",
-  );
-  const errorsT = useTranslations("errors");
+  const t = useTranslations("singUpPage");
+  const commonT = useTranslations("common");
   const { isAuthenticated, setSession } = useSession();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
@@ -41,13 +38,13 @@ export default function SignUpPage() {
       const res = await signUp(data);
       setSession(res);
       toast.success(t("accountCreated"), {
-        description: emailVerificationT("description"),
+        description: commonT("emailVerification.description"),
       });
       navigateToNextPath();
     } catch (error) {
       if (needEmailVerification(error)) {
         toast.success(t("accountCreated"), {
-          description: emailVerificationT("description"),
+          description: commonT("emailVerification.description"),
         });
         navigate(`/account/verify-email?next=${nextPath}`);
         return;
@@ -60,7 +57,7 @@ export default function SignUpPage() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -71,13 +68,13 @@ export default function SignUpPage() {
       formSubmit={handleSubmit(onSubmit)}
       type="sign-up"
     >
-      <Meta title={t("title")} />
+      <Meta title={commonT("signUp")} />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">{t("email")}</Label>
+        <Label htmlFor="email">{commonT("fields.email")}</Label>
         <Input
           type="email"
           id="email"
-          placeholder="your.email@example.com"
+          placeholder={commonT("fields.emailPlaceholder")}
           {...register("email")}
         />
         {errors.email ? (
@@ -85,10 +82,10 @@ export default function SignUpPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">{t("password")}</Label>
+        <Label htmlFor="password">{commonT("fields.password")}</Label>
         <PasswordInput
           id="password"
-          placeholder={t("passwordPlaceholder")}
+          placeholder={commonT("fields.passwordPlaceholder")}
           {...register("password")}
         />
         {errors.password ? (
@@ -96,10 +93,12 @@ export default function SignUpPage() {
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
+        <Label htmlFor="confirm-password">
+          {commonT("fields.confirmPassword")}
+        </Label>
         <PasswordInput
           id="confirm-password"
-          placeholder={t("passwordPlaceholder")}
+          placeholder={commonT("fields.passwordPlaceholder")}
           {...register("confirmPassword")}
         />
         {errors.confirmPassword ? (
@@ -114,7 +113,7 @@ export default function SignUpPage() {
         size="sm"
         loading={isSubmitting}
       >
-        {t("singUp")}
+        {commonT("signUp")}
       </Button>
     </BaseAuthForm>
   );

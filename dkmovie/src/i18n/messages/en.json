@@ -16,13 +16,9 @@
     },
     "userMenu": {
       "label": "User menu",
-      "myAccount": "My account",
-      "logout": "Logout",
-      "signIn": "Sign in",
-      "signUp": "Sign up"
+      "logout": "Logout"
     }
   },
-  "loading": "Loading",
   "heroSection": {
     "watchNow": "Watch Now",
     "moreInformation": "More Information"
@@ -40,19 +36,7 @@
     "cast": "Cast",
     "moreLikeThis": "More like this"
   },
-  "recoveryCodes": {
-    "title": "Recovery Codes",
-    "description": "Copy and store these recovery code in case you lose your device.",
-    "actions": {
-      "copy": "Copy",
-      "done": "Done"
-    }
-  },
   "auth": {
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
-    "password": "Password",
-    "cancel": "Cancel",
     "continueWith": {
       "password": "Continue with password",
       "totp": "Continue with Authenticator App",
@@ -80,17 +64,13 @@
     },
     "emailVerification": {
       "verifyEmail": {
-        "success": "Email verified successfully.",
-        "dontHave": "You don't have email to verify.",
         "title": "Verify your email",
         "description": "Please verify your email address to continue.",
         "enterYourCode": "Enter your verification code",
         "dintReceive": "Didn't receive a code? Resend",
-        "verifyEmail": "Verify Email"
-      },
-      "needVerification": {
-        "title": "You need to verify your email address.",
-        "description": "Please check your email to verify your account."
+        "verifyEmail": "Verify Email",
+        "success": "Email verified successfully.",
+        "dontHave": "You don't have email to verify."
       },
       "resend": {
         "send": "Resend verification email",
@@ -112,29 +92,20 @@
     "title": "Authentication Error",
     "description": "There was an error during authentication. Please try again."
   },
-  "singUnPage": {
+  "singUpPage": {
     "title": "Create your account",
     "description": "Welcome! Please fill in the details to get started.",
-    "accountCreated": "Account created successfully!",
-    "email": "Email",
-    "password": "Password",
-    "passwordPlaceholder": "At least 8 characters",
-    "confirmPassword": "Confirm Password",
-    "singUp": "Sign Up"
+    "accountCreated": "Account created successfully!"
   },
   "singInPage": {
     "title": "Sign in",
     "description": "Welcome back! Please sign in to continue",
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot your password?",
-    "passwordPlaceholder": "Type your password"
+    "forgotPassword": "Forgot your password?"
   },
   "forgotPasswordPage": {
     "title": "Forgot Password?",
     "description": "Enter your email to reset your password.",
     "checkYourEmail": "Check your email for the verification code.",
-    "email": "Email",
     "resetPassword": "Reset Password"
   },
   "resetPasswordPage": {
@@ -142,12 +113,8 @@
     "description": "Enter the verification code sent to your email and create a new password.",
     "expiredOrInvalidCode": "Expired or invalid verification code. Request a new one.",
     "enterYourCode": "Enter your verification code",
-    "password": "Password",
-    "passwordPlaceholder": "At least 8 characters",
-    "confirmPassword": "Confirm Password",
     "passwordResetSuccessful": "Password reset successful.",
-    "passwordResetSuccessfulDescription": "You can now sign in with your new password.",
-    "resetPassword": "Reset Password"
+    "passwordResetSuccessfulDescription": "You can now sign in with your new password."
   },
   "authWith2faPage": {
     "title": "Two-Factor Authentication",
@@ -173,7 +140,6 @@
     "updateUserName": {
       "description": "Please enter your full name, or a display name you are comfortable with.",
       "useMaxCharacter": "Please use 255 characters at maximum.",
-      "save": "Save",
       "fullName": "Full Name",
       "success": "Full name updated!",
       "errors": {
@@ -191,9 +157,6 @@
       "change": {
         "title": "Change email",
         "description": "Change to a new email address. You will receive an email with a verification code.",
-        "label": "Email",
-        "cancel": "Cancel",
-        "change": "Change",
         "success": "Email added!",
         "successDescription": "You will receive an email with a verification code."
       }
@@ -209,7 +172,6 @@
       "incorrectEmail": "The email you entered does not match your account email.",
       "success": "Account deleted successfully.",
       "failed": "There was an error deleting your account. Please try again.",
-      "cancel": "Cancel",
       "confirmDelete": "Confirm Delete"
     }
   },
@@ -228,8 +190,7 @@
       "form": {
         "currentPassword": "Current password",
         "newPassword": "New password",
-        "confirmPassword": "Confirm your new password",
-        "cancel": "Cancel"
+        "confirmPassword": "Confirm your new password"
       },
       "success": {
         "updated": "Password updated!",
@@ -266,8 +227,7 @@
       "connected": "Connected",
       "notConnected": "Not Connected",
       "youCanSignIn": "You can sign in with your {accountName} account",
-      "signInWithYourAccount": "Sign in with your {accountName} account",
-      "cancel": "Cancel"
+      "signInWithYourAccount": "Sign in with your {accountName} account"
     },
     "2fa": {
       "title": "Two-Factor Authentication",
@@ -281,26 +241,21 @@
         "remove": "Remove",
         "removeTOTP": "Remove TOTP",
         "areYouSure": "Are you sure you want to remove your TOTP?",
-        "cancel": "Cancel",
         "totpSetupSuccessfully": "TOTP setup successfully",
-        "add": "Add",
         "setupTOTP": "Setup TOTP",
         "dialogDescription": "Scan the QR code below with your preferred authenticator app. Then, enter the 6 digit code that the app provides to continue. You can also copy the secret below and paste it into your app.",
         "copySecret": "Copy secret to clipboard",
-        "enter6Digits": "Enter 6 digit code from your authenticator app",
-        "confirm": "Confirm"
+        "enter6Digits": "Enter 6 digit code from your authenticator app"
       },
       "passkey": {
         "title": "Passkeys",
         "description": "Use a passkey to sign in to your account. Passkeys are secure, fast, and easy to use.",
         "addSuccessfully": "Passkey added successfully",
         "addFailed": "Failed to add passkey",
-        "add": "Add",
         "addPasskey": "Add passkey",
         "addPasskeyDescription": "Add a passkey to your account. Passkeys are secure, fast, and easy to use.",
         "name": "Name",
         "myPasskey": "My passkey",
-        "cancel": "Cancel",
         "renamedSuccessfully": "Passkey renamed successfully",
         "renameFailed": "Failed to rename passkey",
         "createdOn": "Created on {date}",
@@ -308,7 +263,6 @@
         "editPasskeyName": "Edit {name}",
         "editPasskey": "Edit Passkey",
         "editYourPasskey": "Edit your passkey <b>{passkeyName}</b> name.",
-        "save": "Save",
         "deletePasskeyName": "Delete {name}",
         "deletePasskey": "Delete Passkey",
         "deleteDescription": "Are you sure you want to delete your <b>{passkeyName}</b> passkey? By removing this passkey you will no longer be able to use it to sign-in to your account.",
@@ -322,12 +276,15 @@
       "recoveryCodes": {
         "title": "Recovery Codes",
         "description": "Use recovery codes to recover your account if you lose access to your device.",
+        "saveCodesDescription": "Copy and store these recovery code in case you lose your device.",
         "dialogDescription": "Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes.",
         "regeneratedSuccessfully": "Recovery codes regenerated successfully",
         "regenerateFailed": "Failed to regenerate recovery codes",
         "view": "View",
         "regenerate": "Regenerate",
-        "close": "Close"
+        "close": "Close",
+        "copy": "Copy",
+        "done": "Done"
       }
     }
   },
@@ -350,16 +307,40 @@
       "description": "We track these errors automatically, but if the problem persists feel free to contact us. In the meantime, try refreshing."
     }
   },
-  "errors": {
-    "unexpected": "An unexpected error occurred. Please try again.",
-    "invalid": "Invalid data",
-    "codeIsRequired": "Code is required",
-    "passwordIsRequired": "Password is required",
-    "invalidEmail": "Please enter a valid email address.",
-    "password": {
-      "minCharacter": "Password must be at least 8 characters long",
-      "maxCharacter": "Password must be at most 64 characters long",
-      "regex": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+  "common": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "myAccount": "My Account",
+    "loading": "Loading",
+    "actions": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "save": "Save",
+      "change": "Change",
+      "add": "Add"
+    },
+    "fields": {
+      "email": "E-mail",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "emailPlaceholder": "your.email@example.com"
+    },
+    "emailVerification": {
+      "title": "You need to verify your email address.",
+      "description": "Please check your email to verify your account."
+    },
+    "errors": {
+      "unexpected": "An unexpected error occurred. Please try again.",
+      "invalid": "Invalid data",
+      "codeIsRequired": "Code is required",
+      "passwordIsRequired": "Password is required",
+      "invalidEmail": "Please enter a valid email address.",
+      "password": {
+        "minCharacter": "Password must be at least 8 characters long",
+        "maxCharacter": "Password must be at most 64 characters long",
+        "regex": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      }
     }
   },
   "footer": {

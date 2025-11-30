@@ -36,7 +36,7 @@ function labelBold(chunks: ReactNode) {
 
 export function DeleteAccountCard() {
   const t = useTranslations("accountPage.deleteAccount");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const { session, setSession } = useSession();
   const navigate = useNavigate();
 
@@ -53,8 +53,8 @@ export function DeleteAccountCard() {
       error: (iss) =>
         translateZodError({
           iss,
-          messages: { confirmEmail: errorsT("invalidEmail") },
-          defaultError: errorsT("invalid"),
+          messages: { confirmEmail: commonT("errors.invalidEmail") },
+          defaultError: commonT("errors.invalid"),
         }),
     }),
   });
@@ -158,7 +158,7 @@ export function DeleteAccountCard() {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">{t("cancel")}</Button>
+                  <Button variant="outline">{commonT("actions.cancel")}</Button>
                 </DialogClose>
                 <Button
                   variant="destructive"

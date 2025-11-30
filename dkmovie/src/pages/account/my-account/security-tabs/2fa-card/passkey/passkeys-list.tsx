@@ -68,6 +68,7 @@ function PasskeyItem({
 }: PasskeyItemProps) {
   const { lang } = useIntl();
   const t = useTranslations("securityPage.2fa.passkey");
+  const actionsT = useTranslations("common.actions");
   const queryClient = useQueryClient();
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
 
@@ -182,11 +183,11 @@ function PasskeyItem({
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">
-                    {t("cancel")}
+                    {actionsT("cancel")}
                   </Button>
                 </DialogClose>
                 <Button type="submit" loading={isSubmittingForm}>
-                  {t("save")}
+                  {actionsT("save")}
                 </Button>
               </DialogFooter>
             </form>
@@ -220,7 +221,7 @@ function PasskeyItem({
             <AlertDialogFooter>
               <AlertDialogCancel asChild>
                 <Button type="button" variant="outline">
-                  {t("cancel")}
+                  {actionsT("cancel")}
                 </Button>
               </AlertDialogCancel>
               <AlertDialogAction asChild>

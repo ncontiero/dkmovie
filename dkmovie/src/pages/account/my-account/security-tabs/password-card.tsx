@@ -37,7 +37,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function PasswordCard() {
   const t = useTranslations("securityPage.changePassword");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const queryClient = useQueryClient();
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const { session } = useSession();
@@ -84,7 +84,7 @@ export function PasswordCard() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -182,7 +182,7 @@ export function PasswordCard() {
               <DialogFooter>
                 <DialogClose asChild>
                   <Button type="button" variant="outline">
-                    {t("form.cancel")}
+                    {commonT("actions.cancel")}
                   </Button>
                 </DialogClose>
                 <Button type="submit" loading={isSubmitting}>

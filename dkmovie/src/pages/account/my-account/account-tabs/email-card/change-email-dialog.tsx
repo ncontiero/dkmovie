@@ -32,7 +32,7 @@ import { getErrorMessage, translateZodError } from "@/utils/errors";
 
 export function ChangeEmailDialog() {
   const t = useTranslations("accountPage.email.change");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const [showDialog, setShowDialog] = useState(false);
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -48,8 +48,8 @@ export function ChangeEmailDialog() {
       error: (iss) =>
         translateZodError({
           iss,
-          messages: { email: errorsT("invalidEmail") },
-          defaultError: errorsT("invalid"),
+          messages: { email: commonT("errors.invalidEmail") },
+          defaultError: commonT("errors.invalid"),
         }),
     }),
   });
@@ -78,7 +78,7 @@ export function ChangeEmailDialog() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -99,11 +99,11 @@ export function ChangeEmailDialog() {
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="mt-2 flex flex-col gap-2">
-            <Label htmlFor="email">{t("label")}</Label>
+            <Label htmlFor="email">{commonT("fields.email")}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="new-email@example.com"
+              placeholder={commonT("fields.emailPlaceholder")}
               {...register("email")}
             />
             {errors.email ? (
@@ -113,11 +113,11 @@ export function ChangeEmailDialog() {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                {t("cancel")}
+                {commonT("actions.cancel")}
               </Button>
             </DialogClose>
             <Button type="submit" loading={isSubmitting}>
-              {t("change")}
+              {commonT("actions.change")}
             </Button>
           </DialogFooter>
         </form>

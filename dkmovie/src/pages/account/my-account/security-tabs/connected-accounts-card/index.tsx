@@ -23,7 +23,7 @@ import { AccountCard, AccountCardSkeleton } from "./account-card";
 
 export function ConnectedAccountsCard() {
   const t = useTranslations("securityPage.socialAccount");
-  const errorsT = useTranslations("errors");
+  const errorsT = useTranslations("common.errors");
   const { session } = useSession();
   const { initializeReAuthentication } = useReAuthenticate();
   const queryClient = useQueryClient();

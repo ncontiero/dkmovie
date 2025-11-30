@@ -31,6 +31,7 @@ export function BaseAuthForm({
   type = "sign-in",
 }: BaseAuthFormProps) {
   const t = useTranslations("auth");
+  const commonT = useTranslations("common");
   const { data: socialAccounts, isLoading: isSocialAccountsLoading } =
     useFetchSocialAccounts();
 
@@ -117,28 +118,28 @@ export function BaseAuthForm({
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.dontHaveAccount")}{" "}
                     <Link to={`/auth/sign-up${nextPathParam}`} size="sm">
-                      {t("signUp")}
+                      {commonT("signUp")}
                     </Link>
                   </p>
                 ) : type === "sign-up" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.haveAccount")}{" "}
                     <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                      {t("signIn")}
+                      {commonT("signIn")}
                     </Link>
                   </p>
                 ) : type === "forgot-password" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.rememberPassword")}{" "}
                     <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                      {t("signIn")}
+                      {commonT("signIn")}
                     </Link>
                   </p>
                 ) : type === "reset-password" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.goBackTo")}{" "}
                     <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
-                      {t("signIn")}
+                      {commonT("signIn")}
                     </Link>
                   </p>
                 ) : null}

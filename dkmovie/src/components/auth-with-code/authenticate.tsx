@@ -9,9 +9,7 @@ import { Button } from "../ui/button";
 import { Link } from "../ui/link";
 
 interface AuthenticateWithCodeProps
-  extends AuthWithCodeProps,
-    PropsWithChildren,
-    AuthFormWithCodeProps {}
+  extends AuthWithCodeProps, PropsWithChildren, AuthFormWithCodeProps {}
 
 export function AuthenticateWithCode({
   type,
@@ -20,6 +18,7 @@ export function AuthenticateWithCode({
   isSubmitting = false,
 }: AuthenticateWithCodeProps) {
   const t = useTranslations("auth");
+  const commonT = useTranslations("common");
   const { mFATypes } = useMFA();
   const navigate = useNavigate();
 
@@ -40,7 +39,7 @@ export function AuthenticateWithCode({
         size="sm"
         loading={isSubmitting}
       >
-        {t("signIn")}
+        {commonT("signIn")}
       </Button>
       <div className="flex items-center justify-center">
         <Link to="/auth/2fa" size="sm">

@@ -31,6 +31,7 @@ import { needReAuthentication } from "@/utils/auth-flows";
 
 export function AddPasskey() {
   const t = useTranslations("securityPage.2fa.passkey");
+  const actionsT = useTranslations("common.actions");
   const queryClient = useQueryClient();
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -91,7 +92,7 @@ export function AddPasskey() {
     <Dialog open={showDialog} onOpenChange={setShowDialog}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          {t("add")}
+          {actionsT("add")}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -118,11 +119,11 @@ export function AddPasskey() {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                {t("cancel")}
+                {actionsT("cancel")}
               </Button>
             </DialogClose>
             <Button type="submit" loading={isSubmitting}>
-              {t("add")}
+              {actionsT("add")}
             </Button>
           </DialogFooter>
         </form>

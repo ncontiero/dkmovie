@@ -36,7 +36,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export function SetupTOTP() {
   const t = useTranslations("securityPage.2fa.appAuthenticator");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const queryClient = useQueryClient();
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -91,7 +91,7 @@ export function SetupTOTP() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -110,7 +110,7 @@ export function SetupTOTP() {
     <Dialog open={showSetupTOTPDialog} onOpenChange={setShowSetupTOTPDialog}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline" size="sm">
-          {t("add")}
+          {commonT("actions.add")}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -174,11 +174,11 @@ export function SetupTOTP() {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
-                {t("cancel")}
+                {commonT("actions.cancel")}
               </Button>
             </DialogClose>
             <Button type="submit" loading={isConfirmingTOTP}>
-              {t("confirm")}
+              {commonT("actions.confirm")}
             </Button>
           </DialogFooter>
         </form>

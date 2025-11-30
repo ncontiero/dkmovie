@@ -17,7 +17,7 @@ export function ReAuthenticateWithPassword({
   onCancel,
 }: ReAuthenticationProps) {
   const t = useTranslations("auth");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const { setSession } = useSession();
 
   const {
@@ -29,8 +29,8 @@ export function ReAuthenticateWithPassword({
       error: (iss) =>
         translateZodError({
           iss,
-          messages: { password: errorsT("passwordIsRequired") },
-          defaultError: errorsT("invalid"),
+          messages: { password: commonT("errors.passwordIsRequired") },
+          defaultError: commonT("errors.invalid"),
         }),
     }),
   });
@@ -49,14 +49,14 @@ export function ReAuthenticateWithPassword({
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">{t("password")}</Label>
+        <Label htmlFor="password">{commonT("fields.password")}</Label>
         <PasswordInput id="password" {...register("password")} />
         {errors.password ? (
           <p className="text-destructive text-sm">{errors.password.message}</p>
@@ -69,7 +69,7 @@ export function ReAuthenticateWithPassword({
           disabled={isSubmitting}
           onClick={onCancel}
         >
-          {t("cancel")}
+          {commonT("actions.cancel")}
         </Button>
         <Button type="submit" loading={isSubmitting}>
           {t("reAuth.submit")}

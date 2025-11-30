@@ -19,7 +19,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("forgotPasswordPage");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const { isAuthenticated } = useSession();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -68,11 +68,11 @@ export default function ForgotPasswordPage() {
     >
       <Meta title={t("title")} />
       <div className="flex flex-col gap-2">
-        <Label htmlFor="email">{t("email")}</Label>
+        <Label htmlFor="email">{commonT("fields.email")}</Label>
         <Input
           type="email"
           id="email"
-          placeholder="email@example.com"
+          placeholder={commonT("fields.emailPlaceholder")}
           {...register("email")}
         />
         {errors.email ? (

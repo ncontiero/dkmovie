@@ -22,6 +22,7 @@ type ReAuthWith = null | "password" | TwoFactorAuthenticatorType;
 
 export function ReAuthenticateDialog(props: ReAuthenticationProps) {
   const t = useTranslations("auth");
+  const actionsT = useTranslations("common.actions");
   const { session } = useSession();
   const [reAuthWith, setReAuthWith] = useState<ReAuthWith>(null);
 
@@ -116,7 +117,7 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
         ) : (
           <DialogFooter>
             <Button type="button" variant="outline" onClick={props.onCancel}>
-              {t("cancel")}
+              {actionsT("cancel")}
             </Button>
           </DialogFooter>
         )}

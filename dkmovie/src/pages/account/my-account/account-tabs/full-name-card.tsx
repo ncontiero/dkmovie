@@ -21,7 +21,7 @@ import { getErrorMessage, translateZodError } from "@/utils/errors";
 
 export function FullNameCard() {
   const t = useTranslations("accountPage.updateUserName");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const queryClient = useQueryClient();
 
   const { data: user } = useQuery({
@@ -48,7 +48,7 @@ export function FullNameCard() {
               too_big: t("errors.maxCharacter"),
             },
           },
-          defaultError: errorsT("invalid"),
+          defaultError: commonT("errors.invalid"),
         }),
     }),
     values: {
@@ -71,7 +71,7 @@ export function FullNameCard() {
       }
 
       console.error(error);
-      toast.error(errorsT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 
@@ -104,7 +104,7 @@ export function FullNameCard() {
             disabled={user?.name === watchedValues.name}
             loading={isSubmitting}
           >
-            {t("save")}
+            {commonT("actions.save")}
           </Button>
         </CardFooter>
       </form>

@@ -19,7 +19,7 @@ import { needReAuthentication } from "@/utils/auth-flows";
 
 export function RemoveTOTP() {
   const t = useTranslations("securityPage.2fa.appAuthenticator");
-  const errorsT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const queryClient = useQueryClient();
   const { initializeReAuthentication, isReAuthenticating } =
     useReAuthenticate();
@@ -42,7 +42,7 @@ export function RemoveTOTP() {
         }
 
         console.error(error);
-        toast.error(errorsT("unexpected"));
+        toast.error(commonT("errors.unexpected"));
       },
     },
   );
@@ -64,7 +64,7 @@ export function RemoveTOTP() {
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
             <Button type="button" variant="outline">
-              {t("cancel")}
+              {commonT("actions.cancel")}
             </Button>
           </AlertDialogCancel>
           <AlertDialogAction asChild>

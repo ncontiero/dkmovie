@@ -22,7 +22,7 @@ import { getErrorMessage, translateZodError } from "@/utils/errors";
 
 export default function VerifyEmail() {
   const t = useTranslations("auth.emailVerification.verifyEmail");
-  const errorT = useTranslations("errors");
+  const commonT = useTranslations("common");
   const queryClient = useQueryClient();
   const { setSession } = useSession();
   const navigate = useNavigate();
@@ -37,8 +37,8 @@ export default function VerifyEmail() {
       error: (iss) =>
         translateZodError({
           iss,
-          messages: { key: errorT("codeIsRequired") },
-          defaultError: errorT("invalid"),
+          messages: { key: commonT("errors.codeIsRequired") },
+          defaultError: commonT("errors.invalid"),
         }),
     }),
     defaultValues: {
@@ -67,7 +67,7 @@ export default function VerifyEmail() {
       }
 
       console.error(error);
-      toast.error(errorT("unexpected"));
+      toast.error(commonT("errors.unexpected"));
     }
   };
 

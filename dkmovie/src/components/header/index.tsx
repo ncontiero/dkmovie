@@ -24,6 +24,7 @@ export function Header() {
   const { pathname } = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("header");
+  const commonT = useTranslations("common");
 
   const addScrollEffect = pagesToAddScrollEffect.some((page) =>
     page === "/" ? pathname === "/" : pathname.startsWith(page),
@@ -145,7 +146,7 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
-                      <Link to={`/account`}>{t("userMenu.myAccount")}</Link>
+                      <Link to={`/account`}>{commonT("myAccount")}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="focus:bg-foreground/20 cursor-pointer py-2"
@@ -161,7 +162,7 @@ export function Header() {
                       asChild
                     >
                       <Link to={`/auth/sign-in${nextPath}`}>
-                        {t("userMenu.signIn")}
+                        {commonT("signIn")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -169,7 +170,7 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                     >
                       <Link to={`/auth/sign-up${nextPath}`}>
-                        {t("userMenu.signUp")}
+                        {commonT("signUp")}
                       </Link>
                     </DropdownMenuItem>
                   </>

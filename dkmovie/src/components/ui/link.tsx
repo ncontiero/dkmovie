@@ -51,8 +51,7 @@ const linkVariants = cva(
 );
 
 export interface LinkProps
-  extends RouterLinkProps,
-    VariantProps<typeof linkVariants> {}
+  extends RouterLinkProps, VariantProps<typeof linkVariants> {}
 
 export function Link({
   variant,

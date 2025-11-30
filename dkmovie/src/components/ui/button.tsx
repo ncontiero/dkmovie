@@ -6,7 +6,8 @@ import { buttonVariants } from "./button-variants";
 import { Spinner } from "./spinner";
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   readonly asChild?: boolean;
   readonly loading?: boolean;

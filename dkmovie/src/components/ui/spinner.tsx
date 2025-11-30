@@ -4,7 +4,7 @@ import { useTranslations } from "use-intl";
 import { cn } from "@/lib/utils";
 
 export function Spinner({ className, ...props }: ComponentProps<"svg">) {
-  const t = useTranslations();
+  const t = useTranslations("common");
 
   return (
     <Loader2Icon
