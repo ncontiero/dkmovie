@@ -19,11 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { CodeInput } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
@@ -43,11 +39,9 @@ export function SetupTOTP() {
   const [showSetupTOTPDialog, setShowSetupTOTPDialog] = useState(false);
   const [isToGetRecoveryCodes, setIsToGetRecoveryCodes] = useState(false);
 
-  const otpFields = Array.from({ length: 6 });
-
   const { data: totp, isLoading: isSettingUpTOTP } = useQuery({
     queryKey: ["setup-totp"],
-    queryFn: async () => await setUpTOTP(),
+    queryFn: setUpTOTP,
     staleTime: 1000 * 60 * 10,
     enabled: showSetupTOTPDialog,
   });
@@ -147,24 +141,15 @@ export function SetupTOTP() {
               name="code"
               control={control}
               render={({ field }) => (
-                <InputOTP
+                <CodeInput
                   {...field}
                   aria-label={t("enter6Digits")}
-                  maxLength={otpFields.length}
                   pattern={REGEXP_ONLY_DIGITS}
                   autoFocus
-                  onComplete={(value) => {
-                    field.onChange(value);
+                  onComplete={() => {
                     handleSubmit(onSubmit)();
                   }}
-                >
-                  <InputOTPGroup>
-                    {otpFields.map((_, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <InputOTPSlot key={index} index={index} />
-                    ))}
-                  </InputOTPGroup>
-                </InputOTP>
+                />
               )}
             />
           </div>

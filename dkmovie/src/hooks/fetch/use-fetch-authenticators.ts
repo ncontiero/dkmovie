@@ -4,7 +4,7 @@ import { get2FAAuthenticators } from "@/http/account/2fa";
 export function useFetchAuthenticators() {
   return useQuery({
     queryKey: ["2fa"],
-    queryFn: async () => await get2FAAuthenticators(),
+    queryFn: get2FAAuthenticators,
     select: ({ data }) => data,
     staleTime: 1000 * 60 * 60,
   });

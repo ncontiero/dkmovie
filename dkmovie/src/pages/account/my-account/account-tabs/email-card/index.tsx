@@ -19,9 +19,7 @@ export function UserEmailCard() {
 
   const { data: userEmails, isLoading: isUserEmailsLoading } = useQuery({
     queryKey: ["user-emails"],
-    queryFn: async () => {
-      return await getUserEmails();
-    },
+    queryFn: getUserEmails,
     staleTime: 1000 * 60 * 60,
     select: (data) => {
       return data.sort((a, b) => {

@@ -18,7 +18,7 @@ export function SessionsCard() {
 
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: ["sessions"],
-    queryFn: () => getSessions(),
+    queryFn: getSessions,
     select: (data) =>
       data.data.sort((a, b) => {
         if (a.is_current) return -1;
@@ -30,9 +30,7 @@ export function SessionsCard() {
   });
 
   const { mutate: deleteSessionsMutation } = useMutation({
-    mutationFn: async (sessionIds: number[]) => {
-      return await deleteSessions(sessionIds);
-    },
+    mutationFn: deleteSessions,
     onMutate: () => {
       toast.loading(t("loading"), {
         id: "terminate-sessions",

@@ -18,9 +18,7 @@ export function ResendEmailCodeButton({
     mutate: resendEmailVerificationMutation,
     isPending: isResendEmailVerificationPending,
   } = useMutation({
-    mutationFn: async () => {
-      return await resentEmailVerification();
-    },
+    mutationFn: resentEmailVerification,
     onSuccess: () => {
       toast.success(t("success"));
       navigate("/account/verify-email");

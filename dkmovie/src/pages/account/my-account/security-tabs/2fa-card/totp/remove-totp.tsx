@@ -26,7 +26,7 @@ export function RemoveTOTP() {
 
   const { mutate: deleteTOTPMutation, isPending: isDeletingTOTP } = useMutation(
     {
-      mutationFn: async () => await deleteTOTP(),
+      mutationFn: deleteTOTP,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["setup-totp"] });
         queryClient.invalidateQueries({ queryKey: ["recovery-codes"] });

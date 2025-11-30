@@ -24,7 +24,7 @@ export function RecoveryCodesContent({
     refetch: getRecoveryCodesRefetch,
   } = useQuery({
     queryKey: ["recovery-codes"],
-    queryFn: async () => await getRecoveryCodes(),
+    queryFn: getRecoveryCodes,
     select: (data) => data.data,
   });
 

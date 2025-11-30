@@ -30,7 +30,7 @@ export function ViewRecoveryCodes() {
     mutate: regenerateRecoveryCodesMutation,
     isPending: isRegeneratingRecoveryCodes,
   } = useMutation({
-    mutationFn: async () => await regenerateRecoveryCodes(),
+    mutationFn: regenerateRecoveryCodes,
     onSuccess: (data) => {
       toast.success(t("regeneratedSuccessfully"));
       queryClient.setQueryData(["recovery-codes"], data);

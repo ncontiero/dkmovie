@@ -253,7 +253,7 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
   const [open, setOpen] = useState(false);
 
   const { mutate: deletePasskey, isPending: isDeleting } = useMutation({
-    mutationFn: async (ids: number[]) => await deleteWebAuthCredentials(ids),
+    mutationFn: deleteWebAuthCredentials,
     onSuccess: () => {
       toast.success(t("deleteSuccessfully"));
       queryClient.invalidateQueries({ queryKey: ["2fa"] });
@@ -265,6 +265,7 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
         });
         return;
       }
+
       toast.error(t("deleteFailed"));
     },
   });

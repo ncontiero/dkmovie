@@ -26,9 +26,7 @@ export function FullNameCard() {
 
   const { data: user } = useQuery({
     queryKey: ["user"],
-    queryFn: async () => {
-      return await getMe();
-    },
+    queryFn: getMe,
     staleTime: 1000 * 60 * 60,
   });
 
