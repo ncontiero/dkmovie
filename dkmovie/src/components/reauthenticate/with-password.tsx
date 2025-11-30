@@ -1,7 +1,6 @@
 import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useSession } from "@/hooks/use-session";
@@ -72,12 +71,8 @@ export function ReAuthenticateWithPassword({
         >
           {t("cancel")}
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <Loader className="animate-spin" />
-          ) : (
-            t("reAuth.submit")
-          )}
+        <Button type="submit" loading={isSubmitting}>
+          {t("reAuth.submit")}
         </Button>
       </DialogFooter>
     </form>

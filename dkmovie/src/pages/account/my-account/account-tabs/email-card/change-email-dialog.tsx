@@ -5,7 +5,7 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { Edit, Loader } from "lucide-react";
+import { Edit } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
@@ -116,8 +116,8 @@ export function ChangeEmailDialog() {
                 {t("cancel")}
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? <Loader className="animate-spin" /> : t("change")}
+            <Button type="submit" loading={isSubmitting}>
+              {t("change")}
             </Button>
           </DialogFooter>
         </form>

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -72,14 +71,10 @@ export function RemoveTOTP() {
             <Button
               type="button"
               variant="destructive"
-              disabled={isDeletingTOTP}
+              loading={isDeletingTOTP}
               onClick={() => deleteTOTPMutation()}
             >
-              {isDeletingTOTP ? (
-                <Loader className="animate-spin" />
-              ) : (
-                t("remove")
-              )}
+              {t("remove")}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

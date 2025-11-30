@@ -1,7 +1,6 @@
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
@@ -113,9 +112,9 @@ export default function SignUpPage() {
         type="submit"
         className="mt-2 w-full"
         size="sm"
-        disabled={isSubmitting}
+        loading={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : t("singUp")}
+        {t("singUp")}
       </Button>
     </BaseAuthForm>
   );

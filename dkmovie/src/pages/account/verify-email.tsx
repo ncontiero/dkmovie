@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { BaseAuthForm } from "@/components/base-auth-form";
@@ -105,13 +104,8 @@ export default function VerifyEmail() {
       <div className="-mt-4 flex items-center justify-center">
         <ResendEmailCodeButton variant="link" text={t("dintReceive")} />
       </div>
-      <Button
-        type="submit"
-        className="w-full"
-        size="sm"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? <Loader className="animate-spin" /> : t("verifyEmail")}
+      <Button type="submit" className="w-full" size="sm" loading={isSubmitting}>
+        {t("verifyEmail")}
       </Button>
     </BaseAuthForm>
   );

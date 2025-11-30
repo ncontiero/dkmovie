@@ -1,6 +1,5 @@
 import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
 import { type ReactNode, useRef, useState } from "react";
-import { Loader } from "lucide-react";
 import { apiAuthBasePath } from "@/http/client";
 import { getCookie } from "@/utils/get-cookie";
 import { GoogleIcon } from "./icons/google";
@@ -81,13 +80,10 @@ export function ProviderButton({
         size="sm"
         {...buttonProps}
         type="submit"
-        disabled={isSubmitting}
+        loading={isSubmitting}
+        loadingText={text}
       >
-        {isSubmitting ? (
-          <Loader className="animate-spin" />
-        ) : addIcon ? (
-          icon
-        ) : null}
+        {addIcon ? icon : null}
         {text}
       </Button>
     </form>

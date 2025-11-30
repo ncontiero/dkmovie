@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { RecoveryCodesContent } from "@/components/recovery-codes/content";
@@ -80,14 +79,10 @@ export function ViewRecoveryCodes() {
           <Button
             type="button"
             variant="outline"
-            disabled={isRegeneratingRecoveryCodes}
+            loading={isRegeneratingRecoveryCodes}
             onClick={() => regenerateRecoveryCodesMutation()}
           >
-            {isRegeneratingRecoveryCodes ? (
-              <Loader className="animate-spin" />
-            ) : (
-              t("regenerate")
-            )}
+            {t("regenerate")}
           </Button>
           <DialogClose asChild>
             <Button type="button" variant="outline">

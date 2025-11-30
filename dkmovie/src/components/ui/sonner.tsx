@@ -1,13 +1,8 @@
 import type { ComponentProps } from "react";
-import {
-  CircleCheck,
-  Info,
-  Loader,
-  OctagonX,
-  TriangleAlert,
-} from "lucide-react";
+import { CircleCheck, Info, OctagonX, TriangleAlert } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner } from "sonner";
+import { Spinner } from "./spinner";
 
 type ToasterProps = ComponentProps<typeof Sonner>;
 
@@ -23,7 +18,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         info: <Info className="size-4" />,
         warning: <TriangleAlert className="size-4" />,
         error: <OctagonX className="size-4" />,
-        loading: <Loader className="size-4 animate-spin" />,
+        loading: <Spinner />,
       }}
       toastOptions={{
         classNames: {

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { resentEmailVerification } from "@/http/auth/verify-email";
@@ -52,14 +51,10 @@ export function ResendEmailCodeButton({
       onClick={() => {
         resendEmailVerificationMutation();
       }}
-      disabled={isResendEmailVerificationPending}
+      loading={isResendEmailVerificationPending}
       {...props}
     >
-      {isResendEmailVerificationPending ? (
-        <Loader className="animate-spin" />
-      ) : (
-        text || t("send")
-      )}
+      {text || t("send")}
     </Button>
   );
 }

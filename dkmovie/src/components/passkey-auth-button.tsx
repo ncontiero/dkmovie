@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
-import { KeySquare, Loader } from "lucide-react";
+import { KeySquare } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useNextPath } from "@/hooks/use-next-path";
@@ -80,13 +80,10 @@ export function PasskeyAuthButton({
       size="sm"
       {...props}
       onClick={() => authenticateWithWebAuthnMutation()}
-      disabled={isAuthenticatingWithWebAuthn}
+      loading={isAuthenticatingWithWebAuthn}
+      loadingText={text || t("continueWith.passkey")}
     >
-      {isAuthenticatingWithWebAuthn ? (
-        <Loader className="animate-spin" />
-      ) : (
-        <KeySquare />
-      )}
+      <KeySquare />
       {text || t("continueWith.passkey")}
     </Button>
   );

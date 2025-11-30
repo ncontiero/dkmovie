@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { Card, CardContent, CardFooter } from "@/components/card";
@@ -164,13 +163,9 @@ export function DeleteAccountCard() {
                 <Button
                   variant="destructive"
                   type="submit"
-                  disabled={isSubmitting}
+                  loading={isSubmitting}
                 >
-                  {isSubmitting ? (
-                    <Loader className="animate-spin" />
-                  ) : (
-                    t("confirmDelete")
-                  )}
+                  {t("confirmDelete")}
                 </Button>
               </DialogFooter>
             </form>

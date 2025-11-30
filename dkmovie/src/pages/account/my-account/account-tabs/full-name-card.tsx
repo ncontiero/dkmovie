@@ -2,7 +2,6 @@ import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -102,9 +101,10 @@ export function FullNameCard() {
           <Button
             type="submit"
             size="sm"
-            disabled={isSubmitting || user?.name === watchedValues.name}
+            disabled={user?.name === watchedValues.name}
+            loading={isSubmitting}
           >
-            {isSubmitting ? <Loader className="animate-spin" /> : t("save")}
+            {t("save")}
           </Button>
         </CardFooter>
       </form>

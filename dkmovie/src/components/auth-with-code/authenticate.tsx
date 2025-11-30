@@ -1,7 +1,6 @@
 import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import type { PropsWithChildren } from "react";
 import { useNavigate } from "react-router";
-import { Loader } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { useMFA } from "@/hooks/use-mfa";
 import { BaseAuthForm } from "../base-auth-form";
@@ -39,9 +38,9 @@ export function AuthenticateWithCode({
         type="submit"
         className="mt-2 w-full"
         size="sm"
-        disabled={isSubmitting}
+        loading={isSubmitting}
       >
-        {isSubmitting ? <Loader className="animate-spin" /> : t("signIn")}
+        {t("signIn")}
       </Button>
       <div className="flex items-center justify-center">
         <Link to="/auth/2fa" size="sm">

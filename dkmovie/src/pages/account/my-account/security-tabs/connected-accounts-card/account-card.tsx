@@ -2,7 +2,6 @@ import type { InitializeReAuthentication } from "@/context/reauthenticate/contex
 import type { ProvidersResponse } from "@/http/account/providers";
 import type { SocialAccount } from "@/http/get-config";
 import type { DisconnectProviderMutation } from "./type";
-import { Loader } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { ProviderButton, ProviderIcon } from "@/components/provider-button";
 import {
@@ -77,13 +76,9 @@ export function AccountCard({
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={isDisconnectingProvider}
+                loading={isDisconnectingProvider}
               >
-                {isDisconnectingProvider ? (
-                  <Loader className="animate-spin" />
-                ) : (
-                  t("disconnect")
-                )}
+                {t("disconnect")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>

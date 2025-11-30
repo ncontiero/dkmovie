@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader, LockKeyhole } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -185,14 +185,8 @@ export function PasswordCard() {
                     {t("form.cancel")}
                   </Button>
                 </DialogClose>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <Loader className="animate-spin" />
-                  ) : hasUsablePassword ? (
-                    t("card.change")
-                  ) : (
-                    t("card.set")
-                  )}
+                <Button type="submit" loading={isSubmitting}>
+                  {hasUsablePassword ? t("card.change") : t("card.set")}
                 </Button>
               </DialogFooter>
             </form>

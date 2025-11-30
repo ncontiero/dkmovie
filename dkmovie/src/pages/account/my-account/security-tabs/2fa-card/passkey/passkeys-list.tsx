@@ -4,7 +4,7 @@ import { type ReactNode, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, Edit, Loader, Trash } from "lucide-react";
+import { ChevronDown, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -142,13 +142,9 @@ function PasskeyItem({
               variant="outline"
               size="icon"
               className="h-8 w-12"
-              disabled={isSubmittingForm || isDeleting}
+              loading={isSubmittingForm || isDeleting}
             >
-              {isSubmittingForm || isDeleting ? (
-                <Loader className="animate-spin" />
-              ) : (
-                <Edit />
-              )}
+              <Edit />
               <span className="sr-only">
                 {t("editPasskeyName", { name: passkey.name })}
               </span>
@@ -189,12 +185,8 @@ function PasskeyItem({
                     {t("cancel")}
                   </Button>
                 </DialogClose>
-                <Button type="submit" disabled={isSubmittingForm}>
-                  {isSubmittingForm ? (
-                    <Loader className="animate-spin" />
-                  ) : (
-                    t("save")
-                  )}
+                <Button type="submit" loading={isSubmittingForm}>
+                  {t("save")}
                 </Button>
               </DialogFooter>
             </form>
@@ -207,9 +199,9 @@ function PasskeyItem({
               variant="destructive"
               size="icon"
               className="h-8 w-12"
-              disabled={isDeleting}
+              loading={isDeleting}
             >
-              {isDeleting ? <Loader className="animate-spin" /> : <Trash />}
+              <Trash />
               <span className="sr-only">
                 {t("deletePasskeyName", { name: passkey.name })}
               </span>
@@ -236,13 +228,9 @@ function PasskeyItem({
                   type="button"
                   variant="destructive"
                   onClick={() => deletePasskey([passkey.id])}
-                  disabled={isDeleting}
+                  loading={isDeleting}
                 >
-                  {isDeleting ? (
-                    <Loader className="animate-spin" />
-                  ) : (
-                    t("delete")
-                  )}
+                  {t("delete")}
                 </Button>
               </AlertDialogAction>
             </AlertDialogFooter>

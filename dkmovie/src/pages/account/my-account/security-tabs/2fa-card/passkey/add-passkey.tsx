@@ -2,7 +2,6 @@ import { useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { RecoveryCodesDialog } from "@/components/recovery-codes/dialog";
@@ -122,8 +121,8 @@ export function AddPasskey() {
                 {t("cancel")}
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? <Loader className="animate-spin" /> : t("add")}
+            <Button type="submit" loading={isSubmitting}>
+              {t("add")}
             </Button>
           </DialogFooter>
         </form>

@@ -1,7 +1,6 @@
 import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import type { PropsWithChildren } from "react";
-import { Loader } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "../ui/dialog";
@@ -40,12 +39,8 @@ export function ReAuthWithCode({
         >
           {t("cancel")}
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <Loader className="animate-spin" />
-          ) : (
-            t("reAuth.submit")
-          )}
+        <Button type="submit" loading={isSubmitting}>
+          {t("reAuth.submit")}
         </Button>
       </DialogFooter>
     </div>

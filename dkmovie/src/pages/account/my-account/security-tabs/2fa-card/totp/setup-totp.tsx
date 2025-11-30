@@ -4,7 +4,6 @@ import QRCode from "react-qr-code";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { RecoveryCodesDialog } from "@/components/recovery-codes/dialog";
@@ -25,6 +24,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Spinner } from "@/components/ui/spinner";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
 import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
 import {
@@ -120,7 +120,7 @@ export function SetupTOTP() {
         </DialogHeader>
         {isSettingUpTOTP ? (
           <div className="flex h-72 w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
-            <Loader className="animate-spin" />
+            <Spinner className="size-6" />
           </div>
         ) : totp?.totp_url ? (
           <div className="flex w-full flex-col items-center justify-center gap-4 rounded-lg border p-4 pb-6">
@@ -177,12 +177,8 @@ export function SetupTOTP() {
                 {t("cancel")}
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={isConfirmingTOTP}>
-              {isConfirmingTOTP ? (
-                <Loader className="animate-spin" />
-              ) : (
-                t("confirm")
-              )}
+            <Button type="submit" loading={isConfirmingTOTP}>
+              {t("confirm")}
             </Button>
           </DialogFooter>
         </form>

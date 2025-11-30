@@ -1,5 +1,4 @@
 import type { BaseSyntheticEvent, PropsWithChildren } from "react";
-import { Loader2 } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { Link } from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
@@ -7,6 +6,7 @@ import { useFetchSocialAccounts } from "@/hooks/fetch/use-fetch-social-accounts"
 import { useNextPath } from "@/hooks/use-next-path";
 import { PasskeyAuthButton } from "./passkey-auth-button";
 import { ProviderButton } from "./provider-button";
+import { Spinner } from "./ui/spinner";
 
 interface BaseAuthFormProps extends PropsWithChildren {
   readonly formSubmit?: (e?: BaseSyntheticEvent) => Promise<void>;
@@ -42,7 +42,7 @@ export function BaseAuthForm({
       <div className="w-full max-w-md rounded-lg border shadow-lg">
         {isSocialAccountsLoading ? (
           <div className="flex h-[630px] items-center justify-center">
-            <Loader2 className="text-primary size-20 animate-spin" />
+            <Spinner className="text-primary size-20" />
           </div>
         ) : (
           <>
