@@ -10,7 +10,7 @@
     "strictNullChecks": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", ".react-email"]
