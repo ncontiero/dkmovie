@@ -85,7 +85,9 @@
       "goBackTo": "Voltar para"
     },
     "logOut": {
-      "failed": "Falha ao sair"
+      "success": "Desconectado com sucesso",
+      "failed": "Falha ao sair",
+      "loading": "Saindo da sessão..."
     }
   },
   "providerCallbackError": {

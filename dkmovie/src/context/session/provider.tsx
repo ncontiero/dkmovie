@@ -30,9 +30,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const isAuthenticated = session?.meta.is_authenticated || false;
 
   const { mutate: logoutMutation } = useMutation({
-    mutationFn: logoutApi,
+    mutationFn: async () => {
+      await logoutApi();
+      queryClient.clear();
+      navigate("/");
+    },
+    onMutate: () => {
+      toast.loading(t("loading"), { id: "logout" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      toast.success(t("success"), { id: "logout" });
+    },
     onError: () => {
-      toast.error(t("failed"));
+      toast.error(t("failed"), { id: "logout" });
     },
   });
 

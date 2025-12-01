@@ -85,7 +85,9 @@
       "goBackTo": "Go back to"
     },
     "logOut": {
-      "failed": "Failed to log out"
+      "success": "Logged out successfully",
+      "failed": "Failed to log out",
+      "loading": "Logging out..."
     }
   },
   "providerCallbackError": {
