@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from ninja import Router
 
 from config.api.utils import ApiProcessError
@@ -16,10 +17,10 @@ MIN_NAME_LENGTH = 4
 def me(request):
     try:
         if request.user.is_anonymous:
-            raise ApiProcessError(401, "Unauthorized")
+            raise ApiProcessError(401, _("Unauthorized"))
         user = User.objects.get(id=request.user.id)
     except User.DoesNotExist as err:
-        raise ApiProcessError(404, "User not found") from err
+        raise ApiProcessError(404, _("User not found")) from err
     else:
         return {"id": user.id, "name": user.name, "email": user.email}
 
@@ -28,20 +29,20 @@ def me(request):
 def update_me(request, payload: UserSchemaIn):
     try:
         if request.user.is_anonymous:
-            raise ApiProcessError(401, "Unauthorized")
+            raise ApiProcessError(401, _("Unauthorized"))
 
         if not payload.name:
-            raise ApiProcessError(400, "Name is required")
+            raise ApiProcessError(400, _("Name is required"))
         if payload.name == request.user.name:
-            raise ApiProcessError(400, "Name is already used")
+            raise ApiProcessError(400, _("Name is the same"))
         if len(payload.name) < MIN_NAME_LENGTH:
-            raise ApiProcessError(400, "Name is too short")
+            raise ApiProcessError(400, _("Name is too short"))
         if len(payload.name) > MAX_NAME_LENGTH:
-            raise ApiProcessError(400, "Name is too long")
+            raise ApiProcessError(400, _("Name is too long"))
 
         user = User.objects.get(id=request.user.id)
     except User.DoesNotExist as err:
-        raise ApiProcessError(404, "User not found") from err
+        raise ApiProcessError(404, _("User not found")) from err
     else:
         user.name = payload.name
         user.save(update_fields=["name"])
@@ -52,10 +53,10 @@ def update_me(request, payload: UserSchemaIn):
 def delete_me(request):
     try:
         if request.user.is_anonymous:
-            raise ApiProcessError(401, "Unauthorized")
+            raise ApiProcessError(401, _("Unauthorized"))
         user = User.objects.get(id=request.user.id)
     except User.DoesNotExist as err:
-        raise ApiProcessError(404, "User not found") from err
+        raise ApiProcessError(404, _("User not found")) from err
     else:
         user.delete()
         return

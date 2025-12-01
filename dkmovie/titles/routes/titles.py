@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from django.utils.translation import gettext_lazy as _
 from ninja import Query
 from ninja import Router
 from ninja.pagination import paginate
@@ -25,7 +26,7 @@ def get_titles(
             exclude = exclude.split(",")
             titles = titles.exclude(id__in=[UUID(pk) for pk in exclude])
         except ValueError as err:
-            raise ApiProcessError(400, "Invalid exclude parameter.") from err
+            raise ApiProcessError(400, _("Invalid exclude parameter.")) from err
     return filters.filter(titles)
 
 
@@ -34,4 +35,4 @@ def get_title(request, title_id: UUID):
     try:
         return Title.objects.get(id=title_id)
     except Title.DoesNotExist as err:
-        raise ApiProcessError(404, "The title does not exist.") from err
+        raise ApiProcessError(404, _("The title does not exist.")) from err

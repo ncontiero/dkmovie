@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-28 02:11+0000\n"
+"POT-Creation-Date: 2025-12-01 02:27+0000\n"
 "Language: en-US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -434,6 +434,9 @@ msgstr ""
 msgid "More Information"
 msgstr ""
 
+msgid "Titles"
+msgstr ""
+
 msgid "Unique identifier for the genre"
 msgstr ""
 
@@ -494,7 +497,10 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-msgid "Titles"
+msgid "Invalid exclude parameter."
+msgstr ""
+
+msgid "The title does not exist."
 msgstr ""
 
 msgid "Personal info"
@@ -506,8 +512,41 @@ msgstr ""
 msgid "Important dates"
 msgstr ""
 
+msgid "Users"
+msgstr ""
+
+msgid "The Email must be set"
+msgstr ""
+
+msgid "Superuser must have is_staff=True."
+msgstr ""
+
+msgid "Superuser must have is_superuser=True."
+msgstr ""
+
 msgid "Name of User"
 msgstr ""
 
 msgid "email address"
+msgstr ""
+
+msgid "Language not supported"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "User not found"
+msgstr ""
+
+msgid "Name is required"
+msgstr ""
+
+msgid "Name is the same"
+msgstr ""
+
+msgid "Name is too short"
+msgstr ""
+
+msgid "Name is too long"
 msgstr ""
