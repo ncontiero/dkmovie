@@ -11,3 +11,12 @@ def test_home(admin_client):
     assert response.status_code == HTTPStatus.OK
     assert "pages/home.html" in [t.name for t in response.templates]
     assert '<div id="root"></div>' in response.content.decode()
+
+
+def test_catch_all(admin_client):
+    url = "/foo"
+    assert resolve(url).view_name == "home"
+    response = admin_client.get(url)
+    assert response.status_code == HTTPStatus.OK
+    assert "pages/home.html" in [t.name for t in response.templates]
+    assert '<div id="root"></div>' in response.content.decode()
