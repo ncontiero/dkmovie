@@ -14,3 +14,7 @@ COPY ./emails/package.json ${APP_HOME}/emails/
 RUN pnpm install
 
 ENV PATH="${APP_HOME}/node_modules/.bin/:$PATH"
+
+RUN chown node:node /app
+
+USER node
