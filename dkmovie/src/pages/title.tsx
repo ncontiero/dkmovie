@@ -66,7 +66,7 @@ export default function TitlePage() {
   const { id } = useParams();
 
   const { data: title, isLoading } = useQuery({
-    queryKey: ["title", id],
+    queryKey: ["content", "title", id],
     queryFn: async () => {
       if (!id) return null;
       try {
@@ -81,7 +81,7 @@ export default function TitlePage() {
 
   const { data: relatedMovies = [], isLoading: relatedMoviesLoading } =
     useQuery({
-      queryKey: ["relatedMovies", id],
+      queryKey: ["content", "relatedMovies", id],
       queryFn: async () => {
         if (!id) return [];
         try {

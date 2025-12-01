@@ -16,7 +16,7 @@ export default function HomePage() {
   const t = useTranslations("homePage");
 
   const { data: movies = [], isLoading: moviesLoading } = useQuery({
-    queryKey: ["movies"],
+    queryKey: ["content", "movies"],
     queryFn: async () => {
       try {
         const data = await getTitles({ limit: 10, contentType: "MOVIE" });
@@ -30,7 +30,7 @@ export default function HomePage() {
   });
 
   const { data: series = [], isLoading: seriesLoading } = useQuery({
-    queryKey: ["series"],
+    queryKey: ["content", "series"],
     queryFn: async () => {
       try {
         const data = await getTitles({ limit: 10, contentType: "SERIES" });

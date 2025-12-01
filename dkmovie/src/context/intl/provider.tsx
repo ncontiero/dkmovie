@@ -54,9 +54,7 @@ export function IntlProvider({ children }: PropsWithChildren) {
         await setLanguage(lang);
         setCurrentLang(lang);
         document.documentElement.lang = lang;
-        queryClient.invalidateQueries({ queryKey: ["movies"] });
-        queryClient.invalidateQueries({ queryKey: ["series"] });
-        queryClient.invalidateQueries({ queryKey: ["title"], exact: false });
+        queryClient.invalidateQueries({ queryKey: ["content"], exact: false });
       } catch (error) {
         const errors = getErrorMessage(error);
         if (errors) {
