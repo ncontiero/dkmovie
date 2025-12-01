@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useInvalidPasswordMessages } from "@/hooks/schemas/use-invalid-password-messages";
 import { useNextPath } from "@/hooks/use-next-path";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { signUp } from "@/http/auth/sign-up";
 import { type SignUpSchema, signUpSchema } from "@/schemas/auth/sign-up";
@@ -23,12 +25,23 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
 
+  const { invalidPasswordMessages, invalidConfirmPasswordMessages } =
+    useInvalidPasswordMessages();
+  const { schemaTranslator } = useSchemaTranslations<SignUpSchema>({
+    defaultError: commonT("errors.invalid"),
+    messages: {
+      email: commonT("errors.invalidEmail"),
+      password: invalidPasswordMessages,
+      confirmPassword: invalidConfirmPasswordMessages,
+    },
+  });
+
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpSchema, { error: schemaTranslator }),
   });
 
   if (isAuthenticated) return null;

@@ -7,7 +7,6 @@ export const changePasswordSchema = object({
   password_confirmation: string().min(1),
 }).refine((data) => data.new_password === data.password_confirmation, {
   path: ["password_confirmation"],
-  error: "custom",
 });
 
 export type ChangePasswordSchema = output<typeof changePasswordSchema>;

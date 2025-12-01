@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { CodeInput } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useInvalidPasswordMessages } from "@/hooks/schemas/use-invalid-password-messages";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { resetPassword } from "@/http/auth/password";
 import { HTTPError } from "@/http/client";
@@ -25,13 +27,24 @@ export default function ResetPasswordPage() {
   const { setSession } = useSession();
   const navigate = useNavigate();
 
+  const { invalidPasswordMessages, invalidConfirmPasswordMessages } =
+    useInvalidPasswordMessages();
+  const { schemaTranslator } = useSchemaTranslations<ResetPasswordSchema>({
+    defaultError: commonT("errors.invalid"),
+    messages: {
+      key: commonT("errors.codeIsRequired"),
+      password: invalidPasswordMessages,
+      passwordConfirmation: invalidConfirmPasswordMessages,
+    },
+  });
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordSchema, { error: schemaTranslator }),
     defaultValues: {
       key: "",
       password: "",

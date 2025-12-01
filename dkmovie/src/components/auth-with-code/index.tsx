@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useNextPath } from "@/hooks/use-next-path";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { confirm2FA } from "@/http/auth/2fa";
 import { reAuth2FA } from "@/http/auth/re-auth";
@@ -12,7 +13,7 @@ import {
   type TwoFactorAuthSchema,
   twoFactorAuthSchema,
 } from "@/schemas/auth/2fa";
-import { getErrorMessage, translateZodError } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 import { AuthenticateWithCode } from "./authenticate";
 import { CodeInput } from "./code-input";
 import { ReAuthWithCode } from "./reauthenticate";
@@ -33,19 +34,16 @@ export function AuthWithCode({
   const { setSession } = useSession();
   const { navigateToNextPath } = useNextPath();
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: errorT("codeIsRequired"),
+  });
+
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(twoFactorAuthSchema, {
-      error: (iss) =>
-        translateZodError({
-          iss,
-          messages: { code: errorT("codeIsRequired") },
-          defaultError: errorT("invalid"),
-        }),
-    }),
+    resolver: zodResolver(twoFactorAuthSchema, { error: schemaTranslator }),
     defaultValues: {
       code: "",
     },

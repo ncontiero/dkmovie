@@ -27,6 +27,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useInvalidPasswordMessages } from "@/hooks/schemas/use-invalid-password-messages";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { changePassword } from "@/http/account/password";
 import {
@@ -42,6 +44,17 @@ export function PasswordCard() {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const { session } = useSession();
 
+  const { invalidPasswordMessages, invalidConfirmPasswordMessages } =
+    useInvalidPasswordMessages();
+  const { schemaTranslator } = useSchemaTranslations<ChangePasswordSchema>({
+    defaultError: commonT("errors.invalid"),
+    messages: {
+      current_password: t("errors.currentPasswordIsRequired"),
+      new_password: invalidPasswordMessages,
+      password_confirmation: invalidConfirmPasswordMessages,
+    },
+  });
+
   const user = session?.user;
   const hasUsablePassword = user?.has_usable_password ?? false;
 
@@ -53,7 +66,7 @@ export function PasswordCard() {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(changePasswordSchema, { error: schemaTranslator }),
   });
 
   const { new_password: watchNewPassword } = useWatch({ control });

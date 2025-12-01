@@ -3,10 +3,11 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { reAuth } from "@/http/auth/re-auth";
 import { type ReAuthSchema, reAuthSchema } from "@/schemas/auth/re-auth";
-import { getErrorMessage, translateZodError } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
 import { Label } from "../ui/label";
@@ -20,19 +21,16 @@ export function ReAuthenticateWithPassword({
   const commonT = useTranslations("common");
   const { setSession } = useSession();
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: commonT("errors.passwordIsRequired"),
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(reAuthSchema, {
-      error: (iss) =>
-        translateZodError({
-          iss,
-          messages: { password: commonT("errors.passwordIsRequired") },
-          defaultError: commonT("errors.invalid"),
-        }),
-    }),
+    resolver: zodResolver(reAuthSchema, { error: schemaTranslator }),
   });
 
   const onSubmit: SubmitHandler<ReAuthSchema> = async (data) => {

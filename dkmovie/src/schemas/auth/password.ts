@@ -1,20 +1,17 @@
-import { type output, object, string } from "zod";
-import { emailSchema, passwordSchema } from "../base";
+import { type output, email, object, string } from "zod";
+import { passwordSchema } from "../base";
 
 export const forgotPasswordSchema = object({
-  email: emailSchema,
+  email: email(),
 });
 
 export type ForgotPasswordSchema = output<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = object({
-  key: string().min(1, { message: "Code is required." }),
+  key: string().min(1),
   password: passwordSchema,
-  passwordConfirmation: string().min(1, {
-    message: "Password confirmation is required.",
-  }),
+  passwordConfirmation: string().min(1),
 }).refine((data) => data.password === data.passwordConfirmation, {
-  message: "Passwords do not match.",
   path: ["passwordConfirmation"],
 });
 

@@ -11,6 +11,7 @@ import { ResendEmailCodeButton } from "@/components/resend-email-code-button";
 import { Button } from "@/components/ui/button";
 import { CodeInput } from "@/components/ui/input-otp";
 import { useNextPath } from "@/hooks/use-next-path";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { verifyEmail } from "@/http/auth/verify-email";
 import { HTTPError } from "@/http/client";
@@ -18,7 +19,7 @@ import {
   type VerifyEmailSchema,
   verifyEmailSchema,
 } from "@/schemas/auth/verify-email";
-import { getErrorMessage, translateZodError } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 
 export default function VerifyEmail() {
   const t = useTranslations("auth.emailVerification.verifyEmail");
@@ -28,19 +29,16 @@ export default function VerifyEmail() {
   const navigate = useNavigate();
   const { navigateToNextPath } = useNextPath();
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: commonT("errors.codeIsRequired"),
+  });
+
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(verifyEmailSchema, {
-      error: (iss) =>
-        translateZodError({
-          iss,
-          messages: { key: commonT("errors.codeIsRequired") },
-          defaultError: commonT("errors.invalid"),
-        }),
-    }),
+    resolver: zodResolver(verifyEmailSchema, { error: schemaTranslator }),
     defaultValues: {
       key: "",
     },

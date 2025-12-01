@@ -197,9 +197,7 @@
         "set": "Password set!"
       },
       "errors": {
-        "currentPasswordIsRequired": "Current password is required.",
-        "confirmPasswordIsRequired": "Password confirmation is required.",
-        "passwordsDoNotMatch": "Passwords do not match."
+        "currentPasswordIsRequired": "Current password is required."
       }
     },
     "session": {
@@ -334,12 +332,14 @@
       "unexpected": "An unexpected error occurred. Please try again.",
       "invalid": "Invalid data",
       "codeIsRequired": "Code is required",
-      "passwordIsRequired": "Password is required",
       "invalidEmail": "Please enter a valid email address.",
       "password": {
         "minCharacter": "Password must be at least 8 characters long",
         "maxCharacter": "Password must be at most 64 characters long",
-        "regex": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+        "regex": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        "isRequired": "Password is required",
+        "confirmIsRequired": "Password confirmation is required",
+        "passwordsDoNotMatch": "Passwords do not match"
       }
     }
   },

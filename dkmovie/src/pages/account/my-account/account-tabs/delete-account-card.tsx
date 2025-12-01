@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { deleteMyAccount } from "@/http/account/me";
 import {
   type ConfirmDeleteAccountSchema,
   confirmDeleteAccountSchema,
 } from "@/schemas/account/delete-account";
-import { translateZodError } from "@/utils/errors";
 
 function irreversibleWarning(chunks: ReactNode) {
   return <span className="text-destructive font-bold">{chunks}</span>;
@@ -40,6 +40,10 @@ export function DeleteAccountCard() {
   const { session, setSession } = useSession();
   const navigate = useNavigate();
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: commonT("errors.invalidEmail"),
+  });
+
   const userEmail = session?.user.email;
   const confirmText = t("confirmText");
 
@@ -50,12 +54,7 @@ export function DeleteAccountCard() {
     setError,
   } = useForm({
     resolver: zodResolver(confirmDeleteAccountSchema, {
-      error: (iss) =>
-        translateZodError({
-          iss,
-          messages: { confirmEmail: commonT("errors.invalidEmail") },
-          defaultError: commonT("errors.invalid"),
-        }),
+      error: schemaTranslator,
     }),
   });
 

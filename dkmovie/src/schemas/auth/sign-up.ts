@@ -1,14 +1,11 @@
-import { type output, object, string } from "zod";
-import { emailSchema, passwordSchema } from "../base";
+import { type output, email, object, string } from "zod";
+import { passwordSchema } from "../base";
 
 export const signUpSchema = object({
-  email: emailSchema,
+  email: email(),
   password: passwordSchema,
-  confirmPassword: string().min(1, {
-    message: "Please confirm your password.",
-  }),
+  confirmPassword: string().min(1),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
   path: ["confirmPassword"],
 });
 

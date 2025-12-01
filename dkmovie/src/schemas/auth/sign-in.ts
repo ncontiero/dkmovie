@@ -1,9 +1,8 @@
-import { type output, object, string } from "zod";
-import { emailSchema } from "../base";
+import { type output, email, object, string } from "zod";
 
 export const signInSchema = object({
-  email: emailSchema,
-  password: string().min(1, { message: "Password is required." }),
+  email: email(),
+  password: string().min(1),
 });
 
 export type SignInSchema = output<typeof signInSchema>;

@@ -22,6 +22,7 @@ import {
 import { CodeInput } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { confirmTOTP, setUpTOTP } from "@/http/account/2fa";
 import {
   type ConfirmTOTPSchema,
@@ -39,6 +40,10 @@ export function SetupTOTP() {
   const [showSetupTOTPDialog, setShowSetupTOTPDialog] = useState(false);
   const [isToGetRecoveryCodes, setIsToGetRecoveryCodes] = useState(false);
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: commonT("errors.codeIsRequired"),
+  });
+
   const { data: totp, isLoading: isSettingUpTOTP } = useQuery({
     queryKey: ["setup-totp"],
     queryFn: setUpTOTP,
@@ -51,7 +56,7 @@ export function SetupTOTP() {
     control,
     formState: { errors, isSubmitting: isConfirmingTOTP },
   } = useForm({
-    resolver: zodResolver(confirmTOTPSchema),
+    resolver: zodResolver(confirmTOTPSchema, { error: schemaTranslator }),
     defaultValues: {
       code: "",
     },

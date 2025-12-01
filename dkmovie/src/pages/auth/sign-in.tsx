@@ -12,6 +12,7 @@ import { Link } from "@/components/ui/link";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useMFA } from "@/hooks/use-mfa";
 import { useNextPath } from "@/hooks/use-next-path";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { signIn } from "@/http/auth/sign-in";
 import { type SignInSchema, signInSchema } from "@/schemas/auth/sign-in";
@@ -26,12 +27,20 @@ export default function SignInPage() {
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
 
+  const { schemaTranslator } = useSchemaTranslations<SignInSchema>({
+    defaultError: commonT("errors.invalid"),
+    messages: {
+      email: commonT("errors.invalidEmail"),
+      password: commonT("errors.passwordIsRequired"),
+    },
+  });
+
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(signInSchema, { error: schemaTranslator }),
   });
 
   if (isAuthenticated) return null;

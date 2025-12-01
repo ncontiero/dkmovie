@@ -8,6 +8,7 @@ import { Meta } from "@/components/meta";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { useSession } from "@/hooks/use-session";
 import { forgotPassword } from "@/http/auth/password";
 import {
@@ -24,6 +25,10 @@ export default function ForgotPasswordPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: commonT("errors.invalidEmail"),
+  });
+
   const email = searchParams.get("email");
 
   const {
@@ -31,7 +36,7 @@ export default function ForgotPasswordPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(forgotPasswordSchema),
+    resolver: zodResolver(forgotPasswordSchema, { error: schemaTranslator }),
     defaultValues: {
       email: email || "",
     },

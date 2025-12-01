@@ -197,9 +197,7 @@
         "set": "Senha definida!"
       },
       "errors": {
-        "currentPasswordIsRequired": "A senha atual é obrigatória.",
-        "confirmPasswordIsRequired": "A confirmação de senha é obrigatória.",
-        "passwordsDoNotMatch": "As senhas não correspondem."
+        "currentPasswordIsRequired": "A senha atual é obrigatória."
       }
     },
     "session": {
@@ -334,12 +332,14 @@
       "unexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",
       "invalid": "Dados inválidos",
       "codeIsRequired": "O código é obrigatório",
-      "passwordIsRequired": "A senha é obrigatória",
       "invalidEmail": "Por favor, insira um endereço de e-mail válido.",
       "password": {
         "minCharacter": "A senha deve ter no mínimo 8 caracteres",
         "maxCharacter": "A senha deve ter no máximo 64 caracteres",
-        "regex": "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial"
+        "regex": "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial",
+        "isRequired": "A senha é obrigatória",
+        "confirmIsRequired": "A confirmação de senha é obrigatória",
+        "passwordsDoNotMatch": "As senhas não correspondem"
       }
     }
   },

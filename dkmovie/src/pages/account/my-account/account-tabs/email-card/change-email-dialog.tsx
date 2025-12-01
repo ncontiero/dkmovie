@@ -22,13 +22,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useReAuthenticate } from "@/hooks/use-reauthenticate";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { changeEmail } from "@/http/account/emails";
 import {
   type ChangeEmailSchema,
   changeEmailSchema,
 } from "@/schemas/account/email";
 import { needReAuthentication } from "@/utils/auth-flows";
-import { getErrorMessage, translateZodError } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 
 export function ChangeEmailDialog() {
   const t = useTranslations("accountPage.email.change");
@@ -39,19 +40,16 @@ export function ChangeEmailDialog() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const { schemaTranslator } = useSchemaTranslations({
+    defaultError: commonT("errors.invalidEmail"),
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(changeEmailSchema, {
-      error: (iss) =>
-        translateZodError({
-          iss,
-          messages: { email: commonT("errors.invalidEmail") },
-          defaultError: commonT("errors.invalid"),
-        }),
-    }),
+    resolver: zodResolver(changeEmailSchema, { error: schemaTranslator }),
   });
 
   const onSubmit: SubmitHandler<ChangeEmailSchema> = async (data) => {

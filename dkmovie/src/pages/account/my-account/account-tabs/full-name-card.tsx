@@ -15,14 +15,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSchemaTranslations } from "@/hooks/use-schema-translations";
 import { getMe, updateMe } from "@/http/account/me";
 import { type UpdateMeSchema, updateMeSchema } from "@/schemas/account/me";
-import { getErrorMessage, translateZodError } from "@/utils/errors";
+import { getErrorMessage } from "@/utils/errors";
 
 export function FullNameCard() {
+  const queryClient = useQueryClient();
   const t = useTranslations("accountPage.updateUserName");
   const commonT = useTranslations("common");
-  const queryClient = useQueryClient();
+
+  const { schemaTranslator } = useSchemaTranslations<UpdateMeSchema>({
+    defaultError: commonT("errors.invalid"),
+    messages: {
+      name: {
+        too_small: t("errors.minCharacter"),
+        too_big: t("errors.maxCharacter"),
+      },
+    },
+  });
 
   const { data: user } = useQuery({
     queryKey: ["user"],
@@ -36,19 +47,7 @@ export function FullNameCard() {
     control,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(updateMeSchema, {
-      error: (iss) =>
-        translateZodError({
-          iss,
-          messages: {
-            name: {
-              too_small: t("errors.minCharacter"),
-              too_big: t("errors.maxCharacter"),
-            },
-          },
-          defaultError: commonT("errors.invalid"),
-        }),
-    }),
+    resolver: zodResolver(updateMeSchema, { error: schemaTranslator }),
     values: {
       name: user?.name || "",
     },
