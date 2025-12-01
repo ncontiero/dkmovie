@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   type Locale,
@@ -20,6 +21,7 @@ declare const LANGUAGE_CODE: Locale;
 export function IntlProvider({ children }: PropsWithChildren) {
   const [currentLang, setCurrentLang] = useState<Locale>(LANGUAGE_CODE);
   const [messages, setMessages] = useState<Messages | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     let isMounted = true;
@@ -46,21 +48,27 @@ export function IntlProvider({ children }: PropsWithChildren) {
     document.head.querySelector("#initialLanguageScript")?.remove();
   }, []);
 
-  const setLang = useCallback(async (lang: Locale) => {
-    try {
-      await setLanguage(lang);
-      setCurrentLang(lang);
-      document.documentElement.lang = lang;
-    } catch (error) {
-      const errors = getErrorMessage(error);
-      if (errors) {
-        toast.error(errors);
-        return;
-      }
+  const setLang = useCallback(
+    async (lang: Locale) => {
+      try {
+        await setLanguage(lang);
+        setCurrentLang(lang);
+        document.documentElement.lang = lang;
+        queryClient.invalidateQueries({ queryKey: ["movies"] });
+        queryClient.invalidateQueries({ queryKey: ["series"] });
+        queryClient.invalidateQueries({ queryKey: ["title"], exact: false });
+      } catch (error) {
+        const errors = getErrorMessage(error);
+        if (errors) {
+          toast.error(errors);
+          return;
+        }
 
-      console.error(error);
-    }
-  }, []);
+        console.error(error);
+      }
+    },
+    [queryClient],
+  );
 
   const contextValues = useMemo(
     (): IntlContextProps => ({ lang: currentLang, setLang }),

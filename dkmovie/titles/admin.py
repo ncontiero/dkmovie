@@ -1,19 +1,20 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TranslationAdmin
 
 from .models import Genre
 from .models import Title
 
 
 @admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
+class GenreAdmin(TranslationAdmin):
     list_display = ("name", "slug")
     search_fields = ("name",)
     prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Title)
-class TitleAdmin(admin.ModelAdmin):
+class TitleAdmin(TranslationAdmin):
     list_display = ("title", "content_type", "release_date", "rating")
     list_filter = ("content_type", "genres", "release_date")
     search_fields = ("title", "description")
