@@ -16,7 +16,19 @@ class TitleSchema(ModelSchema):
 
     class Meta:
         model = Title
-        fields = "__all__"
+        fields = [
+            "id",
+            "title",
+            "description",
+            "content_type",
+            "release_date",
+            "duration",
+            "rating",
+            "cast",
+            "poster",
+            "cover",
+            "trailer_url",
+        ]
 
 
 class TitleFilterSchema(FilterSchema):
