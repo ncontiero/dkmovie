@@ -1,5 +1,5 @@
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { toast } from "sonner";
@@ -38,6 +38,9 @@ export default function ResetPasswordPage() {
     },
   });
 
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
+
   const {
     register,
     handleSubmit,
@@ -46,7 +49,7 @@ export default function ResetPasswordPage() {
   } = useForm({
     resolver: zodResolver(resetPasswordSchema, { error: schemaTranslator }),
     defaultValues: {
-      key: "",
+      key: code ?? "",
       password: "",
       passwordConfirmation: "",
     },
@@ -102,9 +105,6 @@ export default function ResetPasswordPage() {
                 codeLength={8}
                 pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                 autoFocus
-                onComplete={() => {
-                  handleSubmit(onSubmit)();
-                }}
               />
             )}
           />

@@ -1,5 +1,5 @@
 import { type SubmitHandler, Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
@@ -33,6 +33,9 @@ export default function VerifyEmail() {
     defaultError: commonT("errors.codeIsRequired"),
   });
 
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
+
   const {
     handleSubmit,
     control,
@@ -40,7 +43,7 @@ export default function VerifyEmail() {
   } = useForm({
     resolver: zodResolver(verifyEmailSchema, { error: schemaTranslator }),
     defaultValues: {
-      key: "",
+      key: code ?? "",
     },
   });
 
