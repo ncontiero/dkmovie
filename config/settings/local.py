@@ -68,8 +68,5 @@ WEBPACK_LOADER["DEFAULT"]["CACHE"] = not DEBUG
 
 # django-allauth
 # ------------------------------------------------------------------------------
-# https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_REAUTHENTICATION_TIMEOUT = 30
-ACCOUNT_REAUTHENTICATION_REQUIRED = True
 # https://docs.allauth.org/en/latest/mfa/configuration.html
 MFA_WEBAUTHN_ALLOW_INSECURE_ORIGIN = True

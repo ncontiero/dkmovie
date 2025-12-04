@@ -4,6 +4,9 @@ import typing
 
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from django.contrib.sites.shortcuts import get_current_site
+
+from .tasks import send_email_task
 
 if typing.TYPE_CHECKING:
     from allauth.socialaccount.models import SocialLogin
@@ -13,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 
 class AccountAdapter(DefaultAccountAdapter):
-    def send_mail(self, template_prefix, email, context):
+    def send_mail(self, template_prefix: str, email: str, context: dict) -> None:
         # Check if the standard path is in the prefix and replace it
         if "account/email" in template_prefix:
             template_prefix = template_prefix.replace("account/email", "emails/account")
@@ -28,7 +31,18 @@ class AccountAdapter(DefaultAccountAdapter):
                 "emails/account/socialaccount",
             )
 
-        super().send_mail(template_prefix, email, context)
+        ctx = {
+            "email": email,
+            "current_site": get_current_site(self.request),
+        }
+        ctx.update(context)
+        msg = self.render_mail(template_prefix, email, ctx)
+        send_email_task.delay(
+            subject=msg.subject,
+            body=msg.body,
+            from_email=msg.from_email,
+            to=msg.to,
+        )
 
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
