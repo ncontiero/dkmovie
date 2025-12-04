@@ -46,7 +46,9 @@
   "titlePage": {
     "watch": "Assistir",
     "myList": "Minha lista",
+    "addToMyList": "Adicionar na minha lista",
     "details": "Detalhes",
+    "viewDetails": "Veja os detalhes de {title}",
     "cast": "Elenco",
     "moreLikeThis": "Mais como esse"
   },

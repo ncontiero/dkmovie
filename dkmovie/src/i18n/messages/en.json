@@ -46,7 +46,9 @@
   "titlePage": {
     "watch": "Watch",
     "myList": "My List",
+    "addToMyList": "Add to my list",
     "details": "Details",
+    "viewDetails": "View details for {title}",
     "cast": "Cast",
     "moreLikeThis": "More like this"
   },
