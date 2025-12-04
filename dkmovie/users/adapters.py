@@ -44,6 +44,11 @@ class AccountAdapter(DefaultAccountAdapter):
             to=msg.to,
         )
 
+    def save_user(self, *args, **kwargs):
+        user = super().save_user(*args, **kwargs)
+        self.send_mail("emails/account/welcome", user.email, {"user": user})
+        return user
+
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
     def populate_user(
