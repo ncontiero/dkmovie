@@ -2,13 +2,18 @@ import { ncontiero } from "@ncontiero/eslint-config";
 
 export default ncontiero(
   {
-    ignores: ["dkmovie/templates/emails/**"],
+    ignores: ["dkmovie/templates/emails/**", "**/routeTree.gen.ts"],
     javascript: {
       overrides: {
         "node/no-unsupported-features/node-builtins": [
           "error",
           { allowExperimental: true },
         ],
+      },
+    },
+    html: {
+      overrides: {
+        "html/require-title": "off",
       },
     },
   },

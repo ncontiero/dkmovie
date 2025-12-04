@@ -1,5 +1,5 @@
 import type { ContentsType } from "@/utils/types";
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 import { Info, Play } from "lucide-react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -48,7 +48,10 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
                 className="shadow-xl hover:scale-105 focus-visible:scale-105 [&_svg]:size-5"
                 asChild
               >
-                <Link to={`/title/${content.id}/watch`}>
+                <Link
+                  to="/title/$titleId/watch"
+                  params={{ titleId: content.id }}
+                >
                   <Play className="fill-current" />
                   {t("watchNow")}
                 </Link>
@@ -60,7 +63,7 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
                 className="shadow-xl backdrop-blur-sm hover:scale-105 focus-visible:scale-105 [&_svg]:size-5"
                 asChild
               >
-                <Link to={`/title/${content.id}`}>
+                <Link to="/title/$titleId" params={{ titleId: content.id }}>
                   <Info />
                   {t("moreInformation")}
                 </Link>

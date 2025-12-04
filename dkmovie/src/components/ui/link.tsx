@@ -1,7 +1,7 @@
 import {
-  type LinkProps as RouterLinkProps,
+  type LinkComponentProps,
   Link as RouterLink,
-} from "react-router";
+} from "@tanstack/react-router";
 import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ const linkVariants = cva(
 );
 
 export interface LinkProps
-  extends RouterLinkProps, VariantProps<typeof linkVariants> {}
+  extends LinkComponentProps, VariantProps<typeof linkVariants> {}
 
 export function Link({
   variant,

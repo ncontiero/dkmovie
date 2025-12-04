@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import { KeySquare } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -31,6 +31,7 @@ export function PasskeyAuthButton({
   const t = useTranslations("auth");
   const emailVerificationT = useTranslations("common.emailVerification");
   const { setSession } = useSession();
+  const router = useRouter();
   const navigate = useNavigate();
   const { nextPath, navigateToNextPath } = useNextPath();
 
@@ -48,10 +49,12 @@ export function PasskeyAuthButton({
       })) as PublicKeyCredential;
       return await authenticateWithWebAuthn(flow, credential.toJSON());
     },
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       setSession(res);
+      await router.invalidate({ forcePending: true });
+
       toast.success(t("passkey.authenticated"));
-      if (isToNavigateToNextPath) navigateToNextPath();
+      if (isToNavigateToNextPath) await navigateToNextPath();
       if (onAuthenticated) onAuthenticated();
     },
     onError: (error) => {
@@ -65,7 +68,7 @@ export function PasskeyAuthButton({
         toast.success(emailVerificationT("title"), {
           description: emailVerificationT("description"),
         });
-        navigate(`/account/verify-email?next=${nextPath}`);
+        navigate({ to: "/account/verify-email", search: { next: nextPath } });
         return;
       }
 

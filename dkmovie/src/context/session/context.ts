@@ -4,6 +4,7 @@ import { createContext } from "react";
 
 export interface SessionContextProps {
   session: Session | null;
+  sessionError: Error | null;
   isAuthenticated: boolean;
   isLoadingSession: boolean;
   setSession: (newSession?: CurrentSessionResponse | null) => void;
@@ -12,6 +13,7 @@ export interface SessionContextProps {
 
 export const SessionContext = createContext<SessionContextProps>({
   session: null,
+  sessionError: null,
   isAuthenticated: false,
   isLoadingSession: true,
   setSession: () => {

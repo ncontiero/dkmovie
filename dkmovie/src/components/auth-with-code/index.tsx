@@ -2,6 +2,7 @@ import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import type { AuthWithCodeProps } from "./types";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useNextPath } from "@/hooks/use-next-path";
@@ -31,6 +32,8 @@ export function AuthWithCode({
 }: AuthenticationWithCodeProps) {
   const t = useTranslations("auth.mfa");
   const errorT = useTranslations("common.errors");
+
+  const router = useRouter();
   const { setSession } = useSession();
   const { navigateToNextPath } = useNextPath();
 
@@ -66,12 +69,13 @@ export function AuthWithCode({
     try {
       const res = await onSubmitType(data);
       setSession(res);
+      await router.invalidate({ forcePending: true });
 
       if (type === "reauthenticate") {
         reAuthentication?.onReAuthenticated?.();
         return;
       }
-      navigateToNextPath();
+      await navigateToNextPath();
     } catch (error) {
       const errors = getErrorMessage(error);
       if (errors) {

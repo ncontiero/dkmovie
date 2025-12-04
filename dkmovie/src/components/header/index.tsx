@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Bell, Search, User } from "lucide-react";
 import { useTranslations } from "use-intl";
 import faviconSvg from "@/assets/favicon.svg";
+import { useNextPath } from "@/hooks/use-next-path";
 import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -22,6 +23,7 @@ const pathsToNotAddNext = ["/auth"];
 export function Header() {
   const { isAuthenticated, logout } = useSession();
   const { pathname } = useLocation();
+  const { nextPath } = useNextPath();
   const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("header");
   const commonT = useTranslations("common");
@@ -49,7 +51,9 @@ export function Header() {
   const addNextPathToSignInUp = !pathsToNotAddNext.some((path) =>
     pathname.startsWith(path),
   );
-  const nextPath = addNextPathToSignInUp ? `?next=${pathname}` : "";
+  const nextSearchPath = addNextPathToSignInUp
+    ? { next: pathname }
+    : { next: nextPath };
 
   return (
     <header
@@ -146,7 +150,7 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
-                      <Link to={`/account`}>{commonT("myAccount")}</Link>
+                      <Link to="/account">{commonT("myAccount")}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="focus:bg-foreground/20 cursor-pointer py-2"
@@ -161,7 +165,7 @@ export function Header() {
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                       asChild
                     >
-                      <Link to={`/auth/sign-in${nextPath}`}>
+                      <Link to="/auth/sign-in" search={nextSearchPath}>
                         {commonT("signIn")}
                       </Link>
                     </DropdownMenuItem>
@@ -169,7 +173,7 @@ export function Header() {
                       asChild
                       className="focus:bg-foreground/20 cursor-pointer py-2"
                     >
-                      <Link to={`/auth/sign-up${nextPath}`}>
+                      <Link to="/auth/sign-up" search={nextSearchPath}>
                         {commonT("signUp")}
                       </Link>
                     </DropdownMenuItem>

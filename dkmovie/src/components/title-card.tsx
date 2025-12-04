@@ -1,5 +1,5 @@
 import type { Title } from "@/utils/types";
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 
 interface TitleCardProps {
   readonly title: Title;
@@ -8,7 +8,8 @@ interface TitleCardProps {
 export function TitleCard({ title }: TitleCardProps) {
   return (
     <Link
-      to={`/title/${title.id}`}
+      to="/title/$titleId"
+      params={{ titleId: title.id }}
       className="group relative shrink-0 transform rounded-lg focus-visible:outline-hidden"
     >
       <div

@@ -1,10 +1,13 @@
-import { useNavigate } from "react-router";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { resentEmailVerification } from "@/http/auth/verify-email";
-import { HTTPError } from "@/http/client";
-import { getErrorMessage } from "@/utils/errors";
+import {
+  getErrorMessage,
+  isHttpForbidden,
+  isHttpTooManyRequests,
+} from "@/utils/errors";
 import { type ButtonProps, Button } from "./ui/button";
 
 export function ResendEmailCodeButton({
@@ -21,13 +24,11 @@ export function ResendEmailCodeButton({
     mutationFn: resentEmailVerification,
     onSuccess: () => {
       toast.success(t("success"));
-      navigate("/account/verify-email");
+      navigate({ to: "/account/verify-email" });
     },
     onError: (error) => {
-      if (error instanceof HTTPError) {
-        if (error.status === 403 || error.status === 429) {
-          toast.error(t("tooManyRequests"));
-        }
+      if (isHttpForbidden(error) || isHttpTooManyRequests(error)) {
+        toast.error(t("tooManyRequests"));
         return;
       }
 

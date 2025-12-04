@@ -73,7 +73,7 @@ export function IntlProvider({ children }: PropsWithChildren) {
     [currentLang, setLang],
   );
 
-  return (
+  return !messages ? null : (
     <IntlContext.Provider value={contextValues}>
       <IntlProviderBase locale={currentLang} messages={messages}>
         {children}

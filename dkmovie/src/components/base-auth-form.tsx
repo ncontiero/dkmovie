@@ -32,11 +32,12 @@ export function BaseAuthForm({
 }: BaseAuthFormProps) {
   const t = useTranslations("auth");
   const commonT = useTranslations("common");
+
   const { data: socialAccounts, isLoading: isSocialAccountsLoading } =
     useFetchSocialAccounts();
 
   const { nextPath } = useNextPath();
-  const nextPathParam = nextPath ? `?next=${nextPath}` : "";
+  const nextPathSearch = { next: nextPath };
 
   return (
     <main className="flex min-h-screen items-center justify-center">
@@ -117,28 +118,28 @@ export function BaseAuthForm({
                 {type === "sign-in" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.dontHaveAccount")}{" "}
-                    <Link to={`/auth/sign-up${nextPathParam}`} size="sm">
+                    <Link to="/auth/sign-up" search={nextPathSearch} size="sm">
                       {commonT("signUp")}
                     </Link>
                   </p>
                 ) : type === "sign-up" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.haveAccount")}{" "}
-                    <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
+                    <Link to="/auth/sign-in" search={nextPathSearch} size="sm">
                       {commonT("signIn")}
                     </Link>
                   </p>
                 ) : type === "forgot-password" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.rememberPassword")}{" "}
-                    <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
+                    <Link to="/auth/sign-in" search={nextPathSearch} size="sm">
                       {commonT("signIn")}
                     </Link>
                   </p>
                 ) : type === "reset-password" ? (
                   <p className="text-muted-foreground text-center text-sm font-medium">
                     {t("formFooter.goBackTo")}{" "}
-                    <Link to={`/auth/sign-in${nextPathParam}`} size="sm">
+                    <Link to="/auth/sign-in" search={nextPathSearch} size="sm">
                       {commonT("signIn")}
                     </Link>
                   </p>

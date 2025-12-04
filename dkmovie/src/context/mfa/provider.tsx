@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { flowsTo2FA, getErrorFlows, need2FA } from "@/utils/auth-flows";
 import { type MFAContextProps, MFAContext } from "./context";
 
@@ -44,7 +44,7 @@ export function MFAProvider({ sessionError, children }: MFAProviderProps) {
       const errorToUse = error || sessionError;
       handleMFATypes(errorToUse);
       if (need2FA(errorToUse)) {
-        navigate(`/auth/2fa?next=${nextPath}`);
+        navigate({ to: `/auth/2fa?next=${nextPath}` });
         return;
       }
     },

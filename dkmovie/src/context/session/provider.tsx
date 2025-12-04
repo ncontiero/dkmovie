@@ -1,5 +1,4 @@
-import { type PropsWithChildren, useCallback, useEffect, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { type PropsWithChildren, useCallback, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -8,18 +7,11 @@ import {
   type CurrentSessionResponse,
   logout as logoutApi,
 } from "@/http/auth/session";
-import { MFAProvider } from "../mfa/provider";
 import { type SessionContextProps, SessionContext } from "./context";
-
-const protectedRoutes = ["/account", "/account/security"];
-const authRoutes = ["/auth/sign-in", "/auth/sign-up", "/auth/2fa"];
-const signInRoute = "/auth/sign-in";
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const t = useTranslations("auth.logOut");
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const {
     data: session = null,
@@ -30,17 +22,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const isAuthenticated = session?.meta.is_authenticated || false;
 
   const { mutate: logoutMutation } = useMutation({
-    mutationFn: async () => {
-      await logoutApi();
-      queryClient.clear();
-      navigate("/");
-    },
+    mutationFn: logoutApi,
     onMutate: () => {
       toast.loading(t("loading"), { id: "logout" });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
+    onSuccess: async () => {
       toast.success(t("success"), { id: "logout" });
+      await queryClient.resetQueries();
     },
     onError: () => {
       toast.error(t("failed"), { id: "logout" });
@@ -54,20 +42,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [queryClient],
   );
 
-  useEffect(() => {
-    if (isLoadingSession) return;
-
-    if (!isAuthenticated && protectedRoutes.includes(pathname)) {
-      navigate(`${signInRoute}?next=${pathname}`);
-    }
-    if (isAuthenticated && authRoutes.includes(pathname)) {
-      navigate("/account");
-    }
-  }, [isAuthenticated, isLoadingSession, navigate, pathname]);
-
   const contextValues = useMemo(
     (): SessionContextProps => ({
       session: session?.data || null,
+      sessionError,
       isAuthenticated,
       isLoadingSession,
       logout: logoutMutation,
@@ -78,13 +56,14 @@ export function SessionProvider({ children }: PropsWithChildren) {
       isLoadingSession,
       logoutMutation,
       session?.data,
+      sessionError,
       setSession,
     ],
   );
 
   return (
     <SessionContext.Provider value={contextValues}>
-      <MFAProvider sessionError={sessionError}>{children}</MFAProvider>
+      {children}
     </SessionContext.Provider>
   );
 }

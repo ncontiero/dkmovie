@@ -22,7 +22,7 @@ export function ReAuthenticateWithPassword({
   const { setSession } = useSession();
 
   const { schemaTranslator } = useSchemaTranslations({
-    defaultError: commonT("errors.passwordIsRequired"),
+    defaultError: commonT("errors.password.isRequired"),
   });
 
   const {

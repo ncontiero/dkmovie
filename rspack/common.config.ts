@@ -1,6 +1,7 @@
 import * as path from "node:path";
 import { defineConfig } from "@rspack/cli";
 import { type SwcLoaderOptions, rspack } from "@rspack/core";
+import { tanstackRouter } from "@tanstack/router-plugin/rspack";
 import BundleTracker from "webpack-bundle-tracker";
 
 // Target browsers, see: https://github.com/browserslist/browserslist
@@ -13,6 +14,7 @@ const BROWSER_TARGETS = [
 
 const BASE_PATH = path.join(__dirname, "../");
 const PROJECT_PATH = path.join(BASE_PATH, "dkmovie");
+const SRC_PATH = path.join(PROJECT_PATH, "src");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -32,6 +34,13 @@ export const commonConfig = defineConfig({
       filename: "webpack-stats.json",
     }),
     new rspack.EnvironmentPlugin(["NODE_ENV", "DJANGO_ADMIN_URL"]),
+    tanstackRouter({
+      target: "react",
+      autoCodeSplitting: true,
+      routesDirectory: path.resolve(SRC_PATH, "routes"),
+      generatedRouteTree: path.resolve(SRC_PATH, "routeTree.gen.ts"),
+      quoteStyle: "double",
+    }),
   ],
   module: {
     rules: [

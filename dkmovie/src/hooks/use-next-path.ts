@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 const especialNextPaths = [
   `/${process.env.DJANGO_ADMIN_URL || "admin/"}`,
@@ -8,21 +8,20 @@ const especialNextPaths = [
 
 export function useNextPath() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const nextPathParam = searchParams.get("next");
-  const [nextPath, setNextPath] = useState(nextPathParam || "/");
+  const searchParams = useSearch({ from: "__root__" });
+  const [nextPath, setNextPath] = useState(searchParams.next || "/");
 
   if (!nextPath.startsWith("/")) {
     setNextPath("/");
   }
 
-  const navigateToNextPath = useCallback(() => {
+  const navigateToNextPath = useCallback(async () => {
     if (especialNextPaths.includes(nextPath)) {
       location.assign(nextPath);
       return;
     }
 
-    navigate(nextPath);
+    await navigate({ to: nextPath });
   }, []);
 
   return {

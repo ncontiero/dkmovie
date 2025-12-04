@@ -1,10 +1,9 @@
 import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import type { PropsWithChildren } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 import { useMFA } from "@/hooks/use-mfa";
 import { BaseAuthForm } from "../base-auth-form";
-import { Meta } from "../meta";
 import { Button } from "../ui/button";
 import { Link } from "../ui/link";
 
@@ -19,19 +18,17 @@ export function AuthenticateWithCode({
 }: AuthenticateWithCodeProps) {
   const t = useTranslations("auth");
   const commonT = useTranslations("common");
+
   const { mFATypes } = useMFA();
   const navigate = useNavigate();
 
   if (!mFATypes.includes(type)) {
-    navigate("/auth/2fa", { replace: true });
+    navigate({ to: "/auth/2fa", replace: true });
     return null;
   }
 
-  const title = t("mfa.title");
-
   return (
-    <BaseAuthForm title={title} description={description} type="2fa">
-      <Meta title={title} />
+    <BaseAuthForm title={t("mfa.title")} description={description} type="2fa">
       <div className="flex flex-col gap-2">{children}</div>
       <Button
         type="submit"

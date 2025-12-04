@@ -4,7 +4,21 @@
     "pt-br": "Português"
   },
   "metadata": {
-    "description": "Um projeto Django de filmes e séries."
+    "description": "Um projeto Django de filmes e séries.",
+    "signIn": "Entrar",
+    "signUp": "Criar conta",
+    "verifyEmail": "Verificar E-mail",
+    "2fa": "Autenticação de dois fatores",
+    "forgotPassword": "Esqueceu sua senha",
+    "resetPassword": "Redefinir senha",
+    "myAccount": "Minha conta",
+    "security": "Segurança",
+    "errors": {
+      "BadRequest": "Solicitação Inválida",
+      "Forbidden": "Acesso negado",
+      "NotFound": "Página não encontrada",
+      "ServerError": "Erro interno do servidor"
+    }
   },
   "header": {
     "changeLang": "Alterar idioma",
