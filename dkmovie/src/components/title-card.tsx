@@ -62,7 +62,7 @@ export function TitleCard({ title }: TitleCardProps) {
                 asChild
               >
                 <Link to="/title/$titleId/watch" params={{ titleId: title.id }}>
-                  <Play />
+                  <Play className="fill-primary-foreground" />
                   {t("watch")}
                 </Link>
               </Button>
