@@ -51,7 +51,9 @@ export function PasskeyAuthButton({
     },
     onSuccess: async (res) => {
       setSession(res);
-      await router.invalidate({ forcePending: true });
+      if (flow !== "reauthenticate") {
+        await router.invalidate({ forcePending: true });
+      }
 
       toast.success(t("passkey.authenticated"));
       if (isToNavigateToNextPath) await navigateToNextPath();

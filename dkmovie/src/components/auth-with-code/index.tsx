@@ -69,12 +69,13 @@ export function AuthWithCode({
     try {
       const res = await onSubmitType(data);
       setSession(res);
-      await router.invalidate({ forcePending: true });
 
       if (type === "reauthenticate") {
         reAuthentication?.onReAuthenticated?.();
         return;
       }
+
+      await router.invalidate({ forcePending: true });
       await navigateToNextPath();
     } catch (error) {
       const errors = getErrorMessage(error);
