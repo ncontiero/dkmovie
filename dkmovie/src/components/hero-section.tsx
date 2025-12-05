@@ -1,4 +1,4 @@
-import type { ContentsType } from "@/utils/types";
+import type { Title } from "@/utils/types";
 import { Link } from "@tanstack/react-router";
 import { Info, Play } from "lucide-react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
@@ -8,29 +8,23 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
-export interface HeroContent {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  type: ContentsType;
-}
-
 interface HeroProps {
-  readonly content: HeroContent[];
+  readonly content: Title[];
 }
 
-function HeroSectionItem({ content }: { readonly content: HeroContent }) {
+function HeroSectionItem({ content }: { readonly content: Title }) {
   const t = useTranslations("heroSection");
 
   return (
     <div className="relative h-[75vh] w-full">
       <div className="absolute inset-0 size-full transition-opacity duration-700 ease-in-out">
-        <img
-          src={content.imageUrl}
-          alt={content.title}
-          className="size-full object-cover object-center"
-        />
+        {content.cover ? (
+          <img
+            src={content.cover}
+            alt={content.title}
+            className="size-full object-cover object-center"
+          />
+        ) : null}
 
         <div
           className={`

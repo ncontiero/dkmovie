@@ -6,38 +6,34 @@ import {
   CarouselSkeleton,
   ContentCarousel,
 } from "@/components/content-carousel";
-import {
-  type HeroContent,
-  HeroSection,
-  HeroSectionSkeleton,
-} from "@/components/hero-section";
+import { HeroSection, HeroSectionSkeleton } from "@/components/hero-section";
 import { getTitles } from "@/http/get-titles";
 import { generateMetadata } from "@/utils/metadata";
 
-function moviesOrSeriesQueryOptions(type: ContentsType) {
+const recentlyReleasedQueryOptions = queryOptions({
+  queryKey: ["content", "recentlyReleased"],
+  queryFn: () => getTitles({ limit: 10 }),
+  staleTime: 1000 * 60 * 60,
+});
+
+function popularMoviesOrSeriesQueryOptions(type: ContentsType) {
   return queryOptions({
-    queryKey: ["content", type.toLowerCase()],
-    queryFn: async () => {
-      try {
-        const data = await getTitles({ limit: 10, contentType: type });
-        return data?.items || [];
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
-    },
+    queryKey: ["content", type],
+    queryFn: () =>
+      getTitles({ limit: 10, contentType: type, orderBy: "-rating" }),
     staleTime: 1000 * 60 * 60,
   });
 }
 
-const moviesQueryOptions = moviesOrSeriesQueryOptions("MOVIE");
-const seriesQueryOptions = moviesOrSeriesQueryOptions("SERIES");
+const popularMoviesQueryOptions = popularMoviesOrSeriesQueryOptions("MOVIE");
+const popularSeriesQueryOptions = popularMoviesOrSeriesQueryOptions("SERIES");
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,
   loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(moviesQueryOptions);
-    queryClient.ensureQueryData(seriesQueryOptions);
+    queryClient.ensureQueryData(recentlyReleasedQueryOptions);
+    queryClient.ensureQueryData(popularMoviesQueryOptions);
+    queryClient.ensureQueryData(popularSeriesQueryOptions);
   },
   head: ({
     match: {
@@ -58,10 +54,17 @@ export const Route = createFileRoute("/")({
 function HomeComponent() {
   const t = useTranslations("homePage");
 
-  const { data: movies } = useSuspenseQuery(moviesQueryOptions);
-  const { data: series } = useSuspenseQuery(seriesQueryOptions);
+  const { data: recentlyReleased } = useSuspenseQuery(
+    recentlyReleasedQueryOptions,
+  );
+  const { data: movies } = useSuspenseQuery(popularMoviesQueryOptions);
+  const { data: series } = useSuspenseQuery(popularSeriesQueryOptions);
 
-  if (movies.length === 0 && series.length === 0) {
+  if (
+    recentlyReleased.length === 0 &&
+    movies.length === 0 &&
+    series.length === 0
+  ) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-2">
         <h1 className="text-center text-2xl font-semibold">{t("noTitles")}</h1>
@@ -70,29 +73,16 @@ function HomeComponent() {
     );
   }
 
-  const titles = [...movies, ...series]
-    .sort((a, b) => {
-      const aDate = new Date(a.release_date || "");
-      const bDate = new Date(b.release_date || "");
-      return bDate.getTime() - aDate.getTime();
-    })
-    .slice(0, 4);
-  const heroContent: HeroContent[] = titles.map((title) => {
-    return {
-      id: title.id,
-      title: title.title,
-      description: title.description,
-      imageUrl: title.cover || "",
-      type: title.content_type,
-    };
-  });
-
   return (
     <main>
-      <HeroSection content={heroContent} />
+      <HeroSection content={recentlyReleased.slice(0, 5)} />
       <div className="relative z-20">
         <ContentCarousel title={t("trending")} items={movies} />
         <ContentCarousel title={t("popularSeries")} items={series} />
+        <ContentCarousel
+          title={t("recentlyReleased")}
+          items={recentlyReleased}
+        />
       </div>
     </main>
   );

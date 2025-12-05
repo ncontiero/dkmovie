@@ -27,15 +27,7 @@ function titleQueryOptions(titleId: string) {
 function titleRelatedTitlesQueryOptions(titleId: string) {
   return queryOptions({
     queryKey: ["content", "relatedMovies", titleId],
-    queryFn: async () => {
-      try {
-        const data = await getTitles({ limit: 10, exclude: titleId });
-        return data?.items || [];
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
-    },
+    queryFn: () => getTitles({ limit: 10, exclude: titleId }),
     staleTime: 1000 * 60 * 60,
   });
 }

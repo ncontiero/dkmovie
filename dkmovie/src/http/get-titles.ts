@@ -7,6 +7,7 @@ interface GetTitleProps {
   title?: string;
   contentType?: ContentsType;
   exclude?: string;
+  orderBy?: string;
 }
 
 export async function getTitles({
@@ -15,6 +16,7 @@ export async function getTitles({
   title,
   contentType,
   exclude,
+  orderBy,
 }: GetTitleProps = {}) {
   const params = new URLSearchParams();
   if (limit) params.append("limit", limit.toString());
@@ -22,9 +24,16 @@ export async function getTitles({
   if (title) params.append("title", title);
   if (contentType) params.append("content_type", contentType);
   if (exclude) params.append("exclude", exclude);
+  if (orderBy) params.append("order_by", orderBy);
 
   const url = `/titles/?${params.toString()}`;
-  return await httpClient.get<PaginationDataProps<Title[]>>(url);
+
+  try {
+    const res = await httpClient.get<PaginationDataProps<Title[]>>(url);
+    return res?.items || [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getTitle(id: string) {

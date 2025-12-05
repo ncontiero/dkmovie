@@ -18,16 +18,17 @@ router = Router()
 def get_titles(
     request,
     filters: TitleFilterSchema = Query(...),  # noqa: B008
-    exclude: str | None = None,
+    order_by: str | None = None,
 ):
     titles = Title.objects.all()
-    if exclude:
-        try:
-            exclude = exclude.split(",")
-            titles = titles.exclude(id__in=[UUID(pk) for pk in exclude])
-        except ValueError as err:
-            raise ApiProcessError(400, _("Invalid exclude parameter.")) from err
-    return filters.filter(titles)
+    try:
+        filtered_titles = filters.filter(titles)
+        if order_by:
+            return filtered_titles.order_by(order_by)
+    except ValueError as err:
+        raise ApiProcessError(400, _("Invalid filter parameter."), err) from err
+    else:
+        return filtered_titles
 
 
 @router.get("/{title_id}", response={200: TitleSchema})
