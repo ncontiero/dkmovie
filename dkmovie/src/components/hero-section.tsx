@@ -25,12 +25,23 @@ function HeroSectionItem({ content }: { readonly content: HeroContent }) {
 
   return (
     <div className="relative h-[75vh] w-full">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${content.imageUrl})` }}
-      />
+      <div className="absolute inset-0 size-full transition-opacity duration-700 ease-in-out">
+        <img
+          src={content.imageUrl}
+          alt={content.title}
+          className="size-full object-cover object-center"
+        />
 
-      <div className="from-background via-background/60 absolute inset-0 bg-linear-to-t to-transparent backdrop-blur-md" />
+        <div
+          className={`
+            from-background via-background/60 absolute inset-0 w-full bg-linear-to-t to-transparent sm:bg-linear-to-r
+            md:w-[50%]
+          `}
+        />
+        <div
+          className={`from-background via-background/40 absolute inset-0 bg-linear-to-t to-transparent backdrop-blur-xs`}
+        />
+      </div>
 
       <div className="relative z-10 flex h-full flex-col justify-end pb-16 sm:pb-24 lg:pb-32">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
