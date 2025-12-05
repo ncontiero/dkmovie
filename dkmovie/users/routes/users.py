@@ -1,3 +1,6 @@
+import logging
+
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
 
@@ -5,6 +8,10 @@ from config.api.utils import ApiProcessError
 from dkmovie.users.models import User
 from dkmovie.users.schemas import UserSchemaIn
 from dkmovie.users.schemas import UserSchemaOut
+from dkmovie.users.tasks import send_account_deleted_email_task
+
+logger = logging.getLogger(__name__)
+
 
 router = Router()
 
@@ -50,7 +57,7 @@ def update_me(request, payload: UserSchemaIn):
 
 
 @router.delete("/me", response={204: None})
-def delete_me(request):
+def delete_me(request: HttpRequest):
     try:
         if request.user.is_anonymous:
             raise ApiProcessError(401, _("Unauthorized"))
@@ -59,4 +66,9 @@ def delete_me(request):
         raise ApiProcessError(404, _("User not found")) from err
     else:
         user.delete()
+        send_account_deleted_email_task.delay(
+            user.name,
+            user.email,
+            request.LANGUAGE_CODE,
+        )
         return

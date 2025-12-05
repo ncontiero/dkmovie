@@ -5,7 +5,7 @@ import { translate } from "@/utils/translate";
 
 export default function AccountDeletedEmail() {
   const title = translate("Account Deleted");
-  const text = translate("Your account has been deleted.");
+  const text = translate("Your account has been deleted");
 
   return (
     <Layout title={title} previewText={text}>

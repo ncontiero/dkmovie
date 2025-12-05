@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 23:02+0000\n"
+"POT-Creation-Date: 2025-12-04 23:27+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,12 +26,11 @@ msgstr "Você não tem permissão para acessar esta página."
 msgid "Looks like something went wrong!"
 msgstr "Parece que algo deu errado!"
 
-#, python-format
-msgid "We noticed a registration attempt using the email %(email)s."
-msgstr "Detectamos uma tentativa de registro usando o e-mail %(email)s."
+msgid "Your account has been deleted"
+msgstr "Sua conta foi excluída"
 
-msgid "Account Already Exists"
-msgstr "Conta já existe"
+msgid "Account Deleted"
+msgstr "Conta excluída"
 
 #, python-format
 msgid "Hello, &lt;strong&gt;%(name)s&lt;/strong&gt;!"
@@ -39,6 +38,30 @@ msgstr "Olá, <strong>%(name)s</strong>!"
 
 msgid "Hello."
 msgstr "Olá."
+
+msgid ""
+"Your account has been deleted. All your data has been permanently removed."
+msgstr ""
+"Sua conta foi excluída. Todos os seus dados foram permanentemente removidos."
+
+msgid "If you have any questions, please contact us."
+msgstr "Se você tiver alguma dúvida, entre em contato conosco."
+
+msgid "Thank you for using our service."
+msgstr "Obrigado por usar nosso serviço."
+
+msgid "All rights reserved."
+msgstr "Todos os direitos reservados."
+
+msgid "Your favorite streaming portal."
+msgstr "Seu portal de streaming favorito."
+
+#, python-format
+msgid "We noticed a registration attempt using the email %(email)s."
+msgstr "Detectamos uma tentativa de registro usando o e-mail %(email)s."
+
+msgid "Account Already Exists"
+msgstr "Conta já existe"
 
 msgid "We noticed a registration attempt using the email"
 msgstr "Detectamos uma tentativa de registro usando o e-mail"
@@ -73,12 +96,6 @@ msgid ""
 msgstr ""
 "Se você não tentou criar uma conta recentemente, você pode ignorar este e-"
 "mail."
-
-msgid "All rights reserved."
-msgstr "Todos os direitos reservados."
-
-msgid "Your favorite streaming portal."
-msgstr "Seu portal de streaming favorito."
 
 msgid ""
 "We are sending this message to confirm that your email address has been "
@@ -477,23 +494,6 @@ msgstr "Acompanhe o que você quer assistir em seguida."
 msgid "Go to your Account"
 msgstr "Ir para sua conta"
 
-msgid "Your account has been deleted."
-msgstr "Sua conta foi excluída."
-
-msgid "Account Deleted"
-msgstr "Conta excluída"
-
-msgid ""
-"Your account has been deleted. All your data has been permanently removed."
-msgstr ""
-"Sua conta foi excluída. Todos os seus dados foram permanentemente removidos."
-
-msgid "If you have any questions, please contact us."
-msgstr "Se você tiver alguma dúvida, entre em contato conosco."
-
-msgid "Thank you for using our service."
-msgstr "Obrigado por usar nosso serviço."
-
 msgid "Main Information"
 msgstr "Informações principais"
 
@@ -622,7 +622,3 @@ msgstr "O nome é muito curto"
 
 msgid "Name is too long"
 msgstr "O nome é muito longo"
-
-#, fuzzy, python-format
-#~ msgid "Welcome to %(site_name)s"
-#~ msgstr "Bem-vindo ao %(site_name)s!"
