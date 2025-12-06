@@ -5,6 +5,8 @@
   },
   "metadata": {
     "description": "Um projeto Django de filmes e séries.",
+    "movies": "Filmes",
+    "series": "Séries",
     "signIn": "Entrar",
     "signUp": "Criar conta",
     "verifyEmail": "Verificar E-mail",
@@ -52,6 +54,10 @@
     "viewDetails": "Veja os detalhes de {title}",
     "cast": "Elenco",
     "moreLikeThis": "Mais como esse"
+  },
+  "moviesPage": {
+    "moviesOfTheYear": "Filmes de {year}",
+    "topRatedMovies": "Filmes mais bem avaliados"
   },
   "auth": {
     "continueWith": {

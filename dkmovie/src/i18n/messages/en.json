@@ -5,6 +5,8 @@
   },
   "metadata": {
     "description": "A Django project of films and series.",
+    "movies": "Movies",
+    "series": "Series",
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "verifyEmail": "Verify Email",
@@ -52,6 +54,10 @@
     "viewDetails": "View details for {title}",
     "cast": "Cast",
     "moreLikeThis": "More like this"
+  },
+  "moviesPage": {
+    "moviesOfTheYear": "Movies of {year}",
+    "topRatedMovies": "Top Rated Movies"
   },
   "auth": {
     "continueWith": {

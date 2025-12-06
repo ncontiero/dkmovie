@@ -15,9 +15,9 @@ export function TitleCard({ title }: TitleCardProps) {
     <div className="group relative shrink-0 transform rounded-lg focus-visible:outline-hidden">
       <div
         className={`
-          ring-ring ring-offset-background overflow-hidden rounded-lg ring-offset-2 duration-300
-          group-focus-within:scale-105 group-focus-within:ring-2 group-hover:-translate-y-2 group-hover:scale-105
-          group-focus-visible:scale-105 group-focus-visible:ring-2
+          ring-ring ring-offset-background overflow-hidden rounded-lg ring-offset-2 duration-300 group-hover:scale-105
+          not-focus-within:group-hover:-translate-y-2 group-focus-visible:scale-105 group-focus-visible:ring-2
+          focus-within:scale-105 focus-within:ring-2
         `}
       >
         {title.poster ? (

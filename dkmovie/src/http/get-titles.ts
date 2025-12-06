@@ -8,6 +8,7 @@ interface GetTitleProps {
   contentType?: ContentsType;
   exclude?: string;
   orderBy?: string;
+  releaseYear?: number;
 }
 
 export async function getTitles({
@@ -17,6 +18,7 @@ export async function getTitles({
   contentType,
   exclude,
   orderBy,
+  releaseYear,
 }: GetTitleProps = {}) {
   const params = new URLSearchParams();
   if (limit) params.append("limit", limit.toString());
@@ -25,6 +27,12 @@ export async function getTitles({
   if (contentType) params.append("content_type", contentType);
   if (exclude) params.append("exclude", exclude);
   if (orderBy) params.append("order_by", orderBy);
+  if (releaseYear) {
+    params.append(
+      "release_date__gte",
+      new Date(releaseYear, 0, 1).toISOString().replace(/T.*$/, ""),
+    );
+  }
 
   const url = `/titles/?${params.toString()}`;
 

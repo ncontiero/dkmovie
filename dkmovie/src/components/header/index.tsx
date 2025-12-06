@@ -16,7 +16,7 @@ import {
 import { ChangeLang } from "./change-lang";
 import { ThemeToggle } from "./theme-toggle";
 
-const pagesToAddScrollEffect = ["/", "/title/"];
+const pagesToAddScrollEffect = ["/", "/title/", "/movies", "/series"];
 // For Sign In and Sign Up links
 const pathsToNotAddNext = ["/auth"];
 
@@ -64,7 +64,7 @@ export function Header() {
           : `bg-transparent`,
       )}
     >
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
@@ -84,7 +84,7 @@ export function Header() {
             >
               <img src={faviconSvg} alt="DkMovie" className="size-10" />
             </Link>
-            <nav
+            <div
               className={cn(
                 "hidden items-center gap-0.5 md:flex",
                 !isScrolled &&
@@ -99,12 +99,13 @@ export function Header() {
                   className={`
                     hover:bg-foreground/20 focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden
                     ring-offset-background rounded-md px-3 py-2 text-sm font-medium ring-offset-2 duration-200
+                    data-[status=active]:shadow-[0_10px_10px_-4px_theme(--color-primary)]
                   `}
                 >
                   {title}
                 </Link>
               ))}
-            </nav>
+            </div>
           </div>
 
           <div
@@ -185,7 +186,7 @@ export function Header() {
             <ThemeToggle />
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
