@@ -46,3 +46,8 @@ class TitleFilterSchema(FilterSchema):
 
     def filter_exclude(self, value: str) -> Q:
         return ~Q(id__in=[UUID(pk) for pk in value.split(",")]) if value else Q()
+
+
+class GenreFilterSchema(FilterSchema):
+    slug: Annotated[str | None, FilterLookup("slug__icontains")] = None
+    name: Annotated[str | None, FilterLookup("name__icontains")] = None

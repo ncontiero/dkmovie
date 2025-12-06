@@ -34,3 +34,8 @@ export interface PaginationDataProps<T = any> {
   items: T;
   count: number;
 }
+
+export interface PaginationQueryParams {
+  limit?: number;
+  offset?: number;
+}
