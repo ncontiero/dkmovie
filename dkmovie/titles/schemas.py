@@ -46,6 +46,7 @@ class TitleFilterSchema(FilterSchema):
     ] = None
     release_date: str | None = None
     release_date__gte: str | None = None
+    release_date__lt: str | None = None
     exclude: str | None = None
 
     def filter_content_type_in(self, value: str) -> Q:

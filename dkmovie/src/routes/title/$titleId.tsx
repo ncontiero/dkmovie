@@ -10,6 +10,7 @@ import { Calendar, Clock, Play, Plus } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { ContentCarousel } from "@/components/content-carousel";
 import { Button } from "@/components/ui/button";
+import { Link as StyledLink } from "@/components/ui/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTitle, getTitles } from "@/http/get-titles";
 import { titleIdSchema } from "@/schemas/routes/title";
@@ -130,6 +131,10 @@ function TitleComponent() {
     return `${hours}h ${minutes}m`;
   }, [title]);
 
+  const titleReleaseYear = title.release_date
+    ? new Date(title.release_date).getFullYear()
+    : null;
+
   return (
     <div className="bg-background text-foreground min-h-screen">
       <main>
@@ -149,11 +154,19 @@ function TitleComponent() {
                 </h1>
 
                 <div className="text-muted-foreground my-4 flex flex-wrap items-center gap-4">
-                  {title.release_date ? (
-                    <span className="flex items-center gap-2">
+                  {titleReleaseYear ? (
+                    <StyledLink
+                      to="/search"
+                      search={{ releaseYear: titleReleaseYear }}
+                      className="gap-2"
+                      variant="muted"
+                      aria-label={t("seeMoreTitlesOfTheYear", {
+                        year: titleReleaseYear,
+                      })}
+                    >
                       <Calendar className="size-4" />
-                      {new Date(title.release_date).getFullYear()}
-                    </span>
+                      {titleReleaseYear}
+                    </StyledLink>
                   ) : null}
                   {durationFormatted ? (
                     <span className="flex items-center gap-2">
@@ -174,14 +187,20 @@ function TitleComponent() {
                 {title.genres && title.genres.length > 0 ? (
                   <div className="flex flex-wrap items-center gap-2">
                     {title.genres.map((genre) => (
-                      <span
+                      <StyledLink
                         key={genre.slug}
+                        to="/search"
+                        search={{ genre: genre.name }}
                         className={`
                           border-foreground/50 text-foreground/90 rounded-sm border px-2 py-0.5 text-sm font-medium
                         `}
+                        variant="muted"
+                        aria-label={t("seeMoreTitlesOfTheGenre", {
+                          genre: genre.name,
+                        })}
                       >
                         {genre.name}
-                      </span>
+                      </StyledLink>
                     ))}
                   </div>
                 ) : null}

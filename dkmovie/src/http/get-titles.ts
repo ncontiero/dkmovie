@@ -1,4 +1,5 @@
 import type { ContentsType, PaginationQueryParams, Title } from "@/utils/types";
+import { formataReleaseDate } from "@/utils/date";
 import { type PaginationDataProps, httpClient } from "./client";
 
 interface GetTitleProps extends PaginationQueryParams {
@@ -32,10 +33,10 @@ export async function getTitles({
   if (exclude) params.append("exclude", exclude);
   if (orderBy) params.append("order_by", orderBy);
   if (releaseYear) {
-    params.append(
-      "release_date__gte",
-      new Date(releaseYear, 0, 1).toISOString().replace(/T.*$/, ""),
-    );
+    const releaseYearStart = formataReleaseDate(new Date(releaseYear, 1, 1));
+    const releaseYearEnd = formataReleaseDate(new Date(releaseYear + 1, 1, 1));
+    params.append("release_date__gte", releaseYearStart);
+    params.append("release_date__lt", releaseYearEnd);
   }
 
   const url = `/titles/?${params.toString()}`;

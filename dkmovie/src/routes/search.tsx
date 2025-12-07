@@ -32,13 +32,24 @@ function searchQueryOptions(
   search?: string,
   contentType?: ContentsType[],
   genre?: string,
+  releaseYear?: number,
 ) {
   return queryOptions({
-    queryKey: ["content", "search", search, contentType, genre],
+    queryKey: ["content", "search", search, contentType, genre, releaseYear],
     queryFn: () => {
-      if (!search && (!contentType || contentType.length === 0) && !genre)
+      if (
+        !search &&
+        (!contentType || contentType.length === 0) &&
+        !genre &&
+        !releaseYear
+      )
         return [];
-      return getTitles({ title: search, contentTypeIn: contentType, genre });
+      return getTitles({
+        title: search,
+        contentTypeIn: contentType,
+        genre,
+        releaseYear,
+      });
     },
     staleTime: 1000 * 60 * 60,
   });
@@ -47,17 +58,18 @@ function searchQueryOptions(
 export const Route = createFileRoute("/search")({
   component: SearchComponent,
   validateSearch: (search) => searchParamSchema.parse(search),
-  loaderDeps: ({ search: { search, contentTypes, genre } }) => ({
+  loaderDeps: ({ search: { search, contentTypes, genre, releaseYear } }) => ({
     search,
     contentTypes,
     genre,
+    releaseYear,
   }),
   loader: ({
     context: { queryClient },
-    deps: { search, contentTypes, genre },
+    deps: { search, contentTypes, genre, releaseYear },
   }) => {
     queryClient.ensureQueryData(
-      searchQueryOptions(search, contentTypes, genre),
+      searchQueryOptions(search, contentTypes, genre, releaseYear),
     );
     queryClient.ensureQueryData(searchGenresQueryOptions);
   },
@@ -81,11 +93,16 @@ function SearchComponent() {
   const t = useTranslations("search");
 
   const router = useRouter();
-  const { search, contentTypes, genre: searchGenre } = Route.useSearch();
+  const {
+    search,
+    contentTypes,
+    genre: searchGenre,
+    releaseYear,
+  } = Route.useSearch();
   const navigate = Route.useNavigate();
 
   const { data: titles } = useSuspenseQuery(
-    searchQueryOptions(search, contentTypes, searchGenre),
+    searchQueryOptions(search, contentTypes, searchGenre, releaseYear),
   );
   const { data: genres } = useSuspenseQuery(searchGenresQueryOptions);
 

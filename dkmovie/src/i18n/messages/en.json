@@ -53,7 +53,9 @@
     "details": "Details",
     "viewDetails": "View details for {title}",
     "cast": "Cast",
-    "moreLikeThis": "More like this"
+    "moreLikeThis": "More like this",
+    "seeMoreTitlesOfTheYear": "See more titles of the year {year}",
+    "seeMoreTitlesOfTheGenre": "See more titles of the genre {genre}"
   },
   "titlesPage": {
     "moviesOfTheYear": "Movies of {year}",

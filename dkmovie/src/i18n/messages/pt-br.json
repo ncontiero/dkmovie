@@ -53,7 +53,9 @@
     "details": "Detalhes",
     "viewDetails": "Veja os detalhes de {title}",
     "cast": "Elenco",
-    "moreLikeThis": "Mais como esse"
+    "moreLikeThis": "Mais como esse",
+    "seeMoreTitlesOfTheYear": "Veja mais títulos do ano de {year}",
+    "seeMoreTitlesOfTheGenre": "Veja mais títulos do gênero de {genre}"
   },
   "titlesPage": {
     "moviesOfTheYear": "Filmes de {year}",

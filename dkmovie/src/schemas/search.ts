@@ -1,4 +1,4 @@
-import { type output, enum as enum_, object, string } from "zod";
+import { type output, enum as enum_, number, object, string } from "zod";
 import { contentsType } from "@/utils/types";
 
 export const searchDialogSchema = object({ search: string().min(1) });
@@ -8,5 +8,6 @@ export const searchParamSchema = object({
   search: string().optional(),
   contentTypes: enum_(contentsType).array().optional(),
   genre: string().optional(),
+  releaseYear: number().optional(),
 });
 export type SearchParamSchema = output<typeof searchParamSchema>;
