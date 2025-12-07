@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { Bell, Search, User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import { useTranslations } from "use-intl";
 import faviconSvg from "@/assets/favicon.svg";
 import { useNextPath } from "@/hooks/use-next-path";
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ChangeLang } from "./change-lang";
+import { SearchDialog } from "./search-dialog";
 import { ThemeToggle } from "./theme-toggle";
 
 const pagesToAddScrollEffect = ["/", "/title/", "/movies", "/series"];
@@ -116,14 +117,7 @@ export function Header() {
                 "bg-background/80 rounded-full backdrop-blur-md dark:bg-background/60",
             )}
           >
-            <Button
-              type="button"
-              variant="invert"
-              size="icon"
-              className="hover:bg-foreground/20 rounded-full"
-            >
-              <Search />
-            </Button>
+            <SearchDialog />
             <Button
               type="button"
               variant="invert"

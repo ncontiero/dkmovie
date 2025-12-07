@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Play, Plus } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 interface TitleCardProps {
   readonly title: Title;
@@ -74,6 +75,14 @@ export function TitleCard({ title }: TitleCardProps) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function TitleCardSkeleton() {
+  return (
+    <div className="w-40 shrink-0 space-y-3 sm:w-48 lg:w-56">
+      <Skeleton className="h-[350px] w-full rounded-lg" />
     </div>
   );
 }

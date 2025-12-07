@@ -61,6 +61,16 @@
     "seriesOfTheYear": "Séries de {year}",
     "topRatedSeries": "Séries mais bem avaliadas"
   },
+  "search": {
+    "dialog": {
+      "label": "Pesquisar",
+      "description": "Pesquise por filmes e séries",
+      "searchIsRequired": "Por favor, insira um termo para pesquisar"
+    },
+    "titlesFound": "{count, plural, =1 {1 título encontrado} other {# títulos encontrados}}",
+    "noTitles": "Nenhum título encontrado.",
+    "tryAnotherTerm": "Por favor, tente outro termo."
+  },
   "auth": {
     "continueWith": {
       "password": "Continuar com senha",

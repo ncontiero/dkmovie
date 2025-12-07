@@ -1,7 +1,7 @@
 import type { Title } from "@/utils/types";
 import { Mousewheel, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { TitleCard } from "./title-card";
+import { TitleCard, TitleCardSkeleton } from "./title-card";
 import { Skeleton } from "./ui/skeleton";
 
 interface CarouselProps {
@@ -44,10 +44,7 @@ export function CarouselSkeleton() {
         <div className="flex gap-5 overflow-hidden">
           {[...Array.from({ length: 5 })].map((_, i) => (
             // eslint-disable-next-line react/no-array-index-key
-            <div key={i} className="w-40 shrink-0 space-y-3 sm:w-48 lg:w-56">
-              <Skeleton className="aspect-2/3 w-full rounded-lg" />
-              <Skeleton className="h-6 w-3/4" />
-            </div>
+            <TitleCardSkeleton key={i} />
           ))}
         </div>
       </div>

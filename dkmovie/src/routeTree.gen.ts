@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as SeriesRouteImport } from "./routes/series"
+import { Route as SearchRouteImport } from "./routes/search"
 import { Route as MoviesRouteImport } from "./routes/movies"
 import { Route as AuthRouteRouteImport } from "./routes/auth/route"
 import { Route as IndexRouteImport } from "./routes/index"
@@ -32,6 +33,11 @@ import { Route as AccountmyAccountSecurityRouteImport } from "./routes/account/(
 const SeriesRoute = SeriesRouteImport.update({
   id: "/series",
   path: "/series",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: "/search",
+  path: "/search",
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoviesRoute = MoviesRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
+  "/search": typeof SearchRoute
   "/series": typeof SeriesRoute
   "/account": typeof AccountmyAccountRouteRouteWithChildren
   "/auth/2fa": typeof Auth2faRouteRouteWithChildren
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
+  "/search": typeof SearchRoute
   "/series": typeof SeriesRoute
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
+  "/search": typeof SearchRoute
   "/series": typeof SeriesRoute
   "/account/(my-account)": typeof AccountmyAccountRouteRouteWithChildren
   "/auth/2fa": typeof Auth2faRouteRouteWithChildren
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
+    | "/search"
     | "/series"
     | "/account"
     | "/auth/2fa"
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
+    | "/search"
     | "/series"
     | "/account/verify-email"
     | "/auth/sign-in"
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
+    | "/search"
     | "/series"
     | "/account/(my-account)"
     | "/auth/2fa"
@@ -256,6 +268,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   MoviesRoute: typeof MoviesRoute
+  SearchRoute: typeof SearchRoute
   SeriesRoute: typeof SeriesRoute
   AccountmyAccountRouteRoute: typeof AccountmyAccountRouteRouteWithChildren
   AccountVerifyEmailRoute: typeof AccountVerifyEmailRoute
@@ -270,6 +283,13 @@ declare module "@tanstack/react-router" {
       path: "/series"
       fullPath: "/series"
       preLoaderRoute: typeof SeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/search": {
+      id: "/search"
+      path: "/search"
+      fullPath: "/search"
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/movies": {
@@ -468,6 +488,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   MoviesRoute: MoviesRoute,
+  SearchRoute: SearchRoute,
   SeriesRoute: SeriesRoute,
   AccountmyAccountRouteRoute: AccountmyAccountRouteRouteWithChildren,
   AccountVerifyEmailRoute: AccountVerifyEmailRoute,

@@ -61,6 +61,16 @@
     "seriesOfTheYear": "Series of {year}",
     "topRatedSeries": "Top Rated Series"
   },
+  "search": {
+    "dialog": {
+      "label": "Search",
+      "description": "Search for movies and series",
+      "searchIsRequired": "Enter a term to search"
+    },
+    "titlesFound": "{count, plural, =1 {1 title found} other {# titles found}}",
+    "noTitles": "No titles found.",
+    "tryAnotherTerm": "Please try another term."
+  },
   "auth": {
     "continueWith": {
       "password": "Continue with password",
