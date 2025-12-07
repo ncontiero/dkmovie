@@ -1,4 +1,3 @@
-import type { ContentsType } from "@/utils/types";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
@@ -9,6 +8,7 @@ import {
 import { HeroSection, HeroSectionSkeleton } from "@/components/hero-section";
 import { getTitles } from "@/http/get-titles";
 import { generateMetadata } from "@/utils/metadata";
+import { getPopularMoviesOrSeriesQueryOptions } from "@/utils/query-options/titles";
 
 const recentlyReleasedQueryOptions = queryOptions({
   queryKey: ["content", "recentlyReleased"],
@@ -16,17 +16,9 @@ const recentlyReleasedQueryOptions = queryOptions({
   staleTime: 1000 * 60 * 60,
 });
 
-function popularMoviesOrSeriesQueryOptions(type: ContentsType) {
-  return queryOptions({
-    queryKey: ["content", type],
-    queryFn: () =>
-      getTitles({ limit: 10, contentType: type, orderBy: "-rating" }),
-    staleTime: 1000 * 60 * 60,
-  });
-}
-
-const popularMoviesQueryOptions = popularMoviesOrSeriesQueryOptions("MOVIE");
-const popularSeriesQueryOptions = popularMoviesOrSeriesQueryOptions("SERIES");
+const popularMoviesQueryOptions = getPopularMoviesOrSeriesQueryOptions("MOVIE");
+const popularSeriesQueryOptions =
+  getPopularMoviesOrSeriesQueryOptions("SERIES");
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,

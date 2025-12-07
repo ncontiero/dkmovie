@@ -55,9 +55,11 @@
     "cast": "Elenco",
     "moreLikeThis": "Mais como esse"
   },
-  "moviesPage": {
+  "titlesPage": {
     "moviesOfTheYear": "Filmes de {year}",
-    "topRatedMovies": "Filmes mais bem avaliados"
+    "topRatedMovies": "Filmes mais bem avaliados",
+    "seriesOfTheYear": "Séries de {year}",
+    "topRatedSeries": "Séries mais bem avaliadas"
   },
   "auth": {
     "continueWith": {

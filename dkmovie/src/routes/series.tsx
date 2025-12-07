@@ -12,14 +12,16 @@ import {
 } from "@/utils/query-options/titles";
 import { GenreSection, PendingComponent } from "./-movies-or-series-components";
 
-const releasedInTheYearQueryOptions = getReleasedInTheYearQueryOptions("MOVIE");
-const popularMoviesQueryOptions = getPopularMoviesOrSeriesQueryOptions("MOVIE");
+const releasedInTheYearQueryOptions =
+  getReleasedInTheYearQueryOptions("SERIES");
+const popularSeriesQueryOptions =
+  getPopularMoviesOrSeriesQueryOptions("SERIES");
 
-export const Route = createFileRoute("/movies")({
-  component: MoviesComponent,
+export const Route = createFileRoute("/series")({
+  component: SeriesComponent,
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(releasedInTheYearQueryOptions);
-    queryClient.ensureQueryData(popularMoviesQueryOptions);
+    queryClient.ensureQueryData(popularSeriesQueryOptions);
     queryClient.ensureQueryData(genresQueryOptions);
   },
   head: ({
@@ -29,18 +31,18 @@ export const Route = createFileRoute("/movies")({
   }) =>
     generateMetadata({
       metadataTranslations,
-      title: metadataTranslations("movies"),
+      title: metadataTranslations("series"),
     }),
   pendingComponent: PendingComponent,
 });
 
-function MoviesComponent() {
+function SeriesComponent() {
   const t = useTranslations("titlesPage");
 
   const { data: releasedInTheYear } = useSuspenseQuery(
     releasedInTheYearQueryOptions,
   );
-  const { data: popularMovies } = useSuspenseQuery(popularMoviesQueryOptions);
+  const { data: popularSeries } = useSuspenseQuery(popularSeriesQueryOptions);
   const { data: genres } = useSuspenseQuery(genresQueryOptions);
 
   return (
@@ -48,12 +50,12 @@ function MoviesComponent() {
       <HeroSection content={releasedInTheYear.slice(0, 5)} />
       <div className="relative z-20">
         <ContentCarousel
-          title={t("moviesOfTheYear", { year: getReleaseYear() })}
+          title={t("seriesOfTheYear", { year: getReleaseYear() })}
           items={releasedInTheYear}
         />
-        <ContentCarousel title={t("topRatedMovies")} items={popularMovies} />
+        <ContentCarousel title={t("topRatedSeries")} items={popularSeries} />
         {genres?.map((genre) => (
-          <GenreSection key={genre.slug} genre={genre} type="MOVIE" />
+          <GenreSection key={genre.slug} genre={genre} type="SERIES" />
         ))}
       </div>
     </main>

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root"
+import { Route as SeriesRouteImport } from "./routes/series"
 import { Route as MoviesRouteImport } from "./routes/movies"
 import { Route as AuthRouteRouteImport } from "./routes/auth/route"
 import { Route as IndexRouteImport } from "./routes/index"
@@ -28,6 +29,11 @@ import { Route as Auth2faRecoveryCodesRouteImport } from "./routes/auth/2fa/reco
 import { Route as AccountProviderCallbackRouteImport } from "./routes/account/provider.callback"
 import { Route as AccountmyAccountSecurityRouteImport } from "./routes/account/(my-account)/security"
 
+const SeriesRoute = SeriesRouteImport.update({
+  id: "/series",
+  path: "/series",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MoviesRoute = MoviesRouteImport.update({
   id: "/movies",
   path: "/movies",
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
+  "/series": typeof SeriesRoute
   "/account": typeof AccountmyAccountRouteRouteWithChildren
   "/auth/2fa": typeof Auth2faRouteRouteWithChildren
   "/account/verify-email": typeof AccountVerifyEmailRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
+  "/series": typeof SeriesRoute
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
+  "/series": typeof SeriesRoute
   "/account/(my-account)": typeof AccountmyAccountRouteRouteWithChildren
   "/auth/2fa": typeof Auth2faRouteRouteWithChildren
   "/account/verify-email": typeof AccountVerifyEmailRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
+    | "/series"
     | "/account"
     | "/auth/2fa"
     | "/account/verify-email"
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
+    | "/series"
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
+    | "/series"
     | "/account/(my-account)"
     | "/auth/2fa"
     | "/account/verify-email"
@@ -244,6 +256,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   MoviesRoute: typeof MoviesRoute
+  SeriesRoute: typeof SeriesRoute
   AccountmyAccountRouteRoute: typeof AccountmyAccountRouteRouteWithChildren
   AccountVerifyEmailRoute: typeof AccountVerifyEmailRoute
   TitleTitleIdRoute: typeof TitleTitleIdRouteWithChildren
@@ -252,6 +265,13 @@ export interface RootRouteChildren {
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+    "/series": {
+      id: "/series"
+      path: "/series"
+      fullPath: "/series"
+      preLoaderRoute: typeof SeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     "/movies": {
       id: "/movies"
       path: "/movies"
@@ -448,6 +468,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   MoviesRoute: MoviesRoute,
+  SeriesRoute: SeriesRoute,
   AccountmyAccountRouteRoute: AccountmyAccountRouteRouteWithChildren,
   AccountVerifyEmailRoute: AccountVerifyEmailRoute,
   TitleTitleIdRoute: TitleTitleIdRouteWithChildren,
