@@ -45,17 +45,29 @@ function SeriesComponent() {
   const { data: popularSeries } = useSuspenseQuery(popularSeriesQueryOptions);
   const { data: genres } = useSuspenseQuery(genresQueryOptions);
 
+  const releaseYear = getReleaseYear();
+
   return (
     <main>
       <HeroSection content={releasedInTheYear.slice(0, 5)} />
       <div className="relative z-20">
         <ContentCarousel
-          title={t("seriesOfTheYear", { year: getReleaseYear() })}
+          title={t("seriesOfTheYear", { year: releaseYear })}
           items={releasedInTheYear}
+          searchParams={{ page: 1, releaseYear, contentTypes: ["SERIES"] }}
         />
         <ContentCarousel title={t("topRatedSeries")} items={popularSeries} />
         {genres?.map((genre) => (
-          <GenreSection key={genre.slug} genre={genre} type="SERIES" />
+          <GenreSection
+            key={genre.slug}
+            genre={genre}
+            type="SERIES"
+            searchParams={{
+              page: 1,
+              genre: genre.name,
+              contentTypes: ["SERIES"],
+            }}
+          />
         ))}
       </div>
     </main>

@@ -1,6 +1,7 @@
 import type { ContentsType, Genre } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
 import {
+  type CarouselProps,
   CarouselSkeleton,
   ContentCarousel,
 } from "@/components/content-carousel";
@@ -23,9 +24,10 @@ export function PendingComponent() {
 interface GenreSectionProps {
   readonly genre: Genre;
   readonly type: ContentsType;
+  readonly searchParams?: CarouselProps["searchParams"];
 }
 
-export function GenreSection({ genre, type }: GenreSectionProps) {
+export function GenreSection({ genre, type, searchParams }: GenreSectionProps) {
   const { data: movies, isLoading } = useQuery({
     queryKey: ["content", genre.slug, type],
     queryFn: () => getTitles({ contentType: type, genre: genre.slug }),
@@ -39,5 +41,11 @@ export function GenreSection({ genre, type }: GenreSectionProps) {
     return null;
   }
 
-  return <ContentCarousel title={genre.name} items={movies} />;
+  return (
+    <ContentCarousel
+      title={genre.name}
+      items={movies}
+      searchParams={searchParams}
+    />
+  );
 }
