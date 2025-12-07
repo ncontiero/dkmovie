@@ -39,10 +39,17 @@ class TitleSchema(ModelSchema):
 class TitleFilterSchema(FilterSchema):
     title: Annotated[str | None, FilterLookup("title__icontains")] = None
     content_type: Title.ContentType = None
-    genre: Annotated[str | None, FilterLookup("genres__slug__icontains")] = None
+    content_type_in: str | None = None
+    genre: Annotated[
+        str | None,
+        FilterLookup(["genres__slug__icontains", "genres__name__icontains"]),
+    ] = None
     release_date: str | None = None
     release_date__gte: str | None = None
     exclude: str | None = None
+
+    def filter_content_type_in(self, value: str) -> Q:
+        return Q(content_type__in=value.split(",")) if value else Q()
 
     def filter_exclude(self, value: str) -> Q:
         return ~Q(id__in=[UUID(pk) for pk in value.split(",")]) if value else Q()

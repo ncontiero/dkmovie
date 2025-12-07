@@ -4,6 +4,7 @@ import { type PaginationDataProps, httpClient } from "./client";
 interface GetTitleProps extends PaginationQueryParams {
   title?: string;
   contentType?: ContentsType;
+  contentTypeIn?: ContentsType[];
   genre?: string;
   exclude?: string;
   orderBy?: string;
@@ -15,6 +16,7 @@ export async function getTitles({
   offset,
   title,
   contentType,
+  contentTypeIn,
   genre,
   exclude,
   orderBy,
@@ -25,6 +27,7 @@ export async function getTitles({
   if (offset) params.append("offset", offset.toString());
   if (title) params.append("title", title);
   if (contentType) params.append("content_type", contentType);
+  if (contentTypeIn) params.append("content_type_in", contentTypeIn.join(","));
   if (genre) params.append("genre", genre);
   if (exclude) params.append("exclude", exclude);
   if (orderBy) params.append("order_by", orderBy);

@@ -8,7 +8,8 @@ export interface Session {
   user: Omit<User, "name"> & { has_usable_password: boolean };
 }
 
-export type ContentsType = "MOVIE" | "SERIES";
+export const contentsType = ["MOVIE", "SERIES"] as const;
+export type ContentsType = (typeof contentsType)[number];
 
 export interface Genre {
   name: string;

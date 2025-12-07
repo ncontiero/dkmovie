@@ -67,9 +67,15 @@
       "description": "Pesquise por filmes e séries",
       "searchIsRequired": "Por favor, insira um termo para pesquisar"
     },
-    "titlesFound": "{count, plural, =1 {1 título encontrado} other {# títulos encontrados}}",
+    "titlesFound": "{count, plural, =0 {Nenhum título encontrado} =1 {1 título encontrado} other {# títulos encontrados}}",
     "noTitles": "Nenhum título encontrado.",
-    "tryAnotherTerm": "Por favor, tente outro termo."
+    "filters": "Filtros",
+    "contentType": "tipo de conteúdo",
+    "movies": "Filmes",
+    "series": "Séries",
+    "filterGenre": "Filtrar por gênero",
+    "searchGenre": "Pesquisar gênero",
+    "noGenres": "Nenhum gênero encontrado."
   },
   "auth": {
     "continueWith": {
