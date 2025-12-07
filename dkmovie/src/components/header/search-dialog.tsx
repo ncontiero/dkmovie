@@ -42,7 +42,7 @@ export function SearchDialog() {
   });
 
   const onSubmit: SubmitHandler<SearchDialogSchema> = async (data) => {
-    await navigate({ to: "/search", search: { search: data.search } });
+    await navigate({ to: "/search", search: { search: data.search, page: 1 } });
     setIsDialogOpen(false);
   };
 

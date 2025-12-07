@@ -52,7 +52,7 @@ export async function getTitlesWithCount({
   }
 }
 
-export async function getTitles(props: GetTitleProps) {
+export async function getTitles(props: GetTitleProps = {}) {
   const res = await getTitlesWithCount(props);
   return res?.items || [];
 }
