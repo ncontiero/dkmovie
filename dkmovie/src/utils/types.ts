@@ -36,7 +36,12 @@ export interface PaginationDataProps<T = any> {
   count: number;
 }
 
-export interface PaginationQueryParams {
+export interface PaginationNumberQueryParams {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginationLimitQueryParams {
   limit?: number;
   offset?: number;
 }

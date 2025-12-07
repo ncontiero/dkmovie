@@ -28,7 +28,7 @@ function titleQueryOptions(titleId: string) {
 function titleRelatedTitlesQueryOptions(titleId: string) {
   return queryOptions({
     queryKey: ["content", "relatedMovies", titleId],
-    queryFn: () => getTitles({ limit: 10, exclude: titleId }),
+    queryFn: () => getTitles({ exclude: titleId }),
     staleTime: 1000 * 60 * 60,
   });
 }

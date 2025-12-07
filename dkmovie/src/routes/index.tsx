@@ -12,7 +12,7 @@ import { getPopularMoviesOrSeriesQueryOptions } from "@/utils/query-options/titl
 
 const recentlyReleasedQueryOptions = queryOptions({
   queryKey: ["content", "recentlyReleased"],
-  queryFn: () => getTitles({ limit: 10 }),
+  queryFn: () => getTitles(),
   staleTime: 1000 * 60 * 60,
 });
 

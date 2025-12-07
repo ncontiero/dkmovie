@@ -1,7 +1,7 @@
-import type { Genre, PaginationQueryParams } from "@/utils/types";
+import type { Genre, PaginationLimitQueryParams } from "@/utils/types";
 import { type PaginationDataProps, httpClient } from "./client";
 
-interface GetGenresProps extends PaginationQueryParams {
+interface GetGenresProps extends PaginationLimitQueryParams {
   slug?: string;
   name?: string;
 }

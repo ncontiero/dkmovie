@@ -28,8 +28,7 @@ interface GenreSectionProps {
 export function GenreSection({ genre, type }: GenreSectionProps) {
   const { data: movies, isLoading } = useQuery({
     queryKey: ["content", genre.slug, type],
-    queryFn: () =>
-      getTitles({ limit: 10, contentType: type, genre: genre.slug }),
+    queryFn: () => getTitles({ contentType: type, genre: genre.slug }),
     staleTime: 1000 * 60 * 60,
   });
 

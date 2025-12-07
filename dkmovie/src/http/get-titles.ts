@@ -1,8 +1,12 @@
-import type { ContentsType, PaginationQueryParams, Title } from "@/utils/types";
+import type {
+  ContentsType,
+  PaginationNumberQueryParams,
+  Title,
+} from "@/utils/types";
 import { formataReleaseDate } from "@/utils/date";
 import { type PaginationDataProps, httpClient } from "./client";
 
-interface GetTitleProps extends PaginationQueryParams {
+interface GetTitleProps extends PaginationNumberQueryParams {
   title?: string;
   contentType?: ContentsType;
   contentTypeIn?: ContentsType[];
@@ -13,8 +17,8 @@ interface GetTitleProps extends PaginationQueryParams {
 }
 
 export async function getTitles({
-  limit,
-  offset,
+  page,
+  pageSize,
   title,
   contentType,
   contentTypeIn,
@@ -24,8 +28,8 @@ export async function getTitles({
   releaseYear,
 }: GetTitleProps = {}) {
   const params = new URLSearchParams();
-  if (limit) params.append("limit", limit.toString());
-  if (offset) params.append("offset", offset.toString());
+  if (page) params.append("page", page.toString());
+  if (pageSize) params.append("page_size", pageSize.toString());
   if (title) params.append("title", title);
   if (contentType) params.append("content_type", contentType);
   if (contentTypeIn) params.append("content_type_in", contentTypeIn.join(","));

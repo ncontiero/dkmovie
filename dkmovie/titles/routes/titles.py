@@ -3,6 +3,7 @@ from uuid import UUID
 from django.utils.translation import gettext_lazy as _
 from ninja import Query
 from ninja import Router
+from ninja.pagination import PageNumberPagination
 from ninja.pagination import paginate
 
 from config.api.utils import ApiProcessError
@@ -14,7 +15,7 @@ router = Router()
 
 
 @router.get("/", response={200: list[TitleSchema]})
-@paginate
+@paginate(PageNumberPagination, page_size=10)
 def get_titles(
     request,
     filters: TitleFilterSchema = Query(...),  # noqa: B008
