@@ -22,20 +22,39 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTitles } from "@/http/get-titles";
+import { getTitlesWithCount } from "@/http/get-titles";
 import { searchParamSchema } from "@/schemas/search";
 import { searchGenresQueryOptions } from "@/utils/query-options/genres";
+
+const PAGE_SIZE = 20;
 
 function searchQueryOptions(
   search?: string,
   contentType?: ContentsType[],
   genre?: string,
   releaseYear?: number,
+  page?: number,
 ) {
   return queryOptions({
-    queryKey: ["content", "search", search, contentType, genre, releaseYear],
+    queryKey: [
+      "content",
+      "search",
+      search,
+      contentType,
+      genre,
+      releaseYear,
+      page,
+    ],
     queryFn: () => {
       if (
         !search &&
@@ -43,12 +62,14 @@ function searchQueryOptions(
         !genre &&
         !releaseYear
       )
-        return [];
-      return getTitles({
+        return { count: 0, items: [] };
+      return getTitlesWithCount({
         title: search,
         contentTypeIn: contentType,
         genre,
         releaseYear,
+        page,
+        pageSize: PAGE_SIZE,
       });
     },
     staleTime: 1000 * 60 * 60,
@@ -58,18 +79,21 @@ function searchQueryOptions(
 export const Route = createFileRoute("/search")({
   component: SearchComponent,
   validateSearch: (search) => searchParamSchema.parse(search),
-  loaderDeps: ({ search: { search, contentTypes, genre, releaseYear } }) => ({
+  loaderDeps: ({
+    search: { search, contentTypes, genre, releaseYear, page },
+  }) => ({
     search,
     contentTypes,
     genre,
     releaseYear,
+    page,
   }),
   loader: ({
     context: { queryClient },
-    deps: { search, contentTypes, genre, releaseYear },
+    deps: { search, contentTypes, genre, releaseYear, page },
   }) => {
     queryClient.ensureQueryData(
-      searchQueryOptions(search, contentTypes, genre, releaseYear),
+      searchQueryOptions(search, contentTypes, genre, releaseYear, page),
     );
     queryClient.ensureQueryData(searchGenresQueryOptions);
   },
@@ -98,13 +122,17 @@ function SearchComponent() {
     contentTypes,
     genre: searchGenre,
     releaseYear,
+    page,
   } = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const { data: titles } = useSuspenseQuery(
-    searchQueryOptions(search, contentTypes, searchGenre, releaseYear),
+  const { data: titlesWithCount } = useSuspenseQuery(
+    searchQueryOptions(search, contentTypes, searchGenre, releaseYear, page),
   );
   const { data: genres } = useSuspenseQuery(searchGenresQueryOptions);
+
+  const titles = titlesWithCount.items;
+  const pages = Math.ceil(titlesWithCount.count / PAGE_SIZE);
 
   const onContentTypeChange = useCallback(
     async (contentType: ContentsType) => {
@@ -146,7 +174,7 @@ function SearchComponent() {
       <div className="mx-auto max-w-7xl px-4 sm:container">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">
-            {t("titlesFound", { count: titles.length })}
+            {t("titlesFound", { count: titlesWithCount.count })}
           </h1>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -210,6 +238,41 @@ function SearchComponent() {
             <TitleCard key={title.id} title={title} />
           ))}
         </div>
+        <Separator className="my-5" />
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                to="/search"
+                search={(prev) => ({
+                  ...prev,
+                  page: Math.max(1, (prev.page || 1) - 1),
+                })}
+              />
+            </PaginationItem>
+            {Array.from({ length: pages }).map((_, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <PaginationItem key={i}>
+                <PaginationLink
+                  to="/search"
+                  search={(prev) => ({ ...prev, page: i + 1 })}
+                  isActive={page === i + 1}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                to="/search"
+                search={(prev) => ({
+                  ...prev,
+                  page: Math.min(pages, (prev.page || 1) + 1),
+                })}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </main>
   );

@@ -79,6 +79,14 @@
     "searchGenre": "Search genre",
     "noGenres": "No genres found."
   },
+  "pagination": {
+    "label": "Pagination",
+    "goToPreviousPage": "Go to previous page",
+    "goToNextPage": "Go to next page",
+    "previous": "Previous",
+    "next": "Next",
+    "morePages": "More pages"
+  },
   "auth": {
     "continueWith": {
       "password": "Continue with password",

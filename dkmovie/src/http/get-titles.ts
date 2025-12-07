@@ -16,7 +16,7 @@ interface GetTitleProps extends PaginationNumberQueryParams {
   releaseYear?: number;
 }
 
-export async function getTitles({
+export async function getTitlesWithCount({
   page,
   pageSize,
   title,
@@ -26,7 +26,7 @@ export async function getTitles({
   exclude,
   orderBy,
   releaseYear,
-}: GetTitleProps = {}) {
+}: GetTitleProps = {}): Promise<PaginationDataProps<Title[]>> {
   const params = new URLSearchParams();
   if (page) params.append("page", page.toString());
   if (pageSize) params.append("page_size", pageSize.toString());
@@ -46,11 +46,15 @@ export async function getTitles({
   const url = `/titles/?${params.toString()}`;
 
   try {
-    const res = await httpClient.get<PaginationDataProps<Title[]>>(url);
-    return res?.items || [];
+    return await httpClient.get<PaginationDataProps<Title[]>>(url);
   } catch {
-    return [];
+    return { count: 0, items: [] };
   }
+}
+
+export async function getTitles(props: GetTitleProps) {
+  const res = await getTitlesWithCount(props);
+  return res?.items || [];
 }
 
 export async function getTitle(id: string) {

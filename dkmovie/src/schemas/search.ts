@@ -9,5 +9,9 @@ export const searchParamSchema = object({
   contentTypes: enum_(contentsType).array().optional(),
   genre: string().optional(),
   releaseYear: number().optional(),
+  page: number()
+    .optional()
+    .default(1)
+    .transform((value) => Math.max(value, 1)),
 });
 export type SearchParamSchema = output<typeof searchParamSchema>;
