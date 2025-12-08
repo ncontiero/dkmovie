@@ -18,13 +18,17 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
   return (
     <div className="relative h-[75vh] w-full">
       <div className="absolute inset-0 size-full transition-opacity duration-700 ease-in-out">
-        {content.cover ? (
-          <img
-            src={content.cover}
-            alt={content.title}
-            className="size-full object-cover object-center"
-          />
-        ) : null}
+        <div className="size-full">
+          {content.cover ? (
+            <img
+              src={content.cover}
+              alt={content.title}
+              className="size-full object-cover object-center"
+            />
+          ) : (
+            <div className="from-primary/50 size-full bg-linear-to-bl to-black" />
+          )}
+        </div>
 
         <div
           className={`

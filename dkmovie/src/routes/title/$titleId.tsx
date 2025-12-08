@@ -139,12 +139,31 @@ function TitleComponent() {
     <div className="bg-background text-foreground min-h-screen">
       <main>
         <div className="relative h-[70vh] w-full md:h-[80vh]">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${title.cover})` }}
-          />
+          <div className="absolute inset-0 size-full transition-opacity duration-700 ease-in-out">
+            <div className="size-full">
+              {title.cover ? (
+                <img
+                  src={title.cover}
+                  alt={title.title}
+                  className="size-full object-cover object-center"
+                />
+              ) : (
+                <div className="from-primary/50 size-full bg-linear-to-bl to-black" />
+              )}
+            </div>
 
-          <div className="from-background via-background/80 absolute inset-0 bg-linear-to-t to-transparent" />
+            <div
+              className={`
+                from-background via-background/60 absolute inset-0 w-full bg-linear-to-t to-transparent
+                sm:bg-linear-to-r md:w-[50%]
+              `}
+            />
+            <div
+              className={`
+                from-background via-background/40 absolute inset-0 bg-linear-to-t to-transparent backdrop-blur-xs
+              `}
+            />
+          </div>
 
           <div className="relative z-10 flex h-full flex-col justify-end">
             <div className="container mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">

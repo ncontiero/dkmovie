@@ -21,16 +21,26 @@ export function TitleCard({ title }: TitleCardProps) {
           focus-within:scale-105 focus-within:ring-2
         `}
       >
-        {title.poster ? (
-          <img
-            src={title.poster}
-            alt={title.title}
-            className={`
-              relative h-[350px] w-full rounded-lg object-cover shadow-md duration-300 group-focus-within:scale-110
-              group-hover:scale-110 group-focus-visible:scale-110
-            `}
-          />
-        ) : null}
+        <div className="relative h-[350px] w-full rounded-lg shadow-md">
+          {title.poster ? (
+            <img
+              src={title.poster}
+              alt={title.title}
+              className={`
+                size-full object-cover shadow-md duration-300 group-focus-within:scale-110 group-hover:scale-110
+                group-focus-visible:scale-110
+              `}
+            />
+          ) : (
+            <div
+              className={`
+                to-primary/40 flex size-full items-center justify-center bg-linear-to-bl from-black text-center
+              `}
+            >
+              <p className="text-lg font-bold">{title.title}</p>
+            </div>
+          )}
+        </div>
 
         <Link
           to="/title/$titleId"
