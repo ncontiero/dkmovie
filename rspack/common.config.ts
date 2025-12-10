@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import path from "node:path";
 import { defineConfig } from "@rspack/cli";
 import { type SwcLoaderOptions, rspack } from "@rspack/core";
 import { tanstackRouter } from "@tanstack/router-plugin/rspack";
@@ -12,7 +12,7 @@ const BROWSER_TARGETS = [
   "safari >= 14",
 ];
 
-const BASE_PATH = path.join(__dirname, "../");
+const BASE_PATH = path.join(import.meta.dirname, "../");
 const PROJECT_PATH = path.join(BASE_PATH, "dkmovie");
 const SRC_PATH = path.join(PROJECT_PATH, "src");
 
