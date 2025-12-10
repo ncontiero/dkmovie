@@ -6,7 +6,7 @@ import {
   Link,
   notFound,
 } from "@tanstack/react-router";
-import { Calendar, Clock, Play, Plus } from "lucide-react";
+import { Play, Plus, Star } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { ContentCarousel } from "@/components/content-carousel";
 import { Button } from "@/components/ui/button";
@@ -138,118 +138,140 @@ function TitleComponent() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <main>
-        <div className="relative h-[70vh] w-full md:h-[80vh]">
-          <div className="absolute inset-0 size-full transition-opacity duration-700 ease-in-out">
-            <div className="size-full">
-              {title.cover ? (
+        <div className="relative h-[75vh] w-full overflow-hidden md:h-[85vh]">
+          <div className="absolute inset-0 size-full">
+            {title.cover ? (
+              <div className="animate-in fade-in size-full duration-1000">
                 <img
                   src={title.cover}
                   alt={title.title}
-                  className="size-full object-cover object-center"
+                  className="size-full object-cover object-top md:object-center"
+                  loading="eager"
                 />
-              ) : (
-                <div className="from-primary/50 size-full bg-linear-to-bl to-black" />
-              )}
-            </div>
-
-            <div
-              className={`
-                from-background via-background/60 absolute inset-0 w-full bg-linear-to-t to-transparent
-                sm:bg-linear-to-r md:w-[50%]
-              `}
-            />
-            <div
-              className={`
-                from-background via-background/40 absolute inset-0 bg-linear-to-t to-transparent backdrop-blur-xs
-              `}
-            />
+              </div>
+            ) : (
+              <div className="from-primary/20 size-full bg-linear-to-bl to-black" />
+            )}
           </div>
 
-          <div className="relative z-10 flex h-full flex-col justify-end">
-            <div className="container mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-              <div className="max-w-3xl">
-                <h1 className="text-foreground text-4xl font-extrabold drop-shadow-lg sm:text-5xl lg:text-6xl">
+          <div className="from-background via-background/60 absolute inset-0 bg-linear-to-t to-transparent md:hidden" />
+
+          <div
+            className={`
+              md:from-background md:via-background/50 md:absolute md:inset-0 md:block md:bg-linear-to-r
+              md:to-transparent hidden
+            `}
+          />
+
+          <div className="via-background/30 from-background absolute inset-0 bg-linear-to-t to-transparent" />
+
+          <div className="relative z-10 flex h-full flex-col justify-end pb-12 md:pb-16">
+            <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="animate-in fade-in slide-in-from-bottom-8 fill-mode-both max-w-3xl duration-1000">
+                <h1
+                  className={`
+                    text-foreground text-4xl font-black tracking-tight text-balance drop-shadow-2xl sm:text-4xl
+                    lg:text-5xl
+                  `}
+                >
                   {title.title}
                 </h1>
 
-                <div className="text-muted-foreground my-4 flex flex-wrap items-center gap-4">
-                  {titleReleaseYear ? (
-                    <StyledLink
-                      to="/search"
-                      search={{ releaseYear: titleReleaseYear }}
-                      className="gap-2"
-                      variant="muted"
-                      aria-label={t("seeMoreTitlesOfTheYear", {
-                        year: titleReleaseYear,
-                      })}
-                    >
-                      <Calendar className="size-4" />
-                      {titleReleaseYear}
-                    </StyledLink>
-                  ) : null}
-                  {durationFormatted ? (
-                    <span className="flex items-center gap-2">
-                      <Clock className="size-4" />
-                      {durationFormatted}
-                    </span>
-                  ) : null}
+                <div
+                  className={`
+                    text-muted-foreground mt-4 flex flex-wrap items-center gap-3 text-sm font-medium sm:text-base
+                  `}
+                >
                   <span
                     className={`
-                      text-foreground/90 flex items-center gap-2 rounded-sm border border-yellow-500 px-2 py-0.5 text-sm
-                      font-medium dark:border-yellow-400
+                      flex items-center gap-1 rounded-md bg-yellow-500/10 px-2 py-0.5 text-yellow-500 ring-1
+                      ring-yellow-500/20 ring-inset
                     `}
                   >
+                    <Star className="size-3.5 fill-current" />
                     {title.rating}
                   </span>
-                </div>
 
-                {title.genres && title.genres.length > 0 ? (
-                  <div className="flex flex-wrap items-center gap-2">
-                    {title.genres.map((genre) => (
+                  {titleReleaseYear ? (
+                    <>
+                      <span className="text-muted-foreground/40">•</span>
                       <StyledLink
-                        key={genre.slug}
                         to="/search"
-                        search={{ genre: genre.name }}
-                        className={`
-                          border-foreground/50 text-foreground/90 rounded-sm border px-2 py-0.5 text-sm font-medium
-                        `}
+                        search={{ releaseYear: titleReleaseYear }}
                         variant="muted"
-                        aria-label={t("seeMoreTitlesOfTheGenre", {
-                          genre: genre.name,
+                        className="hover:text-foreground transition-colors"
+                        aria-label={t("seeMoreTitlesOfTheYear", {
+                          year: titleReleaseYear,
                         })}
                       >
-                        {genre.name}
+                        {titleReleaseYear}
                       </StyledLink>
-                    ))}
-                  </div>
-                ) : null}
+                    </>
+                  ) : null}
+
+                  {durationFormatted ? (
+                    <>
+                      <span className="text-muted-foreground/40">•</span>
+                      <span>{durationFormatted}</span>
+                    </>
+                  ) : null}
+
+                  {title.genres?.length > 0 && (
+                    <>
+                      <span className="text-muted-foreground/40 hidden sm:inline-block">
+                        •
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {title.genres.slice(0, 3).map((genre) => (
+                          <StyledLink
+                            key={genre.slug}
+                            to="/search"
+                            search={{ genre: genre.name }}
+                            variant="muted"
+                            className="hover:text-primary transition-colors"
+                            aria-label={t("seeMoreTitlesOfTheGenre", {
+                              genre: genre.name,
+                            })}
+                          >
+                            {genre.name}
+                          </StyledLink>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
 
                 <p
                   className={`
-                    text-foreground/90 mt-4 hidden max-h-56 max-w-prose overflow-y-auto text-lg drop-shadow-md md:block
+                    text-foreground/80 mt-6 line-clamp-3 hidden max-w-2xl text-lg leading-relaxed drop-shadow-md
+                    md:line-clamp-4
                   `}
                 >
                   {title.description}
                 </p>
 
-                <div className="mt-8 flex gap-4">
+                <div className="mt-8 flex flex-wrap gap-4">
                   <Button
                     asChild
-                    className="hover:scale-105 focus-visible:scale-105"
                     size="lg"
+                    className={`
+                      shadow-primary/20 xs:w-auto h-12 w-full px-8 text-base font-semibold shadow-xl
+                      hover:shadow-primary/40 hover:scale-105
+                    `}
                   >
                     <Link to="/title/$titleId/watch" params={{ titleId }}>
-                      <Play className="fill-current" />
+                      <Play className="size-5 fill-current" />
                       {t("watch")}
                     </Link>
                   </Button>
+
                   <Button
                     type="button"
-                    variant="secondary"
-                    className="hover:scale-105 focus-visible:scale-105"
+                    variant="outline"
                     size="lg"
+                    className="xs:w-auto h-12 w-full px-6 backdrop-blur-md hover:scale-105"
                   >
-                    <Plus />
+                    <Plus className="size-5" />
                     {t("myList")}
                   </Button>
                 </div>
@@ -259,25 +281,32 @@ function TitleComponent() {
         </div>
 
         <div className="container mx-auto max-w-7xl p-4 sm:px-6 lg:px-8">
-          <p className="text-foreground/90 mb-6 text-base md:hidden">
-            {title.description}
-          </p>
-
-          <h2 className="text-foreground mb-6 text-3xl font-semibold">
+          <h2 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
             {t("details")}
           </h2>
 
-          <div className="text-muted-foreground grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="md:col-span-2">
-              <h3 className="text-foreground mb-3 text-xl font-semibold">
-                {t("cast")}
-              </h3>
-              <p>{title.cast}</p>
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+            <div className="space-y-6 md:col-span-2">
+              <div>
+                <h3 className="text-muted-foreground mb-2 text-sm font-medium tracking-wider uppercase">
+                  {t("fullSynopsis")}
+                </h3>
+                <p className="text-foreground/80 text-lg leading-relaxed">
+                  {title.description}
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-muted-foreground mb-2 text-sm font-medium tracking-wider uppercase">
+                  {t("cast")}
+                </h3>
+                <p className="text-foreground/80 text-lg">{title.cast}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="border-border mt-8 border-t md:mt-12">
+        <div className="border-border/50 mt-12 border-t pt-12">
           <ContentCarousel title={t("moreLikeThis")} items={relatedMovies} />
         </div>
       </main>
