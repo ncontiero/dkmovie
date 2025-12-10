@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 23:27+0000\n"
+"POT-Creation-Date: 2025-12-10 01:55+0000\n"
 "Language: en-US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -474,6 +474,9 @@ msgstr ""
 msgid "Main Information"
 msgstr ""
 
+msgid "Dates"
+msgstr ""
+
 msgid "Media"
 msgstr ""
 
@@ -481,6 +484,21 @@ msgid "Classification"
 msgstr ""
 
 msgid "More Information"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Mark as Released"
+msgstr ""
+
+msgid "Mark as Awaiting Review"
+msgstr ""
+
+msgid "Populate details from TMDB"
+msgstr ""
+
+msgid "Selected titles are being populated from TMDB."
 msgstr ""
 
 msgid "Titles"
@@ -507,7 +525,28 @@ msgstr ""
 msgid "Series"
 msgstr ""
 
+msgid "Coming Soon"
+msgstr ""
+
+msgid "Released"
+msgstr ""
+
+msgid "Canceled"
+msgstr ""
+
+msgid "Awaiting Review"
+msgstr ""
+
+msgid "The Movie Database"
+msgstr ""
+
+msgid "Manual"
+msgstr ""
+
 msgid "Unique identifier for the title"
+msgstr ""
+
+msgid "The TMDB ID of the title"
 msgstr ""
 
 msgid "The official title of the movie or series"
@@ -517,6 +556,9 @@ msgid "A brief summary or synopsis"
 msgstr ""
 
 msgid "The type of content (Movie or Series)"
+msgstr ""
+
+msgid "The current status of the title"
 msgstr ""
 
 msgid "The original release date"
@@ -543,10 +585,16 @@ msgstr ""
 msgid "Link to the official YouTube trailer"
 msgstr ""
 
+msgid "Indicates how the title was added to the database"
+msgstr ""
+
+msgid "Date and time when the title was created"
+msgstr ""
+
 msgid "Title"
 msgstr ""
 
-msgid "Invalid exclude parameter."
+msgid "Invalid filter parameter."
 msgstr ""
 
 msgid "The title does not exist."

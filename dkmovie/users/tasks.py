@@ -1,5 +1,3 @@
-import logging
-
 from celery import shared_task
 from django.conf import settings
 from django.utils import translation
@@ -8,8 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from dkmovie.utils.tasks import default_task_params
 
 from .utils import send_email
-
-logger = logging.getLogger(__name__)
 
 
 @shared_task(**default_task_params("send_email_task"))

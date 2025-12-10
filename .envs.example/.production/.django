@@ -5,6 +5,10 @@ DJANGO_SECRET_KEY=or6TqTkxGoYn6bnFSRPvQw0pMYLdJLXRy9VPsAk6p134b0SRif6j0ZmDKkDTRP
 DJANGO_ADMIN_URL=EUjZOIgmUUi7Hb5XP1wgYJ9bC4P00WMT/
 DJANGO_ALLOWED_HOSTS=.movies.ncontiero.com
 
+# TMDB
+# ------------------------------------------------------------------------------
+TMDB_API_KEY=
+
 # Security
 # ------------------------------------------------------------------------------
 # TIP: better off using DNS, however, redirect is OK too

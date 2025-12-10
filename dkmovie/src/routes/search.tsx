@@ -143,12 +143,12 @@ function SearchComponent() {
       await router.invalidate();
       if (newContentTypes.length === 0) {
         await navigate({
-          search: (prev) => ({ ...prev, contentTypes: undefined }),
+          search: (prev) => ({ ...prev, contentTypes: undefined, page: 1 }),
         });
       }
 
       await navigate({
-        search: (prev) => ({ ...prev, contentTypes: newContentTypes }),
+        search: (prev) => ({ ...prev, contentTypes: newContentTypes, page: 1 }),
       });
     },
     [contentTypes, navigate, router],
@@ -158,7 +158,9 @@ function SearchComponent() {
     async (genre: string) => {
       const genreToAdd = genre === searchGenre ? undefined : genre;
       await router.invalidate();
-      await navigate({ search: (prev) => ({ ...prev, genre: genreToAdd }) });
+      await navigate({
+        search: (prev) => ({ ...prev, genre: genreToAdd, page: 1 }),
+      });
     },
     [navigate, router, searchGenre],
   );

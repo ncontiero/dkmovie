@@ -224,7 +224,11 @@ function TitleComponent() {
                   </div>
                 ) : null}
 
-                <p className="text-foreground/90 mt-4 hidden max-w-prose text-lg drop-shadow-md md:block">
+                <p
+                  className={`
+                    text-foreground/90 mt-4 hidden max-h-56 max-w-prose overflow-y-auto text-lg drop-shadow-md md:block
+                  `}
+                >
                   {title.description}
                 </p>
 

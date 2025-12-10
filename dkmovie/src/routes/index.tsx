@@ -67,7 +67,11 @@ function HomeComponent() {
 
   return (
     <main>
-      <HeroSection content={recentlyReleased.slice(0, 5)} />
+      <HeroSection
+        content={recentlyReleased
+          .filter((title) => title.cover !== null)
+          .slice(0, 5)}
+      />
       <div className="relative z-20">
         <ContentCarousel title={t("trending")} items={movies} />
         <ContentCarousel title={t("popularSeries")} items={series} />

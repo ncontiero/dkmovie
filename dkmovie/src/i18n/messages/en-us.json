@@ -1,6 +1,6 @@
 {
   "langs": {
-    "en": "English",
+    "en-us": "English",
     "pt-br": "Portuguese"
   },
   "metadata": {
@@ -61,7 +61,9 @@
     "moviesOfTheYear": "Movies of {year}",
     "topRatedMovies": "Top Rated Movies",
     "seriesOfTheYear": "Series of {year}",
-    "topRatedSeries": "Top Rated Series"
+    "topRatedSeries": "Top Rated Series",
+    "noTitles": "No titles found.",
+    "checkLater": "Please check back later."
   },
   "search": {
     "dialog": {

@@ -21,7 +21,7 @@ def get_titles(
     filters: TitleFilterSchema = Query(...),  # noqa: B008
     order_by: str | None = None,
 ):
-    titles = Title.objects.all()
+    titles = Title.objects.filter(status=Title.Status.RELEASED)
     try:
         filtered_titles = filters.filter(titles)
         if order_by:
@@ -35,6 +35,6 @@ def get_titles(
 @router.get("/{title_id}", response={200: TitleSchema})
 def get_title(request, title_id: UUID):
     try:
-        return Title.objects.get(id=title_id)
+        return Title.objects.get(id=title_id, status=Title.Status.RELEASED)
     except Title.DoesNotExist as err:
         raise ApiProcessError(404, _("The title does not exist.")) from err

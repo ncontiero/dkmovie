@@ -15,6 +15,11 @@ interface HeroProps {
 function HeroSectionItem({ content }: { readonly content: Title }) {
   const t = useTranslations("heroSection");
 
+  const description =
+    content.description.length > 280
+      ? `${content.description.slice(0, 280)}...`
+      : content.description;
+
   return (
     <div className="relative h-[75vh] w-full">
       <div className="absolute inset-0 size-full transition-opacity duration-700 ease-in-out">
@@ -36,9 +41,7 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
             md:w-[50%]
           `}
         />
-        <div
-          className={`from-background via-background/40 absolute inset-0 bg-linear-to-t to-transparent backdrop-blur-xs`}
-        />
+        <div className="from-background via-background/40 absolute inset-0 bg-linear-to-t to-transparent" />
       </div>
 
       <div className="relative z-10 flex h-full flex-col justify-end pb-16 sm:pb-24 lg:pb-32">
@@ -48,7 +51,7 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
               {content.title}
             </h2>
             <p className="text-foreground/80 mt-4 max-w-prose text-lg drop-shadow-md">
-              {content.description}
+              {description}
             </p>
             <div className="xs:flex-row mt-8 flex flex-col gap-4">
               <Button
@@ -96,7 +99,7 @@ export function HeroSection({ content }: HeroProps) {
       pagination={{
         clickable: true,
       }}
-      autoplay={{ disableOnInteraction: false }}
+      autoplay={{ disableOnInteraction: false, delay: 2500 }}
       simulateTouch={isMobile}
       loop
     >

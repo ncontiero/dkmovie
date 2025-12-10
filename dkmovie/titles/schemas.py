@@ -38,6 +38,7 @@ class TitleSchema(ModelSchema):
 
 class TitleFilterSchema(FilterSchema):
     title: Annotated[str | None, FilterLookup("title__icontains")] = None
+    title__icontains: str | None = None
     content_type: Title.ContentType = None
     content_type_in: str | None = None
     genre: Annotated[

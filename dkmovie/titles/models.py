@@ -47,11 +47,26 @@ class Title(models.Model):
         MOVIE = "MOVIE", _("Movie")
         SERIES = "SERIES", _("Series")
 
+    class Status(models.TextChoices):
+        COMING_SOON = "COMING_SOON", _("Coming Soon")
+        RELEASED = "RELEASED", _("Released")
+        CANCELED = "CANCELED", _("Canceled")
+        AWAITING_REVIEW = "AWAITING_REVIEW", _("Awaiting Review")
+
+    class AddedBy(models.TextChoices):
+        TMDB = "TMDB", _("The Movie Database")
+        MANUAL = "MANUAL", _("Manual")
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid4,
         editable=False,
         help_text=_("Unique identifier for the title"),
+    )
+    tmdb_id = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text=_("The TMDB ID of the title"),
     )
     title = models.CharField(
         max_length=255,
@@ -66,6 +81,12 @@ class Title(models.Model):
         choices=ContentType.choices,
         default=ContentType.MOVIE,
         help_text=_("The type of content (Movie or Series)"),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.AWAITING_REVIEW,
+        help_text=_("The current status of the title"),
     )
     release_date = models.DateField(
         blank=True,
@@ -111,12 +132,22 @@ class Title(models.Model):
         blank=True,
         help_text=_("Link to the official YouTube trailer"),
     )
+    added_by = models.CharField(
+        max_length=10,
+        choices=AddedBy.choices,
+        default=AddedBy.MANUAL,
+        help_text=_("Indicates how the title was added to the database"),
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text=_("Date and time when the title was created"),
+    )
 
     class Meta:
         verbose_name = _("Title")
         verbose_name_plural = _("Titles")
         # Order by most recent release date first, then by title
-        ordering = ["-release_date", "title"]
+        ordering = ["-release_date"]
 
     def __str__(self):
         return f"{self.title} ({self.get_content_type_display()})"

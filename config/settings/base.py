@@ -23,7 +23,7 @@ TIME_ZONE = "UTC"
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#languages
 LANGUAGES = [
-    ("en", _("English")),
+    ("en-us", _("English")),
     ("pt-br", _("Portuguese")),
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
@@ -312,3 +312,12 @@ WEBPACK_LOADER = {
         "IGNORE": [r".+\.hot-update.js", r".+\.map"],
     },
 }
+
+# TMDB
+# ------------------------------------------------------------------------------
+TMDB_API_KEY = config("TMDB_API_KEY")
+TMDB_API_URL = config("TMDB_API_URL", default="https://api.themoviedb.org/3")
+TMDB_IMAGE_BASE_URL = config(
+    "TMDB_IMAGE_BASE_URL",
+    default="https://image.tmdb.org/t/p/original",
+)

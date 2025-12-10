@@ -45,11 +45,24 @@ function SeriesComponent() {
   const { data: popularSeries } = useSuspenseQuery(popularSeriesQueryOptions);
   const { data: genres } = useSuspenseQuery(genresQueryOptions);
 
+  if (releasedInTheYear.length === 0 && popularSeries.length === 0) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center gap-2">
+        <h1 className="text-center text-2xl font-semibold">{t("noTitles")}</h1>
+        <p className="text-muted-foreground text-center">{t("checkLater")}</p>
+      </main>
+    );
+  }
+
   const releaseYear = getReleaseYear();
 
   return (
     <main>
-      <HeroSection content={releasedInTheYear.slice(0, 5)} />
+      <HeroSection
+        content={releasedInTheYear
+          .filter((title) => title.cover !== null)
+          .slice(0, 5)}
+      />
       <div className="relative z-20">
         <ContentCarousel
           title={t("seriesOfTheYear", { year: releaseYear })}

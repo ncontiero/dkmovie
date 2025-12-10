@@ -691,6 +691,7 @@ dependencies = [
     { name = "python-decouple" },
     { name = "python-slugify" },
     { name = "redis" },
+    { name = "requests" },
 ]
 
 [package.dev-dependencies]
@@ -738,6 +739,7 @@ requires-dist = [
     { name = "python-decouple", specifier = "==3.8" },
     { name = "python-slugify", specifier = "==8.0.4" },
     { name = "redis", specifier = "==7.1.0" },
+    { name = "requests", specifier = "==2.32.5" },
 ]
 
 [package.metadata.requires-dev]
