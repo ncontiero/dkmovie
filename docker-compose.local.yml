@@ -31,7 +31,7 @@ services:
     image: dkmovie_production_postgres
     container_name: dkmovie_local_postgres
     volumes:
-      - dkmovie_local_postgres_data:/var/lib/postgresql/data
+      - dkmovie_local_postgres_data:/var/lib/postgresql/18/docker
       - dkmovie_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
