@@ -16,8 +16,6 @@ export function useNextPath() {
 
   const especialNextPaths = useMemo(() => [adminUrl, "/api/docs"], []);
 
-  console.log(especialNextPaths, nextPath, adminUrl);
-
   if (!nextPath.startsWith("/")) {
     setNextPath("/");
   }

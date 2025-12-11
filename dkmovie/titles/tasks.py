@@ -352,7 +352,7 @@ def send_titles_added_email_task(
     if settings.ADMINS:
         _, admin_email = settings.ADMINS[0]
         send_email(
-            subject=f"New {title_type.removesuffix('s').capitalize()}s Added",
+            subject=f"New {title_type.lstrip('s').capitalize()}s Added",
             to=[admin_email],
             template="emails/titles-added.html",
             context={"title_links": title_links, "see_all_url": see_all_url},
