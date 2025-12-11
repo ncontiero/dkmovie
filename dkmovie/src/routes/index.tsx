@@ -1,6 +1,7 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
+import { AnimatedRoute } from "@/components/animated-route";
 import {
   CarouselSkeleton,
   ContentCarousel,
@@ -33,13 +34,15 @@ export const Route = createFileRoute("/")({
     },
   }) => generateMetadata({ metadataTranslations, overrideTitle: true }),
   pendingComponent: () => (
-    <main className="min-h-screen">
-      <HeroSectionSkeleton />
-      <div className="relative z-20">
-        <CarouselSkeleton />
-        <CarouselSkeleton />
-      </div>
-    </main>
+    <AnimatedRoute>
+      <main className="min-h-screen">
+        <HeroSectionSkeleton />
+        <div className="relative z-20">
+          <CarouselSkeleton />
+          <CarouselSkeleton />
+        </div>
+      </main>
+    </AnimatedRoute>
   ),
 });
 
@@ -66,20 +69,22 @@ function HomeComponent() {
   }
 
   return (
-    <main>
-      <HeroSection
-        content={recentlyReleased
-          .filter((title) => title.cover !== null)
-          .slice(0, 5)}
-      />
-      <div className="relative z-20">
-        <ContentCarousel title={t("trending")} items={movies} />
-        <ContentCarousel title={t("popularSeries")} items={series} />
-        <ContentCarousel
-          title={t("recentlyReleased")}
-          items={recentlyReleased}
+    <AnimatedRoute>
+      <main>
+        <HeroSection
+          content={recentlyReleased
+            .filter((title) => title.cover !== null)
+            .slice(0, 5)}
         />
-      </div>
-    </main>
+        <div className="relative z-20">
+          <ContentCarousel title={t("trending")} items={movies} />
+          <ContentCarousel title={t("popularSeries")} items={series} />
+          <ContentCarousel
+            title={t("recentlyReleased")}
+            items={recentlyReleased}
+          />
+        </div>
+      </main>
+    </AnimatedRoute>
   );
 }

@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
+import { AnimatedRoute } from "@/components/animated-route";
 import { TitleCard, TitleCardSkeleton } from "@/components/title-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,18 +99,20 @@ export const Route = createFileRoute("/search")({
     queryClient.ensureQueryData(searchGenresQueryOptions);
   },
   pendingComponent: () => (
-    <div className="mt-24 min-h-screen">
-      <main className="mx-auto h-[70vh] max-w-7xl px-4 sm:container md:h-[80vh]">
-        <Skeleton className="h-9 w-1/4" />
-        <Separator className="mt-2 mb-5" />
-        <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {Array.from({ length: 8 }).map((_, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <TitleCardSkeleton key={i} />
-          ))}
-        </div>
-      </main>
-    </div>
+    <AnimatedRoute>
+      <div className="mt-24 min-h-screen">
+        <main className="mx-auto h-[70vh] max-w-7xl px-4 sm:container md:h-[80vh]">
+          <Skeleton className="h-9 w-1/4" />
+          <Separator className="mt-2 mb-5" />
+          <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {Array.from({ length: 8 }).map((_, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <TitleCardSkeleton key={i} />
+            ))}
+          </div>
+        </main>
+      </div>
+    </AnimatedRoute>
   ),
 });
 
@@ -172,110 +175,112 @@ function SearchComponent() {
   const filterLengthText = filterLength > 0 ? `(${filterLength})` : "";
 
   return (
-    <main className="my-24 min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 sm:container">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold">
-            {t("titlesFound", { count: titlesWithCount.count })}
-          </h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button type="button" variant="outline">
-                {t("filters")} {filterLengthText}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="p-2">
-                  {t("filterGenre")} {searchGenreText}
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="bg-background">
-                  <Command className="bg-background">
-                    <CommandInput placeholder={t("searchGenre")} autoFocus />
-                    <CommandList>
-                      <CommandEmpty>{t("noGenres")}</CommandEmpty>
-                      <CommandGroup>
-                        {genres?.map((genre) => (
-                          <CommandItem
-                            key={genre.slug}
-                            value={genre.name}
-                            onSelect={onGenreSelect}
-                            className="p-2"
-                          >
-                            {genre.name}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="p-2">
-                  {t("contentType")} {contentTypeText}
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="bg-background">
-                  <DropdownMenuCheckboxItem
-                    className="bg-background py-2"
-                    checked={contentTypes?.includes("MOVIE")}
-                    onCheckedChange={() => onContentTypeChange("MOVIE")}
-                  >
-                    {t("movies")}
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    className="bg-background py-2"
-                    checked={contentTypes?.includes("SERIES")}
-                    onCheckedChange={() => onContentTypeChange("SERIES")}
-                  >
-                    {t("series")}
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <Separator className="mt-2 mb-5" />
-        <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {titles?.map((title) => (
-            <TitleCard key={title.id} title={title} />
-          ))}
-        </div>
-        <Separator className="my-5" />
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                to="/search"
-                search={(prev) => ({
-                  ...prev,
-                  page: Math.max(1, (prev.page || 1) - 1),
-                })}
-              />
-            </PaginationItem>
-            {Array.from({ length: pages }).map((_, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <PaginationItem key={i}>
-                <PaginationLink
-                  to="/search"
-                  search={(prev) => ({ ...prev, page: i + 1 })}
-                  isActive={page === i + 1}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
+    <AnimatedRoute>
+      <main className="my-24 min-h-screen">
+        <div className="mx-auto max-w-7xl px-4 sm:container">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">
+              {t("titlesFound", { count: titlesWithCount.count })}
+            </h1>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="button" variant="outline">
+                  {t("filters")} {filterLengthText}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="p-2">
+                    {t("filterGenre")} {searchGenreText}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="bg-background">
+                    <Command className="bg-background">
+                      <CommandInput placeholder={t("searchGenre")} autoFocus />
+                      <CommandList>
+                        <CommandEmpty>{t("noGenres")}</CommandEmpty>
+                        <CommandGroup>
+                          {genres?.map((genre) => (
+                            <CommandItem
+                              key={genre.slug}
+                              value={genre.name}
+                              onSelect={onGenreSelect}
+                              className="p-2"
+                            >
+                              {genre.name}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="p-2">
+                    {t("contentType")} {contentTypeText}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="bg-background">
+                    <DropdownMenuCheckboxItem
+                      className="bg-background py-2"
+                      checked={contentTypes?.includes("MOVIE")}
+                      onCheckedChange={() => onContentTypeChange("MOVIE")}
+                    >
+                      {t("movies")}
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem
+                      className="bg-background py-2"
+                      checked={contentTypes?.includes("SERIES")}
+                      onCheckedChange={() => onContentTypeChange("SERIES")}
+                    >
+                      {t("series")}
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <Separator className="mt-2 mb-5" />
+          <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {titles?.map((title) => (
+              <TitleCard key={title.id} title={title} />
             ))}
-            <PaginationItem>
-              <PaginationNext
-                to="/search"
-                search={(prev) => ({
-                  ...prev,
-                  page: Math.min(pages, (prev.page || 1) + 1),
-                })}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
-    </main>
+          </div>
+          <Separator className="my-5" />
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  to="/search"
+                  search={(prev) => ({
+                    ...prev,
+                    page: Math.max(1, (prev.page || 1) - 1),
+                  })}
+                />
+              </PaginationItem>
+              {Array.from({ length: pages }).map((_, i) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    to="/search"
+                    search={(prev) => ({ ...prev, page: i + 1 })}
+                    isActive={page === i + 1}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  to="/search"
+                  search={(prev) => ({
+                    ...prev,
+                    page: Math.min(pages, (prev.page || 1) + 1),
+                  })}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </main>
+    </AnimatedRoute>
   );
 }

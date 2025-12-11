@@ -1,5 +1,6 @@
 import type { ContentsType, Genre } from "@/utils/types";
 import { useQuery } from "@tanstack/react-query";
+import { AnimatedRoute } from "@/components/animated-route";
 import {
   type CarouselProps,
   CarouselSkeleton,
@@ -10,14 +11,16 @@ import { getTitles } from "@/http/get-titles";
 
 export function PendingComponent() {
   return (
-    <main className="min-h-screen">
-      <HeroSectionSkeleton />
-      <div className="relative z-20">
-        <CarouselSkeleton />
-        <CarouselSkeleton />
-        <CarouselSkeleton />
-      </div>
-    </main>
+    <AnimatedRoute>
+      <main className="min-h-screen">
+        <HeroSectionSkeleton />
+        <div className="relative z-20">
+          <CarouselSkeleton />
+          <CarouselSkeleton />
+          <CarouselSkeleton />
+        </div>
+      </main>
+    </AnimatedRoute>
   );
 }
 
