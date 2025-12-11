@@ -29,7 +29,12 @@ def me(request):
     except User.DoesNotExist as err:
         raise ApiProcessError(404, _("User not found")) from err
     else:
-        return {"id": user.id, "name": user.name, "email": user.email}
+        return {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "is_superuser": user.is_superuser,
+        }
 
 
 @router.patch("/me", response={200: UserSchemaOut})
@@ -53,7 +58,12 @@ def update_me(request, payload: UserSchemaIn):
     else:
         user.name = payload.name
         user.save(update_fields=["name"])
-        return {"id": user.id, "name": user.name, "email": user.email}
+        return {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "is_superuser": user.is_superuser,
+        }
 
 
 @router.delete("/me", response={204: None})

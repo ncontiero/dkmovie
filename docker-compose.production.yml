@@ -10,7 +10,6 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
       args:
         # These variable can be defined in an .env file in the root of the repo
-        DJANGO_ADMIN_URL: ${DJANGO_ADMIN_URL}
         DJANGO_AWS_STORAGE_BUCKET_NAME: ${DJANGO_AWS_STORAGE_BUCKET_NAME}
         DJANGO_AWS_S3_CUSTOM_DOMAIN: ${DJANGO_AWS_S3_CUSTOM_DOMAIN}
     image: dkmovie_production_django

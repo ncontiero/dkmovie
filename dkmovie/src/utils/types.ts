@@ -2,6 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  is_superuser: boolean;
 }
 
 export interface Session {

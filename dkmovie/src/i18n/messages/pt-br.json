@@ -181,6 +181,7 @@
   "accountPage": {
     "title": "Gerenciamento de conta",
     "description": "Atualize seu perfil e gerencie suas configurações de conta.",
+    "accessAdmin": "Acessar painel de admin",
     "tabs": {
       "account": {
         "label": "Conta",

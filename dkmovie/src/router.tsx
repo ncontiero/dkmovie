@@ -3,14 +3,16 @@ import { type PageError, lazyComponents } from "./components/lazy-components";
 import { queryClient } from "./lib/query";
 import { routeTree } from "./routeTree.gen";
 
-// const from Django Template (templates/base.html)
+// consts from Django Template (templates/base.html)
 declare const pageError: PageError | null;
+declare const adminUrl: string;
 
 export const router = createRouter({
   routeTree,
   context: {
     queryClient,
     djangoPageError: pageError,
+    djangoAdminUrl: adminUrl,
     auth: undefined!,
     metadataTranslations: undefined!,
   },

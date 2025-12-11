@@ -17,6 +17,7 @@ import { type MetadataTranslations, generateMetadata } from "@/utils/metadata";
 interface RouterContext {
   queryClient: QueryClient;
   djangoPageError: PageError | null;
+  djangoAdminUrl: string;
   auth: SessionContextProps;
   metadataTranslations: MetadataTranslations;
 }
@@ -60,6 +61,7 @@ function RootComponent() {
 
   useEffect(() => {
     document.querySelector("#pageErrorScript")?.remove();
+    document.querySelector("#adminConfigScript")?.remove();
   }, []);
 
   return (

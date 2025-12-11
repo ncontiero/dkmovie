@@ -33,7 +33,6 @@ export const commonConfig = defineConfig({
       path: path.resolve(BASE_PATH),
       filename: "webpack-stats.json",
     }),
-    new rspack.EnvironmentPlugin(["NODE_ENV", "DJANGO_ADMIN_URL"]),
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,

@@ -5,6 +5,7 @@ class UserSchemaOut(Schema):
     id: int
     name: str
     email: str
+    is_superuser: bool
 
 
 class UserSchemaIn(Schema):

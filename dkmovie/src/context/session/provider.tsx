@@ -1,8 +1,9 @@
 import { type PropsWithChildren, useCallback, useMemo } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useFetchSession } from "@/hooks/fetch/use-fetch-session";
+import { getMe } from "@/http/account/me";
 import {
   type CurrentSessionResponse,
   logout as logoutApi,
@@ -18,8 +19,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
     isLoading: isLoadingSession,
     error: sessionError,
   } = useFetchSession();
+  const { data: me } = useQuery({
+    queryKey: ["session", "me"],
+    queryFn: getMe,
+    staleTime: 1000 * 60 * 60,
+    enabled: !!session,
+  });
 
   const isAuthenticated = session?.meta.is_authenticated || false;
+  const isSuperUser = me?.is_superuser || false;
 
   const { mutate: logoutMutation } = useMutation({
     mutationFn: logoutApi,
@@ -47,6 +55,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       session: session?.data || null,
       sessionError,
       isAuthenticated,
+      isSuperUser,
       isLoadingSession,
       logout: logoutMutation,
       setSession,
@@ -54,6 +63,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [
       isAuthenticated,
       isLoadingSession,
+      isSuperUser,
       logoutMutation,
       session?.data,
       sessionError,

@@ -18,6 +18,9 @@
     <script id="pageErrorScript">
       const pageError = null;
     </script>
+    <script id="adminConfigScript">
+      const adminUrl = "{% url 'admin:index' %}";
+    </script>
     {% endblock head %}
     {% render_bundle "main" "css" %}
     {% render_bundle "main" "js" attrs="defer" %}

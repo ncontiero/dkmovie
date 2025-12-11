@@ -3,7 +3,6 @@ import {
   Outlet,
   redirect,
   useLocation,
-  useNavigate,
 } from "@tanstack/react-router";
 import { ShieldAlert, User } from "lucide-react";
 import { useTranslations } from "use-intl";
@@ -25,8 +24,12 @@ export const Route = createFileRoute("/account/(my-account)")({
 
 function MyAccountLayoutComponent() {
   const t = useTranslations("accountPage");
+  const {
+    djangoAdminUrl: adminUrl,
+    auth: { isSuperUser },
+  } = Route.useRouteContext();
   const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const navigate = Route.useNavigate();
 
   return (
     <ReAuthenticateProvider>
@@ -37,6 +40,19 @@ function MyAccountLayoutComponent() {
             <p className="text-muted-foreground text-lg font-medium">
               {t("description")}
             </p>
+            {isSuperUser ? (
+              <a
+                href={adminUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`
+                  hover:text-primary hover:underline ring-ring rounded-lg text-sm font-medium duration-200
+                  focus-visible:ring-2 focus-visible:outline-hidden
+                `}
+              >
+                {t("accessAdmin")}
+              </a>
+            ) : null}
           </div>
           <Separator className="my-6 h-0.5" />
           <Tabs

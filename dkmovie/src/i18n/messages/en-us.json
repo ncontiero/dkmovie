@@ -181,6 +181,7 @@
   "accountPage": {
     "title": "Account Management",
     "description": "Update your profile and manage your account settings.",
+    "accessAdmin": "Access admin panel",
     "tabs": {
       "account": {
         "label": "Account",
