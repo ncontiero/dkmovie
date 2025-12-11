@@ -53,7 +53,6 @@ def fetch_tmdb_data(endpoint: str, params: dict) -> dict | None:
             params=params,
             timeout=30,
         )
-        logger.info("Request URL: %s", response.status_code)
         if response.status_code == OK_CODE:
             return response.json()
 
@@ -195,7 +194,7 @@ def process_genres(title: Title, genres_lang_map: dict[str, list[dict]]) -> None
             # Fallback to local name if ID not found in default list
             canonical_name = default_genres_lookup.get(g_id, local_name)
 
-            genre_obj, _ = Genre.objects.populate(True).get_or_create(  # noqa: FBT003
+            genre_obj, _ = Genre.objects.get_or_create(
                 name=canonical_name,
                 defaults={"name": local_name},
             )
