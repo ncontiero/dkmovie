@@ -1,8 +1,10 @@
 from uuid import UUID
 
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
 from ninja import Query
 from ninja import Router
+from ninja.decorators import decorate_view
 from ninja.pagination import PageNumberPagination
 from ninja.pagination import paginate
 
@@ -15,6 +17,7 @@ router = Router()
 
 
 @router.get("/", response={200: list[TitleSchema]})
+@decorate_view(cache_page(3600))
 @paginate(PageNumberPagination, page_size=10)
 def get_titles(
     request,
@@ -33,6 +36,7 @@ def get_titles(
 
 
 @router.get("/{title_id}", response={200: TitleSchema})
+@decorate_view(cache_page(3600))
 def get_title(request, title_id: UUID):
     try:
         return Title.objects.get(id=title_id, status=Title.Status.RELEASED)

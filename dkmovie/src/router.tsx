@@ -16,7 +16,7 @@ export const router = createRouter({
     auth: undefined!,
     metadataTranslations: undefined!,
   },
-  defaultPreload: "intent",
+  defaultPreload: false,
   defaultPreloadStaleTime: 0,
   defaultNotFoundComponent: lazyComponents.errors.NotFound,
   defaultPendingComponent: lazyComponents.PendingComponent,
