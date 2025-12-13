@@ -7,7 +7,7 @@ export interface IntlContextProps {
 }
 
 export const IntlContext = createContext<IntlContextProps>({
-  lang: "en",
+  lang: "en-us",
   setLang: () => {
     throw new Error("setLang function not implemented");
   },
