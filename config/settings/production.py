@@ -15,6 +15,12 @@ ALLOWED_HOSTS = config(
     cast=lambda v: [s.strip() for s in v.split(",")],
     default="movies.ncontiero.com",
 )
+# https://github.com/adamchainz/django-cors-headers#configuration
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS",
+    cast=lambda v: [s.strip() for s in v.split(",")],
+    default="https://movies.ncontiero.com",
+)
 
 # DATABASES
 # ------------------------------------------------------------------------------
