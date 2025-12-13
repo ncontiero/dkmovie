@@ -16,6 +16,5 @@ export default merge(commonConfig, {
     filename: "js/[name]-[fullhash].js",
     chunkFilename: "js/[name]-[hash].js",
     cssFilename: "css/[name]-[contenthash].css",
-    assetModuleFilename: "assets/[name]-[hash][ext]",
   },
 });
