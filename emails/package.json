@@ -11,17 +11,17 @@
   "dependencies": {
     "@react-email/components": "1.0.1",
     "clsx": "2.1.1",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "tailwind-merge": "3.4.0"
   },
   "devDependencies": {
-    "@react-email/preview-server": "5.0.7",
+    "@react-email/preview-server": "5.0.8",
     "@types/fs-extra": "^11.0.4",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "fs-extra": "^11.3.2",
-    "react-email": "5.0.7",
+    "react-email": "5.0.8",
     "tinyglobby": "^0.2.15",
     "tsx": "^4.21.0"
   }
