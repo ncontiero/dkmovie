@@ -2,6 +2,7 @@ import type {
   ContentsType,
   PaginationNumberQueryParams,
   Title,
+  TitleDetails,
 } from "@/utils/types";
 import { formataReleaseDate } from "@/utils/date";
 import { type PaginationDataProps, httpClient } from "./client";
@@ -58,5 +59,5 @@ export async function getTitles(props: GetTitleProps = {}) {
 }
 
 export async function getTitle(id: string) {
-  return await httpClient.get<Title>(`/titles/${id}`);
+  return await httpClient.get<TitleDetails>(`/titles/${id}`);
 }

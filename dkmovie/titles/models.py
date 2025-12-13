@@ -7,6 +7,23 @@ from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
 
+def poster_path(instance, filename):
+    return f"titles/{instance.id}/posters/{filename}"
+
+
+def cover_path(instance, filename):
+    return f"titles/{instance.id}/covers/{filename}"
+
+
+def season_path(instance, filename):
+    return f"titles/{instance.title.id}/seasons/{instance.number}/{filename}"
+
+
+def episode_path(instance, filename):
+    title_id = instance.season.title.id
+    return f"titles/{title_id}/seasons/{instance.season.number}/episodes/{filename}"
+
+
 class Genre(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -116,13 +133,13 @@ class Title(models.Model):
         help_text=_("List of main cast members"),
     )
     poster = models.ImageField(
-        upload_to="posters/",
+        upload_to=poster_path,
         blank=True,
         null=True,
         help_text=_("Vertical poster image (portrait)"),
     )
     cover = models.ImageField(
-        upload_to="covers/",
+        upload_to=cover_path,
         blank=True,
         null=True,
         help_text=_("Horizontal cover image (backdrop)"),
@@ -142,12 +159,156 @@ class Title(models.Model):
         auto_now_add=True,
         help_text=_("Date and time when the title was created"),
     )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Date and time when the title was last updated"),
+    )
 
     class Meta:
         verbose_name = _("Title")
         verbose_name_plural = _("Titles")
-        # Order by most recent release date first, then by title
+        # Order by most recent release date first
         ordering = ["-release_date"]
 
     def __str__(self):
         return f"{self.title} ({self.get_content_type_display()})"
+
+    @property
+    def seasons_count(self):
+        return self.seasons.count()
+
+
+class Season(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid4,
+        editable=False,
+        help_text=_("Unique identifier for the season"),
+    )
+    tmdb_id = models.PositiveIntegerField(
+        unique=True,
+        null=True,
+        blank=True,
+        help_text=_("The TMDB ID of the season"),
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name="seasons",
+        help_text=_("The title to which this season belongs"),
+    )
+    number = models.PositiveIntegerField(default=1, help_text=_("Season number"))
+    name = models.CharField(max_length=255, help_text=_("Season name"))
+    overview = models.TextField(blank=True, help_text=_("Season overview"))
+    poster = models.ImageField(
+        upload_to=season_path,
+        blank=True,
+        null=True,
+        help_text=_("Season poster image"),
+    )
+    air_date = models.DateField(
+        blank=True,
+        null=True,
+        help_text=_("The date when the season premiered"),
+    )
+    rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=0,
+        help_text=_("The average rating out of 10"),
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text=_("Date and time when the season was created"),
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Date and time when the season was last updated"),
+    )
+
+    class Meta:
+        verbose_name = _("Season")
+        verbose_name_plural = _("Seasons")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["title", "number"],
+                name="unique_season_per_title",
+            ),
+        ]
+        ordering = ["number"]
+
+    def __str__(self):
+        return f"{self.title.title} (Season {self.number})"
+
+
+class Episode(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid4,
+        editable=False,
+        help_text=_("Unique identifier for the episode"),
+    )
+    tmdb_id = models.PositiveIntegerField(
+        unique=True,
+        null=True,
+        blank=True,
+        help_text=_("The TMDB ID of the episode"),
+    )
+    season = models.ForeignKey(
+        Season,
+        on_delete=models.CASCADE,
+        related_name="episodes",
+        help_text=_("The season to which this episode belongs"),
+    )
+    number = models.PositiveIntegerField(default=1, help_text=_("Episode number"))
+    name = models.CharField(max_length=255, help_text=_("Episode name"))
+    overview = models.TextField(blank=True, help_text=_("Episode overview"))
+    still = models.ImageField(
+        upload_to=episode_path,
+        blank=True,
+        null=True,
+        help_text=_("Episode still image"),
+    )
+    air_date = models.DateField(
+        blank=True,
+        null=True,
+        help_text=_("The date when the episode premiered"),
+    )
+    duration = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text=_("The duration in minutes"),
+    )
+    rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=0,
+        help_text=_("The average rating out of 10"),
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text=_("Date and time when the episode was created"),
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Date and time when the episode was last updated"),
+    )
+
+    class Meta:
+        verbose_name = _("Episode")
+        verbose_name_plural = _("Episodes")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["season", "number"],
+                name="unique_episode_per_season",
+            ),
+        ]
+        ordering = ["season__number", "number"]
+
+    def __str__(self):
+        return (
+            f"{self.season.title.title} S{self.season.number:02d}E{self.number:02d}"
+            f" - {self.name}"
+        )

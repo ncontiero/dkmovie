@@ -218,6 +218,15 @@ function TitleComponent() {
                         <span className="text-muted-foreground/40">•</span>
                         <span>{durationFormatted}</span>
                       </>
+                    ) : title.content_type === "SERIES" ? (
+                      <>
+                        <span className="text-muted-foreground/40">•</span>
+                        <span>
+                          {t("seasonsCount", {
+                            count: title.seasons?.length || 0,
+                          })}
+                        </span>
+                      </>
                     ) : null}
 
                     {title.genres?.length > 0 && (

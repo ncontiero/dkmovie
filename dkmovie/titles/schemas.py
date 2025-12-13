@@ -6,7 +6,9 @@ from ninja import FilterLookup
 from ninja import FilterSchema
 from ninja import ModelSchema
 
+from .models import Episode
 from .models import Genre
+from .models import Season
 from .models import Title
 
 
@@ -16,7 +18,7 @@ class GenreSchema(ModelSchema):
         fields = ["slug", "name"]
 
 
-class TitleSchema(ModelSchema):
+class BaseTitleSchema(ModelSchema):
     genres: list[GenreSchema] = []
 
     class Meta:
@@ -33,6 +35,42 @@ class TitleSchema(ModelSchema):
             "poster",
             "cover",
             "trailer_url",
+        ]
+
+
+class SeasonSchema(ModelSchema):
+    class Meta:
+        model = Season
+        fields = [
+            "id",
+            "number",
+            "name",
+            "overview",
+            "poster",
+            "air_date",
+            "rating",
+        ]
+
+
+class TitleDetailSchema(BaseTitleSchema):
+    seasons: list[SeasonSchema] = []
+
+    class Meta(BaseTitleSchema.Meta):
+        fields = BaseTitleSchema.Meta.fields
+
+
+class EpisodeSchema(ModelSchema):
+    class Meta:
+        model = Episode
+        fields = [
+            "id",
+            "number",
+            "name",
+            "overview",
+            "still",
+            "air_date",
+            "duration",
+            "rating",
         ]
 
 

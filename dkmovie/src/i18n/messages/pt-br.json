@@ -50,6 +50,7 @@
     "watch": "Assistir",
     "myList": "Minha lista",
     "addToMyList": "Adicionar na minha lista",
+    "seasonsCount": "{count, plural, =0 {Nenhuma temporada encontrada} =1 {1 temporada} other {# temporadas}}",
     "details": "Detalhes",
     "viewDetails": "Veja os detalhes de {title}",
     "cast": "Elenco",

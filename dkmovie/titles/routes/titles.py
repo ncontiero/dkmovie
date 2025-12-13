@@ -9,14 +9,17 @@ from ninja.pagination import PageNumberPagination
 from ninja.pagination import paginate
 
 from config.api.utils import ApiProcessError
+from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
+from dkmovie.titles.schemas import BaseTitleSchema
+from dkmovie.titles.schemas import EpisodeSchema
+from dkmovie.titles.schemas import TitleDetailSchema
 from dkmovie.titles.schemas import TitleFilterSchema
-from dkmovie.titles.schemas import TitleSchema
 
 router = Router()
 
 
-@router.get("/", response={200: list[TitleSchema]})
+@router.get("/", response={200: list[BaseTitleSchema]})
 @decorate_view(cache_page(3600))
 @paginate(PageNumberPagination, page_size=10)
 def get_titles(
@@ -24,7 +27,9 @@ def get_titles(
     filters: TitleFilterSchema = Query(...),  # noqa: B008
     order_by: str | None = None,
 ):
-    titles = Title.objects.filter(status=Title.Status.RELEASED)
+    titles = Title.objects.filter(status=Title.Status.RELEASED).prefetch_related(
+        "genres",
+    )
     try:
         filtered_titles = filters.filter(titles)
         if order_by:
@@ -35,10 +40,25 @@ def get_titles(
         return filtered_titles
 
 
-@router.get("/{title_id}", response={200: TitleSchema})
+@router.get("/{title_id}", response={200: TitleDetailSchema})
 @decorate_view(cache_page(3600))
 def get_title(request, title_id: UUID):
     try:
-        return Title.objects.get(id=title_id, status=Title.Status.RELEASED)
+        return Title.objects.prefetch_related("genres", "seasons").get(
+            id=title_id,
+            status=Title.Status.RELEASED,
+        )
     except Title.DoesNotExist as err:
         raise ApiProcessError(404, _("The title does not exist.")) from err
+
+
+@router.get(
+    "/{title_id}/season/{season_number}/episodes",
+    response={200: list[EpisodeSchema]},
+)
+@decorate_view(cache_page(3600))
+def get_episodes(request, title_id: UUID, season_number: int):
+    return Episode.objects.filter(
+        season__title__id=title_id,
+        season__number=season_number,
+    ).order_by("number")

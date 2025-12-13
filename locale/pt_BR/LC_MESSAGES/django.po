@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-10 01:55+0000\n"
+"POT-Creation-Date: 2025-12-13 02:33+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -524,6 +524,30 @@ msgstr "Preencher detalhes do TMDB"
 msgid "Selected titles are being populated from TMDB."
 msgstr "Os títulos selecionados estão sendo populados do TMDB."
 
+msgid "Season Information"
+msgstr "Informações da temporada"
+
+msgid "Dates & Rating"
+msgstr "Datas e classificação"
+
+msgid "Populate Season details from TMDB"
+msgstr "Preencher detalhes da temporada do TMDB"
+
+msgid "Selected seasons are being populated from TMDB."
+msgstr "As temporadas selecionadas estão sendo populadas do TMDB."
+
+msgid "Populate Season episodes from TMDB"
+msgstr "Preencher episódios da temporada do TMDB"
+
+msgid "Selected episodes are being populated from TMDB."
+msgstr "Os episódios selecionados estão sendo populados do TMDB."
+
+msgid "Episode Information"
+msgstr "Informações do episódio"
+
+msgid "Details"
+msgstr "Detalhes"
+
 msgid "Titles"
 msgstr "Títulos"
 
@@ -614,8 +638,83 @@ msgstr "Indica como o título foi adicionado ao banco de dados"
 msgid "Date and time when the title was created"
 msgstr "Data e hora em que o título foi criado"
 
+msgid "Date and time when the title was last updated"
+msgstr "Data e hora em que o título foi atualizado pela última vez"
+
 msgid "Title"
 msgstr "Título"
+
+msgid "Unique identifier for the season"
+msgstr "Identificador único para a temporada"
+
+msgid "The TMDB ID of the season"
+msgstr "O ID TMDB da temporada"
+
+msgid "The title to which this season belongs"
+msgstr "O título ao qual esta temporada pertence"
+
+msgid "Season number"
+msgstr "Número da temporada"
+
+msgid "Season name"
+msgstr "Nome da temporada"
+
+msgid "Season overview"
+msgstr "Resumo da temporada"
+
+msgid "Season poster image"
+msgstr "Imagem de pôster da temporada"
+
+msgid "The date when the season premiered"
+msgstr "A data de estreia da temporada"
+
+msgid "Date and time when the season was created"
+msgstr "Data e hora em que o título foi criado"
+
+msgid "Date and time when the season was last updated"
+msgstr "Data e hora em que o título foi atualizado pela última vez"
+
+msgid "Season"
+msgstr "Temporada"
+
+msgid "Seasons"
+msgstr "Temporadas"
+
+msgid "Unique identifier for the episode"
+msgstr "Identificador único para o episódio"
+
+msgid "The TMDB ID of the episode"
+msgstr "O ID TMDB do episódio"
+
+msgid "The season to which this episode belongs"
+msgstr "A temporada ao qual este episódio pertence"
+
+msgid "Episode number"
+msgstr "Número do episódio"
+
+msgid "Episode name"
+msgstr "Nome do episódio"
+
+msgid "Episode overview"
+msgstr "Resumo do episódio"
+
+msgid "Episode still image"
+msgstr "Imagem estática do episódio"
+
+msgid "The date when the episode premiered"
+msgstr "A data de estreia do episódio"
+
+msgid "Date and time when the episode was created"
+msgstr "Data e hora em que o episódio foi criado"
+
+msgid "Date and time when the episode was last updated"
+msgstr "Data e hora em que o episódio foi atualizado pela última vez"
+
+msgid "Episode"
+msgstr "Episódio"
+
+msgid "Episodes"
+msgstr "Episódios"
 
 msgid "Invalid filter parameter."
 msgstr "Parâmetro de filtro inválido."
@@ -670,6 +769,3 @@ msgstr "O nome é muito curto"
 
 msgid "Name is too long"
 msgstr "O nome é muito longo"
-
-#~ msgid "The unique identifier from The Movie Database (TMDB)"
-#~ msgstr "O identificador único do The Movie Database (TMDB)"

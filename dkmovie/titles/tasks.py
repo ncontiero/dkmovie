@@ -11,7 +11,9 @@ from django.utils import timezone
 from dkmovie.users.utils import send_email
 from dkmovie.utils.tasks import default_task_params
 
+from .models import Episode
 from .models import Genre
+from .models import Season
 from .models import Title
 
 logger = logging.getLogger(__name__)
@@ -109,6 +111,122 @@ def process_title_images(title: Title, details: dict) -> None:
         title.cover.save(cover.name, cover, save=False)
 
 
+@shared_task(
+    **default_task_params(
+        "populate_episodes_from_tmdb",
+        soft_time_limit=300,
+        time_limit=300,
+    ),
+)
+def populate_episodes_from_tmdb(self, season_id: str):
+    season = Season.objects.prefetch_related("title").get(id=season_id)
+    title_tmdb_id = season.title.tmdb_id
+
+    if not title_tmdb_id:
+        return
+
+    for lang_code, _ in LANGUAGES:
+        is_main = lang_code == DEFAULT_LANGUAGE
+        lang_suffix = get_model_lang_suffix(lang_code)
+
+        params = {"language": lang_code}
+        seasons_details = fetch_tmdb_data(
+            f"/tv/{title_tmdb_id}/season/{season.number}",
+            params,
+        )
+        if not seasons_details:
+            continue
+
+        episodes = seasons_details.get("episodes", [])
+        if not episodes:
+            continue
+
+        for episode_data in episodes:
+            episode, _ = Episode.objects.populate(True).get_or_create(  # noqa: FBT003
+                tmdb_id=episode_data.get("id"),
+                defaults={
+                    "tmdb_id": episode_data.get("id"),
+                    "season": season,
+                    "number": episode_data.get("episode_number", 1),
+                    "name": episode_data.get("name", ""),
+                    "overview": episode_data.get("overview", ""),
+                    "air_date": episode_data.get("air_date"),
+                    "duration": episode_data.get("runtime", 0),
+                    "rating": episode_data.get("vote_average", 0),
+                },
+            )
+
+            if is_main:
+                still = download_image(episode_data.get("still_path"))
+                if still:
+                    episode.still.save(still.name, still, save=False)
+                    episode.save(update_fields=["still"])
+            else:
+                name_field = f"name_{lang_suffix}"
+                overview_field = f"overview_{lang_suffix}"
+                setattr(episode, name_field, episode_data.get("name", ""))
+                setattr(episode, overview_field, episode_data.get("overview", ""))
+                episode.save(update_fields=[name_field, overview_field])
+
+
+@shared_task(
+    **default_task_params(
+        "populate_seasons_from_tmdb",
+        soft_time_limit=300,
+        time_limit=300,
+    ),
+)
+def populate_seasons_from_tmdb(
+    self,
+    title_id: str,
+    title_tmdb_id: int,
+    seasons_details: list[dict],
+):
+    title = Title.objects.get(id=title_id)
+
+    for season_data in seasons_details:
+        for lang_code, _ in LANGUAGES:
+            is_main = lang_code == DEFAULT_LANGUAGE
+            lang_suffix = get_model_lang_suffix(lang_code)
+
+            params = {"language": lang_code}
+            details = fetch_tmdb_data(
+                f"/tv/{title_tmdb_id}/season/{season_data['number']}",
+                params,
+            )
+            if not details:
+                continue
+
+            episodes = details.get("episodes", [])
+            if not episodes:
+                continue
+
+            season, _ = Season.objects.populate(True).get_or_create(  # noqa: FBT003
+                tmdb_id=details.get("id"),
+                defaults={
+                    "tmdb_id": details.get("id"),
+                    "title": title,
+                    "number": details.get("season_number", 1),
+                    "name": details.get("name", ""),
+                    "overview": details.get("overview", ""),
+                    "air_date": details.get("air_date"),
+                    "rating": details.get("vote_average", 0),
+                },
+            )
+
+            if is_main:
+                process_title_images(season, details)
+                season.save(update_fields=["poster"])
+            else:
+                name_field = f"name_{lang_suffix}"
+                overview_field = f"overview_{lang_suffix}"
+                setattr(season, name_field, details.get("name", ""))
+                already_have_overview = getattr(season, overview_field, "")
+                if not already_have_overview:
+                    setattr(season, overview_field, details.get("overview", ""))
+                season.save(update_fields=[name_field, overview_field])
+
+
 def fetch_title_details_and_update(
     title_obj: Title,
     tmdb_id: int,
@@ -124,7 +242,6 @@ def fetch_title_details_and_update(
     for lang_code, _ in LANGUAGES:
         is_main = lang_code == DEFAULT_LANGUAGE
         lang_suffix = get_model_lang_suffix(lang_code)
-        is_main_lang = lang_code == DEFAULT_LANGUAGE
 
         # Only fetch heavier data (videos/credits) for main language
         params = {
@@ -152,7 +269,7 @@ def fetch_title_details_and_update(
         setattr(title_obj, f"description_{lang_suffix}", details.get("overview", ""))
 
         # 3. Handle Main Language Specifics (Runtime, Media, Cast)
-        if is_main_lang:
+        if is_main:
             title_obj.title = api_title
             title_obj.description = details.get("overview", "")
             title_obj.rating = details.get("vote_average", 0)
@@ -168,6 +285,15 @@ def fetch_title_details_and_update(
             title_obj.cast = get_cast_list(cast)
 
             process_title_images(title_obj, details)
+
+        if title_type == Title.ContentType.SERIES:
+            seasons = details.get("seasons", [])
+            seasons_details = [
+                {"tmdb_id": s.get("id"), "number": s.get("season_number")}
+                for s in seasons
+                if s.get("episode_count", 0) > 0
+            ]
+            populate_seasons_from_tmdb.delay(title_obj.id, tmdb_id, seasons_details)
 
     return genres_lang_map
 

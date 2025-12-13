@@ -50,6 +50,7 @@
     "watch": "Watch",
     "myList": "My List",
     "addToMyList": "Add to my list",
+    "seasonsCount": "{count, plural, =0 {No seasons found} =1 {1 season} other {# seasons}}",
     "details": "Details",
     "viewDetails": "View details for {title}",
     "cast": "Cast",

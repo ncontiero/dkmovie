@@ -17,6 +17,16 @@ export interface Genre {
   slug: string;
 }
 
+export interface Season {
+  id: string;
+  number: number;
+  name: string;
+  overview: string;
+  poster: string | null;
+  air_date: string | null;
+  rating: number;
+}
+
 export interface Title {
   id: string;
   title: string;
@@ -30,6 +40,9 @@ export interface Title {
   poster: string | null;
   cover: string | null;
   trailer_url: string;
+}
+export interface TitleDetails extends Title {
+  seasons: Season[];
 }
 
 export interface PaginationDataProps<T = any> {
