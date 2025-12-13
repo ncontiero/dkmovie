@@ -121,6 +121,7 @@ ENV PATH="${APP_HOME}/.venv/bin:$PATH"
 USER django
 
 RUN DATABASE_URL="" \
+  TMDB_API_KEY="" \
   DJANGO_SETTINGS_MODULE="config.settings.test" \
   python manage.py compilemessages
 
