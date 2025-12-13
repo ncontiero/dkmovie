@@ -12,7 +12,9 @@ FROM client-base AS client-deps
 COPY ./package.json ./pnpm-lock.yaml* ./pnpm-workspace.yaml* ./
 COPY ./emails/package.json ./emails/
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# Railway does not accept the same image for multiple cached services
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 FROM client-base AS client-builder
 
@@ -53,17 +55,18 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev
 
 # Requirements are installed here to ensure they will be cached.
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-dev
+COPY pyproject.toml uv.lock ./
+# Railway does not accept the same image for multiple cached services
+# RUN --mount=type=cache,target=/root/.cache/uv \
+#     uv sync --locked --no-install-project --no-dev
+RUN uv sync --locked --no-install-project --no-dev
 
 COPY --from=client-build ${APP_HOME} ${APP_HOME}
 
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-dev
+# Railway does not accept the same image for multiple cached services
+# RUN --mount=type=cache,target=/root/.cache/uv \
+#     uv sync --locked --no-dev
+RUN uv sync --locked --no-dev
 
 # Python 'run' stage
 FROM python:3.13-slim-bookworm AS python-run-stage
