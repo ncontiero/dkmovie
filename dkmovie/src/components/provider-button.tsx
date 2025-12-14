@@ -1,7 +1,7 @@
 import type { InitializeReAuthentication } from "@/context/reauthenticate/context";
 import { type ReactNode, useRef, useState } from "react";
 import { apiAuthBasePath } from "@/http/client";
-import { getCookie } from "@/utils/get-cookie";
+import { getCSRFToken } from "@/utils/get-csrftoken";
 import { GoogleIcon } from "./icons/google";
 import { type ButtonProps, Button } from "./ui/button";
 
@@ -47,7 +47,7 @@ export function ProviderButton({
   const icon = iconToUse ?? <ProviderIcon provider={provider} />;
 
   const actionUrl = `${apiAuthBasePath}/auth/provider/redirect`;
-  const csrfToken = getCookie("csrftoken");
+  const csrfToken = getCSRFToken();
 
   return (
     <form

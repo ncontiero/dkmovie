@@ -1,4 +1,4 @@
-import { getCookie } from "@/utils/get-cookie";
+import { getCSRFToken } from "@/utils/get-csrftoken";
 
 export interface PaginationDataProps<T = any> {
   items: T;
@@ -44,7 +44,7 @@ export class HttpClient {
     const headers = new Headers({
       ...this.defaultHeaders,
       ...options.headers,
-      ...(isToAddCSRFToken ? { "X-CSRFToken": getCookie("csrftoken") } : {}),
+      ...(isToAddCSRFToken ? { "X-CSRFToken": getCSRFToken() } : {}),
     });
     const url = `${this.baseUrl}${endpoint}`;
     const response = await fetch(url, {
