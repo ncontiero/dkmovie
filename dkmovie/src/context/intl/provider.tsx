@@ -13,6 +13,7 @@ import {
   IntlProvider as IntlProviderBase,
 } from "use-intl";
 import { setLanguage } from "@/http/account/language";
+import { setCookie } from "@/utils/cookies";
 import { getErrorMessage } from "@/utils/errors";
 import { type IntlContextProps, IntlContext } from "./context";
 
@@ -49,12 +50,14 @@ export function IntlProvider({ children }: PropsWithChildren) {
   }, []);
 
   const setLang = useCallback(
-    async (lang: Locale) => {
+    (lang: Locale) => {
       try {
-        await setLanguage(lang);
+        setCookie("django_language", lang);
         setCurrentLang(lang);
         document.documentElement.lang = lang;
         queryClient.invalidateQueries({ queryKey: ["content"], exact: false });
+
+        setLanguage(lang);
       } catch (error) {
         const errors = getErrorMessage(error);
         if (errors) {

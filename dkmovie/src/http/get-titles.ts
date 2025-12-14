@@ -4,6 +4,7 @@ import type {
   Title,
   TitleDetails,
 } from "@/utils/types";
+import { getLangCookie } from "@/utils/cookies";
 import { formataReleaseDate } from "@/utils/date";
 import { type PaginationDataProps, httpClient } from "./client";
 
@@ -43,6 +44,7 @@ export async function getTitlesWithCount({
     params.append("release_date__gte", releaseYearStart);
     params.append("release_date__lt", releaseYearEnd);
   }
+  params.append("lang", getLangCookie());
 
   const url = `/titles/?${params.toString()}`;
 
@@ -59,5 +61,7 @@ export async function getTitles(props: GetTitleProps = {}) {
 }
 
 export async function getTitle(id: string) {
-  return await httpClient.get<TitleDetails>(`/titles/${id}`);
+  return await httpClient.get<TitleDetails>(
+    `/titles/${id}?lang=${getLangCookie()}`,
+  );
 }

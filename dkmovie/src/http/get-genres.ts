@@ -1,4 +1,5 @@
 import type { Genre, PaginationLimitQueryParams } from "@/utils/types";
+import { getLangCookie } from "@/utils/cookies";
 import { type PaginationDataProps, httpClient } from "./client";
 
 interface GetGenresProps extends PaginationLimitQueryParams {
@@ -17,6 +18,7 @@ export async function getGenres({
   if (offset) params.append("offset", offset.toString());
   if (slug) params.append("slug", slug);
   if (name) params.append("name", name);
+  params.append("lang", getLangCookie());
 
   const url = `/genres/?${params.toString()}`;
 
