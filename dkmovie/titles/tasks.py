@@ -1,10 +1,9 @@
 import logging
 from datetime import timedelta
 
-import requests
 from celery import shared_task
 from django.conf import settings
-from django.core.files.base import ContentFile
+from django.db import transaction
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -16,76 +15,32 @@ from .models import Episode
 from .models import Genre
 from .models import Season
 from .models import Title
-
-logger = logging.getLogger(__name__)
-
+from .utils import TMDBClient
 
 TMDB_API_KEY = settings.TMDB_API_KEY
 API_BASE_URL = settings.TMDB_API_URL
 IMAGE_BASE_URL = settings.TMDB_IMAGE_BASE_URL
-OK_CODE = 200
-
 DEFAULT_LANGUAGE = settings.LANGUAGE_CODE
 LANGUAGES = settings.LANGUAGES
 
+OK_CODE = 200
+
 # Crawler Settings
-MAX_PAGES = 3  # Maximum number of pages to process per task execution
+MAX_PAGES = 3
 SEARCH_WINDOW_DAYS = 90
 INITIAL_BUFFER_DAYS = 7
 MIN_VOTE_AVERAGE = 1
 MIN_RUNTIME_MINUTES = 40
 
-tmdb_default_headers = {
-    "accept": "application/json",
-    "Authorization": f"Bearer {TMDB_API_KEY}",
-}
+
+logger = logging.getLogger(__name__)
+
+tmdb_client = TMDBClient()
 
 
 def get_model_lang_suffix(lang_code: str) -> str:
     """Converts 'pt-br' to 'pt_br'."""
     return lang_code.replace("-", "_").lower()
-
-
-def fetch_tmdb_data(endpoint: str, params: dict) -> dict | None:
-    """Generic TMDB fetcher with error handling."""
-    url = f"{API_BASE_URL}{endpoint}"
-    try:
-        response = requests.get(
-            url,
-            headers=tmdb_default_headers,
-            params=params,
-            timeout=30,
-        )
-        if response.status_code == OK_CODE:
-            return response.json()
-
-        logger.warning(
-            "TMDB request failed. Status: %s, URL: %s",
-            response.status_code,
-            url,
-        )
-    except requests.RequestException as e:
-        logger.exception(
-            "Network error connecting to TMDB endpoint %s",
-            endpoint,
-            exc_info=e,
-        )
-
-    return None
-
-
-def download_image(path: str) -> ContentFile | None:
-    """Downloads image from TMDB and returns ContentFile."""
-    if not path:
-        return None
-    try:
-        url = f"{IMAGE_BASE_URL}{path}"
-        response = requests.get(url, timeout=10)
-        if response.status_code == OK_CODE:
-            return ContentFile(response.content, name=path.lstrip("/"))
-    except Exception as e:
-        logger.exception("Error downloading image %s", path, exc_info=e)
-    return None
 
 
 def get_trailer_url(videos: list[dict]) -> str:
@@ -103,8 +58,8 @@ def get_cast_list(cast: list[dict]) -> str:
 
 def process_title_images(title: Title, details: dict) -> None:
     """Downloads and saves poster/cover images for the title."""
-    poster = download_image(details.get("poster_path"))
-    cover = download_image(details.get("backdrop_path"))
+    poster = tmdb_client.download_image(details.get("poster_path"))
+    cover = tmdb_client.download_image(details.get("backdrop_path"))
 
     if poster:
         title.poster.save(poster.name, poster, save=False)
@@ -121,6 +76,7 @@ def process_episode(
     ignore_air_date: bool = False,
 ) -> None:
     air_date = episode_details.get("air_date")
+    # Skip future episodes unless explicitly ignored
     if (
         not air_date or parse_date(air_date) > timezone.now().date()
     ) and not ignore_air_date:
@@ -131,11 +87,12 @@ def process_episode(
     name = episode_details.get("name", "")
     overview = episode_details.get("overview", "")
 
-    try:
-        episode = Episode.objects.filter(season=season, number=episode_number).first()
-        if not episode:
-            episode = Episode.objects.get(tmdb_id=tmdb_id)
-    except Episode.DoesNotExist:
+    # Try to find existing episode by Season+Number OR TMDB ID
+    episode = Episode.objects.filter(season=season, number=episode_number).first()
+    if not episode and tmdb_id:
+        episode = Episode.objects.filter(tmdb_id=tmdb_id).first()
+
+    if not episode:
         episode = Episode.objects.populate(True).create(  # noqa: FBT003
             tmdb_id=tmdb_id,
             season=season,
@@ -144,10 +101,10 @@ def process_episode(
             overview=overview,
         )
 
-    name_field = f"name_{lang_suffix}"
-    overview_field = f"overview_{lang_suffix}"
-    setattr(episode, name_field, name)
-    setattr(episode, overview_field, overview)
+    # Update language-specific fields
+    setattr(episode, f"name_{lang_suffix}", name)
+    if overview:
+        setattr(episode, f"overview_{lang_suffix}", overview)
 
     if is_main:
         episode.tmdb_id = tmdb_id
@@ -157,11 +114,239 @@ def process_episode(
         episode.duration = episode_details.get("runtime", 0)
         episode.rating = episode_details.get("vote_average", 0)
 
-        still = download_image(episode_details.get("still_path"))
+        still = tmdb_client.download_image(episode_details.get("still_path"))
         if still:
             episode.still.save(still.name, still, save=False)
 
     episode.save()
+
+
+def process_genres(title: Title, genres_lang_map: dict[str, list[dict]]) -> None:
+    """
+    Syncs genres across languages.
+    Ensures canonical name is English/Default, adds translations, and links M2M.
+    """
+    genres_to_add = []
+    default_suffix = get_model_lang_suffix(DEFAULT_LANGUAGE)
+    default_genres = genres_lang_map.get(default_suffix, [])
+
+    # ID -> Name lookup for the default language (Canonical Source)
+    default_genres_lookup = {g["id"]: g["name"] for g in default_genres}
+
+    for lang_suffix, genres_data in genres_lang_map.items():
+        is_default = lang_suffix == default_suffix
+
+        for g_data in genres_data:
+            g_id = g_data["id"]
+            local_name = g_data["name"]
+
+            # Fallback to local name if ID not found in default list
+            canonical_name = default_genres_lookup.get(g_id, local_name)
+
+            genre_obj, _ = Genre.objects.get_or_create(
+                name=canonical_name,
+                defaults={"name": local_name},
+            )
+
+            # Update translation ONLY if the field is empty
+            name_field = f"name_{lang_suffix}"
+            if not getattr(genre_obj, name_field, None):
+                setattr(genre_obj, name_field, local_name)
+                genre_obj.save(update_fields=[name_field])
+
+            if is_default:
+                genres_to_add.append(genre_obj)
+
+    if genres_to_add:
+        title.genres.set(genres_to_add)
+
+
+def update_title_from_tmdb_details(
+    title_obj: Title,
+    tmdb_id: int,
+    title_type: Title.ContentType,
+) -> None:
+    """
+    Fetches details for all languages, updates the Title object,
+    and schedules/processes related data (Genres, Seasons).
+    """
+    genres_lang_map: dict[str, list[dict]] = {}
+
+    for lang_code, _ in LANGUAGES:
+        is_main = lang_code == DEFAULT_LANGUAGE
+        lang_suffix = get_model_lang_suffix(lang_code)
+
+        # Only fetch heavier data (videos/credits) for main language
+        params = {
+            "language": lang_code,
+            "append_to_response": "videos,credits" if is_main else "",
+        }
+
+        details = tmdb_client.get_details(tmdb_id, title_type, params)
+        if not details:
+            continue
+
+        # 1. Store Genres
+        genres_lang_map[lang_suffix] = details.get("genres", [])
+
+        # 2. Translations (Title/Description)
+        api_title = details.get("title") or details.get("name") or ""
+        overview = details.get("overview", "")
+        setattr(title_obj, f"title_{lang_suffix}", api_title)
+        if overview:
+            setattr(title_obj, f"description_{lang_suffix}", overview)
+
+        # 3. Handle Main Language Specifics
+        if is_main:
+            title_obj.title = api_title
+            title_obj.description = overview
+            title_obj.rating = details.get("vote_average", 0)
+            title_obj.duration = details.get("runtime", 0)
+
+            release = details.get("release_date") or details.get("first_air_date")
+            title_obj.release_date = release or None
+
+            videos = details.get("videos", {}).get("results", [])
+            cast = details.get("credits", {}).get("cast", [])
+
+            title_obj.trailer_url = get_trailer_url(videos)
+            title_obj.cast = get_cast_list(cast)
+
+            process_title_images(title_obj, details)
+
+        # 4. Handle Series Specifics (Seasons)
+        if title_type == Title.ContentType.SERIES and is_main:
+            seasons = details.get("seasons", [])
+            seasons_details = [
+                {"tmdb_id": s.get("id"), "number": s.get("season_number")}
+                for s in seasons
+                if s.get("episode_count", 0) > 0
+            ]
+            if seasons_details:
+                populate_seasons_from_tmdb.delay(title_obj.id, tmdb_id, seasons_details)
+
+    # Save changes before processing M2M
+    title_obj.save()
+    process_genres(title_obj, genres_lang_map)
+
+
+def import_or_update_title(
+    tmdb_id: int,
+    title_type: Title.ContentType,
+    initial_data: dict | None = None,
+) -> tuple[bool, Title | None]:
+    """
+    Creates or updates a Title based on TMDB ID.
+    If 'initial_data' is not provided, it fetches basic info first.
+    """
+    if Title.objects.filter(
+        tmdb_id=tmdb_id,
+        added_by=Title.AddedBy.TMDB,
+        content_type=title_type,
+    ).exists():
+        logger.info(
+            "Title with TMDB ID %s and type %s already exists. Skipping creation.",
+            tmdb_id,
+            title_type,
+        )
+        return False, None
+
+    # If we don't have initial data (e.g. from discovery), fetch it now.
+    # This prevents creating a Title with empty fields if the subsequent
+    # detailed fetch fails.
+    if not initial_data:
+        initial_data = tmdb_client.get_details(
+            tmdb_id,
+            title_type,
+            params={"language": DEFAULT_LANGUAGE},
+        )
+        if not initial_data:
+            logger.error("Could not fetch initial data for TMDB ID %s", tmdb_id)
+            return False, None
+
+    try:
+        item_title = (initial_data.get("title") or initial_data.get("name")) or ""
+        release_date = initial_data.get("release_date") or initial_data.get(
+            "first_air_date",
+        )
+
+        with transaction.atomic():
+            new_title, _ = Title.objects.populate(True).get_or_create(  # noqa: FBT003
+                tmdb_id=tmdb_id,
+                defaults={
+                    "tmdb_id": tmdb_id,
+                    "title": item_title,
+                    "description": initial_data.get("overview", ""),
+                    "content_type": title_type,
+                    "release_date": release_date or None,
+                    "rating": initial_data.get("vote_average", 0),
+                    "added_by": Title.AddedBy.TMDB,
+                },
+            )
+
+        # Fetch full details (multilingual, images, etc.) and update
+        update_title_from_tmdb_details(new_title, tmdb_id, title_type)
+
+    except Exception as e:
+        logger.exception(
+            "Error processing %s with ID %s",
+            title_type,
+            tmdb_id,
+            exc_info=e,
+        )
+        return False, None
+
+    return True, new_title
+
+
+def get_discovery_date_range(content_type: str) -> tuple[str, str]:
+    """
+    Calculates the date range for back-filling content.
+    """
+    oldest_title = (
+        Title.objects.filter(
+            content_type=content_type,
+            release_date__isnull=False,
+            added_by=Title.AddedBy.TMDB,
+        )
+        .order_by("release_date")
+        .first()
+    )
+
+    end_date = timezone.now() - timedelta(days=INITIAL_BUFFER_DAYS)
+    if oldest_title:
+        end_date = oldest_title.release_date
+
+    start_date = end_date - timedelta(days=SEARCH_WINDOW_DAYS)
+
+    return start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
+
+
+def _populate_discovery_titles(
+    content_type: Title.ContentType,
+    params: dict,
+) -> list[Title]:
+    """
+    Generic function to fetch discovery results and populate titles.
+    """
+    all_created_titles = []
+
+    for page in range(1, MAX_PAGES + 1):
+        params["page"] = page
+        results = tmdb_client.discover(content_type, params)
+        if not results:
+            break
+
+        for item in results:
+            success, title = import_or_update_title(
+                item["id"],
+                content_type,
+                initial_data=item,
+            )
+            if success and title:
+                all_created_titles.append(title)
+
+    return all_created_titles
 
 
 @shared_task(**default_task_params("populate_episode_from_tmdb"))
@@ -176,11 +361,13 @@ def populate_episode_from_tmdb(self, season_id: str, episode_number: int):
         is_main = lang_code == DEFAULT_LANGUAGE
         lang_suffix = get_model_lang_suffix(lang_code)
 
-        params = {"language": lang_code}
-        episode_details = fetch_tmdb_data(
-            f"/tv/{title_tmdb_id}/season/{season.number}/episode/{episode_number}",
-            params,
+        episode_details = tmdb_client.get_episode_details(
+            title_tmdb_id,
+            season.number,
+            episode_number,
+            params={"language": lang_code},
         )
+
         if not episode_details:
             continue
 
@@ -211,18 +398,15 @@ def populate_episodes_from_tmdb(self, season_id: str):
         is_main = lang_code == DEFAULT_LANGUAGE
         lang_suffix = get_model_lang_suffix(lang_code)
 
-        params = {"language": lang_code}
-        seasons_details = fetch_tmdb_data(
-            f"/tv/{title_tmdb_id}/season/{season.number}",
-            params,
+        season_details = tmdb_client.get_season_details(
+            title_tmdb_id,
+            season.number,
+            params={"language": lang_code},
         )
-        if not seasons_details:
+        if not season_details:
             continue
 
-        episodes = seasons_details.get("episodes", [])
-        if not episodes:
-            continue
-
+        episodes = season_details.get("episodes", [])
         for episode_data in episodes:
             process_episode(episode_data, season, lang_suffix, is_main=is_main)
 
@@ -247,10 +431,10 @@ def populate_seasons_from_tmdb(
             is_main = lang_code == DEFAULT_LANGUAGE
             lang_suffix = get_model_lang_suffix(lang_code)
 
-            params = {"language": lang_code}
-            details = fetch_tmdb_data(
-                f"/tv/{title_tmdb_id}/season/{season_data['number']}",
-                params,
+            details = tmdb_client.get_season_details(
+                title_tmdb_id,
+                season_data["number"],
+                params={"language": lang_code},
             )
             if not details:
                 continue
@@ -258,10 +442,6 @@ def populate_seasons_from_tmdb(
             air_date = details.get("air_date")
             now_date = timezone.now().date()
             if not air_date or parse_date(air_date) > now_date:
-                continue
-
-            episodes = details.get("episodes", [])
-            if not episodes:
                 continue
 
             season, _ = Season.objects.populate(True).get_or_create(  # noqa: FBT003
@@ -290,224 +470,13 @@ def populate_seasons_from_tmdb(
                 season.save(update_fields=[name_field, overview_field])
 
 
-def fetch_title_details_and_update(
-    title_obj: Title,
-    tmdb_id: int,
-    title_type: Title.ContentType,
-) -> dict[str, list]:
+@shared_task(**default_task_params("populate_title_admin_task"))
+def populate_title_admin_task(self, tmdb_id: int, title_type: str) -> None:
     """
-    Fetches details for all languages and populates the Title object in-memory.
-    Returns the map of genres to be processed after saving.
+    Task to manually import a title by ID (via Admin).
+    Fetches details first to ensure we don't create an empty record.
     """
-    genres_lang_map: dict[str, list[dict]] = {}
-    path_type = "movie" if title_type == Title.ContentType.MOVIE else "tv"
-
-    for lang_code, _ in LANGUAGES:
-        is_main = lang_code == DEFAULT_LANGUAGE
-        lang_suffix = get_model_lang_suffix(lang_code)
-
-        # Only fetch heavier data (videos/credits) for main language
-        params = {
-            "language": lang_code,
-            "append_to_response": "videos,credits" if is_main else "",
-        }
-
-        details = fetch_tmdb_data(f"/{path_type}/{tmdb_id}", params)
-        if not details:
-            continue
-
-        # 1. Store Genres
-        genres_lang_map[lang_suffix] = details.get("genres", [])
-
-        # 2. Translations (Title/Description)
-        # Handle "title" vs "name" (Movie vs TV)
-        api_title = details.get("title") or details.get("name") or ""
-        overview = details.get("overview", "")
-        setattr(title_obj, f"title_{lang_suffix}", api_title)
-        setattr(title_obj, f"description_{lang_suffix}", overview)
-
-        # 3. Handle Main Language Specifics (Runtime, Media, Cast)
-        if is_main:
-            title_obj.title = api_title
-            title_obj.description = overview
-            title_obj.rating = details.get("vote_average", 0)
-            title_obj.duration = details.get("runtime", 0)
-
-            release = details.get("release_date") or details.get("first_air_date")
-            title_obj.release_date = release or None
-
-            videos = details.get("videos", {}).get("results", [])
-            cast = details.get("credits", {}).get("cast", [])
-
-            title_obj.trailer_url = get_trailer_url(videos)
-            title_obj.cast = get_cast_list(cast)
-
-            process_title_images(title_obj, details)
-
-        if title_type == Title.ContentType.SERIES:
-            seasons = details.get("seasons", [])
-            seasons_details = [
-                {"tmdb_id": s.get("id"), "number": s.get("season_number")}
-                for s in seasons
-                if s.get("episode_count", 0) > 0
-            ]
-            populate_seasons_from_tmdb.delay(title_obj.id, tmdb_id, seasons_details)
-
-    return genres_lang_map
-
-
-def process_genres(title: Title, genres_lang_map: dict[str, list[dict]]) -> None:
-    """
-    Syncs genres across languages.
-    Ensures canonical name is English/Default, adds translations, and links M2M.
-    """
-    genres_to_add = []
-    default_suffix = get_model_lang_suffix(DEFAULT_LANGUAGE)
-    default_genres = genres_lang_map.get(default_suffix, [])
-
-    # ID -> Name lookup for the default language (Canonical Source)
-    default_genres_lookup = {g["id"]: g["name"] for g in default_genres}
-
-    for lang_suffix, genres_data in genres_lang_map.items():
-        is_default = lang_suffix == default_suffix
-
-        for g_data in genres_data:
-            g_id = g_data["id"]
-            local_name = g_data["name"]
-
-            # Fallback to local name if ID not found in default list
-            canonical_name = default_genres_lookup.get(g_id, local_name)
-
-            genre_obj, _ = Genre.objects.get_or_create(
-                name=canonical_name,
-                defaults={"name": local_name},
-            )
-
-            # Update translation ONLY if the field is empty.
-            name_field = f"name_{lang_suffix}"
-            current_value = getattr(genre_obj, name_field, None)
-            if not current_value:
-                setattr(genre_obj, name_field, local_name)
-                genre_obj.save(update_fields=[name_field])
-
-            # We only add to the M2M list if we are processing the default language
-            if is_default:
-                genres_to_add.append(genre_obj)
-
-    if genres_to_add:
-        title.genres.set(genres_to_add)
-
-
-def populate_single_title(
-    item_data: dict,
-    title_type: Title.ContentType,
-) -> tuple[bool, Title | None]:
-    """
-    Orchestrates the creation/update of a single title.
-    Returns a tuple (success: bool, title: Title | None).
-    """
-    tmdb_id = item_data["id"]
-
-    if Title.objects.filter(
-        tmdb_id=tmdb_id,
-        added_by=Title.AddedBy.TMDB,
-        content_type=title_type,
-    ).exists():
-        logger.info(
-            "Title with TMDB ID %s and type %s already exists. Skipping.",
-            tmdb_id,
-            title_type,
-        )
-        return False, None
-
-    try:
-        item_title = (item_data.get("title") or item_data.get("name")) or ""
-        release_date = item_data.get("release_date") or item_data.get("first_air_date")
-
-        new_title, _ = Title.objects.populate(True).get_or_create(  # noqa: FBT003
-            tmdb_id=tmdb_id,
-            defaults={
-                "tmdb_id": tmdb_id,
-                "title": item_title,
-                "description": item_data.get("overview", ""),
-                "content_type": title_type,
-                "release_date": release_date or None,
-                "rating": item_data.get("vote_average", 0),
-                "added_by": Title.AddedBy.TMDB,
-            },
-        )
-
-        # 1. Fetch details across all languages and fill the object
-        genres_map = fetch_title_details_and_update(new_title, tmdb_id, title_type)
-
-        # 2. Save the movie first (needed for M2M relations and ImageFields)
-        new_title.save()
-
-        # 3. Process Genres
-        process_genres(new_title, genres_map)
-    except Exception as e:
-        logger.exception(
-            "Error processing %s with ID %s",
-            title_type,
-            tmdb_id,
-            exc_info=e,
-        )
-        return False, None
-    else:
-        return True, new_title
-
-
-def get_discovery_date_range(content_type: str) -> tuple[str, str]:
-    """
-    Calculates the date range for back-filling content.
-    Finds the oldest TMDB-added title and searches backwards from there.
-    """
-    oldest_title = (
-        Title.objects.filter(
-            content_type=content_type,
-            release_date__isnull=False,
-            added_by=Title.AddedBy.TMDB,
-        )
-        .order_by("release_date")
-        .first()
-    )
-
-    end_date = timezone.now() - timedelta(days=INITIAL_BUFFER_DAYS)
-    if oldest_title:
-        end_date = oldest_title.release_date
-
-    start_date = end_date - timedelta(days=SEARCH_WINDOW_DAYS)
-
-    return start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
-
-
-def fetch_and_process_discovery_results(
-    params: dict,
-    title_type: Title.ContentType,
-) -> list[Title]:
-    """
-    Fetches discovery list iterating up to MAX_PAGES and processes each item.
-    """
-
-    path_type = "movie" if title_type == Title.ContentType.MOVIE else "tv"
-    all_created_titles = []
-
-    for page in range(1, MAX_PAGES + 1):
-        params["page"] = page
-        data = fetch_tmdb_data(f"/discover/{path_type}", params)
-        if not data:
-            break
-
-        results = data.get("results", [])
-        if not results:
-            break
-
-        for item in results:
-            success, title = populate_single_title(item, title_type)
-            if success and title:
-                all_created_titles.append(title)
-
-    return all_created_titles
+    import_or_update_title(tmdb_id, title_type, initial_data=None)
 
 
 @shared_task(**default_task_params("send_titles_added_email_task"))
@@ -542,11 +511,6 @@ def send_titles_added_email_task(
         )
 
 
-@shared_task(**default_task_params("populate_title_admin_task"))
-def populate_title_admin_task(self, tmdb_id: int, title_type: str) -> None:
-    populate_single_title({"id": tmdb_id}, title_type)
-
-
 @shared_task(
     **default_task_params(
         "populate_movies_from_tmdb",
@@ -556,7 +520,6 @@ def populate_title_admin_task(self, tmdb_id: int, title_type: str) -> None:
 )
 def populate_movies_from_tmdb(self):
     """Fetches movies from TMDB and saves them to the database."""
-
     start_date, end_date = get_discovery_date_range(Title.ContentType.MOVIE)
 
     params = {
@@ -569,10 +532,7 @@ def populate_movies_from_tmdb(self):
         "vote_average.gte": MIN_VOTE_AVERAGE,
     }
 
-    created_movies = fetch_and_process_discovery_results(
-        params,
-        Title.ContentType.MOVIE,
-    )
+    created_movies = _populate_discovery_titles(Title.ContentType.MOVIE, params)
 
     if created_movies:
         title_payload = [{"id": m.id, "title": m.title} for m in created_movies]
@@ -590,8 +550,8 @@ def populate_movies_from_tmdb(self):
 )
 def populate_series_from_tmdb(self):
     """Fetches series from TMDB and saves them to the database."""
-
     start_date, end_date = get_discovery_date_range(Title.ContentType.SERIES)
+
     params = {
         "language": DEFAULT_LANGUAGE,
         "first_air_date.gte": start_date,
@@ -601,10 +561,7 @@ def populate_series_from_tmdb(self):
         "vote_average.gte": MIN_VOTE_AVERAGE,
     }
 
-    created_series = fetch_and_process_discovery_results(
-        params,
-        Title.ContentType.SERIES,
-    )
+    created_series = _populate_discovery_titles(Title.ContentType.SERIES, params)
 
     if created_series:
         title_payload = [{"id": s.id, "title": s.title} for s in created_series]

@@ -10,6 +10,18 @@ from .models import Season
 from .models import Title
 
 
+class TmdbUrlMixin:
+    def tmdb_url(self, obj):
+        url = obj.tmdb_url
+        if not url:
+            return ""
+        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
+        return mark_safe(anchor)  # noqa: S308
+
+    tmdb_url.short_description = _("TMDB URL")
+    tmdb_url.allow_tags = True
+
+
 @admin.register(Genre)
 class GenreAdmin(TranslationAdmin):
     list_display = ("name", "slug")
@@ -17,38 +29,22 @@ class GenreAdmin(TranslationAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 
-class SeasonInline(TranslationTabularInline):
-    model = Season
-    extra = 0
-    ordering = ("number",)
-    fields = (
-        "number",
-        "name",
-        "air_date",
-        "rating",
-        "tmdb_id",
-    )
-    readonly_fields = ("created_at", "updated_at")
-    show_change_link = True
-
-
-class EpisodeInline(TranslationTabularInline):
-    model = Episode
-    extra = 0
-    ordering = ("number",)
-    fields = (
-        "number",
-        "name",
-        "air_date",
-        "rating",
-        "tmdb_id",
-    )
-    readonly_fields = ("created_at", "updated_at")
-    show_change_link = True
-
-
 @admin.register(Title)
-class TitleAdmin(TranslationAdmin):
+class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
+    class SeasonInline(TranslationTabularInline):
+        model = Season
+        extra = 0
+        ordering = ("number",)
+        fields = (
+            "number",
+            "name",
+            "air_date",
+            "rating",
+            "tmdb_id",
+        )
+        readonly_fields = ("created_at", "updated_at")
+        show_change_link = True
+
     list_display = ("title", "status", "content_type", "release_date", "rating")
     list_filter = ("status", "content_type", "genres", "release_date", "added_by")
     search_fields = ("title", "description", "tmdb_id")
@@ -111,16 +107,6 @@ class TitleAdmin(TranslationAdmin):
     )
     actions = ("make_released", "make_awaiting_review", "populate_from_tmdb")
 
-    def tmdb_url(self, obj):
-        url = obj.tmdb_url
-        if not url:
-            return ""
-        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
-        return mark_safe(anchor)  # noqa: S308
-
-    tmdb_url.short_description = _("TMDB URL")
-    tmdb_url.allow_tags = True
-
     @admin.action(description=_("Mark as Released"))
     def make_released(self, request, queryset):
         queryset.update(status=Title.Status.RELEASED)
@@ -143,7 +129,21 @@ class TitleAdmin(TranslationAdmin):
 
 
 @admin.register(Season)
-class SeasonAdmin(TranslationAdmin):
+class SeasonAdmin(TmdbUrlMixin, TranslationAdmin):
+    class EpisodeInline(TranslationTabularInline):
+        model = Episode
+        extra = 0
+        ordering = ("number",)
+        fields = (
+            "number",
+            "name",
+            "air_date",
+            "rating",
+            "tmdb_id",
+        )
+        readonly_fields = ("created_at", "updated_at")
+        show_change_link = True
+
     list_display = ("__str__", "title", "number", "air_date", "rating")
     list_filter = ("number", "air_date")
     search_fields = ("title__title", "name", "overview")
@@ -184,16 +184,6 @@ class SeasonAdmin(TranslationAdmin):
     )
     actions = ("populate_from_tmdb", "populate_episodes_from_tmdb")
 
-    def tmdb_url(self, obj):
-        url = obj.tmdb_url
-        if not url:
-            return ""
-        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
-        return mark_safe(anchor)  # noqa: S308
-
-    tmdb_url.short_description = _("TMDB URL")
-    tmdb_url.allow_tags = True
-
     @admin.action(description=_("Populate Season details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
         from .tasks import populate_seasons_from_tmdb  # noqa: PLC0415
@@ -218,7 +208,7 @@ class SeasonAdmin(TranslationAdmin):
 
 
 @admin.register(Episode)
-class EpisodeAdmin(TranslationAdmin):
+class EpisodeAdmin(TmdbUrlMixin, TranslationAdmin):
     list_display = ("__str__", "season", "number", "air_date", "rating")
     list_filter = ("air_date",)
     search_fields = ("season__title__title", "name", "overview")
@@ -258,16 +248,6 @@ class EpisodeAdmin(TranslationAdmin):
         ),
     )
     actions = ("populate_from_tmdb",)
-
-    def tmdb_url(self, obj):
-        url = obj.tmdb_url
-        if not url:
-            return ""
-        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
-        return mark_safe(anchor)  # noqa: S308
-
-    tmdb_url.short_description = _("TMDB URL")
-    tmdb_url.allow_tags = True
 
     @admin.action(description=_("Populate Episode details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
