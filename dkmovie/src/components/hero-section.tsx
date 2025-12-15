@@ -24,7 +24,6 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
               src={content.cover}
               alt={content.title}
               className="size-full object-cover object-top md:object-center"
-              loading="eager"
             />
           </div>
         ) : (
@@ -110,7 +109,7 @@ export function HeroSection({ content }: HeroProps) {
       pagination={{
         clickable: true,
       }}
-      autoplay={{ disableOnInteraction: false, delay: 4000 }}
+      autoplay={{ disableOnInteraction: false, delay: 5000 }}
       simulateTouch={isMobile}
       loop
     >

@@ -7,14 +7,20 @@ interface UseIsMobileReturn {
   isLoading: boolean;
 }
 
-export function useIsMobile(): UseIsMobileReturn {
+export function useIsMobile(
+  {
+    mobileMaxWidth,
+  }: {
+    mobileMaxWidth: number;
+  } = { mobileMaxWidth: 768 },
+): UseIsMobileReturn {
   const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkIsMobile = () => {
       // Check using media query
-      const mediaQuery = window.matchMedia("(max-width: 768px)");
+      const mediaQuery = window.matchMedia(`(max-width: ${mobileMaxWidth}px)`);
 
       // Check using user agent (additional detection)
       const userAgent = navigator.userAgent.toLowerCase();
