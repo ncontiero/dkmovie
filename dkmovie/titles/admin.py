@@ -257,6 +257,7 @@ class EpisodeAdmin(TranslationAdmin):
             },
         ),
     )
+    actions = ("populate_from_tmdb",)
 
     def tmdb_url(self, obj):
         url = obj.tmdb_url
@@ -267,3 +268,14 @@ class EpisodeAdmin(TranslationAdmin):
 
     tmdb_url.short_description = _("TMDB URL")
     tmdb_url.allow_tags = True
+
+    @admin.action(description=_("Populate Episode details from TMDB"))
+    def populate_from_tmdb(self, request, queryset):
+        from .tasks import populate_episode_from_tmdb  # noqa: PLC0415
+
+        for episode in queryset:
+            populate_episode_from_tmdb.delay(episode.season.id, episode.number)
+        self.message_user(
+            request,
+            _("Selected episodes are being populated from TMDB."),
+        )

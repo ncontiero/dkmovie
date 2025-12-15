@@ -112,6 +112,87 @@ def process_title_images(title: Title, details: dict) -> None:
         title.cover.save(cover.name, cover, save=False)
 
 
+def process_episode(
+    episode_details: dict,
+    season: Season,
+    lang_suffix: str,
+    *,
+    is_main: bool,
+    ignore_air_date: bool = False,
+) -> None:
+    air_date = episode_details.get("air_date")
+    if (
+        not air_date or parse_date(air_date) > timezone.now().date()
+    ) and not ignore_air_date:
+        return
+
+    tmdb_id = episode_details.get("id")
+    episode_number = episode_details.get("episode_number", 1)
+    name = episode_details.get("name", "")
+    overview = episode_details.get("overview", "")
+
+    try:
+        episode = Episode.objects.filter(season=season, number=episode_number).first()
+        if not episode:
+            episode = Episode.objects.get(tmdb_id=tmdb_id)
+    except Episode.DoesNotExist:
+        episode = Episode.objects.populate(True).create(  # noqa: FBT003
+            tmdb_id=tmdb_id,
+            season=season,
+            number=episode_number,
+            name=name,
+            overview=overview,
+        )
+
+    name_field = f"name_{lang_suffix}"
+    overview_field = f"overview_{lang_suffix}"
+    setattr(episode, name_field, name)
+    setattr(episode, overview_field, overview)
+
+    if is_main:
+        episode.tmdb_id = tmdb_id
+        episode.name = name
+        episode.overview = overview
+        episode.air_date = air_date
+        episode.duration = episode_details.get("runtime", 0)
+        episode.rating = episode_details.get("vote_average", 0)
+
+        still = download_image(episode_details.get("still_path"))
+        if still:
+            episode.still.save(still.name, still, save=False)
+
+    episode.save()
+
+
+@shared_task(**default_task_params("populate_episode_from_tmdb"))
+def populate_episode_from_tmdb(self, season_id: str, episode_number: int):
+    season = Season.objects.prefetch_related("title").get(id=season_id)
+    title_tmdb_id = season.title.tmdb_id
+
+    if not title_tmdb_id:
+        return
+
+    for lang_code, _ in LANGUAGES:
+        is_main = lang_code == DEFAULT_LANGUAGE
+        lang_suffix = get_model_lang_suffix(lang_code)
+
+        params = {"language": lang_code}
+        episode_details = fetch_tmdb_data(
+            f"/tv/{title_tmdb_id}/season/{season.number}/episode/{episode_number}",
+            params,
+        )
+        if not episode_details:
+            continue
+
+        process_episode(
+            episode_details,
+            season,
+            lang_suffix,
+            is_main=is_main,
+            ignore_air_date=True,
+        )
+
+
 @shared_task(
     **default_task_params(
         "populate_episodes_from_tmdb",
@@ -143,35 +224,7 @@ def populate_episodes_from_tmdb(self, season_id: str):
             continue
 
         for episode_data in episodes:
-            air_date = episode_data.get("air_date")
-            if not air_date or parse_date(air_date) > timezone.now().date():
-                continue
-
-            episode, _ = Episode.objects.populate(True).get_or_create(  # noqa: FBT003
-                tmdb_id=episode_data.get("id"),
-                defaults={
-                    "tmdb_id": episode_data.get("id"),
-                    "season": season,
-                    "number": episode_data.get("episode_number", 1),
-                    "name": episode_data.get("name", ""),
-                    "overview": episode_data.get("overview", ""),
-                    "air_date": air_date,
-                    "duration": episode_data.get("runtime", 0),
-                    "rating": episode_data.get("vote_average", 0),
-                },
-            )
-
-            if is_main:
-                still = download_image(episode_data.get("still_path"))
-                if still:
-                    episode.still.save(still.name, still, save=False)
-                    episode.save(update_fields=["still"])
-            else:
-                name_field = f"name_{lang_suffix}"
-                overview_field = f"overview_{lang_suffix}"
-                setattr(episode, name_field, episode_data.get("name", ""))
-                setattr(episode, overview_field, episode_data.get("overview", ""))
-                episode.save(update_fields=[name_field, overview_field])
+            process_episode(episode_data, season, lang_suffix, is_main=is_main)
 
 
 @shared_task(
@@ -269,19 +322,14 @@ def fetch_title_details_and_update(
         # 2. Translations (Title/Description)
         # Handle "title" vs "name" (Movie vs TV)
         api_title = details.get("title") or details.get("name") or ""
-        api_orig_title = (
-            details.get("original_title") or details.get("original_name") or ""
-        )
-
-        if not is_main and api_title != api_orig_title:
-            setattr(title_obj, f"title_{lang_suffix}", api_title)
-
-        setattr(title_obj, f"description_{lang_suffix}", details.get("overview", ""))
+        overview = details.get("overview", "")
+        setattr(title_obj, f"title_{lang_suffix}", api_title)
+        setattr(title_obj, f"description_{lang_suffix}", overview)
 
         # 3. Handle Main Language Specifics (Runtime, Media, Cast)
         if is_main:
             title_obj.title = api_title
-            title_obj.description = details.get("overview", "")
+            title_obj.description = overview
             title_obj.rating = details.get("vote_average", 0)
             title_obj.duration = details.get("runtime", 0)
 
