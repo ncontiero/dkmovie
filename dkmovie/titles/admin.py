@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from modeltranslation.admin import TranslationTabularInline
@@ -52,7 +53,7 @@ class TitleAdmin(TranslationAdmin):
     list_filter = ("status", "content_type", "genres", "release_date", "added_by")
     search_fields = ("title", "description", "tmdb_id")
     filter_horizontal = ("genres",)
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("tmdb_url", "created_at", "updated_at")
     inlines = [SeasonInline]
     fieldsets = (
         (
@@ -60,6 +61,7 @@ class TitleAdmin(TranslationAdmin):
             {
                 "fields": (
                     "tmdb_id",
+                    "tmdb_url",
                     "title",
                     "description",
                     "content_type",
@@ -109,6 +111,16 @@ class TitleAdmin(TranslationAdmin):
     )
     actions = ("make_released", "make_awaiting_review", "populate_from_tmdb")
 
+    def tmdb_url(self, obj):
+        url = obj.tmdb_url
+        if not url:
+            return ""
+        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
+        return mark_safe(anchor)  # noqa: S308
+
+    tmdb_url.short_description = _("TMDB URL")
+    tmdb_url.allow_tags = True
+
     @admin.action(description=_("Mark as Released"))
     def make_released(self, request, queryset):
         queryset.update(status=Title.Status.RELEASED)
@@ -137,17 +149,18 @@ class SeasonAdmin(TranslationAdmin):
     search_fields = ("title__title", "name", "overview")
     autocomplete_fields = ["title"]
     inlines = [EpisodeInline]
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("tmdb_url", "created_at", "updated_at")
     fieldsets = (
         (
             _("Season Information"),
             {
                 "fields": (
+                    "tmdb_id",
+                    "tmdb_url",
                     "title",
                     "number",
                     "name",
                     "overview",
-                    "tmdb_id",
                 ),
             },
         ),
@@ -170,6 +183,16 @@ class SeasonAdmin(TranslationAdmin):
         ),
     )
     actions = ("populate_from_tmdb", "populate_episodes_from_tmdb")
+
+    def tmdb_url(self, obj):
+        url = obj.tmdb_url
+        if not url:
+            return ""
+        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
+        return mark_safe(anchor)  # noqa: S308
+
+    tmdb_url.short_description = _("TMDB URL")
+    tmdb_url.allow_tags = True
 
     @admin.action(description=_("Populate Season details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
@@ -200,17 +223,18 @@ class EpisodeAdmin(TranslationAdmin):
     list_filter = ("air_date",)
     search_fields = ("season__title__title", "name", "overview")
     autocomplete_fields = ["season"]
-    readonly_fields = ("created_at", "updated_at")
+    readonly_fields = ("tmdb_url", "created_at", "updated_at")
     fieldsets = (
         (
             _("Episode Information"),
             {
                 "fields": (
+                    "tmdb_id",
+                    "tmdb_url",
                     "season",
                     "number",
                     "name",
                     "overview",
-                    "tmdb_id",
                 ),
             },
         ),
@@ -233,3 +257,13 @@ class EpisodeAdmin(TranslationAdmin):
             },
         ),
     )
+
+    def tmdb_url(self, obj):
+        url = obj.tmdb_url
+        if not url:
+            return ""
+        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
+        return mark_safe(anchor)  # noqa: S308
+
+    tmdb_url.short_description = _("TMDB URL")
+    tmdb_url.allow_tags = True

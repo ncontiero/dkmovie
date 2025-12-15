@@ -20,7 +20,7 @@ export default function TitleAdded() {
       </Link>
 
       <Text className="mt-2 text-sm">
-        Here are the links to the admin panel and its respective TMDB:
+        Here are the links to the admin panel:
       </Text>
 
       {`{% for link in title_links %}`}
@@ -39,18 +39,15 @@ export default function TitleAdded() {
           </Column>
           <Column valign="top">
             <Text className="text-muted-foreground m-0 text-sm">
-              Admin:{" "}
               <Link
-                href={resolveUrl(`{{  link.admin_url }}`)}
+                href={resolveUrl(`{{ link.admin_url }}`)}
                 className="text-primary"
               >
-                {`{{  link.admin_url }}`}
-              </Link>
-            </Text>
-            <Text className="text-muted-foreground m-0 text-sm">
-              TMDB:{" "}
-              <Link href="{{  link.tmdb_url }}" className="text-primary">
-                {`{{  link.tmdb_url }}`}
+                {`{% if link.title %}`}
+                {`{{ link.title }}`}
+                {`{% else %}`}
+                Untitled
+                {`{% endif %}`}
               </Link>
             </Text>
           </Column>

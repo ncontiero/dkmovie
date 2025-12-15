@@ -455,19 +455,18 @@ def fetch_and_process_discovery_results(
 @shared_task(**default_task_params("send_titles_added_email_task"))
 def send_titles_added_email_task(
     self,
-    title_ids: list[dict],
+    title_data: list[dict],
     title_type: Title.ContentType = Title.ContentType.MOVIE,
 ) -> None:
-    if not title_ids or not settings.ADMINS:
+    if not title_data or not settings.ADMINS:
         return
 
-    tmdb_type_url = "movie" if title_type == Title.ContentType.MOVIE else "tv"
     title_links: list[dict] = [
         {
+            "title": data["title"] or None,
             "admin_url": reverse("admin:titles_title_change", args=(data["id"],)),
-            "tmdb_url": f"https://www.themoviedb.org/{tmdb_type_url}/{data['tmdb_id']}",
         }
-        for data in title_ids
+        for data in title_data
     ]
 
     see_all_url = reverse(
@@ -478,7 +477,7 @@ def send_titles_added_email_task(
     if settings.ADMINS:
         _, admin_email = settings.ADMINS[0]
         send_email(
-            subject=f"New {title_type.lstrip('s').capitalize()}s Added",
+            subject=f"New {title_type.rstrip('S').capitalize()}s Added",
             to=[admin_email],
             template="emails/titles-added.html",
             context={"title_links": title_links, "see_all_url": see_all_url},
@@ -518,8 +517,8 @@ def populate_movies_from_tmdb(self):
     )
 
     if created_movies:
-        ids_payload = [{"id": m.id, "tmdb_id": m.tmdb_id} for m in created_movies]
-        send_titles_added_email_task.delay(ids_payload, Title.ContentType.MOVIE)
+        title_payload = [{"id": m.id, "title": m.title} for m in created_movies]
+        send_titles_added_email_task.delay(title_payload, Title.ContentType.MOVIE)
 
     return f"{len(created_movies)} movies created."
 
@@ -550,7 +549,7 @@ def populate_series_from_tmdb(self):
     )
 
     if created_series:
-        ids_payload = [{"id": s.id, "tmdb_id": s.tmdb_id} for s in created_series]
-        send_titles_added_email_task.delay(ids_payload, Title.ContentType.SERIES)
+        title_payload = [{"id": s.id, "title": s.title} for s in created_series]
+        send_titles_added_email_task.delay(title_payload, Title.ContentType.SERIES)
 
     return f"{len(created_series)} series created."

@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
+BASE_TMDB_URL = "https://www.themoviedb.org"
+
 
 def poster_path(instance, filename):
     return f"titles/{instance.id}/posters/{filename}"
@@ -177,6 +179,13 @@ class Title(models.Model):
     def seasons_count(self):
         return self.seasons.count()
 
+    @property
+    def tmdb_url(self) -> None | str:
+        if not self.tmdb_id:
+            return None
+        media_type = "movie" if self.content_type == Title.ContentType.MOVIE else "tv"
+        return f"{BASE_TMDB_URL}/{media_type}/{self.tmdb_id}"
+
 
 class Season(models.Model):
     id = models.UUIDField(
@@ -240,6 +249,12 @@ class Season(models.Model):
 
     def __str__(self):
         return f"{self.title.title} (Season {self.number})"
+
+    @property
+    def tmdb_url(self) -> None | str:
+        if not self.tmdb_id:
+            return None
+        return f"{BASE_TMDB_URL}/tv/{self.title.tmdb_id}/season/{self.number}"
 
 
 class Episode(models.Model):
@@ -312,3 +327,10 @@ class Episode(models.Model):
             f"{self.season.title.title} S{self.season.number:02d}E{self.number:02d}"
             f" - {self.name}"
         )
+
+    @property
+    def tmdb_url(self) -> None | str:
+        if not self.tmdb_id:
+            return None
+        season_path = f"tv/{self.season.title.tmdb_id}/season/{self.season.number}"
+        return f"{BASE_TMDB_URL}/{season_path}/episode/{self.number}"
