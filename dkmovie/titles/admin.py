@@ -11,15 +11,13 @@ from .models import Title
 
 
 class TmdbUrlMixin:
+    @admin.display(description=_("TMDB URL"))
     def tmdb_url(self, obj):
         url = obj.tmdb_url
         if not url:
             return ""
         anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
         return mark_safe(anchor)  # noqa: S308
-
-    tmdb_url.short_description = _("TMDB URL")
-    tmdb_url.allow_tags = True
 
 
 @admin.register(Genre)
