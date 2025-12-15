@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 
 from dkmovie.users.utils import send_email
 from dkmovie.utils.tasks import default_task_params
@@ -142,6 +143,10 @@ def populate_episodes_from_tmdb(self, season_id: str):
             continue
 
         for episode_data in episodes:
+            air_date = episode_data.get("air_date")
+            if not air_date or parse_date(air_date) > timezone.now().date():
+                continue
+
             episode, _ = Episode.objects.populate(True).get_or_create(  # noqa: FBT003
                 tmdb_id=episode_data.get("id"),
                 defaults={
@@ -150,7 +155,7 @@ def populate_episodes_from_tmdb(self, season_id: str):
                     "number": episode_data.get("episode_number", 1),
                     "name": episode_data.get("name", ""),
                     "overview": episode_data.get("overview", ""),
-                    "air_date": episode_data.get("air_date"),
+                    "air_date": air_date,
                     "duration": episode_data.get("runtime", 0),
                     "rating": episode_data.get("vote_average", 0),
                 },
@@ -197,6 +202,11 @@ def populate_seasons_from_tmdb(
             if not details:
                 continue
 
+            air_date = details.get("air_date")
+            now_date = timezone.now().date()
+            if not air_date or parse_date(air_date) > now_date:
+                continue
+
             episodes = details.get("episodes", [])
             if not episodes:
                 continue
@@ -209,7 +219,7 @@ def populate_seasons_from_tmdb(
                     "number": details.get("season_number", 1),
                     "name": details.get("name", ""),
                     "overview": details.get("overview", ""),
-                    "air_date": details.get("air_date"),
+                    "air_date": air_date,
                     "rating": details.get("vote_average", 0),
                 },
             )

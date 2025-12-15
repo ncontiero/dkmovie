@@ -145,7 +145,7 @@ class TitleAdmin(TranslationAdmin):
 @admin.register(Season)
 class SeasonAdmin(TranslationAdmin):
     list_display = ("__str__", "title", "number", "air_date", "rating")
-    list_filter = ("air_date",)
+    list_filter = ("number", "air_date")
     search_fields = ("title__title", "name", "overview")
     autocomplete_fields = ["title"]
     inlines = [EpisodeInline]
