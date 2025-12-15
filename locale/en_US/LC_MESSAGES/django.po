@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-13 02:33+0000\n"
+"POT-Creation-Date: 2025-12-15 03:22+0000\n"
 "Language: en-US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -471,6 +471,9 @@ msgstr ""
 msgid "Go to your Account"
 msgstr ""
 
+msgid "TMDB URL"
+msgstr ""
+
 msgid "Main Information"
 msgstr ""
 
@@ -523,6 +526,9 @@ msgid "Episode Information"
 msgstr ""
 
 msgid "Details"
+msgstr ""
+
+msgid "Populate Episode details from TMDB"
 msgstr ""
 
 msgid "Titles"
