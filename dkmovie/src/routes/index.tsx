@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
@@ -55,6 +56,10 @@ function HomeComponent() {
   const { data: movies } = useSuspenseQuery(popularMoviesQueryOptions);
   const { data: series } = useSuspenseQuery(popularSeriesQueryOptions);
 
+  const heroSectionTitles = useMemo(() => {
+    return [...recentlyReleased, ...movies, ...series].slice(0, 5);
+  }, [movies, recentlyReleased, series]);
+
   if (
     recentlyReleased.length === 0 &&
     movies.length === 0 &&
@@ -71,11 +76,7 @@ function HomeComponent() {
   return (
     <AnimatedRoute>
       <main>
-        <HeroSection
-          content={recentlyReleased
-            .filter((title) => title.cover !== null)
-            .slice(0, 5)}
-        />
+        <HeroSection content={heroSectionTitles} />
         <div className="relative z-20">
           <ContentCarousel title={t("trending")} items={movies} />
           <ContentCarousel title={t("popularSeries")} items={series} />

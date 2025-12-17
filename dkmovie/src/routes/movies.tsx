@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
@@ -44,6 +45,10 @@ function MoviesComponent() {
   const { data: popularMovies } = useSuspenseQuery(popularMoviesQueryOptions);
   const { data: genres } = useSuspenseQuery(genresQueryOptions);
 
+  const heroSectionMovies = useMemo(() => {
+    return [...releasedInTheYear, ...popularMovies].slice(0, 5);
+  }, [popularMovies, releasedInTheYear]);
+
   if (releasedInTheYear.length === 0 && popularMovies.length === 0) {
     return (
       <AnimatedRoute>
@@ -62,11 +67,7 @@ function MoviesComponent() {
   return (
     <AnimatedRoute>
       <main>
-        <HeroSection
-          content={releasedInTheYear
-            .filter((title) => title.cover !== null)
-            .slice(0, 5)}
-        />
+        <HeroSection content={heroSectionMovies} />
         <div className="relative z-20">
           <ContentCarousel
             title={t("moviesOfTheYear", { year: releaseYear })}

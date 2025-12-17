@@ -17,6 +17,8 @@ export interface CarouselProps {
 export function ContentCarousel({ title, items, searchParams }: CarouselProps) {
   const t = useTranslations("common");
 
+  if (!items || items.length === 0) return null;
+
   return (
     <section className="py-4">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
