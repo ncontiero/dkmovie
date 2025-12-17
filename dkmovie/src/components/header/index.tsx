@@ -72,14 +72,14 @@ export function Header() {
               to="/"
               className={cn(
                 `
-                  focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden ring-offset-background
-                  rounded-md font-bold ring-offset-2 duration-200 hover:scale-105
+                  focus-visible:ring-ring ring-offset-background rounded-md font-bold ring-offset-2 duration-200
+                  hover:scale-105 focus-visible:ring-2 focus-visible:outline-hidden
                 `,
                 !isScrolled &&
                   addScrollEffect &&
                   `
-                    bg-background/80 rounded-md backdrop-blur-md dark:bg-background/60 hover:bg-primary
-                    dark:hover:bg-primary focus-visible:bg-primary dark:focus-visible:bg-primary
+                    bg-background/80 dark:bg-background/60 hover:bg-primary dark:hover:bg-primary
+                    focus-visible:bg-primary dark:focus-visible:bg-primary rounded-md backdrop-blur-md
                   `,
               )}
             >
@@ -90,7 +90,7 @@ export function Header() {
                 "hidden items-center gap-0.5 md:flex",
                 !isScrolled &&
                   addScrollEffect &&
-                  "bg-background/80 rounded-md backdrop-blur-md dark:bg-background/60",
+                  "bg-background/80 dark:bg-background/60 rounded-md backdrop-blur-md",
               )}
             >
               {links.map(({ title, href }) => (
@@ -98,9 +98,9 @@ export function Header() {
                   key={href}
                   to={href}
                   className={`
-                    hover:bg-foreground/20 focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-hidden
-                    ring-offset-background rounded-md px-3 py-2 text-sm font-medium ring-offset-2 duration-200
-                    data-[status=active]:shadow-[0_10px_10px_-4px_theme(--color-primary)]
+                    hover:bg-foreground/20 focus-visible:ring-ring ring-offset-background
+                    data-[status=active]:shadow-[0_10px_10px_-4px_theme(--color-primary)] rounded-md px-3 py-2 text-sm
+                    font-medium ring-offset-2 duration-200 focus-visible:ring-2 focus-visible:outline-hidden
                   `}
                 >
                   {title}
@@ -114,7 +114,7 @@ export function Header() {
               "text-muted-foreground flex items-center gap-0.5",
               !isScrolled &&
                 addScrollEffect &&
-                "bg-background/80 rounded-full backdrop-blur-md dark:bg-background/60",
+                "bg-background/80 dark:bg-background/60 rounded-full backdrop-blur-md",
             )}
           >
             <SearchDialog />

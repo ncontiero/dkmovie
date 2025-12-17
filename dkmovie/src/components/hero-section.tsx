@@ -35,8 +35,8 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
 
       <div
         className={`
-          md:from-background md:via-background/50 md:absolute md:inset-0 md:block md:bg-linear-to-r md:to-transparent
-          hidden
+          md:from-background md:via-background/50 hidden md:absolute md:inset-0 md:block md:bg-linear-to-r
+          md:to-transparent
         `}
       />
 
@@ -65,7 +65,7 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
                 asChild
                 size="lg"
                 className={`
-                  shadow-primary/20 xs:w-auto h-12 w-full px-8 text-base font-semibold shadow-xl hover:shadow-primary/40
+                  shadow-primary/20 xs:w-auto hover:shadow-primary/40 h-12 w-full px-8 text-base font-semibold shadow-xl
                   hover:scale-105
                 `}
               >

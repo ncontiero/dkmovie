@@ -31,11 +31,10 @@ const TabsTrigger = forwardRef<
     ref={ref}
     className={cn(
       `
-        ring-ring flex items-center gap-2 rounded-md border-t-4 border-transparent px-4 py-3 text-sm font-medium
-        text-nowrap outline-hidden duration-200 not-disabled:hover:bg-secondary focus:bg-secondary focus:ring-2
-        not-[&:hover]:data-[state=active]:bg-secondary/60 data-[state=active]:border-primary
-        data-[state=active]:text-foreground disabled:cursor-not-allowed disabled:opacity-70 md:border-t-0 md:border-l-4
-        md:px-2
+        ring-ring not-disabled:hover:bg-secondary focus:bg-secondary not-[&:hover]:data-[state=active]:bg-secondary/60
+        data-[state=active]:border-primary data-[state=active]:text-foreground flex items-center gap-2 rounded-md
+        border-t-4 border-transparent px-4 py-3 text-sm font-medium text-nowrap outline-hidden duration-200 focus:ring-2
+        disabled:cursor-not-allowed disabled:opacity-70 md:border-t-0 md:border-l-4 md:px-2
       `,
       className,
     )}
@@ -52,7 +51,7 @@ const TabsContent = forwardRef<
     ref={ref}
     className={cn(
       `
-        ring-offset-background mt-2 focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2
+        ring-offset-background focus-visible:ring-ring mt-2 focus-visible:ring-2 focus-visible:ring-offset-2
         focus-visible:outline-none
       `,
       className,

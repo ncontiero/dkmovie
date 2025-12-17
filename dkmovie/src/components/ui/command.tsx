@@ -31,10 +31,10 @@ const CommandDialog = ({ children, ...props }: DialogProps) => {
       <DialogContent className="overflow-hidden p-0 shadow-lg">
         <Command
           className={`
-            **:[[cmdk-group-heading]]:text-muted-foreground **:[[cmdk-group-heading]]:px-2
-            **:[[cmdk-group-heading]]:font-medium [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0
-            [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-item]_svg]:size-5 **:[[cmdk-group]]:px-2 **:[[cmdk-input]]:h-12
-            **:[[cmdk-item]]:px-2 **:[[cmdk-item]]:py-3
+            **:[[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0
+            [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-item]_svg]:size-5 **:[[cmdk-group-heading]]:px-2
+            **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group]]:px-2 **:[[cmdk-input]]:h-12 **:[[cmdk-item]]:px-2
+            **:[[cmdk-item]]:py-3
           `}
         >
           {children}
@@ -101,7 +101,7 @@ const CommandGroup = forwardRef<
     ref={ref}
     className={cn(
       `
-        text-foreground overflow-hidden p-1 **:[[cmdk-group-heading]]:text-muted-foreground
+        text-foreground **:[[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1
         **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs
         **:[[cmdk-group-heading]]:font-medium
       `,

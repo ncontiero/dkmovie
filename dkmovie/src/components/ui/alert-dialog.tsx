@@ -43,8 +43,8 @@ const AlertDialogContent = forwardRef<
       className={cn(
         `
           bg-background data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95
-          data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-99999 grid w-full max-w-lg translate-[-50%] gap-4
-          border p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out sm:rounded-lg
+          data-[state=open]:zoom-in-95 data-[state=open]:animate-in data-[state=closed]:animate-out fixed top-[50%]
+          left-[50%] z-99999 grid w-full max-w-lg translate-[-50%] gap-4 border p-6 shadow-lg duration-200 sm:rounded-lg
         `,
         className,
       )}

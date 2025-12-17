@@ -46,7 +46,7 @@ function MyAccountLayoutComponent() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`
-                  hover:text-primary hover:underline ring-ring rounded-lg text-sm font-medium duration-200
+                  hover:text-primary ring-ring rounded-lg text-sm font-medium duration-200 hover:underline
                   focus-visible:ring-2 focus-visible:outline-hidden
                 `}
               >

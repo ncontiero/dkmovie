@@ -43,8 +43,8 @@ export function CardFooter({ className, ...props }: ComponentProps<"div">) {
     <div
       className={cn(
         `
-          bg-secondary/40 flex h-14 flex-col items-center justify-center gap-4 rounded-b-lg border-t px-6 text-center
-          dark:bg-secondary/20 sm:flex-row sm:justify-between sm:text-start
+          bg-secondary/40 dark:bg-secondary/20 flex h-14 flex-col items-center justify-center gap-4 rounded-b-lg
+          border-t px-6 text-center sm:flex-row sm:justify-between sm:text-start
         `,
         className,
       )}
