@@ -138,6 +138,13 @@ function TitleComponent() {
     ? new Date(title.release_date).getFullYear()
     : null;
 
+  const noSynopsis =
+    title.content_type === "MOVIE"
+      ? t("movieWithoutSynopsis")
+      : t("seriesWithoutSynopsis");
+  const description =
+    title.description.length === 0 ? noSynopsis : title.description;
+
   return (
     <AnimatedRoute>
       <div className="bg-background text-foreground min-h-screen">
@@ -260,7 +267,7 @@ function TitleComponent() {
                       md:line-clamp-4
                     `}
                   >
-                    {title.description}
+                    {description}
                   </p>
 
                   <div className="mt-8 flex flex-wrap gap-4">
@@ -305,7 +312,7 @@ function TitleComponent() {
                     {t("fullSynopsis")}
                   </h3>
                   <p className="text-foreground/80 text-lg leading-relaxed">
-                    {title.description}
+                    {description}
                   </p>
                 </div>
 

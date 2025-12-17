@@ -55,6 +55,8 @@
     "viewDetails": "Veja os detalhes de {title}",
     "cast": "Elenco",
     "fullSynopsis": "Sinopse completa",
+    "movieWithoutSynopsis": "Este filme não possui sinopse.",
+    "seriesWithoutSynopsis": "Esta série não possui sinopse.",
     "moreLikeThis": "Mais como esse",
     "seeMoreTitlesOfTheYear": "Veja mais títulos do ano de {year}",
     "seeMoreTitlesOfTheGenre": "Veja mais títulos do gênero de {genre}"
