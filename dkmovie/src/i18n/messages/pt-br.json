@@ -57,6 +57,10 @@
     "fullSynopsis": "Sinopse completa",
     "movieWithoutSynopsis": "Este filme não possui sinopse.",
     "seriesWithoutSynopsis": "Esta série não possui sinopse.",
+    "seasonWithoutSynopsis": "Esta temporada não possui sinopse.",
+    "episodeWithoutSynopsis": "Este episódio não possui sinopse.",
+    "seasons": "Temporadas",
+    "episodeCount": "{count, plural, =0 {Nenhum episódio encontrado} =1 {1 episódio} other {# episódios}}",
     "moreLikeThis": "Mais como esse",
     "seeMoreTitlesOfTheYear": "Veja mais títulos do ano de {year}",
     "seeMoreTitlesOfTheGenre": "Veja mais títulos do gênero de {genre}"

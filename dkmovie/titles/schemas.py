@@ -39,6 +39,8 @@ class BaseTitleSchema(ModelSchema):
 
 
 class SeasonSchema(ModelSchema):
+    episode_count: int = 0
+
     class Meta:
         model = Season
         fields = [
@@ -50,6 +52,10 @@ class SeasonSchema(ModelSchema):
             "air_date",
             "rating",
         ]
+
+    @staticmethod
+    def resolve_episodes_count(season: Season) -> int:
+        return season.episode_count
 
 
 class TitleDetailSchema(BaseTitleSchema):

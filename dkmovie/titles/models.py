@@ -251,6 +251,10 @@ class Season(models.Model):
         return f"{self.title.title} (Season {self.number})"
 
     @property
+    def episode_count(self) -> int:
+        return self.episodes.count()
+
+    @property
     def tmdb_url(self) -> None | str:
         if not self.tmdb_id:
             return None

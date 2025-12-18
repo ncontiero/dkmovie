@@ -25,6 +25,7 @@ export interface Season {
   poster: string | null;
   air_date: string | null;
   rating: number;
+  episode_count: number;
 }
 
 export interface Title {
@@ -43,6 +44,17 @@ export interface Title {
 }
 export interface TitleDetails extends Title {
   seasons: Season[];
+}
+
+export interface Episode {
+  id: string;
+  number: number;
+  name: string;
+  overview: string;
+  still: string | null;
+  air_date: string | null;
+  duration: number;
+  rating: number;
 }
 
 export interface PaginationDataProps<T = any> {

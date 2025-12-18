@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -10,6 +10,7 @@ import { Play, Plus, Star } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { AnimatedRoute } from "@/components/animated-route";
 import { ContentCarousel } from "@/components/content-carousel";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Link as StyledLink } from "@/components/ui/link";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +18,7 @@ import { getTitle, getTitles } from "@/http/get-titles";
 import { titleIdSchema } from "@/schemas/routes/title";
 import { isHttpNotFound } from "@/utils/errors";
 import { generateMetadata } from "@/utils/metadata";
+import { SeasonCard } from "./-season-card";
 
 function titleQueryOptions(titleId: string) {
   return queryOptions({
@@ -124,6 +126,7 @@ function TitleComponent() {
   const { data: relatedMovies } = useSuspenseQuery(
     titleRelatedTitlesQueryOptions(titleId),
   );
+  const [selectedSeason, setSelectedSeason] = useState<string>();
 
   const t = useTranslations("titlePage");
 
@@ -301,12 +304,12 @@ function TitleComponent() {
           </div>
 
           <div className="container mx-auto max-w-7xl p-4 sm:px-6 lg:px-8">
-            <h2 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
-              {t("details")}
-            </h2>
+            <div>
+              <h2 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
+                {t("details")}
+              </h2>
 
-            <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
-              <div className="space-y-6 md:col-span-2">
+              <div className="space-y-6">
                 <div>
                   <h3 className="text-muted-foreground mb-2 text-sm font-medium tracking-wider uppercase">
                     {t("fullSynopsis")}
@@ -324,6 +327,31 @@ function TitleComponent() {
                 </div>
               </div>
             </div>
+
+            {title.seasons?.length > 0 ? (
+              <div className="mt-6">
+                <h2 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
+                  {t("seasons")}
+                </h2>
+
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="flex flex-col gap-4"
+                  value={selectedSeason}
+                  onValueChange={setSelectedSeason}
+                >
+                  {title.seasons.map((season) => (
+                    <SeasonCard
+                      key={season.id}
+                      titleId={titleId}
+                      season={season}
+                      selectedSeason={selectedSeason}
+                    />
+                  ))}
+                </Accordion>
+              </div>
+            ) : null}
           </div>
 
           <div className="border-border/50 mt-12 border-t pt-12">
