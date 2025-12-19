@@ -8,6 +8,10 @@ from .models import Episode
 from .models import Genre
 from .models import Season
 from .models import Title
+from .tasks import populate_episode_from_tmdb
+from .tasks import populate_episodes_from_tmdb
+from .tasks import populate_seasons_from_tmdb
+from .tasks import populate_title_admin_task
 
 
 class TmdbUrlMixin:
@@ -115,8 +119,6 @@ class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
 
     @admin.action(description=_("Populate details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
-        from .tasks import populate_title_admin_task  # noqa: PLC0415
-
         for title in queryset:
             if title.tmdb_id:
                 populate_title_admin_task.delay(title.tmdb_id, title.content_type)
@@ -184,8 +186,6 @@ class SeasonAdmin(TmdbUrlMixin, TranslationAdmin):
 
     @admin.action(description=_("Populate Season details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
-        from .tasks import populate_seasons_from_tmdb  # noqa: PLC0415
-
         for season in queryset:
             title = season.title
             if not title.tmdb_id:
@@ -199,8 +199,6 @@ class SeasonAdmin(TmdbUrlMixin, TranslationAdmin):
 
     @admin.action(description=_("Populate Season episodes from TMDB"))
     def populate_episodes_from_tmdb(self, request, queryset):
-        from .tasks import populate_episodes_from_tmdb  # noqa: PLC0415
-
         for season in queryset:
             populate_episodes_from_tmdb.delay(season.id)
         self.message_user(
@@ -253,8 +251,6 @@ class EpisodeAdmin(TmdbUrlMixin, TranslationAdmin):
 
     @admin.action(description=_("Populate Episode details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
-        from .tasks import populate_episode_from_tmdb  # noqa: PLC0415
-
         for episode in queryset:
             populate_episode_from_tmdb.delay(episode.season.id, episode.number)
         self.message_user(
