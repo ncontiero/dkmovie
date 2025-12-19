@@ -26,7 +26,7 @@ function MyAccountLayoutComponent() {
   const t = useTranslations("accountPage");
   const {
     djangoAdminUrl: adminUrl,
-    auth: { isSuperUser },
+    auth: { user },
   } = Route.useRouteContext();
   const { pathname } = useLocation();
   const navigate = Route.useNavigate();
@@ -40,7 +40,7 @@ function MyAccountLayoutComponent() {
             <p className="text-muted-foreground text-lg font-medium">
               {t("description")}
             </p>
-            {isSuperUser ? (
+            {user?.is_superuser ? (
               <a
                 href={adminUrl}
                 target="_blank"

@@ -1,12 +1,16 @@
-export interface User {
+export interface SessionUser {
   id: number;
-  name: string;
   email: string;
+  has_usable_password: boolean;
+}
+
+export interface User extends Omit<SessionUser, "has_usable_password"> {
+  name: string;
   is_superuser: boolean;
 }
 
 export interface Session {
-  user: Omit<User, "name"> & { has_usable_password: boolean };
+  user: SessionUser;
 }
 
 export const contentsType = ["MOVIE", "SERIES"] as const;

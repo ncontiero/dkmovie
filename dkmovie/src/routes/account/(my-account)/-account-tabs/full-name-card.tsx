@@ -1,7 +1,8 @@
 import { type SubmitHandler, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouteContext } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import {
@@ -16,11 +17,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSchemaTranslations } from "@/hooks/use-schema-translations";
-import { getMe, updateMe } from "@/http/account/me";
+import { updateMe } from "@/http/account/me";
 import { type UpdateMeSchema, updateMeSchema } from "@/schemas/account/me";
 import { getErrorMessage } from "@/utils/errors";
 
 export function FullNameCard() {
+  const { user } = useRouteContext({
+    from: "__root__",
+    select: (ctx) => ctx.auth,
+  });
   const queryClient = useQueryClient();
   const t = useTranslations("accountPage.updateUserName");
   const commonT = useTranslations("common");
@@ -33,12 +38,6 @@ export function FullNameCard() {
         too_big: t("errors.maxCharacter"),
       },
     },
-  });
-
-  const { data: user } = useQuery({
-    queryKey: ["user"],
-    queryFn: getMe,
-    staleTime: 1000 * 60 * 60,
   });
 
   const {
@@ -58,7 +57,7 @@ export function FullNameCard() {
   const onSubmit: SubmitHandler<UpdateMeSchema> = async (data) => {
     try {
       const res = await updateMe(data);
-      queryClient.setQueryData(["user"], res);
+      queryClient.setQueryData(["session", "me"], res);
       toast.success(t("success"));
     } catch (error) {
       const errors = getErrorMessage(error);

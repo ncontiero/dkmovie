@@ -27,7 +27,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
   });
 
   const isAuthenticated = session?.meta.is_authenticated || false;
-  const isSuperUser = me?.is_superuser || false;
 
   const { mutate: logoutMutation } = useMutation({
     mutationFn: logoutApi,
@@ -53,9 +52,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const contextValues = useMemo(
     (): SessionContextProps => ({
       session: session?.data || null,
+      user: me || null,
       sessionError,
       isAuthenticated,
-      isSuperUser,
       isLoadingSession,
       logout: logoutMutation,
       setSession,
@@ -63,8 +62,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [
       isAuthenticated,
       isLoadingSession,
-      isSuperUser,
       logoutMutation,
+      me,
       session?.data,
       sessionError,
       setSession,
