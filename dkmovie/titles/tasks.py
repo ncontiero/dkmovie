@@ -444,7 +444,7 @@ def populate_seasons_from_tmdb(
             if not air_date or parse_date(air_date) > now_date:
                 continue
 
-            season, _ = Season.objects.populate(True).get_or_create(  # noqa: FBT003
+            season, _ = Season.objects.get_or_create(
                 tmdb_id=details.get("id"),
                 defaults={
                     "tmdb_id": details.get("id"),
@@ -457,17 +457,17 @@ def populate_seasons_from_tmdb(
                 },
             )
 
+            name_field = f"name_{lang_suffix}"
+            overview_field = f"overview_{lang_suffix}"
+            setattr(season, name_field, details.get("name", ""))
+            already_have_overview = getattr(season, overview_field, "")
+            if not already_have_overview:
+                setattr(season, overview_field, details.get("overview", ""))
+
             if is_main:
                 process_title_images(season, details)
-                season.save(update_fields=["poster"])
-            else:
-                name_field = f"name_{lang_suffix}"
-                overview_field = f"overview_{lang_suffix}"
-                setattr(season, name_field, details.get("name", ""))
-                already_have_overview = getattr(season, overview_field, "")
-                if not already_have_overview:
-                    setattr(season, overview_field, details.get("overview", ""))
-                season.save(update_fields=[name_field, overview_field])
+
+            season.save()
 
 
 @shared_task(**default_task_params("populate_title_admin_task"))

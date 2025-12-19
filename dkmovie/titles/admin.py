@@ -187,7 +187,11 @@ class SeasonAdmin(TmdbUrlMixin, TranslationAdmin):
         from .tasks import populate_seasons_from_tmdb  # noqa: PLC0415
 
         for season in queryset:
-            populate_seasons_from_tmdb.delay(season.tmdb_id, season.title.tmdb_id)
+            title = season.title
+            if not title.tmdb_id:
+                continue
+            season_details = [{"number": season.number}]
+            populate_seasons_from_tmdb.delay(title.id, title.tmdb_id, season_details)
         self.message_user(
             request,
             _("Selected seasons are being populated from TMDB."),
