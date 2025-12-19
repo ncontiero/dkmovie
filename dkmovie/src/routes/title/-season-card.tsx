@@ -44,23 +44,29 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
       to="/title/$titleId/watch"
       params={{ titleId }}
       className="
-        group ring-ring hover:bg-secondary ring-offset-background focus-visible:bg-secondary h-40 rounded-lg border
-        ring-offset-2 duration-200 hover:-translate-y-1 hover:scale-101 focus-visible:ring-2
-        focus-visible:outline-hidden
+        group ring-ring hover:bg-secondary ring-offset-background focus-visible:bg-secondary overflow-hidden rounded-lg
+        ring-offset-2 duration-200 hover:scale-101 hover:p-2 focus-visible:ring-2 focus-visible:outline-hidden
+        max-lg:border-y max-lg:pb-4
       "
     >
-      <div className="flex size-full gap-4">
-        <div className="group/image relative h-full min-w-64 overflow-hidden rounded-lg rounded-r-none">
+      <div className="flex size-full flex-col gap-4 lg:flex-row">
+        <div
+          className="
+            group/image relative h-[calc(100vw/16*9)] w-full overflow-hidden lg:h-full lg:max-w-64 lg:min-w-64
+            lg:rounded-lg
+          "
+        >
           {episode.still ? (
             <img
               src={episode.still}
               alt={episode.name}
               className="
-                h-full w-64 rounded-lg rounded-r-none object-cover object-center duration-200 group-hover:scale-110
+                size-full object-cover object-center duration-200 group-hover:scale-110 lg:max-w-64 lg:min-w-64
+                lg:rounded-lg
               "
             />
           ) : (
-            <div className="to-primary/40 size-full rounded-lg rounded-r-none bg-linear-to-bl from-transparent" />
+            <div className="to-primary/40 size-full bg-linear-to-bl from-transparent lg:rounded-lg lg:rounded-r-none" />
           )}
           <div
             className="
@@ -71,7 +77,7 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
             <Play className="fill-background size-8" />
           </div>
         </div>
-        <div className="flex flex-col py-4">
+        <div className="flex flex-col max-lg:px-2">
           <div className="flex flex-col">
             <h3 className="text-start text-xl font-medium">
               {episode.number}
@@ -140,8 +146,8 @@ export function SeasonCard({
         asHeader="div"
         hiddenIcon
       >
-        <div className="flex size-full gap-4">
-          <div className="h-full min-w-32">
+        <div className="flex size-full gap-3">
+          <div className="size-full max-w-25 min-w-25">
             {season.poster ? (
               <img
                 src={season.poster}
@@ -159,7 +165,11 @@ export function SeasonCard({
               />
             )}
           </div>
-          <div className="flex flex-col py-4 duration-200 group-data-[state=open]:translate-y-[20%]">
+          <div
+            className="
+              flex flex-col py-4 duration-200 group-data-[state=open]:translate-y-[20%] max-sm:translate-y-[20%]
+            "
+          >
             <div className="flex flex-col">
               <h3 className="text-start text-xl font-medium">{season.name}</h3>
               <div className="text-muted-foreground mt-0.5 flex items-center text-sm">
@@ -186,8 +196,11 @@ export function SeasonCard({
               </div>
               <p
                 className={cn(
-                  `mt-4 line-clamp-2 text-start font-normal opacity-100 duration-200 group-data-[state=open]:hidden`,
-                  haveOverview && "max-w-[80%]",
+                  `
+                    mt-4 line-clamp-2 text-start font-normal opacity-100 duration-200 group-data-[state=open]:hidden
+                    max-sm:hidden
+                  `,
+                  haveOverview && "sm:max-w-[80%]",
                 )}
               >
                 {overview}
@@ -195,11 +208,13 @@ export function SeasonCard({
             </div>
           </div>
         </div>
-        <ChevronDown className="mr-8 size-6 shrink-0 duration-200" />
+        <ChevronDown className="mr-4 size-6 shrink-0 duration-200 sm:mr-8" />
       </AccordionTrigger>
-      <AccordionContent className="rounded-b-lg border-x border-b p-4 duration-1000">
-        <p className="text-foreground/80 max-w-[80%] text-base">{overview}</p>
-        <div className="flex flex-col gap-4 py-6">
+      <AccordionContent className="rounded-b-lg border-x border-b py-4 duration-1000 lg:p-4">
+        <p className="text-foreground/80 text-base max-lg:px-4 lg:max-w-[80%]">
+          {overview}
+        </p>
+        <div className="flex flex-col gap-8 py-6 lg:gap-4">
           {isLoading
             ? Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton
