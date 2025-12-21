@@ -2,7 +2,7 @@
   "name": "dkmovie",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.26.0",
+  "packageManager": "pnpm@10.26.1",
   "description": "A Django project of films and series.",
   "author": "Nicolas Contiero",
   "license": "MIT",
