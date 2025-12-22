@@ -248,7 +248,7 @@ class Season(models.Model):
         ordering = ["number"]
 
     def __str__(self):
-        return f"{self.title.title} (Season {self.number})"
+        return _("%s (Season %d)") % (self.title.title, self.number)
 
     @property
     def episode_count(self) -> int:
