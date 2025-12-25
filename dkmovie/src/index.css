@@ -126,10 +126,13 @@
     @apply bg-primary/80 text-primary-foreground;
   }
   html {
-    @apply scroll-smooth antialiased;
+    @apply scroll-smooth antialiased h-screen;
   }
   body {
-    @apply relative bg-background text-foreground font-sans;
+    @apply relative bg-background text-foreground font-sans h-full;
+  }
+  #root {
+    @apply h-full;
   }
   button {
     @apply cursor-pointer;

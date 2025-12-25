@@ -143,10 +143,18 @@ export function VideoPlayer({
   if (!title) return null;
 
   return (
-    <div className={cn("group size-full max-h-screen", className)}>
+    <div
+      className={cn(
+        "group flex size-full max-h-screen items-center justify-center",
+        className,
+      )}
+    >
       <div
         className={cn(
-          "absolute inset-0 z-10 bg-radial from-transparent to-black/90 to-75% px-20 pt-10 opacity-0 duration-200",
+          `
+            absolute inset-0 z-10 bg-radial from-transparent to-black/90 to-75% px-4 pt-6 opacity-0 duration-200
+            md:px-20 md:pt-10
+          `,
           isToShowControls && "opacity-100",
         )}
         onMouseMove={handleControlsMouseMove}
@@ -156,8 +164,8 @@ export function VideoPlayer({
         <div className="absolute inset-0 -z-1 bg-linear-to-t from-black/80 to-transparent to-20%" />
 
         <div className="flex size-full flex-col">
-          <div className="flex w-full items-center justify-between">
-            <div className="flex flex-col gap-1">
+          <div className="flex w-full items-center justify-end md:justify-between">
+            <div className="flex flex-col gap-1 max-md:hidden">
               <h1 className="text-3xl font-bold text-white">{title.title}</h1>
               {episode ? (
                 <p className="text-xl text-white/80">
@@ -169,16 +177,16 @@ export function VideoPlayer({
                 </p>
               ) : null}
             </div>
-            <div className="flex h-10 items-center">
+            <div className="flex h-10 items-center gap-1 md:gap-3">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="mr-3 size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                    className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
                   >
-                    <Captions className="size-8" />
+                    <Captions className="md:size-8" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{t("captionsAndAudios")}</TooltipContent>
@@ -189,9 +197,9 @@ export function VideoPlayer({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="mr-3 size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                    className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
                   >
-                    <Settings className="size-8" />
+                    <Settings className="md:size-8" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{t("options")}</TooltipContent>
@@ -204,16 +212,16 @@ export function VideoPlayer({
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="mr-3 size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                        className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
                       >
                         {volume > 0.5 ? (
-                          <Volume2 className="size-8" />
+                          <Volume2 className="md:size-8" />
                         ) : volume > 0.3 ? (
-                          <Volume1 className="size-8" />
+                          <Volume1 className="md:size-8" />
                         ) : volume > 0 ? (
-                          <Volume className="size-8" />
+                          <Volume className="md:size-8" />
                         ) : (
-                          <VolumeOff className="size-8" />
+                          <VolumeOff className="md:size-8" />
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -252,9 +260,9 @@ export function VideoPlayer({
                     }}
                   >
                     {isInFullscreen ? (
-                      <Minimize2 className="size-8" />
+                      <Minimize2 className="md:size-8" />
                     ) : (
-                      <Maximize2 className="size-8" />
+                      <Maximize2 className="md:size-8" />
                     )}
                   </Button>
                 </TooltipTrigger>
@@ -262,7 +270,10 @@ export function VideoPlayer({
                   {isInFullscreen ? t("exitFullScreen") : t("fullScreen")}
                 </TooltipContent>
               </Tooltip>
-              <Separator orientation="vertical" className="mx-4 w-1 bg-white" />
+              <Separator
+                orientation="vertical"
+                className="mx-2 bg-white md:mx-4 md:w-1"
+              />
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -273,7 +284,7 @@ export function VideoPlayer({
                     asChild
                   >
                     <Link to="/title/$titleId" params={{ titleId: title.id }}>
-                      <X className="size-8" />
+                      <X className="md:size-8" />
                     </Link>
                   </Button>
                 </TooltipTrigger>
@@ -281,7 +292,7 @@ export function VideoPlayer({
               </Tooltip>
             </div>
           </div>
-          <div className="absolute top-1/2 left-1/2 flex -translate-1/2 items-center gap-14">
+          <div className="absolute top-1/2 left-1/2 flex -translate-1/2 items-center gap-4 md:gap-14">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -296,7 +307,7 @@ export function VideoPlayer({
                     videoRef.current.currentTime = Math.max(0, newTime);
                   }}
                 >
-                  <StepBack className="size-20 fill-white stroke-white" />
+                  <StepBack className="size-10 fill-white stroke-white md:size-20" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t("seekBack")}</TooltipContent>
@@ -317,9 +328,9 @@ export function VideoPlayer({
               }}
             >
               {isVideoPlaying ? (
-                <Pause className="size-20 fill-white stroke-white" />
+                <Pause className="size-10 fill-white stroke-white md:size-20" />
               ) : (
-                <Play className="size-20 fill-white stroke-white" />
+                <Play className="size-10 fill-white stroke-white md:size-20" />
               )}
               <span className="sr-only">
                 {isVideoPlaying ? t("pause") : t("play")}
@@ -342,13 +353,13 @@ export function VideoPlayer({
                     );
                   }}
                 >
-                  <StepForward className="size-20 fill-white stroke-white" />
+                  <StepForward className="size-10 fill-white stroke-white md:size-20" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t("seekForward")}</TooltipContent>
             </Tooltip>
           </div>
-          <div className="absolute right-20 bottom-8 left-20">
+          <div className="absolute inset-x-6 bottom-6 md:inset-x-20 md:bottom-8">
             <Slider
               value={[currentTime]}
               max={duration * 60}
@@ -362,7 +373,7 @@ export function VideoPlayer({
               aria-label={t("seekBar")}
             />
             <div className="flex items-center justify-between pt-4">
-              <div className="text-2xl font-medium text-white">
+              <div className="text-lg font-medium text-white md:text-2xl">
                 {currentTimeFormatted}{" "}
                 <span className="text-muted-foreground">
                   / {durationFormatted}
@@ -374,7 +385,8 @@ export function VideoPlayer({
                   params={{ titleId: title.id }}
                   search={{ episodeId: episode.next_episode.id }}
                   className="
-                    group/next flex items-center text-2xl font-medium text-white/80 duration-200 hover:text-white
+                    group/next flex items-center text-lg font-medium text-white/80 duration-200 hover:text-white
+                    md:text-2xl
                   "
                 >
                   {t("nextEpisode")}
