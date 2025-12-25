@@ -45,6 +45,8 @@ export interface Title {
   poster: string | null;
   cover: string | null;
   trailer_url: string;
+  is_video_available: boolean;
+  first_episode_id: string | null;
 }
 export interface TitleDetails extends Title {
   seasons: Season[];
@@ -59,6 +61,10 @@ export interface Episode {
   air_date: string | null;
   duration: number;
   rating: number;
+  is_video_available: boolean;
+  season: Season;
+  next_episode: Episode | null;
+  previous_episode: Episode | null;
 }
 
 export interface PaginationDataProps<T = any> {

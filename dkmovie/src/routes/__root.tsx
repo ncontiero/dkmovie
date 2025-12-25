@@ -5,11 +5,13 @@ import {
   createRootRouteWithContext,
   HeadContent,
   Outlet,
+  useMatch,
 } from "@tanstack/react-router";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { type PageError, lazyComponents } from "@/components/lazy-components";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { MFAProvider } from "@/context/mfa/provider";
 import { nextPathSearchSchema } from "@/schemas/routes/base";
 import { type MetadataTranslations, generateMetadata } from "@/utils/metadata";
@@ -59,6 +61,11 @@ function RootComponent() {
   } = Route.useRouteContext();
   const PageError = djangoPageError && lazyComponents.errors[djangoPageError];
 
+  const isOnWatchPage = !!useMatch({
+    from: "/title/$titleId/watch",
+    shouldThrow: false,
+  });
+
   useEffect(() => {
     document.querySelector("#pageErrorScript")?.remove();
     document.querySelector("#adminConfigScript")?.remove();
@@ -67,9 +74,11 @@ function RootComponent() {
   return (
     <MFAProvider sessionError={sessionError}>
       <HeadContent />
-      <Header />
-      {PageError ? <PageError /> : <Outlet />}
-      <Footer />
+      <TooltipProvider delayDuration={100}>
+        {!isOnWatchPage && <Header />}
+        {PageError ? <PageError /> : <Outlet />}
+        {!isOnWatchPage && <Footer />}
+      </TooltipProvider>
       <Toaster />
     </MFAProvider>
   );

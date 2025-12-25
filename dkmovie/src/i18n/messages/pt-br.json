@@ -65,8 +65,26 @@
     "seeMoreTitlesOfTheYear": "Veja mais títulos do ano de {year}",
     "seeMoreTitlesOfTheGenre": "Veja mais títulos do gênero de {genre}"
   },
+  "playerPage": {
+    "browserNotSupported": "Seu navegador não suporta o vídeo tag.",
+    "selectEpisode": "Selecione um episódio para assistir",
+    "episodeNotAvailable": "Este episódio não está disponível.",
+    "episodeDescription": "{seasonName}, Ep. {episodeNumber} {episodeName}",
+    "captionsAndAudios": "Legendas e Áudios",
+    "options": "Opções",
+    "volume": "Volume",
+    "fullScreen": "Tela cheia",
+    "exitFullScreen": "Sair da tela cheia",
+    "close": "Fechar player",
+    "play": "Assistir",
+    "pause": "Pausar",
+    "seekBack": "Voltar 10 segundos",
+    "seekForward": "Avançar 10 segundos",
+    "seekBar": "Barra de progresso",
+    "nextEpisode": "Próximo episódio"
+  },
   "titlesPage": {
-    "moviesOfTheYear": "Filmes de {year}",
+    "moviesOfTheYear": "Filmes de {yea  r}",
     "topRatedMovies": "Filmes mais bem avaliados",
     "seriesOfTheYear": "Séries de {year}",
     "topRatedSeries": "Séries mais bem avaliadas",
@@ -375,6 +393,7 @@
     "myAccount": "Minha conta",
     "loading": "Carregando",
     "seeMore": "Veja mais",
+    "notAvailable": "Não disponível",
     "actions": {
       "cancel": "Cancelar",
       "confirm": "Confirmar",

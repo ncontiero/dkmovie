@@ -4,13 +4,14 @@ export const buttonVariants = cva(
   `
     ring-offset-background inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium
     whitespace-nowrap duration-200 focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2
-    focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none
+    focus-visible:outline-none disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none
     [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0
   `,
   {
     variants: {
       variant: {
-        default: "bg-primary/80 text-primary-foreground hover:bg-primary",
+        default:
+          "bg-primary/80 text-primary-foreground not-disabled:hover:bg-primary",
         destructive:
           "bg-destructive/80 text-primary-foreground hover:bg-destructive focus-visible:ring-destructive",
         outline:

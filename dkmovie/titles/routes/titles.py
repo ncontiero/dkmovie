@@ -11,10 +11,11 @@ from ninja.pagination import paginate
 from config.api.utils import ApiProcessError
 from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
+from dkmovie.titles.schemas import BaseEpisodeSchema
 from dkmovie.titles.schemas import BaseTitleSchema
-from dkmovie.titles.schemas import EpisodeSchema
 from dkmovie.titles.schemas import TitleDetailSchema
 from dkmovie.titles.schemas import TitleFilterSchema
+from dkmovie.titles.services.streaming import get_video_streaming_response
 
 router = Router()
 
@@ -52,9 +53,25 @@ def get_title(request, title_id: UUID):
         raise ApiProcessError(404, _("The title does not exist.")) from err
 
 
+@router.get("/{title_id}/stream")
+def stream_title(request, title_id: UUID):
+    try:
+        title = Title.objects.get(id=title_id, status=Title.Status.RELEASED)
+    except Title.DoesNotExist as err:
+        raise ApiProcessError(404, _("The title does not exist.")) from err
+
+    if title.content_type != Title.ContentType.MOVIE:
+        raise ApiProcessError(400, _("This title is not a movie."))
+
+    if not title.video_file:
+        raise ApiProcessError(404, _("Video file not found for this title."))
+
+    return get_video_streaming_response(request, title.video_file)
+
+
 @router.get(
     "/{title_id}/season/{season_number}/episodes",
-    response={200: list[EpisodeSchema]},
+    response={200: list[BaseEpisodeSchema]},
 )
 @decorate_view(cache_page(3600))
 def get_episodes(request, title_id: UUID, season_number: int):

@@ -21,6 +21,7 @@ interface EpisodeCardProps {
 
 function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
   const { lang } = useIntl();
+  const commonT = useTranslations("common");
 
   const releaseDate = useMemo(() => {
     if (!episode.air_date) return null;
@@ -43,11 +44,14 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
     <Link
       to="/title/$titleId/watch"
       params={{ titleId }}
+      search={{ episodeId: episode.id }}
       className="
         group ring-ring hover:bg-secondary ring-offset-background focus-visible:bg-secondary overflow-hidden rounded-lg
         ring-offset-2 duration-200 hover:scale-101 hover:p-2 focus-visible:ring-2 focus-visible:outline-hidden
-        max-lg:border-y max-lg:pb-4
+        aria-disabled:cursor-not-allowed aria-disabled:opacity-50 max-lg:border-y max-lg:pb-4
       "
+      disabled={!episode.is_video_available}
+      title={!episode.is_video_available ? commonT("notAvailable") : undefined}
     >
       <div className="flex size-full flex-col gap-4 lg:flex-row">
         <div
@@ -69,12 +73,21 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
             <div className="to-primary/40 size-full bg-linear-to-bl from-transparent lg:rounded-lg lg:rounded-r-none" />
           )}
           <div
-            className="
-              bg-foreground absolute top-1/2 left-1/2 -translate-1/2 rounded-full p-2 opacity-0 duration-200
-              group-hover:opacity-100 group-hover/image:scale-110 group-focus-visible:opacity-100
-            "
+            className={cn(
+              `
+                absolute top-1/2 left-1/2 -translate-1/2 rounded-full p-2 opacity-0 duration-200 group-hover:opacity-100
+                group-hover/image:scale-110 group-focus-visible:opacity-100
+              `,
+              episode.is_video_available
+                ? `bg-foreground`
+                : "bg-background opacity-100",
+            )}
           >
-            <Play className="fill-background size-8" />
+            {episode.is_video_available ? (
+              <Play className="fill-background size-8" />
+            ) : (
+              <p className="text-foreground">{commonT("notAvailable")}</p>
+            )}
           </div>
         </div>
         <div className="flex flex-col max-lg:px-2">

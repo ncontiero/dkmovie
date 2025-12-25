@@ -17,6 +17,10 @@ def cover_path(instance, filename):
     return f"titles/{instance.id}/covers/{filename}"
 
 
+def video_path(instance, filename):
+    return f"titles/{instance.id}/videos/{filename}"
+
+
 def season_path(instance, filename):
     return f"titles/{instance.title.id}/seasons/{instance.number}/{filename}"
 
@@ -24,6 +28,13 @@ def season_path(instance, filename):
 def episode_path(instance, filename):
     title_id = instance.season.title.id
     return f"titles/{title_id}/seasons/{instance.season.number}/episodes/{filename}"
+
+
+def episode_video_path(instance, filename):
+    title_id = instance.season.title.id
+    return (
+        f"titles/{title_id}/seasons/{instance.season.number}/episodes/videos/{filename}"
+    )
 
 
 class Genre(models.Model):
@@ -151,6 +162,12 @@ class Title(models.Model):
         blank=True,
         help_text=_("Link to the official YouTube trailer"),
     )
+    video_file = models.FileField(
+        upload_to=video_path,
+        blank=True,
+        null=True,
+        help_text=_("The video file for the movie"),
+    )
     added_by = models.CharField(
         max_length=10,
         choices=AddedBy.choices,
@@ -178,6 +195,23 @@ class Title(models.Model):
     @property
     def seasons_count(self):
         return self.seasons.count()
+
+    @property
+    def is_video_available(self) -> bool:
+        if self.content_type == self.ContentType.MOVIE:
+            return bool(self.video_file)
+        if self.content_type == self.ContentType.SERIES:
+            return self.seasons.filter(episodes__video_file__isnull=False).exists()
+        return False
+
+    def get_first_episode(self):
+        if self.content_type != self.ContentType.SERIES:
+            return None
+        return (
+            Episode.objects.filter(season__title=self)
+            .order_by("season__number", "number")
+            .first()
+        )
 
     @property
     def tmdb_url(self) -> None | str:
@@ -299,6 +333,12 @@ class Episode(models.Model):
         null=True,
         help_text=_("The duration in minutes"),
     )
+    video_file = models.FileField(
+        upload_to=episode_video_path,
+        blank=True,
+        null=True,
+        help_text=_("The video file for the episode"),
+    )
     rating = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -330,6 +370,21 @@ class Episode(models.Model):
         return (
             f"{self.season.title.title} S{self.season.number:02d}E{self.number:02d}"
             f" - {self.name}"
+        )
+
+    @property
+    def is_video_available(self) -> bool:
+        return bool(self.video_file)
+
+    def get_next_episode(self):
+        return (
+            Episode.objects.filter(
+                season__title=self.season.title,
+                season__number__gte=self.season.number,
+                number__gt=self.number,
+            )
+            .order_by("season__number", "number")
+            .first()
         )
 
     @property

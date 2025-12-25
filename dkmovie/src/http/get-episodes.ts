@@ -7,3 +7,9 @@ export async function getSeasonEpisodes(titleId: string, seasonNumber: number) {
     `/titles/${titleId}/season/${seasonNumber}/episodes?lang=${getLangCookie()}`,
   );
 }
+
+export async function getEpisode(episodeId: string) {
+  return await httpClient.get<Episode>(
+    `/episodes/${episodeId}?lang=${getLangCookie()}`,
+  );
+}

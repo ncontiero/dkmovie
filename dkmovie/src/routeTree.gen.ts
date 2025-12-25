@@ -14,15 +14,15 @@ import { Route as SearchRouteImport } from "./routes/search"
 import { Route as MoviesRouteImport } from "./routes/movies"
 import { Route as AuthRouteRouteImport } from "./routes/auth/route"
 import { Route as IndexRouteImport } from "./routes/index"
-import { Route as TitleTitleIdRouteImport } from "./routes/title/$titleId"
 import { Route as AuthSignUpRouteImport } from "./routes/auth/sign-up"
 import { Route as AuthSignInRouteImport } from "./routes/auth/sign-in"
 import { Route as AccountVerifyEmailRouteImport } from "./routes/account/verify-email"
 import { Route as Auth2faRouteRouteImport } from "./routes/auth/2fa/route"
 import { Route as AccountmyAccountRouteRouteImport } from "./routes/account/(my-account)/route"
+import { Route as TitleTitleIdIndexRouteImport } from "./routes/title/$titleId/index"
 import { Route as Auth2faIndexRouteImport } from "./routes/auth/2fa/index"
 import { Route as AccountmyAccountIndexRouteImport } from "./routes/account/(my-account)/index"
-import { Route as TitleTitleIdWatchRouteImport } from "./routes/title/$titleId.watch"
+import { Route as TitleTitleIdWatchRouteImport } from "./routes/title/$titleId/watch"
 import { Route as AuthPasswordResetRouteImport } from "./routes/auth/password/reset"
 import { Route as AuthPasswordForgotRouteImport } from "./routes/auth/password/forgot"
 import { Route as Auth2faTotpRouteImport } from "./routes/auth/2fa/totp"
@@ -55,11 +55,6 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
-const TitleTitleIdRoute = TitleTitleIdRouteImport.update({
-  id: "/title/$titleId",
-  path: "/title/$titleId",
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: "/sign-up",
   path: "/sign-up",
@@ -85,6 +80,11 @@ const AccountmyAccountRouteRoute = AccountmyAccountRouteRouteImport.update({
   path: "/account",
   getParentRoute: () => rootRouteImport,
 } as any)
+const TitleTitleIdIndexRoute = TitleTitleIdIndexRouteImport.update({
+  id: "/title/$titleId/",
+  path: "/title/$titleId/",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Auth2faIndexRoute = Auth2faIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -96,9 +96,9 @@ const AccountmyAccountIndexRoute = AccountmyAccountIndexRouteImport.update({
   getParentRoute: () => AccountmyAccountRouteRoute,
 } as any)
 const TitleTitleIdWatchRoute = TitleTitleIdWatchRouteImport.update({
-  id: "/watch",
-  path: "/watch",
-  getParentRoute: () => TitleTitleIdRoute,
+  id: "/title/$titleId/watch",
+  path: "/title/$titleId/watch",
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthPasswordResetRoute = AuthPasswordResetRouteImport.update({
   id: "/password/reset",
@@ -143,7 +143,6 @@ export interface FileRoutesByFullPath {
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
-  "/title/$titleId": typeof TitleTitleIdRouteWithChildren
   "/account/security": typeof AccountmyAccountSecurityRoute
   "/account/provider/callback": typeof AccountProviderCallbackRoute
   "/auth/2fa/recovery-codes": typeof Auth2faRecoveryCodesRoute
@@ -153,6 +152,7 @@ export interface FileRoutesByFullPath {
   "/title/$titleId/watch": typeof TitleTitleIdWatchRoute
   "/account/": typeof AccountmyAccountIndexRoute
   "/auth/2fa/": typeof Auth2faIndexRoute
+  "/title/$titleId": typeof TitleTitleIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -163,7 +163,6 @@ export interface FileRoutesByTo {
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
-  "/title/$titleId": typeof TitleTitleIdRouteWithChildren
   "/account/security": typeof AccountmyAccountSecurityRoute
   "/account/provider/callback": typeof AccountProviderCallbackRoute
   "/auth/2fa/recovery-codes": typeof Auth2faRecoveryCodesRoute
@@ -173,6 +172,7 @@ export interface FileRoutesByTo {
   "/title/$titleId/watch": typeof TitleTitleIdWatchRoute
   "/account": typeof AccountmyAccountIndexRoute
   "/auth/2fa": typeof Auth2faIndexRoute
+  "/title/$titleId": typeof TitleTitleIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -186,7 +186,6 @@ export interface FileRoutesById {
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
-  "/title/$titleId": typeof TitleTitleIdRouteWithChildren
   "/account/(my-account)/security": typeof AccountmyAccountSecurityRoute
   "/account/provider/callback": typeof AccountProviderCallbackRoute
   "/auth/2fa/recovery-codes": typeof Auth2faRecoveryCodesRoute
@@ -196,6 +195,7 @@ export interface FileRoutesById {
   "/title/$titleId/watch": typeof TitleTitleIdWatchRoute
   "/account/(my-account)/": typeof AccountmyAccountIndexRoute
   "/auth/2fa/": typeof Auth2faIndexRoute
+  "/title/$titleId/": typeof TitleTitleIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -210,7 +210,6 @@ export interface FileRouteTypes {
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
-    | "/title/$titleId"
     | "/account/security"
     | "/account/provider/callback"
     | "/auth/2fa/recovery-codes"
@@ -220,6 +219,7 @@ export interface FileRouteTypes {
     | "/title/$titleId/watch"
     | "/account/"
     | "/auth/2fa/"
+    | "/title/$titleId"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -230,7 +230,6 @@ export interface FileRouteTypes {
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
-    | "/title/$titleId"
     | "/account/security"
     | "/account/provider/callback"
     | "/auth/2fa/recovery-codes"
@@ -240,6 +239,7 @@ export interface FileRouteTypes {
     | "/title/$titleId/watch"
     | "/account"
     | "/auth/2fa"
+    | "/title/$titleId"
   id:
     | "__root__"
     | "/"
@@ -252,7 +252,6 @@ export interface FileRouteTypes {
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
-    | "/title/$titleId"
     | "/account/(my-account)/security"
     | "/account/provider/callback"
     | "/auth/2fa/recovery-codes"
@@ -262,6 +261,7 @@ export interface FileRouteTypes {
     | "/title/$titleId/watch"
     | "/account/(my-account)/"
     | "/auth/2fa/"
+    | "/title/$titleId/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -272,8 +272,9 @@ export interface RootRouteChildren {
   SeriesRoute: typeof SeriesRoute
   AccountmyAccountRouteRoute: typeof AccountmyAccountRouteRouteWithChildren
   AccountVerifyEmailRoute: typeof AccountVerifyEmailRoute
-  TitleTitleIdRoute: typeof TitleTitleIdRouteWithChildren
   AccountProviderCallbackRoute: typeof AccountProviderCallbackRoute
+  TitleTitleIdWatchRoute: typeof TitleTitleIdWatchRoute
+  TitleTitleIdIndexRoute: typeof TitleTitleIdIndexRoute
 }
 
 declare module "@tanstack/react-router" {
@@ -313,13 +314,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/title/$titleId": {
-      id: "/title/$titleId"
-      path: "/title/$titleId"
-      fullPath: "/title/$titleId"
-      preLoaderRoute: typeof TitleTitleIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     "/auth/sign-up": {
       id: "/auth/sign-up"
       path: "/sign-up"
@@ -355,6 +349,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountmyAccountRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/title/$titleId/": {
+      id: "/title/$titleId/"
+      path: "/title/$titleId"
+      fullPath: "/title/$titleId"
+      preLoaderRoute: typeof TitleTitleIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     "/auth/2fa/": {
       id: "/auth/2fa/"
       path: "/"
@@ -371,10 +372,10 @@ declare module "@tanstack/react-router" {
     }
     "/title/$titleId/watch": {
       id: "/title/$titleId/watch"
-      path: "/watch"
+      path: "/title/$titleId/watch"
       fullPath: "/title/$titleId/watch"
       preLoaderRoute: typeof TitleTitleIdWatchRouteImport
-      parentRoute: typeof TitleTitleIdRoute
+      parentRoute: typeof rootRouteImport
     }
     "/auth/password/reset": {
       id: "/auth/password/reset"
@@ -472,18 +473,6 @@ const AccountmyAccountRouteRouteWithChildren =
     AccountmyAccountRouteRouteChildren,
   )
 
-interface TitleTitleIdRouteChildren {
-  TitleTitleIdWatchRoute: typeof TitleTitleIdWatchRoute
-}
-
-const TitleTitleIdRouteChildren: TitleTitleIdRouteChildren = {
-  TitleTitleIdWatchRoute: TitleTitleIdWatchRoute,
-}
-
-const TitleTitleIdRouteWithChildren = TitleTitleIdRoute._addFileChildren(
-  TitleTitleIdRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
@@ -492,8 +481,9 @@ const rootRouteChildren: RootRouteChildren = {
   SeriesRoute: SeriesRoute,
   AccountmyAccountRouteRoute: AccountmyAccountRouteRouteWithChildren,
   AccountVerifyEmailRoute: AccountVerifyEmailRoute,
-  TitleTitleIdRoute: TitleTitleIdRouteWithChildren,
   AccountProviderCallbackRoute: AccountProviderCallbackRoute,
+  TitleTitleIdWatchRoute: TitleTitleIdWatchRoute,
+  TitleTitleIdIndexRoute: TitleTitleIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

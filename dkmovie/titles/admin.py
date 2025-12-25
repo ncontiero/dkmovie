@@ -82,6 +82,7 @@ class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
             _("Media"),
             {
                 "fields": (
+                    "video_file",
                     "poster",
                     "cover",
                     "trailer_url",
@@ -231,7 +232,7 @@ class EpisodeAdmin(TmdbUrlMixin, TranslationAdmin):
         (
             _("Media"),
             {
-                "fields": ("still",),
+                "fields": ("video_file", "still"),
             },
         ),
         (

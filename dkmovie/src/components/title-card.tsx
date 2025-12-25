@@ -15,6 +15,7 @@ export function TitleCard({
   title,
   horizontalOnMobile = false,
 }: TitleCardProps) {
+  const commonT = useTranslations("common");
   const t = useTranslations("titlePage");
   const { isMobile } = useIsMobile({ mobileMaxWidth: 640 });
 
@@ -117,12 +118,24 @@ export function TitleCard({
                 type="button"
                 className="z-20 h-8 w-full"
                 size="sm"
-                asChild
+                asChild={title.is_video_available}
+                disabled={!title.is_video_available}
               >
-                <Link to="/title/$titleId/watch" params={{ titleId: title.id }}>
-                  <Play className="fill-primary-foreground" />
-                  {t("watch")}
-                </Link>
+                {title.is_video_available ? (
+                  <Link
+                    to="/title/$titleId/watch"
+                    params={{ titleId: title.id }}
+                    search={{ episodeId: title.first_episode_id || undefined }}
+                  >
+                    <Play className="fill-primary-foreground" />
+                    {t("watch")}
+                  </Link>
+                ) : (
+                  <>
+                    <Play className="fill-primary-foreground" />
+                    {commonT("notAvailable")}
+                  </>
+                )}
               </Button>
               <Button type="button" size="icon" className="z-20 h-8">
                 <Plus />

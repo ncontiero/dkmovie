@@ -36,7 +36,7 @@ function titleRelatedTitlesQueryOptions(titleId: string) {
   });
 }
 
-export const Route = createFileRoute("/title/$titleId")({
+export const Route = createFileRoute("/title/$titleId/")({
   component: TitleComponent,
   params: {
     parse: ({ titleId }) => ({ titleId: titleIdSchema.parse(titleId) }),
@@ -121,13 +121,14 @@ export const Route = createFileRoute("/title/$titleId")({
 });
 
 function TitleComponent() {
-  const titleId = Route.useParams().titleId;
+  const { titleId } = Route.useParams();
   const { data: title } = useSuspenseQuery(titleQueryOptions(titleId));
   const { data: relatedMovies } = useSuspenseQuery(
     titleRelatedTitlesQueryOptions(titleId),
   );
   const [selectedSeason, setSelectedSeason] = useState<string>();
 
+  const commonT = useTranslations("common");
   const t = useTranslations("titlePage");
 
   const durationFormatted = useMemo(() => {
@@ -275,17 +276,31 @@ function TitleComponent() {
 
                   <div className="mt-8 flex flex-wrap gap-4">
                     <Button
-                      asChild
                       size="lg"
                       className={`
                         shadow-primary/20 xs:w-auto hover:shadow-primary/40 h-12 w-full px-8 text-base font-semibold
                         shadow-xl hover:scale-105
                       `}
+                      asChild={title.is_video_available}
+                      disabled={!title.is_video_available}
                     >
-                      <Link to="/title/$titleId/watch" params={{ titleId }}>
-                        <Play className="size-5 fill-current" />
-                        {t("watch")}
-                      </Link>
+                      {title.is_video_available ? (
+                        <Link
+                          to="/title/$titleId/watch"
+                          params={{ titleId }}
+                          search={{
+                            episodeId: title.first_episode_id || undefined,
+                          }}
+                        >
+                          <Play className="size-5 fill-current" />
+                          {t("watch")}
+                        </Link>
+                      ) : (
+                        <>
+                          <Play className="size-5 fill-current" />
+                          {commonT("notAvailable")}
+                        </>
+                      )}
                     </Button>
 
                     <Button

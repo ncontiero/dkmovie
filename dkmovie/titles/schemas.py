@@ -20,6 +20,8 @@ class GenreSchema(ModelSchema):
 
 class BaseTitleSchema(ModelSchema):
     genres: list[GenreSchema] = []
+    is_video_available: bool = False
+    first_episode_id: UUID | None = None
 
     class Meta:
         model = Title
@@ -36,6 +38,15 @@ class BaseTitleSchema(ModelSchema):
             "cover",
             "trailer_url",
         ]
+
+    @staticmethod
+    def resolve_is_video_available(title: Title) -> bool:
+        return title.is_video_available
+
+    @staticmethod
+    def resolve_first_episode_id(title: Title) -> UUID | None:
+        first_episode = title.get_first_episode()
+        return first_episode.id if first_episode else None
 
 
 class SeasonSchema(ModelSchema):
@@ -65,7 +76,9 @@ class TitleDetailSchema(BaseTitleSchema):
         fields = BaseTitleSchema.Meta.fields
 
 
-class EpisodeSchema(ModelSchema):
+class BaseEpisodeSchema(ModelSchema):
+    is_video_available: bool = False
+
     class Meta:
         model = Episode
         fields = [
@@ -78,6 +91,26 @@ class EpisodeSchema(ModelSchema):
             "duration",
             "rating",
         ]
+
+    @staticmethod
+    def resolve_is_video_available(episode: Episode) -> bool:
+        return episode.is_video_available
+
+
+class EpisodeSchema(BaseEpisodeSchema):
+    season: SeasonSchema = None
+    next_episode: BaseEpisodeSchema | None = None
+
+    class Meta(BaseEpisodeSchema.Meta):
+        fields = BaseEpisodeSchema.Meta.fields
+
+    @staticmethod
+    def resolve_season(episode: Episode) -> SeasonSchema:
+        return episode.season
+
+    @staticmethod
+    def resolve_next_episode(episode: Episode) -> Episode | None:
+        return episode.get_next_episode()
 
 
 class TitleFilterSchema(FilterSchema):
