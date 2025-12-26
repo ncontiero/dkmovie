@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("S3 File Upload: Initializing...");
   const inputs = document.querySelectorAll(".filepond-input-source");
@@ -28,132 +30,109 @@ document.addEventListener("DOMContentLoaded", function () {
       instanceId,
     );
 
+    // eslint-disable-next-line no-undef
     FilePond.create(input, {
       credits: false,
       server: {
-        process: (
-          fieldName,
-          file,
-          metadata,
-          load,
-          error,
-          progress,
-          abort,
-          transfer,
-          options,
-        ) => {
+        process: (fieldName, file, metadata, load, error, progress, abort) => {
           console.log("S3 File Upload: Starting upload for", file.name);
 
-          // 1. Initialize
-          fetch(initUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": csrftoken,
-            },
-            body: JSON.stringify({
-              field_id: fieldId,
-              file_name: file.name,
-              file_size: file.size,
-              content_type: file.type,
-              instance_id: instanceId,
-            }),
-          })
-            .then((response) => {
-              if (!response.ok) throw new Error("Init failed");
-              return response.json();
-            })
-            .then((data) => {
+          const processUpload = async () => {
+            try {
+              // 1. Initialize
+              const initResponse = await fetch(initUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify({
+                  field_id: fieldId,
+                  file_name: file.name,
+                  file_size: file.size,
+                  content_type: file.type,
+                  instance_id: instanceId,
+                }),
+              });
+
+              if (!initResponse.ok) throw new Error("Init failed");
+              const data = await initResponse.json();
+
               const { upload_id, parts, upload_signature } = data;
               const uploadedParts = [];
-              let currentPartIndex = 0;
-              let currentOffset = 0;
 
-              const uploadNextPart = () => {
-                if (currentPartIndex >= parts.length) {
-                  completeUpload();
-                  return;
-                }
-
-                const part = parts[currentPartIndex];
+              // 2. Upload parts sequentially
+              for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
                 const chunk = file.slice(
-                  currentOffset,
-                  currentOffset + part.size,
+                  parts.slice(0, i).reduce((sum, p) => sum + p.size, 0),
+                  parts.slice(0, i).reduce((sum, p) => sum + p.size, 0) +
+                    part.size,
                 );
 
-                fetch(part.upload_url, {
+                const partResponse = await fetch(part.upload_url, {
                   method: "PUT",
                   body: chunk,
-                })
-                  .then((res) => {
-                    if (!res.ok) throw new Error("Part upload failed");
-                    const etag = res.headers.get("ETag").replaceAll('"', "");
-                    uploadedParts.push({
-                      part_number: part.part_number,
-                      size: part.size,
-                      etag,
-                    });
+                });
 
-                    currentOffset += part.size;
-                    progress(true, currentOffset, file.size);
-                    currentPartIndex++;
-                    uploadNextPart();
-                  })
-                  .catch((error_) => {
-                    console.error("S3 File Upload: Part upload error", error_);
-                    error("Upload error");
-                  });
-              };
+                if (!partResponse.ok) throw new Error("Part upload failed");
 
-              const completeUpload = () => {
-                console.log("S3 File Upload: Completing upload...");
-                fetch(completeUrl, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken,
-                  },
-                  body: JSON.stringify({
-                    upload_id,
-                    upload_signature,
-                    parts: uploadedParts,
-                  }),
-                })
-                  .then((res) => res.json())
-                  .then((data) => {
-                    console.log("S3 File Upload: Finalizing...");
-                    return fetch(finalizeUrl, {
-                      method: "POST",
-                      headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrftoken,
-                      },
-                      body: JSON.stringify({
-                        upload_signature,
-                      }),
-                    });
-                  })
-                  .then((res) => res.json())
-                  .then((data) => {
-                    console.log("S3 File Upload: Success! Field value set.");
-                    hiddenInput.value = data.field_value;
-                    load(data.field_value);
-                  })
-                  .catch((error_) => {
-                    console.error(
-                      "S3 File Upload: Completion/Finalization error",
-                      error_,
-                    );
-                    error("Completion error");
-                  });
-              };
+                const etag = partResponse.headers
+                  .get("ETag")
+                  .replaceAll('"', "");
+                uploadedParts.push({
+                  part_number: part.part_number,
+                  size: part.size,
+                  etag,
+                });
 
-              uploadNextPart();
-            })
-            .catch((error_) => {
-              console.error("S3 File Upload: Initialization error", error_);
-              error("Initialization error");
-            });
+                const currentOffset = parts
+                  .slice(0, i + 1)
+                  .reduce((sum, p) => sum + p.size, 0);
+                progress(true, currentOffset, file.size);
+              }
+
+              // 3. Complete upload
+              console.log("S3 File Upload: Completing upload...");
+              const completeResponse = await fetch(completeUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify({
+                  upload_id,
+                  upload_signature,
+                  parts: uploadedParts,
+                }),
+              });
+
+              await completeResponse.json();
+
+              // 4. Finalize
+              console.log("S3 File Upload: Finalizing...");
+              const finalizeResponse = await fetch(finalizeUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify({
+                  upload_signature,
+                }),
+              });
+
+              const finalData = await finalizeResponse.json();
+              console.log("S3 File Upload: Success! Field value set.");
+              hiddenInput.value = finalData.field_value;
+              load(finalData.field_value);
+            } catch (error_) {
+              console.error("S3 File Upload: Error", error_);
+              error("Upload error");
+            }
+          };
+
+          processUpload();
 
           return {
             abort: () => {
