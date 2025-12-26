@@ -1,0 +1,3 @@
+MINIO_ROOT_USER=minioAccessKey
+MINIO_ROOT_PASSWORD=minioSecretKey
+MINIO_BUCKET_NAME=dkmovie-bucket

@@ -40,6 +40,7 @@ jobs:
         run: |
           mkdir -p .envs/.local
           cat .envs.example/.local/.postgres > .envs/.local/.postgres
+          cat .envs.example/.local/.minio > .envs/.local/.minio
           cat .envs.example/.local/.django > .envs/.local/.django
 
       - name: Set up Docker Buildx
