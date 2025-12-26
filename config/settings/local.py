@@ -33,49 +33,6 @@ EMAIL_HOST = config("EMAIL_HOST", default="mailpit")
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
 
-# STORAGES
-# ------------------------------------------------------------------------------
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_ACCESS_KEY_ID = config("DJANGO_AWS_ACCESS_KEY_ID", default="minioadmin")
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_SECRET_ACCESS_KEY = config("DJANGO_AWS_SECRET_ACCESS_KEY", default="minioadmin")
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_STORAGE_BUCKET_NAME = config(
-    "DJANGO_AWS_STORAGE_BUCKET_NAME",
-    default="dkmovie-bucket",
-)
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_QUERYSTRING_AUTH = False
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-}
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_S3_REGION_NAME = config("DJANGO_AWS_S3_REGION_NAME", default=None)
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
-AWS_S3_CUSTOM_DOMAIN = config("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
-AWS_S3_ENDPOINT_URL = config(
-    "DJANGO_AWS_S3_ENDPOINT_URL",
-    default="http://minio:9000",
-)
-AWS_S3_URL_PROTOCOL = "http:" if AWS_S3_ENDPOINT_URL.startswith("http://") else "https:"
-aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"localhost:9000/{AWS_STORAGE_BUCKET_NAME}"
-
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3.S3Storage",
-        "OPTIONS": {
-            "location": "media",
-            "file_overwrite": False,
-        },
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
-
-MEDIA_URL = f"http://{aws_s3_domain}/media/"
-
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
@@ -113,3 +70,47 @@ WEBPACK_LOADER["DEFAULT"]["CACHE"] = not DEBUG
 # ------------------------------------------------------------------------------
 # https://docs.allauth.org/en/latest/mfa/configuration.html
 MFA_WEBAUTHN_ALLOW_INSECURE_ORIGIN = True
+
+# STORAGES
+# ------------------------------------------------------------------------------
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_ACCESS_KEY_ID = config("DJANGO_AWS_ACCESS_KEY_ID", default="minioadmin")
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_SECRET_ACCESS_KEY = config("DJANGO_AWS_SECRET_ACCESS_KEY", default="minioadmin")
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_STORAGE_BUCKET_NAME = config(
+    "DJANGO_AWS_STORAGE_BUCKET_NAME",
+    default="dkmovie-bucket",
+)
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_S3_ENDPOINT_URL = config("DJANGO_AWS_S3_ENDPOINT_URL", default="http://minio:9000")
+# Custom setting for local dev: The endpoint accessible from the browser
+AWS_S3_PUBLIC_ENDPOINT_URL = config(
+    "DJANGO_AWS_S3_PUBLIC_ENDPOINT_URL",
+    default="http://localhost:9000",
+)
+
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_S3_REGION_NAME = config("DJANGO_AWS_S3_REGION_NAME", default=None)
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
+AWS_S3_CUSTOM_DOMAIN = config("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
+AWS_S3_URL_PROTOCOL = "http:" if AWS_S3_ENDPOINT_URL.startswith("http://") else "https:"
+aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"minio:9000/{AWS_STORAGE_BUCKET_NAME}"
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "file_overwrite": False,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+MEDIA_URL = f"http://{aws_s3_domain}/"

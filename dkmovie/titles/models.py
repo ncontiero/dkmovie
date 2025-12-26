@@ -1,3 +1,4 @@
+import contextlib
 from uuid import uuid4
 
 from django.core.validators import MaxValueValidator
@@ -6,7 +7,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
-from dkmovie.titles.fields import S3FileField
+from dkmovie.upload.fields import S3FileField
 
 BASE_TMDB_URL = "https://www.themoviedb.org"
 
@@ -19,6 +20,12 @@ def cover_path(instance, filename):
     return f"titles/{instance.id}/covers/{filename}"
 
 
+def video_path(instance, filename):
+    if instance and instance.id:
+        return f"titles/{instance.id}/videos/{filename}"
+    return f"uploads/movies/{uuid4()}/{filename}"
+
+
 def season_path(instance, filename):
     return f"titles/{instance.title.id}/seasons/{instance.number}/{filename}"
 
@@ -26,6 +33,14 @@ def season_path(instance, filename):
 def episode_path(instance, filename):
     title_id = instance.season.title.id
     return f"titles/{title_id}/seasons/{instance.season.number}/episodes/{filename}"
+
+
+def episode_video_path(instance, filename):
+    with contextlib.suppress(Exception):
+        title_id = instance.season.title.id
+        season_number = instance.season.number
+        return f"titles/{title_id}/seasons/{season_number}/episodes/videos/{filename}"
+    return f"uploads/episodes/{uuid4()}/{filename}"
 
 
 class Genre(models.Model):
@@ -154,6 +169,7 @@ class Title(models.Model):
         help_text=_("Link to the official YouTube trailer"),
     )
     video_file = S3FileField(
+        upload_to=video_path,
         blank=True,
         null=True,
         max_length=500,
@@ -325,6 +341,7 @@ class Episode(models.Model):
         help_text=_("The duration in minutes"),
     )
     video_file = S3FileField(
+        upload_to=episode_video_path,
         blank=True,
         null=True,
         max_length=500,

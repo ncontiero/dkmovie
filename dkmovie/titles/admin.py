@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from modeltranslation.admin import TranslationTabularInline
 
-from .fields import S3FileField
 from .models import Episode
 from .models import Genre
 from .models import Season
@@ -13,7 +12,6 @@ from .tasks import populate_episode_from_tmdb
 from .tasks import populate_episodes_from_tmdb
 from .tasks import populate_seasons_from_tmdb
 from .tasks import populate_title_admin_task
-from .widgets import S3FilePondWidget
 
 
 class TmdbUrlMixin:
@@ -35,10 +33,6 @@ class GenreAdmin(TranslationAdmin):
 
 @admin.register(Title)
 class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
-    formfield_overrides = {
-        S3FileField: {"widget": S3FilePondWidget},
-    }
-
     class SeasonInline(TranslationTabularInline):
         model = Season
         extra = 0
@@ -216,9 +210,6 @@ class SeasonAdmin(TmdbUrlMixin, TranslationAdmin):
 
 @admin.register(Episode)
 class EpisodeAdmin(TmdbUrlMixin, TranslationAdmin):
-    formfield_overrides = {
-        S3FileField: {"widget": S3FilePondWidget},
-    }
     list_display = ("__str__", "season", "number", "air_date", "rating")
     list_filter = ("air_date",)
     search_fields = ("season__title__title", "name", "overview")

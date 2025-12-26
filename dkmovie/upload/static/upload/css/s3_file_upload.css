@@ -1,0 +1,79 @@
+/* FilePond styling for DKMovie Admin */
+
+:root {
+  --file-upload-current-bg-color: rgba(0, 0, 0, 0.03);
+
+  --filepond-panel-bg-color: #f8f9fa;
+  --filepond-panel-border-color: #dee2e6;
+  --filepond-text-color: #495057;
+}
+
+[data-theme="dark"] {
+  --filepond-panel-bg-color: rgba(255, 255, 255, 0.05);
+
+  --filepond-panel-bg-color: #1a1a1a;
+  --filepond-panel-border-color: #2d2d2d;
+  --filepond-text-color: #adb5bd;
+}
+
+.s3-file-uploader {
+  max-width: 800px;
+  width: 100%;
+  margin-bottom: 1em;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+/* Current file section styling */
+.file-upload-current {
+  display: block;
+  padding: 8px 12px;
+  background: var(--file-upload-current-bg-color);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.file-upload-current a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.file-upload-current a:hover {
+  text-decoration: underline;
+}
+
+.clearable-file-input {
+  margin-left: 15px;
+  font-style: italic;
+}
+
+/* FilePond Root */
+.filepond--root {
+  cursor: pointer;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+/* Panel Background and Borders */
+.filepond--root .filepond--panel-root,
+.filepond--panel-root[data-scalable="true"] {
+  background-color: var(--filepond-panel-bg-color) !important;
+  border: 1px solid var(--filepond-panel-border-color) !important;
+  border-radius: 8px;
+}
+.filepond--root .filepond--panel-root .filepond--panel-center {
+  border-block: none !important;
+}
+
+/* Label Colors */
+.filepond--root .filepond--drop-label {
+  color: var(--filepond-text-color);
+}
+.filepond--root .filepond--drop-label > label {
+  cursor: pointer;
+}
+
+.filepond--root .filepond--label-action {
+  text-decoration-color: var(--filepond-text-color);
+}
