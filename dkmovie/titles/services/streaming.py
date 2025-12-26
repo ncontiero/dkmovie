@@ -93,7 +93,7 @@ def get_video_streaming_response(request, file_field):
     content_type, _ = mimetypes.guess_type(file_field.name)
     content_type = content_type or "video/mp4"
 
-    range_header = request.META.get("HTTP_RANGE", "").strip()
+    range_header = request.headers.get("range", "").strip()
     range_match = re.match(r"bytes=(\d+)-(\d*)", range_header)
 
     if range_match:

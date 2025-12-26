@@ -93,7 +93,6 @@ class S3MultipartManager:
             Bucket=self.bucket_name,
             Key=object_key,
             ContentType=content_type,
-            # ACL='public-read' # Optional: if you want files to be public
         )
         upload_id = resp["UploadId"]
 

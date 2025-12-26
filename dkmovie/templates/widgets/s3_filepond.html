@@ -1,13 +1,13 @@
-<input type="hidden" name="{{ widget.name }}" id="{{ widget.attrs.id }}" value="{{ widget.value|default:'' }}">
+<input name="{{ widget.name }}" id="{{ widget.attrs.id }}" type="hidden" value="{{ widget.value|default:'' }}" />
 
 {% if widget.value %}
 <div class="current-file" style="margin-bottom: 10px;">
-    Currently: <strong>{{ widget.value }}</strong>
+  Currently: <strong>{{ widget.value }}</strong>
 </div>
 {% endif %}
 
 <div class="filepond-wrapper">
-    <input type="file" id="fp-{{ widget.attrs.id }}">
+  <input id="fp-{{ widget.attrs.id }}" type="file" />
 </div>
 
 <script>
