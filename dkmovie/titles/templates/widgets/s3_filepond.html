@@ -1,0 +1,98 @@
+{% load i18n %}
+
+<style>
+  .filepond-container-{{ widget.attrs.id }} {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+  .current-file-info {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #666;
+  }
+  .filepond--root {
+    width: 100%;
+  }
+</style>
+
+<div class="filepond-container-{{ widget.attrs.id }}">
+  <input name="{{ widget.name }}" id="{{ widget.attrs.id }}" type="hidden" value="{{ widget.value|default:'' }}" />
+
+  {% if widget.value %}
+  <div class="current-file-info">
+    <strong>{% trans "Current file" %}:</strong> {{ widget.value }}
+  </div>
+  {% endif %}
+
+  <div class="filepond-wrapper">
+    <input id="fp-{{ widget.attrs.id }}" type="file" />
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const pondInput = document.getElementById('fp-{{ widget.attrs.id }}');
+    const hiddenInput = document.getElementById('{{ widget.attrs.id }}');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+    FilePond.create(pondInput, {
+      credits: false,
+      labelIdle: '{% trans "Drag & Drop your video or" %} <span class="filepond--label-action">{% trans "Browse" %}</span>',
+      server: {
+        process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+          fetch('/api/uploads/sign', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+              file_name: file.name,
+              content_type: file.type
+            })
+          }).then((res) => {
+            if (!res.ok) throw new Error('Failed to sign upload');
+            return res.json();
+          }).then((data) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open(data.method, data.url);
+
+            if (data.headers) {
+              for (const [key, value] of Object.entries(data.headers)) {
+                xhr.setRequestHeader(key, value);
+              }
+            }
+
+            xhr.upload.onprogress = (e) => {
+              progress(e.lengthComputable, e.loaded, e.total);
+            };
+
+            xhr.onload = function() {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                load(data.key);
+                hiddenInput.value = data.key;
+              } else {
+                error('Upload failed');
+              }
+            };
+
+            xhr.onerror = () => error('Network error');
+            xhr.send(file);
+
+            return {
+              abort: () => xhr.abort()
+            };
+          }).catch(err => {
+            console.error(err);
+            error(err.message);
+          });
+        }
+      }
+    });
+  });
+</script>

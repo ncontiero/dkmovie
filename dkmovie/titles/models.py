@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
+from dkmovie.titles.fields import S3FileField
+
 BASE_TMDB_URL = "https://www.themoviedb.org"
 
 
@@ -17,10 +19,6 @@ def cover_path(instance, filename):
     return f"titles/{instance.id}/covers/{filename}"
 
 
-def video_path(instance, filename):
-    return f"titles/{instance.id}/videos/{filename}"
-
-
 def season_path(instance, filename):
     return f"titles/{instance.title.id}/seasons/{instance.number}/{filename}"
 
@@ -28,13 +26,6 @@ def season_path(instance, filename):
 def episode_path(instance, filename):
     title_id = instance.season.title.id
     return f"titles/{title_id}/seasons/{instance.season.number}/episodes/{filename}"
-
-
-def episode_video_path(instance, filename):
-    title_id = instance.season.title.id
-    return (
-        f"titles/{title_id}/seasons/{instance.season.number}/episodes/videos/{filename}"
-    )
 
 
 class Genre(models.Model):
@@ -162,10 +153,10 @@ class Title(models.Model):
         blank=True,
         help_text=_("Link to the official YouTube trailer"),
     )
-    video_file = models.FileField(
-        upload_to=video_path,
+    video_file = S3FileField(
         blank=True,
         null=True,
+        max_length=500,
         help_text=_("The video file for the movie"),
     )
     added_by = models.CharField(
@@ -333,10 +324,10 @@ class Episode(models.Model):
         null=True,
         help_text=_("The duration in minutes"),
     )
-    video_file = models.FileField(
-        upload_to=episode_video_path,
+    video_file = S3FileField(
         blank=True,
         null=True,
+        max_length=500,
         help_text=_("The video file for the episode"),
     )
     rating = models.DecimalField(

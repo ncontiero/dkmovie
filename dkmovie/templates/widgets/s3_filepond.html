@@ -1,0 +1,79 @@
+<input type="hidden" name="{{ widget.name }}" id="{{ widget.attrs.id }}" value="{{ widget.value|default:'' }}">
+
+{% if widget.value %}
+<div class="current-file" style="margin-bottom: 10px;">
+    Currently: <strong>{{ widget.value }}</strong>
+</div>
+{% endif %}
+
+<div class="filepond-wrapper">
+    <input type="file" id="fp-{{ widget.attrs.id }}">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pondInput = document.getElementById('fp-{{ widget.attrs.id }}');
+        const hiddenInput = document.getElementById('{{ widget.attrs.id }}');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+        FilePond.create(pondInput, {
+            credits: false,
+            labelIdle: 'Drag & Drop your file or <span class="filepond--label-action">Browse</span>',
+            server: {
+                process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                    // 1. Get Presigned URL
+                    fetch('/api/uploads/sign', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({
+                            file_name: file.name,
+                            content_type: file.type
+                        })
+                    }).then(res => {
+                        if (!res.ok) throw new Error('Failed to sign upload');
+                        return res.json();
+                    }).then(data => {
+                        // 2. Upload directly to S3/MinIO
+                        const xhr = new XMLHttpRequest();
+                        xhr.open(data.method, data.url);
+
+                        // Set custom headers (Content-Type is crucial)
+                        if (data.headers) {
+                            for (const [key, value] of Object.entries(data.headers)) {
+                                xhr.setRequestHeader(key, value);
+                            }
+                        }
+
+                        xhr.upload.onprogress = (e) => {
+                            progress(e.lengthComputable, e.loaded, e.total);
+                        };
+
+                        xhr.onload = function() {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                // Success!
+                                load(data.key);
+                                // Update hidden input with the key (path)
+                                hiddenInput.value = data.key;
+                            } else {
+                                error('Upload failed');
+                            }
+                        };
+
+                        xhr.onerror = () => error('Network error');
+                        xhr.send(file);
+
+                        return {
+                            abort: () => xhr.abort()
+                        };
+                    }).catch(err => {
+                        console.error(err);
+                        error(err.message);
+                    });
+                }
+            }
+        });
+    });
+</script>
