@@ -1,4 +1,8 @@
 {% load i18n %}
+{% load render_bundle from webpack_loader %}
+
+{% render_bundle "s3_file_upload" "js" %}
+{% render_bundle "s3_file_upload" "css" %}
 
 <div id="{{ widget.attrs.id }}_wrapper" class="s3-file-uploader">
   {% if widget.is_initial %}

@@ -1,17 +1,49 @@
-/* eslint-disable no-console */
+import "filepond/dist/filepond.min.css";
+import "./styles.css";
+import { create, setOptions } from "filepond";
 
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("S3 File Upload: Initializing...");
-  const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-  const inputs = document.querySelectorAll(".filepond-input-source");
+interface InitPartSchema {
+  part_number: number;
+  size: number;
+  upload_url: string;
+}
+interface InitResponseSchema {
+  object_key: string;
+  upload_id: string;
+  parts: InitPartSchema[];
+  upload_signature: string;
+}
 
-  if (inputs.length === 0) {
-    console.log("S3 File Upload: No filepond inputs found.");
-  }
+async function setLang(currentLang: string = "en-en") {
+  const lang = currentLang
+    .toLowerCase()
+    .replaceAll("_", "-")
+    .replace("-us", "-en");
+  const filePondLang = (await import(`filepond/locale/${lang}.js`)).default;
+  setOptions(filePondLang);
+}
 
+document.addEventListener("DOMContentLoaded", async function () {
+  const currentLang = document.documentElement.lang;
+  await setLang(currentLang);
+
+  const csrftoken = document.querySelector<HTMLInputElement>(
+    "[name=csrfmiddlewaretoken]",
+  )?.value;
+
+  const inputs = document.querySelectorAll<HTMLInputElement>(
+    ".filepond-input-source",
+  );
+
+  if (inputs.length === 0) return;
   inputs.forEach((input) => {
     const wrapper = input.closest(".s3-file-uploader");
-    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+    if (!wrapper) return;
+
+    const hiddenInput = wrapper.querySelector<HTMLInputElement>(
+      'input[type="hidden"]',
+    );
+    if (!hiddenInput) return;
 
     // Prevent double initialization
     if (input.dataset.filepondInitialized) return;
@@ -23,20 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const fieldId = hiddenInput.dataset.fieldId;
     const instanceId = hiddenInput.dataset.instanceId;
 
-    console.log(
-      "S3 File Upload: Setting up FilePond for",
-      hiddenInput.name,
-      "Instance:",
-      instanceId,
-    );
+    if (!csrftoken || !initUrl || !completeUrl || !finalizeUrl) return;
 
-    // eslint-disable-next-line no-undef
-    FilePond.create(input, {
+    create(input, {
+      allowMultiple: false,
       credits: false,
       server: {
-        process: (fieldName, file, metadata, load, error, progress, abort) => {
-          console.log("S3 File Upload: Starting upload for", file.name);
-
+        process: (_, file, __, load, error, progress, abort) => {
           const processUpload = async () => {
             try {
               // 1. Initialize
@@ -58,7 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
               if (!initResponse.ok) throw new Error("Init failed");
               const data = await initResponse.json();
 
-              const { upload_id, parts, upload_signature } = data;
+              const { upload_id, parts, upload_signature } =
+                data as InitResponseSchema;
               const uploadedParts = [];
 
               // 2. Upload parts sequentially
@@ -77,9 +103,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (!partResponse.ok) throw new Error("Part upload failed");
 
-                const etag = partResponse.headers
-                  .get("ETag")
-                  .replaceAll('"', "");
+                const etagHeader = partResponse.headers.get("ETag");
+                if (!etagHeader) throw new Error("ETag header missing");
+
+                const etag = etagHeader.replaceAll('"', "");
                 uploadedParts.push({
                   part_number: part.part_number,
                   size: part.size,
@@ -93,7 +120,6 @@ document.addEventListener("DOMContentLoaded", function () {
               }
 
               // 3. Complete upload
-              console.log("S3 File Upload: Completing upload...");
               const completeResponse = await fetch(completeUrl, {
                 method: "POST",
                 headers: {
@@ -110,7 +136,6 @@ document.addEventListener("DOMContentLoaded", function () {
               await completeResponse.json();
 
               // 4. Finalize
-              console.log("S3 File Upload: Finalizing...");
               const finalizeResponse = await fetch(finalizeUrl, {
                 method: "POST",
                 headers: {
@@ -123,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function () {
               });
 
               const finalData = await finalizeResponse.json();
-              console.log("S3 File Upload: Success! Field value set.");
               hiddenInput.value = finalData.field_value;
               load(finalData.field_value);
             } catch (error_) {

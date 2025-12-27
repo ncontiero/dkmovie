@@ -21,7 +21,10 @@ const isDev = process.env.NODE_ENV === "development";
 export const commonConfig = defineConfig({
   target: "web",
   context: BASE_PATH,
-  entry: path.resolve(PROJECT_PATH, "src/index.tsx"),
+  entry: {
+    main: path.resolve(PROJECT_PATH, "src/index.tsx"),
+    s3_file_upload: path.resolve(PROJECT_PATH, "src/s3_file_upload/index.tsx"),
+  },
   output: {
     path: path.resolve(PROJECT_PATH, "static/bundles/"),
     publicPath: "/static/bundles/",
