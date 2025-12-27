@@ -122,6 +122,9 @@ USER django
 
 RUN DATABASE_URL="" \
   TMDB_API_KEY="" \
+  DJANGO_AWS_ACCESS_KEY_ID="" \
+  DJANGO_AWS_SECRET_ACCESS_KEY="" \
+  DJANGO_AWS_STORAGE_BUCKET_NAME="" \
   DJANGO_SETTINGS_MODULE="config.settings.test" \
   python manage.py compilemessages
 
