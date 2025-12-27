@@ -6,6 +6,7 @@ from django.core.files import File
 from django.forms import ClearableFileInput
 from django.forms.widgets import FILE_INPUT_CONTRADICTION
 from django.forms.widgets import CheckboxInput
+from django.urls import reverse
 
 
 class S3PlaceholderFile(File):
@@ -40,9 +41,9 @@ class S3AdminFileWidget(ClearableFileInput):
     def build_attrs(self, base_attrs, extra_attrs=None):
         attrs = super().build_attrs(base_attrs, extra_attrs)
         attrs["data-s3fileinput"] = ""
-        attrs["data-upload-init"] = "/api/upload/initialize"
-        attrs["data-upload-complete"] = "/api/upload/complete"
-        attrs["data-upload-finalize"] = "/api/upload/finalize"
+        attrs["data-upload-init"] = reverse("api-1.0.0:upload_initialize")
+        attrs["data-upload-complete"] = reverse("api-1.0.0:upload_complete")
+        attrs["data-upload-finalize"] = reverse("api-1.0.0:upload_finalize")
         return attrs
 
     def get_context(self, name, value, attrs):

@@ -7,12 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-22 01:51+0000\n"
+"POT-Creation-Date: 2025-12-27 18:13+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "DkMovie API"
+msgstr "API do DkMovie"
+
+msgid "Documentation of API endpoints of DkMovie"
+msgstr "Documentação dos endpoints da API do DkMovie"
 
 msgid "English"
 msgstr "Inglês"
@@ -497,6 +503,30 @@ msgstr "Ir para sua conta"
 msgid "TMDB Link"
 msgstr "Link para o TMDB"
 
+msgid "Content Name"
+msgstr "Nome do conteúdo"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Duration"
+msgstr "Duração"
+
+msgid "Parent Link"
+msgstr "Link do pai"
+
+msgid "View Parent"
+msgstr "Ver pai"
+
+msgid "Parent Object"
+msgstr "Objeto pai"
+
+msgid "Click to edit"
+msgstr "Clique para editar"
+
+msgid "Orphaned Video"
+msgstr "Vídeo órfão"
+
 msgid "Main Information"
 msgstr "Informações principais"
 
@@ -572,6 +602,37 @@ msgstr "Gênero"
 msgid "Genres"
 msgstr "Gêneros"
 
+msgid "Unique identifier for the video"
+msgstr "Identificador único para o vídeo"
+
+msgid "The type of the object this video belongs to (Title or Episode)"
+msgstr "O tipo do objeto ao qual este vídeo pertence (Título ou Episódio)"
+
+msgid "The ID of the object this video belongs to"
+msgstr "O ID do objeto ao qual este vídeo pertence"
+
+msgid "The video file"
+msgstr "O arquivo de vídeo"
+
+msgid "The duration in seconds"
+msgstr "A duração em segundos"
+
+msgid "Date and time when the video was created"
+msgstr "Data e hora em que o vídeo foi criado"
+
+msgid "Date and time when the video was last updated"
+msgstr "Data e hora em que o vídeo foi atualizado pela última vez"
+
+msgid "Video"
+msgstr "Vídeo"
+
+msgid "Videos"
+msgstr "Vídeos"
+
+#, python-format
+msgid "Video for %s"
+msgstr "Vídeo para %s"
+
 msgid "Movie"
 msgstr "Filme"
 
@@ -616,9 +677,6 @@ msgstr "O status atual do título"
 
 msgid "The original release date"
 msgstr "A data de lançamento original"
-
-msgid "The duration in minutes"
-msgstr "A duração em minutos"
 
 msgid "The average rating out of 10"
 msgstr "A avaliação média de 10"
@@ -686,6 +744,7 @@ msgstr "Temporada"
 msgid "Seasons"
 msgstr "Temporadas"
 
+#, python-format
 msgid "%s (Season %d)"
 msgstr "%s (Temporada %d)"
 
@@ -725,11 +784,32 @@ msgstr "Episódio"
 msgid "Episodes"
 msgstr "Episódios"
 
+msgid "The episode does not exist."
+msgstr "O episódio não existe."
+
+msgid "Video file not found for this episode."
+msgstr "Arquivo de vídeo não encontrado para este episódio."
+
 msgid "Invalid filter parameter."
 msgstr "Parâmetro de filtro inválido."
 
 msgid "The title does not exist."
 msgstr "O título não existe."
+
+msgid "This title is not a movie."
+msgstr "Este título não é um filme."
+
+msgid "Video file not found for this title."
+msgstr "Arquivo de vídeo não encontrado para este título."
+
+msgid "Upload"
+msgstr "Enviar"
+
+msgid "Currently"
+msgstr "Atualmente"
+
+msgid "Clear"
+msgstr "Limpar"
 
 msgid "Personal info"
 msgstr "Informações pessoais"

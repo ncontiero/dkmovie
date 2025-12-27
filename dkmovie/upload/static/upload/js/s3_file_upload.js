@@ -2,6 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("S3 File Upload: Initializing...");
+  const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
   const inputs = document.querySelectorAll(".filepond-input-source");
 
   if (inputs.length === 0) {
@@ -19,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const initUrl = hiddenInput.dataset.uploadInit;
     const completeUrl = hiddenInput.dataset.uploadComplete;
     const finalizeUrl = hiddenInput.dataset.uploadFinalize;
-    const csrftoken = hiddenInput.dataset.csrf;
     const fieldId = hiddenInput.dataset.fieldId;
     const instanceId = hiddenInput.dataset.instanceId;
 

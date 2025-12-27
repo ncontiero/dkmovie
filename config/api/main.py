@@ -1,6 +1,7 @@
 import orjson
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpRequest
+from django.utils.translation import gettext_lazy as _
 from ninja import NinjaAPI
 from ninja.errors import ValidationError as NinjaValidationError
 from ninja.parser import Parser
@@ -21,8 +22,8 @@ class ORJSONParser(Parser):
 api = NinjaAPI(
     parser=ORJSONParser(),
     docs_decorator=staff_member_required,
-    title="DkMovie API",
-    description="Documentation of API endpoints of DkMovie",
+    title=_("DkMovie API"),
+    description=_("Documentation of API endpoints of DkMovie"),
     version="1.0.0",
 )
 

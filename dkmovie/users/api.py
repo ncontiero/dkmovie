@@ -6,5 +6,5 @@ from .routes.users import router as users_router
 router = Router()
 
 
-router.add_router("/users", users_router)
-router.add_router("/language", language_router)
+router.add_router("/users", users_router, tags=["Users"])
+router.add_router("/language", language_router, tags=["Languages"])

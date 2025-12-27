@@ -1,19 +1,21 @@
+{% load i18n %}
+
 <div id="{{ widget.attrs.id }}_wrapper" class="s3-file-uploader">
   {% if widget.is_initial %}
   <p class="file-upload-current">
-    Currently: <a href="{{ widget.value.url }}">{{ widget.value }}</a>
+    {% trans "Currently" %}: <a href="{{ widget.value.url }}">{{ widget.value }}</a>
     {% if not widget.required %}
     <span class="clearable-file-input">
       <input name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" type="checkbox" {% if widget.attrs.disabled %} disabled{% endif %} />
-      <label for="{{ widget.checkbox_id }}">Clear</label>
+      <label for="{{ widget.checkbox_id }}">{% trans "Clear" %}</label>
     </span>
     {% endif %}
   </p>
   {% endif %}
 
+  {% csrf_token %}
   {# The actual input that stores the signed value #}
-  {# data-csrf is populated via Django template tag #}
-  <input name="{{ widget.name }}" type="hidden" data-csrf="{{ csrf_token }}" {% include "django/forms/widgets/attrs.html" %} />
+  <input name="{{ widget.name }}" type="hidden" {% include "django/forms/widgets/attrs.html" %} />
 
   {# The input for FilePond #}
   <input type="file" class="filepond-input-source" />

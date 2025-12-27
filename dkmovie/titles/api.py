@@ -6,6 +6,6 @@ from .routes.titles import router as titles_router
 
 router = Router()
 
-router.add_router("/titles", titles_router)
-router.add_router("/genres", genres_router)
-router.add_router("/episodes", episodes_router)
+router.add_router("/titles", titles_router, tags=["Titles"])
+router.add_router("/genres", genres_router, tags=["Genres"])
+router.add_router("/episodes", episodes_router, tags=["Episodes"])

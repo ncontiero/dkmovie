@@ -7,11 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-22 01:51+0000\n"
+"POT-Creation-Date: 2025-12-27 18:13+0000\n"
 "Language: en-US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "DkMovie API"
+msgstr ""
+
+msgid "Documentation of API endpoints of DkMovie"
+msgstr ""
 
 msgid "English"
 msgstr ""
@@ -474,6 +480,30 @@ msgstr ""
 msgid "TMDB Link"
 msgstr ""
 
+msgid "Content Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Parent Link"
+msgstr ""
+
+msgid "View Parent"
+msgstr ""
+
+msgid "Parent Object"
+msgstr ""
+
+msgid "Click to edit"
+msgstr ""
+
+msgid "Orphaned Video"
+msgstr ""
+
 msgid "Main Information"
 msgstr ""
 
@@ -549,6 +579,37 @@ msgstr ""
 msgid "Genres"
 msgstr ""
 
+msgid "Unique identifier for the video"
+msgstr ""
+
+msgid "The type of the object this video belongs to (Title or Episode)"
+msgstr ""
+
+msgid "The ID of the object this video belongs to"
+msgstr ""
+
+msgid "The video file"
+msgstr ""
+
+msgid "The duration in seconds"
+msgstr ""
+
+msgid "Date and time when the video was created"
+msgstr ""
+
+msgid "Date and time when the video was last updated"
+msgstr ""
+
+msgid "Video"
+msgstr ""
+
+msgid "Videos"
+msgstr ""
+
+#, python-format
+msgid "Video for %s"
+msgstr ""
+
 msgid "Movie"
 msgstr ""
 
@@ -592,9 +653,6 @@ msgid "The current status of the title"
 msgstr ""
 
 msgid "The original release date"
-msgstr ""
-
-msgid "The duration in minutes"
 msgstr ""
 
 msgid "The average rating out of 10"
@@ -703,10 +761,31 @@ msgstr ""
 msgid "Episodes"
 msgstr ""
 
+msgid "The episode does not exist."
+msgstr ""
+
+msgid "Video file not found for this episode."
+msgstr ""
+
 msgid "Invalid filter parameter."
 msgstr ""
 
 msgid "The title does not exist."
+msgstr ""
+
+msgid "This title is not a movie."
+msgstr ""
+
+msgid "Video file not found for this title."
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Currently"
+msgstr ""
+
+msgid "Clear"
 msgstr ""
 
 msgid "Personal info"

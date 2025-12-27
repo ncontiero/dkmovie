@@ -4,13 +4,14 @@ from django.core import signing
 from django.core.exceptions import ValidationError
 from ninja import Router
 from ninja import Schema
+from ninja.security import SessionAuthSuperUser
 
 from .registry import get_field
 from .services import S3MultipartManager
 from .services import TransferredPart
 from .services import TransferredParts
 
-router = Router()
+router = Router(tags=["Uploads"], auth=SessionAuthSuperUser())
 manager = S3MultipartManager()
 
 
@@ -51,7 +52,7 @@ class FinalizeSchema(Schema):
     upload_signature: str
 
 
-@router.post("/initialize", response=InitResponseSchema)
+@router.post("/initialize", response=InitResponseSchema, url_name="upload_initialize")
 def initialize_upload(request, payload: InitUploadSchema):
     field = get_field(payload.field_id)
     instance = None
@@ -102,7 +103,7 @@ def initialize_upload(request, payload: InitUploadSchema):
     }
 
 
-@router.post("/complete")
+@router.post("/complete", url_name="upload_complete")
 def complete_upload(request, payload: CompleteUploadSchema):
     sig_data = signing.loads(payload.upload_signature)
     object_key = sig_data["object_key"]
@@ -117,7 +118,7 @@ def complete_upload(request, payload: CompleteUploadSchema):
     return {"status": "ok"}
 
 
-@router.post("/finalize")
+@router.post("/finalize", url_name="upload_finalize")
 def finalize_upload(request, payload: FinalizeSchema):
     sig_data = signing.loads(payload.upload_signature)
     object_key = sig_data["object_key"]

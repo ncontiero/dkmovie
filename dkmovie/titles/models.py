@@ -147,7 +147,7 @@ class Video(models.Model):
 
     def __str__(self):
         content = (hasattr(self, "content_object") and self.content_object) or self.id
-        return f"Video for {content}"
+        return _("Video for %s") % (content)
 
 
 class Title(models.Model):
@@ -258,7 +258,6 @@ class Title(models.Model):
     class Meta:
         verbose_name = _("Title")
         verbose_name_plural = _("Titles")
-        # Order by most recent release date first
         ordering = ["-release_date"]
 
     def __str__(self):

@@ -16,7 +16,7 @@ router = Router()
 @router.get("/", response={200: list[GenreSchema]})
 @decorate_view(cache_page(3600))
 @paginate
-def get_titles(request, filters: GenreFilterSchema = Query(...)):  # noqa: B008
+def get_genres(request, filters: GenreFilterSchema = Query(...)):  # noqa: B008
     genres = Genre.objects.all()
     try:
         return filters.filter(genres)
