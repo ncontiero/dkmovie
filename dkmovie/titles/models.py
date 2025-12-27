@@ -4,6 +4,7 @@ from uuid import uuid4
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
@@ -208,7 +209,9 @@ class Title(models.Model):
         if self.content_type == self.ContentType.MOVIE:
             return bool(self.video_file)
         if self.content_type == self.ContentType.SERIES:
-            return self.seasons.filter(episodes__video_file__isnull=False).exists()
+            return self.seasons.filter(
+                Q(episodes__video_file__isnull=False) & ~Q(episodes__video_file=""),
+            ).exists()
         return False
 
     def get_first_episode(self):
