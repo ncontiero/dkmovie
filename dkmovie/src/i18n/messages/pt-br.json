@@ -81,7 +81,8 @@
     "seekBack": "Voltar 10 segundos",
     "seekForward": "Avançar 10 segundos",
     "seekBar": "Barra de progresso",
-    "nextEpisode": "Próximo episódio"
+    "nextEpisode": "Próximo episódio",
+    "noNextEpisode": "Não há próximo episódio nesta temporada."
   },
   "titlesPage": {
     "moviesOfTheYear": "Filmes de {yea  r}",

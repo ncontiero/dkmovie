@@ -1,6 +1,6 @@
 import type { Episode, TitleDetails } from "@/utils/types";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Captions,
   ChevronRight,
@@ -17,6 +17,7 @@ import {
   VolumeOff,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -41,6 +42,7 @@ export function VideoPlayer({
   className,
 }: VideoPlayerProps) {
   const t = useTranslations("playerPage");
+  const navigate = useNavigate();
   const [isToShowControls, setIsToShowControls] = useState(false);
   const controlsTimeoutRef = useRef<number | null>(null);
   const [isInFullscreen, setIsInFullscreen] = useState(false);
@@ -108,6 +110,9 @@ export function VideoPlayer({
   }, []);
 
   const duration = (episode?.duration || title.duration || 0) * 60;
+  const haveNextEpisode =
+    !!episode?.next_episode && episode.next_episode.is_video_available;
+
   const currentTimeFormatted = useMemo(() => {
     const currentHours = Math.floor(currentTime / 3600);
     const currentMinutes = Math.floor((currentTime % 3600) / 60);
@@ -376,12 +381,11 @@ export function VideoPlayer({
                   / {durationFormatted}
                 </span>
               </div>
-              {episode?.next_episode &&
-              episode.next_episode.is_video_available ? (
+              {haveNextEpisode ? (
                 <Link
                   to="/title/$titleId/watch"
                   params={{ titleId: title.id }}
-                  search={{ episodeId: episode.next_episode.id }}
+                  search={{ episodeId: episode.next_episode?.id }}
                   className="
                     group/next flex items-center text-lg font-medium text-white/80 duration-200 hover:text-white
                     md:text-2xl
@@ -406,6 +410,22 @@ export function VideoPlayer({
         onPause={() => setIsVideoPlaying(false)}
         onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
         onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+        onEnded={() => {
+          if (episode && !haveNextEpisode) {
+            toast.warning(t("noNextEpisode"));
+            navigate({
+              to: "/title/$titleId",
+              params: { titleId: title.id },
+            });
+            return;
+          }
+
+          navigate({
+            to: "/title/$titleId/watch",
+            params: { titleId: title.id },
+            search: { episodeId: episode?.next_episode?.id },
+          });
+        }}
       >
         <source src={src} type="video/mp4" />
         {t("browserNotSupported")}

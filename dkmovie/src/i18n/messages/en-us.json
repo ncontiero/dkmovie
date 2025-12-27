@@ -81,7 +81,8 @@
     "seekBack": "Seek back 10 seconds",
     "seekForward": "Seek forward 10 seconds",
     "seekBar": "Seek bar",
-    "nextEpisode": "Next Episode"
+    "nextEpisode": "Next Episode",
+    "noNextEpisode": "There are no more episodes in this season."
   },
   "titlesPage": {
     "moviesOfTheYear": "Movies of {year}",
