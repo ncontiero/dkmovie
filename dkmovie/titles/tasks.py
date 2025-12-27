@@ -234,16 +234,21 @@ def import_or_update_title(
     tmdb_id: int,
     title_type: Title.ContentType,
     initial_data: dict | None = None,
+    *,
+    force: bool = False,
 ) -> tuple[bool, Title | None]:
     """
     Creates or updates a Title based on TMDB ID.
     If 'initial_data' is not provided, it fetches basic info first.
     """
-    if Title.objects.filter(
-        tmdb_id=tmdb_id,
-        added_by=Title.AddedBy.TMDB,
-        content_type=title_type,
-    ).exists():
+    if (
+        not force
+        and Title.objects.filter(
+            tmdb_id=tmdb_id,
+            added_by=Title.AddedBy.TMDB,
+            content_type=title_type,
+        ).exists()
+    ):
         logger.info(
             "Title with TMDB ID %s and type %s already exists. Skipping creation.",
             tmdb_id,
@@ -260,9 +265,10 @@ def import_or_update_title(
             title_type,
             params={"language": DEFAULT_LANGUAGE},
         )
-        if not initial_data:
-            logger.error("Could not fetch initial data for TMDB ID %s", tmdb_id)
-            return False, None
+
+    if not initial_data:
+        logger.error("Could not fetch initial data for TMDB ID %s", tmdb_id)
+        return False, None
 
     try:
         item_title = (initial_data.get("title") or initial_data.get("name")) or ""
@@ -476,7 +482,7 @@ def populate_title_admin_task(self, tmdb_id: int, title_type: str) -> None:
     Task to manually import a title by ID (via Admin).
     Fetches details first to ensure we don't create an empty record.
     """
-    import_or_update_title(tmdb_id, title_type, initial_data=None)
+    import_or_update_title(tmdb_id, title_type, initial_data=None, force=True)
 
 
 @shared_task(**default_task_params("send_titles_added_email_task"))
