@@ -107,7 +107,7 @@ export function VideoPlayer({
     };
   }, []);
 
-  const duration = episode?.duration || title.duration || 0;
+  const duration = (episode?.duration || title.duration || 0) * 60;
   const currentTimeFormatted = useMemo(() => {
     const currentHours = Math.floor(currentTime / 3600);
     const currentMinutes = Math.floor((currentTime % 3600) / 60);
@@ -347,10 +347,7 @@ export function VideoPlayer({
                   onClick={() => {
                     if (!videoRef.current) return;
                     const newTime = videoRef.current.currentTime + 10;
-                    videoRef.current.currentTime = Math.min(
-                      duration * 60,
-                      newTime,
-                    );
+                    videoRef.current.currentTime = Math.min(duration, newTime);
                   }}
                 >
                   <StepForward className="size-10 fill-white stroke-white md:size-20" />
@@ -362,7 +359,7 @@ export function VideoPlayer({
           <div className="absolute inset-x-6 bottom-6 md:inset-x-20 md:bottom-8">
             <Slider
               value={[currentTime]}
-              max={duration * 60}
+              max={duration}
               step={1}
               onValueChange={([value]) => {
                 if (videoRef.current) {
@@ -379,7 +376,8 @@ export function VideoPlayer({
                   / {durationFormatted}
                 </span>
               </div>
-              {episode?.next_episode ? (
+              {episode?.next_episode &&
+              episode.next_episode.is_video_available ? (
                 <Link
                   to="/title/$titleId/watch"
                   params={{ titleId: title.id }}
