@@ -471,7 +471,7 @@ msgstr ""
 msgid "Go to your Account"
 msgstr ""
 
-msgid "TMDB URL"
+msgid "TMDB Link"
 msgstr ""
 
 msgid "Main Information"

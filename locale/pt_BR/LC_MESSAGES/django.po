@@ -494,8 +494,8 @@ msgstr "Acompanhe o que você quer assistir em seguida."
 msgid "Go to your Account"
 msgstr "Ir para sua conta"
 
-msgid "TMDB URL"
-msgstr "URL TMDB"
+msgid "TMDB Link"
+msgstr "Link para o TMDB"
 
 msgid "Main Information"
 msgstr "Informações principais"

@@ -6,7 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from modeltranslation.admin import TranslationTabularInline
@@ -23,13 +22,25 @@ from .tasks import populate_title_admin_task
 
 
 class TmdbUrlMixin:
-    @admin.display(description=_("TMDB URL"))
+    @admin.display(description=_("TMDB Link"))
     def tmdb_url(self, obj):
         url = obj.tmdb_url
         if not url:
-            return ""
-        anchor = f'<a href="{url}" target="_blank" rel="noopener noreferrer">{url}</a>'
-        return mark_safe(anchor)  # noqa: S308
+            return "-"
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener noreferrer">🔗 {}</a>',
+            url,
+            _("TMDB Link"),
+        )
+
+
+class VideoInline(GenericStackedInline):
+    model = Video
+    extra = 0
+    max_num = 1
+    fields = ("source_file", "duration")
+    readonly_fields = ("created_at", "updated_at")
+    show_change_link = True
 
 
 @admin.register(Genre)
@@ -51,6 +62,9 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ("content_type", "created_at")
     search_fields = ("id", "source_file")
     readonly_fields = ("created_at", "updated_at", "link_to_parent_large")
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("content_object")
 
     def get_search_results(self, request, queryset, search_term):
         """
@@ -84,23 +98,28 @@ class VideoAdmin(admin.ModelAdmin):
 
         return queryset, use_distinct
 
-    @admin.display(description="Content Name")
+    @admin.display(description=_("Content Name"))
     def get_target_name(self, obj):
         return str(obj.content_object) if obj.content_object else "-"
 
-    @admin.display(description="Type")
+    @admin.display(description=_("Type"))
     def get_target_type(self, obj):
         return obj.content_type.model.title() if obj.content_type else "-"
 
-    @admin.display(description="Duration")
+    @admin.display(description=_("Duration"), ordering="duration")
     def get_duration_fmt(self, obj):
         if not obj.duration:
             return "0s"
         m, s = divmod(obj.duration, 60)
         h, m = divmod(m, 60)
-        return f"{h:02d}:{m:02d}:{s:02d}" if h > 0 else f"{m:02d}:{s:02d}"
+        minutes_with_seconds = f"{m:02d}:{s:02d}"
+        if h == 0:
+            return minutes_with_seconds
+        two_decimal = 10
+        hour = f"{h:02d}" if h > two_decimal else f"{h:01d}"
+        return f"{hour}:{minutes_with_seconds}"
 
-    @admin.display(description="Parent Link")
+    @admin.display(description=_("Parent Link"))
     def link_to_parent(self, obj):
         if obj.content_object:
             ct = obj.content_type
@@ -109,12 +128,13 @@ class VideoAdmin(admin.ModelAdmin):
                 args=[obj.object_id],
             )
             return format_html(
-                '<a href="{}" class="button" style="padding:3px 8px;">View Parent</a>',
+                '<a href="{}" class="button" style="padding:3px 8px;">{}</a>',
                 url,
+                _("View Parent"),
             )
         return "-"
 
-    @admin.display(description="Parent Object")
+    @admin.display(description=_("Parent Object"))
     def link_to_parent_large(self, obj):
         if obj.content_object:
             ct = obj.content_type
@@ -123,20 +143,12 @@ class VideoAdmin(admin.ModelAdmin):
                 args=[obj.object_id],
             )
             return format_html(
-                '<a href="{}">{} (Click to edit)</a>',
+                '<a href="{}">{} ({})</a>',
                 url,
                 obj.content_object,
+                _("Click to edit"),
             )
-        return "Orphaned Video"
-
-
-class VideoInline(GenericStackedInline):
-    model = Video
-    extra = 0
-    max_num = 1
-    fields = ("source_file", "duration")
-    readonly_fields = ("created_at", "updated_at")
-    show_change_link = True
+        return _("Orphaned Video")
 
 
 @admin.register(Title)
@@ -290,6 +302,9 @@ class SeasonAdmin(TmdbUrlMixin, TranslationAdmin):
         ),
     )
     actions = ("populate_from_tmdb", "populate_episodes_from_tmdb")
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("title")
 
     @admin.action(description=_("Populate Season details from TMDB"))
     def populate_from_tmdb(self, request, queryset):
