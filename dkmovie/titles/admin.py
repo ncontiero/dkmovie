@@ -1,4 +1,11 @@
+import contextlib
+
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericStackedInline
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
+from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
@@ -8,6 +15,7 @@ from .models import Episode
 from .models import Genre
 from .models import Season
 from .models import Title
+from .models import Video
 from .tasks import populate_episode_from_tmdb
 from .tasks import populate_episodes_from_tmdb
 from .tasks import populate_seasons_from_tmdb
@@ -31,6 +39,106 @@ class GenreAdmin(TranslationAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    list_display = (
+        "get_target_name",
+        "get_target_type",
+        "get_duration_fmt",
+        "created_at",
+        "link_to_parent",
+    )
+    list_filter = ("content_type", "created_at")
+    search_fields = ("id", "source_file")
+    readonly_fields = ("created_at", "updated_at", "link_to_parent_large")
+
+    def get_search_results(self, request, queryset, search_term):
+        """
+        Custom search for VideoAdmin to include searching by
+        related Title/Episode names.
+        """
+        queryset, use_distinct = super().get_search_results(
+            request,
+            queryset,
+            search_term,
+        )
+
+        if not search_term:
+            return queryset, use_distinct
+
+        with contextlib.suppress(Exception):
+            title_ct = ContentType.objects.get_for_model(Title)
+            matching_titles = Title.objects.filter(
+                title__icontains=search_term,
+            ).values_list("id", flat=True)
+
+            episode_ct = ContentType.objects.get_for_model(Episode)
+            matching_episodes = Episode.objects.filter(
+                season__title__title__icontains=search_term,
+            ).values_list("id", flat=True)
+
+            queryset |= self.model.objects.filter(
+                Q(content_type=title_ct, object_id__in=matching_titles)
+                | Q(content_type=episode_ct, object_id__in=matching_episodes),
+            )
+
+        return queryset, use_distinct
+
+    @admin.display(description="Content Name")
+    def get_target_name(self, obj):
+        return str(obj.content_object) if obj.content_object else "-"
+
+    @admin.display(description="Type")
+    def get_target_type(self, obj):
+        return obj.content_type.model.title() if obj.content_type else "-"
+
+    @admin.display(description="Duration")
+    def get_duration_fmt(self, obj):
+        if not obj.duration:
+            return "0s"
+        m, s = divmod(obj.duration, 60)
+        h, m = divmod(m, 60)
+        return f"{h:02d}:{m:02d}:{s:02d}" if h > 0 else f"{m:02d}:{s:02d}"
+
+    @admin.display(description="Parent Link")
+    def link_to_parent(self, obj):
+        if obj.content_object:
+            ct = obj.content_type
+            url = reverse(
+                f"admin:{ct.app_label}_{ct.model}_change",
+                args=[obj.object_id],
+            )
+            return format_html(
+                '<a href="{}" class="button" style="padding:3px 8px;">View Parent</a>',
+                url,
+            )
+        return "-"
+
+    @admin.display(description="Parent Object")
+    def link_to_parent_large(self, obj):
+        if obj.content_object:
+            ct = obj.content_type
+            url = reverse(
+                f"admin:{ct.app_label}_{ct.model}_change",
+                args=[obj.object_id],
+            )
+            return format_html(
+                '<a href="{}">{} (Click to edit)</a>',
+                url,
+                obj.content_object,
+            )
+        return "Orphaned Video"
+
+
+class VideoInline(GenericStackedInline):
+    model = Video
+    extra = 0
+    max_num = 1
+    fields = ("source_file", "duration")
+    readonly_fields = ("created_at", "updated_at")
+    show_change_link = True
+
+
 @admin.register(Title)
 class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
     class SeasonInline(TranslationTabularInline):
@@ -52,7 +160,7 @@ class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
     search_fields = ("title", "description", "tmdb_id")
     filter_horizontal = ("genres",)
     readonly_fields = ("tmdb_url", "created_at", "updated_at")
-    inlines = [SeasonInline]
+    inlines = [VideoInline, SeasonInline]
     fieldsets = (
         (
             _("Main Information"),
@@ -64,7 +172,6 @@ class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
                     "description",
                     "content_type",
                     "status",
-                    "duration",
                 ),
             },
         ),
@@ -82,7 +189,6 @@ class TitleAdmin(TmdbUrlMixin, TranslationAdmin):
             _("Media"),
             {
                 "fields": (
-                    "video_file",
                     "poster",
                     "cover",
                     "trailer_url",
@@ -214,6 +320,7 @@ class EpisodeAdmin(TmdbUrlMixin, TranslationAdmin):
     list_filter = ("air_date",)
     search_fields = ("season__title__title", "name", "overview")
     autocomplete_fields = ["season"]
+    inlines = [VideoInline]
     readonly_fields = ("tmdb_url", "created_at", "updated_at")
     fieldsets = (
         (
@@ -232,14 +339,13 @@ class EpisodeAdmin(TmdbUrlMixin, TranslationAdmin):
         (
             _("Media"),
             {
-                "fields": ("video_file", "still"),
+                "fields": ("still",),
             },
         ),
         (
             _("Details"),
             {
                 "fields": (
-                    "duration",
                     "rating",
                     "air_date",
                     "created_at",

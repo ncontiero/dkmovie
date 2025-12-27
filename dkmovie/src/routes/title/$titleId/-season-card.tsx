@@ -34,9 +34,10 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
 
   const durationFormatted = useMemo(() => {
     if (!episode || !episode.duration || episode.duration === 0) return "0m";
-    const hours = Math.floor(episode.duration / 60);
+    const { duration } = episode;
+    const hours = Math.floor(duration / 3600);
     const hoursFormatted = hours > 0 ? `${hours}h ` : "";
-    const minutes = episode.duration % 60;
+    const minutes = Math.floor((duration % 3600) / 60);
     return `${hoursFormatted}${minutes}m`;
   }, [episode]);
 

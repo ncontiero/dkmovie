@@ -51,6 +51,7 @@ WORKDIR ${APP_HOME}
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
+  ffmpeg \
   # psycopg dependencies
   libpq-dev
 
@@ -80,6 +81,7 @@ RUN addgroup --system django \
 
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
+  ffmpeg \
   # psycopg dependencies
   libpq5 \
   # entrypoint

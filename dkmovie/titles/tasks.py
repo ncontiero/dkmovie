@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 
+from dkmovie.titles.services.video import get_video_duration
 from dkmovie.users.utils import send_email
 from dkmovie.utils.tasks import default_task_params
 
@@ -15,6 +16,7 @@ from .models import Episode
 from .models import Genre
 from .models import Season
 from .models import Title
+from .models import Video
 from .utils import TMDBClient
 
 TMDB_API_KEY = settings.TMDB_API_KEY
@@ -67,6 +69,23 @@ def process_title_images(title: Title, details: dict) -> None:
         title.cover.save(cover.name, cover, save=False)
 
 
+def process_duration(details: dict, model_obj: Title | Episode) -> None:
+    """Processes and saves the duration for a given model_obj (Title or Episode)."""
+    duration_minutes = details.get("runtime", 0)
+    if not duration_minutes:
+        return
+
+    duration_seconds = duration_minutes * 60
+    if video := model_obj.videos.first():
+        video.duration = duration_seconds
+        video.save(update_fields=["duration"])
+    else:
+        Video.objects.create(
+            content_object=model_obj,
+            duration=duration_seconds,
+        )
+
+
 def process_episode(
     episode_details: dict,
     season: Season,
@@ -111,11 +130,11 @@ def process_episode(
         episode.name = name
         episode.overview = overview
         episode.air_date = air_date
-        episode.duration = episode_details.get("runtime", 0)
         episode.rating = episode_details.get("vote_average", 0)
 
-        still = tmdb_client.download_image(episode_details.get("still_path"))
-        if still:
+        process_duration(episode_details, episode)
+
+        if still := tmdb_client.download_image(episode_details.get("still_path")):
             episode.still.save(still.name, still, save=False)
 
     episode.save()
@@ -201,7 +220,6 @@ def update_title_from_tmdb_details(
             title_obj.title = api_title
             title_obj.description = overview
             title_obj.rating = details.get("vote_average", 0)
-            title_obj.duration = details.get("runtime", 0)
 
             release = details.get("release_date") or details.get("first_air_date")
             title_obj.release_date = release or None
@@ -212,17 +230,17 @@ def update_title_from_tmdb_details(
             title_obj.trailer_url = get_trailer_url(videos)
             title_obj.cast = get_cast_list(cast)
 
+            process_duration(details, title_obj)
             process_title_images(title_obj, details)
 
         # 4. Handle Series Specifics (Seasons)
         if title_type == Title.ContentType.SERIES and is_main:
             seasons = details.get("seasons", [])
-            seasons_details = [
+            if seasons_details := [
                 {"tmdb_id": s.get("id"), "number": s.get("season_number")}
                 for s in seasons
                 if s.get("episode_count", 0) > 0
-            ]
-            if seasons_details:
+            ]:
                 populate_seasons_from_tmdb.delay(title_obj.id, tmdb_id, seasons_details)
 
     # Save changes before processing M2M
@@ -574,3 +592,18 @@ def populate_series_from_tmdb(self):
         send_titles_added_email_task.delay(title_payload, Title.ContentType.SERIES)
 
     return f"{len(created_series)} series created."
+
+
+@shared_task(**default_task_params("calculate_video_duration"))
+def calculate_video_duration(self, video_id):
+    try:
+        video = Video.objects.get(id=video_id)
+        if not video.source_file:
+            return
+
+        duration = get_video_duration(video.source_file.url)
+        if duration > 0:
+            video.duration = duration
+            video.save(update_fields=["duration"])
+    except Video.DoesNotExist as e:
+        logger.exception("Video with ID %s does not exist", video_id, exc_info=e)

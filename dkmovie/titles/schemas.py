@@ -21,6 +21,7 @@ class GenreSchema(ModelSchema):
 class BaseTitleSchema(ModelSchema):
     genres: list[GenreSchema] = []
     is_video_available: bool = False
+    duration: int = 0
     first_episode_id: UUID | None = None
 
     class Meta:
@@ -31,7 +32,6 @@ class BaseTitleSchema(ModelSchema):
             "description",
             "content_type",
             "release_date",
-            "duration",
             "rating",
             "cast",
             "poster",
@@ -42,6 +42,10 @@ class BaseTitleSchema(ModelSchema):
     @staticmethod
     def resolve_is_video_available(title: Title) -> bool:
         return title.is_video_available
+
+    @staticmethod
+    def resolve_duration(title: Title) -> int:
+        return title.duration
 
     @staticmethod
     def resolve_first_episode_id(title: Title) -> UUID | None:
@@ -77,6 +81,7 @@ class TitleDetailSchema(BaseTitleSchema):
 
 
 class BaseEpisodeSchema(ModelSchema):
+    duration: int = 0
     is_video_available: bool = False
 
     class Meta:
@@ -88,9 +93,12 @@ class BaseEpisodeSchema(ModelSchema):
             "overview",
             "still",
             "air_date",
-            "duration",
             "rating",
         ]
+
+    @staticmethod
+    def resolve_duration(episode: Episode) -> int:
+        return episode.duration
 
     @staticmethod
     def resolve_is_video_available(episode: Episode) -> bool:

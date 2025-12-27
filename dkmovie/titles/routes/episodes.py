@@ -29,7 +29,7 @@ def stream_episode(request, episode_id: UUID):
     except Episode.DoesNotExist as err:
         raise ApiProcessError(404, _("The episode does not exist.")) from err
 
-    if not episode.video_file:
+    if not episode.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this episode."))
 
-    return get_video_streaming_response(request, episode.video_file)
+    return get_video_streaming_response(request, episode.video.source_file)

@@ -65,7 +65,7 @@ export function VideoPlayer({
 
     controlsTimeoutRef.current = window.setTimeout(() => {
       setIsToShowControls(false);
-    }, 3000);
+    }, 2000);
   };
 
   const handleControlsMouseLeave = () => {
@@ -109,7 +109,7 @@ export function VideoPlayer({
     };
   }, []);
 
-  const duration = (episode?.duration || title.duration || 0) * 60;
+  const duration = episode?.duration || title.duration || 0;
   const haveNextEpisode =
     !!episode?.next_episode && episode.next_episode.is_video_available;
 
@@ -132,7 +132,7 @@ export function VideoPlayer({
   const durationFormatted = useMemo(() => {
     const durationHours = Math.floor(duration / 3600);
     const durationMinutes = Math.floor((duration % 3600) / 60);
-    const durationSeconds = Math.floor(duration % 60);
+    const durationSeconds = duration % 60;
 
     const minutesAndSeconds = `${durationMinutes
       .toString()

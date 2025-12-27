@@ -1,6 +1,10 @@
 import contextlib
+import logging
 from uuid import uuid4
 
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -12,6 +16,35 @@ from dkmovie.upload.fields import S3FileField
 
 BASE_TMDB_URL = "https://www.themoviedb.org"
 
+logger = logging.getLogger(__name__)
+
+
+def title_video_path(title_obj, filename):
+    if title_obj and title_obj.id:
+        return f"titles/{title_obj.id}/videos/{filename}"
+    return f"uploads/movies/{uuid4()}/{filename}"
+
+
+def episode_video_path(episode_obj, filename):
+    with contextlib.suppress(Exception):
+        title_id = episode_obj.season.title.id
+        season_number = episode_obj.season.number
+        return f"titles/{title_id}/seasons/{season_number}/episodes/videos/{filename}"
+    return f"uploads/episodes/{uuid4()}/{filename}"
+
+
+def source_file_path(instance, filename):
+    if parent := instance.content_object:
+        model_name = instance.content_type.model.lower()
+        if model_name == "title":
+            return title_video_path(parent, filename)
+        if model_name == "episode":
+            return episode_video_path(parent, filename)
+
+    if instance and instance.id:
+        return f"videos/{instance.id}/{filename}"
+    return f"uploads/videos/{uuid4()}/{filename}"
+
 
 def poster_path(instance, filename):
     return f"titles/{instance.id}/posters/{filename}"
@@ -21,12 +54,6 @@ def cover_path(instance, filename):
     return f"titles/{instance.id}/covers/{filename}"
 
 
-def video_path(instance, filename):
-    if instance and instance.id:
-        return f"titles/{instance.id}/videos/{filename}"
-    return f"uploads/movies/{uuid4()}/{filename}"
-
-
 def season_path(instance, filename):
     return f"titles/{instance.title.id}/seasons/{instance.number}/{filename}"
 
@@ -34,14 +61,6 @@ def season_path(instance, filename):
 def episode_path(instance, filename):
     title_id = instance.season.title.id
     return f"titles/{title_id}/seasons/{instance.season.number}/episodes/{filename}"
-
-
-def episode_video_path(instance, filename):
-    with contextlib.suppress(Exception):
-        title_id = instance.season.title.id
-        season_number = instance.season.number
-        return f"titles/{title_id}/seasons/{season_number}/episodes/videos/{filename}"
-    return f"uploads/episodes/{uuid4()}/{filename}"
 
 
 class Genre(models.Model):
@@ -73,6 +92,62 @@ class Genre(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+
+class Video(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid4,
+        editable=False,
+        help_text=_("Unique identifier for the video"),
+    )
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        help_text=_("The type of the object this video belongs to (Title or Episode)"),
+    )
+    object_id = models.UUIDField(
+        help_text=_("The ID of the object this video belongs to"),
+    )
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    source_file = S3FileField(
+        upload_to=source_file_path,
+        blank=True,
+        null=True,
+        max_length=500,
+        help_text=_("The video file"),
+    )
+    duration = models.PositiveIntegerField(
+        default=0,
+        help_text=_("The duration in seconds"),
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text=_("Date and time when the video was created"),
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        help_text=_("Date and time when the video was last updated"),
+    )
+
+    class Meta:
+        verbose_name = _("Video")
+        verbose_name_plural = _("Videos")
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["content_type", "object_id"],
+                name="unique_video_per_object",
+            ),
+        ]
+
+    def __str__(self):
+        content = (hasattr(self, "content_object") and self.content_object) or self.id
+        return f"Video for {content}"
 
 
 class Title(models.Model):
@@ -130,11 +205,6 @@ class Title(models.Model):
         null=True,
         help_text=_("The original release date"),
     )
-    duration = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        help_text=_("The duration in minutes"),
-    )
     rating = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -169,13 +239,7 @@ class Title(models.Model):
         blank=True,
         help_text=_("Link to the official YouTube trailer"),
     )
-    video_file = S3FileField(
-        upload_to=video_path,
-        blank=True,
-        null=True,
-        max_length=500,
-        help_text=_("The video file for the movie"),
-    )
+    videos = GenericRelation(Video)
     added_by = models.CharField(
         max_length=10,
         choices=AddedBy.choices,
@@ -207,12 +271,24 @@ class Title(models.Model):
     @property
     def is_video_available(self) -> bool:
         if self.content_type == self.ContentType.MOVIE:
-            return bool(self.video_file)
+            return self.videos.filter(
+                Q(source_file__isnull=False) & ~Q(source_file=""),
+            ).exists()
         if self.content_type == self.ContentType.SERIES:
             return self.seasons.filter(
-                Q(episodes__video_file__isnull=False) & ~Q(episodes__video_file=""),
+                Q(episodes__videos__source_file__isnull=False)
+                & ~Q(episodes__videos__source_file=""),
             ).exists()
         return False
+
+    @property
+    def video(self):
+        return self.videos.first()
+
+    @property
+    def duration(self) -> int:
+        video = self.video
+        return video.duration if video else 0
 
     def get_first_episode(self):
         if self.content_type != self.ContentType.SERIES:
@@ -338,18 +414,7 @@ class Episode(models.Model):
         null=True,
         help_text=_("The date when the episode premiered"),
     )
-    duration = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        help_text=_("The duration in minutes"),
-    )
-    video_file = S3FileField(
-        upload_to=episode_video_path,
-        blank=True,
-        null=True,
-        max_length=500,
-        help_text=_("The video file for the episode"),
-    )
+    videos = GenericRelation(Video)
     rating = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -385,7 +450,18 @@ class Episode(models.Model):
 
     @property
     def is_video_available(self) -> bool:
-        return bool(self.video_file)
+        return self.videos.filter(
+            Q(source_file__isnull=False) & ~Q(source_file=""),
+        ).exists()
+
+    @property
+    def video(self):
+        return self.videos.first()
+
+    @property
+    def duration(self) -> int:
+        video = self.video
+        return video.duration if video else 0
 
     def get_next_episode(self):
         return (

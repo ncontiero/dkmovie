@@ -63,10 +63,10 @@ def stream_title(request, title_id: UUID):
     if title.content_type != Title.ContentType.MOVIE:
         raise ApiProcessError(400, _("This title is not a movie."))
 
-    if not title.video_file:
+    if not title.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this title."))
 
-    return get_video_streaming_response(request, title.video_file)
+    return get_video_streaming_response(request, title.video.source_file)
 
 
 @router.get(
