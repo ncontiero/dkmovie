@@ -25,11 +25,16 @@ def get_episode(request, episode_id: UUID):
 @router.get("/{episode_id}/stream")
 def stream_episode(request, episode_id: UUID):
     try:
-        episode = Episode.objects.get(id=episode_id)
+        episode = Episode.objects.prefetch_related("videos").get(id=episode_id)
     except Episode.DoesNotExist as err:
         raise ApiProcessError(404, _("The episode does not exist.")) from err
 
     if not episode.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this episode."))
 
-    return get_video_streaming_response(request, episode.video.source_file)
+    thirty_minutes = 60 * 30
+    return get_video_streaming_response(
+        request,
+        episode.video.source_file,
+        episode.video.duration + thirty_minutes,
+    )

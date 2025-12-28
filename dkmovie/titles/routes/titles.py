@@ -56,7 +56,10 @@ def get_title(request, title_id: UUID):
 @router.get("/{title_id}/stream")
 def stream_title(request, title_id: UUID):
     try:
-        title = Title.objects.get(id=title_id, status=Title.Status.RELEASED)
+        title = Title.objects.prefetch_related("videos").get(
+            id=title_id,
+            status=Title.Status.RELEASED,
+        )
     except Title.DoesNotExist as err:
         raise ApiProcessError(404, _("The title does not exist.")) from err
 
@@ -66,7 +69,12 @@ def stream_title(request, title_id: UUID):
     if not title.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this title."))
 
-    return get_video_streaming_response(request, title.video.source_file)
+    thirty_minutes = 60 * 30
+    return get_video_streaming_response(
+        request,
+        title.video.source_file,
+        title.video.duration + thirty_minutes,
+    )
 
 
 @router.get(

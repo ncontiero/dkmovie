@@ -192,26 +192,26 @@ AWS_ACCESS_KEY_ID = config("DJANGO_AWS_ACCESS_KEY_ID")
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_SECRET_ACCESS_KEY = config("DJANGO_AWS_SECRET_ACCESS_KEY")
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_STORAGE_BUCKET_NAME = config("DJANGO_AWS_STORAGE_BUCKET_NAME")
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
-AWS_QUERYSTRING_AUTH = False
-# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
 AWS_S3_REGION_NAME = config("DJANGO_AWS_S3_REGION_NAME", default=None)
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
-AWS_S3_CUSTOM_DOMAIN = config("DJANGO_AWS_S3_CUSTOM_DOMAIN", default=None)
+AWS_S3_PUBLIC_CUSTOM_DOMAIN = config("DJANGO_AWS_S3_PUBLIC_CUSTOM_DOMAIN", default=None)
 AWS_S3_ENDPOINT_URL = config("DJANGO_AWS_S3_ENDPOINT_URL", default=None)
+# Buckets
+# https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings
+AWS_PUBLIC_STORAGE_BUCKET_NAME = config("DJANGO_AWS_PUBLIC_STORAGE_BUCKET_NAME")
+AWS_PRIVATE_STORAGE_BUCKET_NAME = config("DJANGO_AWS_PRIVATE_STORAGE_BUCKET_NAME")
 
 # STATIC & MEDIA
 # ------------------------------------------------------------------------------
 STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.s3.S3Storage",
-        "OPTIONS": {
-            "file_overwrite": False,
-        },
+        "BACKEND": "config.storages.PublicMediaStorage",
     },
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+    "private": {
+        "BACKEND": "config.storages.PrivateMediaStorage",
     },
 }
 

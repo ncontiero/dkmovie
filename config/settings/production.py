@@ -1,7 +1,5 @@
 # ruff: noqa: E501
 from .base import *  # noqa: F403
-from .base import AWS_S3_CUSTOM_DOMAIN
-from .base import AWS_STORAGE_BUCKET_NAME
 from .base import DATABASES
 from .base import INSTALLED_APPS
 from .base import REDIS_URL
@@ -92,21 +90,14 @@ AWS_S3_MAX_MEMORY_SIZE = config(
     cast=int,
     default=100_000_000,  # 100MB
 )
-aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 
 # STATIC & MEDIA
 # ------------------------------------------------------------------------------
 STORAGES["staticfiles"] = {
-    "BACKEND": "storages.backends.s3.S3Storage",
-    "OPTIONS": {
-        "location": "static",
-        "default_acl": "public-read",
-    },
+    "BACKEND": "config.storages.StaticStorage",
 }
 
-MEDIA_URL = f"https://{aws_s3_domain}/"
 COLLECTFASTA_STRATEGY = "collectfasta.strategies.boto3.Boto3Strategy"
-STATIC_URL = f"https://{aws_s3_domain}/static/"
 
 # EMAIL
 # ------------------------------------------------------------------------------

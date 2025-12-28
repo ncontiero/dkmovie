@@ -12,6 +12,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
+from config.storages import PrivateMediaStorage
 from dkmovie.upload.fields import S3FileField
 
 BASE_TMDB_URL = "https://www.themoviedb.org"
@@ -113,6 +114,7 @@ class Video(models.Model):
 
     source_file = S3FileField(
         upload_to=source_file_path,
+        storage=PrivateMediaStorage(),
         blank=True,
         null=True,
         max_length=500,

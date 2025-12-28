@@ -10,8 +10,9 @@ TMDB_API_KEY=
 # ------------------------------------------------------------------------------
 DJANGO_AWS_ACCESS_KEY_ID=minioAccessKey
 DJANGO_AWS_SECRET_ACCESS_KEY=minioSecretKey
-DJANGO_AWS_STORAGE_BUCKET_NAME=dkmovie-bucket
-DJANGO_AWS_S3_CUSTOM_DOMAIN=localhost:9000/dkmovie-bucket
+DJANGO_AWS_PUBLIC_STORAGE_BUCKET_NAME=dkmovie-public
+DJANGO_AWS_PRIVATE_STORAGE_BUCKET_NAME=dkmovie-private
+DJANGO_AWS_S3_PUBLIC_CUSTOM_DOMAIN=localhost:9000/dkmovie-public
 DJANGO_AWS_S3_ENDPOINT_URL=http://minio:9000
 
 # Redis

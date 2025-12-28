@@ -47,17 +47,13 @@ class S3MultipartManager:
     part_size: ClassVar[int] = 64 * 1024 * 1024  # 64MB
 
     def __init__(self):
-        self.bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-        # Use s3v4 signature which is required for MinIO and safer for AWS
-        config = Config(signature_version="s3v4")
-
-        # Client for internal operations (backend <-> S3)
         default_s3_client_kwargs = {
             "aws_access_key_id": settings.AWS_ACCESS_KEY_ID,
             "aws_secret_access_key": settings.AWS_SECRET_ACCESS_KEY,
             "region_name": settings.AWS_S3_REGION_NAME,
-            "config": config,
+            "config": Config(signature_version="s3v4"),
         }
+        # Client for internal operations (backend <-> S3)
         self.client = boto3.client(
             "s3",
             endpoint_url=settings.AWS_S3_ENDPOINT_URL,
@@ -87,10 +83,11 @@ class S3MultipartManager:
         object_key: str,
         file_size: int,
         content_type: str,
+        bucket_name: str,
     ) -> PresignedTransfer:
         # Use internal client for API call
         resp = self.client.create_multipart_upload(
-            Bucket=self.bucket_name,
+            Bucket=bucket_name,
             Key=object_key,
             ContentType=content_type,
         )
@@ -102,7 +99,7 @@ class S3MultipartManager:
             upload_url = self.signing_client.generate_presigned_url(
                 ClientMethod="upload_part",
                 Params={
-                    "Bucket": self.bucket_name,
+                    "Bucket": bucket_name,
                     "Key": object_key,
                     "UploadId": upload_id,
                     "PartNumber": part_number,
@@ -114,28 +111,28 @@ class S3MultipartManager:
 
         return PresignedTransfer(object_key, upload_id, parts)
 
-    def complete_upload(self, transferred_parts: TransferredParts):
+    def complete_upload(self, transferred_parts: TransferredParts, bucket_name: str):
         parts_data = [
             {"PartNumber": part.part_number, "ETag": part.etag}
             for part in sorted(transferred_parts.parts, key=lambda p: p.part_number)
         ]
 
         self.client.complete_multipart_upload(
-            Bucket=self.bucket_name,
+            Bucket=bucket_name,
             Key=transferred_parts.object_key,
             UploadId=transferred_parts.upload_id,
             MultipartUpload={"Parts": parts_data},
         )
 
-    def abort_upload(self, object_key: str, upload_id: str):
+    def abort_upload(self, object_key: str, upload_id: str, bucket_name: str):
         self.client.abort_multipart_upload(
-            Bucket=self.bucket_name,
+            Bucket=bucket_name,
             Key=object_key,
             UploadId=upload_id,
         )
 
-    def get_object_size(self, object_key: str) -> int:
-        stats = self.client.head_object(Bucket=self.bucket_name, Key=object_key)
+    def get_object_size(self, object_key: str, bucket_name: str) -> int:
+        stats = self.client.head_object(Bucket=bucket_name, Key=object_key)
         return stats["ContentLength"]
 
     @classmethod

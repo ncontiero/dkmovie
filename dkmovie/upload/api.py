@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from django.conf import settings
 from django.core import signing
 from django.core.exceptions import ValidationError
 from ninja import Router
@@ -56,27 +57,30 @@ class FinalizeSchema(Schema):
 def initialize_upload(request, payload: InitUploadSchema):
     field = get_field(payload.field_id)
     instance = None
-
-    if field and payload.instance_id:
-        model = field.model
-        try:
-            # Try to fetch the instance if we have an ID (update case)
-            instance = model.objects.filter(pk=payload.instance_id).first()
-        except (ValidationError, ValueError):
-            instance = None
+    bucket_name = settings.AWS_PRIVATE_STORAGE_BUCKET_NAME  # Default fallback
 
     if field:
-        # If instance is found, generate_filename will use the model's logic.
-        # If instance is None (creation), it will use the fallback in video_path.
+        # Use the field's configured storage bucket
+        if hasattr(field.storage, "bucket_name"):
+            bucket_name = field.storage.bucket_name
+
+        if payload.instance_id:
+            model = field.model
+            try:
+                instance = model.objects.filter(pk=payload.instance_id).first()
+            except (ValidationError, ValueError):
+                instance = None
+
         object_key = field.generate_filename(instance, payload.file_name)
     else:
-        # Absolute fallback if field is not registered
+        # Fallback if field is not registered
         object_key = f"uploads/{uuid4()}/{payload.file_name}"
 
     data = manager.initialize_upload(
         object_key,
         payload.file_size,
         payload.content_type,
+        bucket_name=bucket_name,
     )
 
     # Sign request data to ensure integrity later
@@ -107,6 +111,13 @@ def initialize_upload(request, payload: InitUploadSchema):
 def complete_upload(request, payload: CompleteUploadSchema):
     sig_data = signing.loads(payload.upload_signature)
     object_key = sig_data["object_key"]
+    field_id = sig_data.get("field_id")
+
+    bucket_name = settings.AWS_PRIVATE_STORAGE_BUCKET_NAME
+    if field_id:
+        field = get_field(field_id)
+        if field and hasattr(field.storage, "bucket_name"):
+            bucket_name = field.storage.bucket_name
 
     transferred_parts = TransferredParts(
         object_key=object_key,
@@ -114,7 +125,7 @@ def complete_upload(request, payload: CompleteUploadSchema):
         parts=[TransferredPart(p.part_number, p.size, p.etag) for p in payload.parts],
     )
 
-    manager.complete_upload(transferred_parts)
+    manager.complete_upload(transferred_parts, bucket_name=bucket_name)
     return {"status": "ok"}
 
 
@@ -122,9 +133,16 @@ def complete_upload(request, payload: CompleteUploadSchema):
 def finalize_upload(request, payload: FinalizeSchema):
     sig_data = signing.loads(payload.upload_signature)
     object_key = sig_data["object_key"]
+    field_id = sig_data.get("field_id")
+
+    bucket_name = settings.AWS_PRIVATE_STORAGE_BUCKET_NAME
+    if field_id:
+        field = get_field(field_id)
+        if field and hasattr(field.storage, "bucket_name"):
+            bucket_name = field.storage.bucket_name
 
     # Verify existence/size
-    size = manager.get_object_size(object_key)
+    size = manager.get_object_size(object_key, bucket_name=bucket_name)
 
     # Generate final field value signature
     field_value = signing.dumps({"object_key": object_key, "file_size": size})

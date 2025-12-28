@@ -1,7 +1,5 @@
 from .base import *  # noqa: F403
-from .base import AWS_S3_CUSTOM_DOMAIN
 from .base import AWS_S3_ENDPOINT_URL
-from .base import AWS_STORAGE_BUCKET_NAME
 from .base import INSTALLED_APPS
 from .base import MIDDLEWARE
 from .base import WEBPACK_LOADER
@@ -87,6 +85,3 @@ AWS_S3_PUBLIC_ENDPOINT_URL = config(
     default="http://localhost:9000",
 )
 AWS_S3_URL_PROTOCOL = "http:" if AWS_S3_ENDPOINT_URL.startswith("http://") else "https:"
-aws_s3_domain = AWS_S3_CUSTOM_DOMAIN or f"minio:9000/{AWS_STORAGE_BUCKET_NAME}"
-
-MEDIA_URL = f"{AWS_S3_URL_PROTOCOL}//{aws_s3_domain}/"
