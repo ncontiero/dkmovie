@@ -1,5 +1,5 @@
 import type { Episode, TitleDetails } from "@/utils/types";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Captions,
@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -41,6 +42,7 @@ export function VideoPlayer({
   poster,
   className,
 }: VideoPlayerProps) {
+  const { isMobile } = useIsMobile();
   const t = useTranslations("playerPage");
   const navigate = useNavigate();
   const [isToShowControls, setIsToShowControls] = useState(false);
@@ -56,6 +58,47 @@ export function VideoPlayer({
       videoRef.current.load();
     }
   }, [src]);
+
+  useEffect(() => {
+    if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
+    document.documentElement.requestFullscreen().catch(() => {});
+  }, [isMobile]);
+
+  const closePlayer = useCallback(async () => {
+    if (videoRef.current && isVideoPlaying) videoRef.current.pause();
+    if (document.fullscreenElement) await document.exitFullscreen();
+
+    await navigate({ to: "/title/$titleId", params: { titleId: title.id } });
+  }, [isVideoPlaying, navigate, title.id]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "Escape") {
+        event.preventDefault();
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          closePlayer();
+        }
+      }
+
+      if (event.code === "Space") {
+        event.preventDefault();
+        if (!videoRef.current) return;
+
+        if (isVideoPlaying) {
+          videoRef.current.pause();
+        } else {
+          videoRef.current.play();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closePlayer, isVideoPlaying]);
 
   const handleControlsMouseMove = () => {
     setIsToShowControls(true);
@@ -76,28 +119,17 @@ export function VideoPlayer({
   };
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === "Space") {
-        event.preventDefault();
-        if (!videoRef.current) return;
-
-        if (isVideoPlaying) {
-          videoRef.current.pause();
-        } else {
-          videoRef.current.play();
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isVideoPlaying]);
-
-  useEffect(() => {
     const handleFullscreenChange = () => {
       setIsInFullscreen(document.fullscreenElement !== null);
+      // Rotate screen on mobile
+      try {
+        if (!isMobile) return;
+        if (document.fullscreenElement) {
+          window.screen.orientation.lock("landscape").catch(() => {});
+        } else {
+          window.screen.orientation.unlock();
+        }
+      } catch {}
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
@@ -107,7 +139,7 @@ export function VideoPlayer({
         window.clearTimeout(controlsTimeoutRef.current);
       }
     };
-  }, []);
+  }, [isMobile]);
 
   const duration = episode?.duration || title.duration || 0;
   const haveNextEpisode =
@@ -255,7 +287,9 @@ export function VideoPlayer({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                    className="
+                      size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white max-lg:hidden
+                    "
                     onClick={() => {
                       if (!document.fullscreenElement) {
                         document.documentElement.requestFullscreen();
@@ -286,11 +320,10 @@ export function VideoPlayer({
                     variant="ghost"
                     size="icon"
                     className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
-                    asChild
+                    aria-label={t("close")}
+                    onClick={closePlayer}
                   >
-                    <Link to="/title/$titleId" params={{ titleId: title.id }}>
-                      <X className="md:size-8" />
-                    </Link>
+                    <X className="md:size-8" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{t("close")}</TooltipContent>
