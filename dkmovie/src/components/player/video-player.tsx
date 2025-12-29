@@ -444,6 +444,10 @@ export function VideoPlayer({
       </div>
       <video
         ref={videoRef}
+        onError={() => {
+          toast.error(t("onError"));
+          closePlayer();
+        }}
         onCanPlay={() => setIsLoading(false)}
         controls={false}
         autoPlay

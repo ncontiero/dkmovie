@@ -82,7 +82,8 @@
     "seekForward": "Avançar 10 segundos",
     "seekBar": "Barra de progresso",
     "nextEpisode": "Próximo episódio",
-    "noNextEpisode": "Não há próximo episódio nesta temporada."
+    "noNextEpisode": "Não há próximo episódio nesta temporada.",
+    "onError": "Ocorreu um erro ao carregar o vídeo. Por favor, tente novamente mais tarde."
   },
   "titlesPage": {
     "moviesOfTheYear": "Filmes de {yea  r}",

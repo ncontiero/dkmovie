@@ -1,4 +1,8 @@
-import { createRouter, PathParamError } from "@tanstack/react-router";
+import {
+  createRouter,
+  PathParamError,
+  SearchParamError,
+} from "@tanstack/react-router";
 import { type PageError, lazyComponents } from "./components/lazy-components";
 import { queryClient } from "./lib/query";
 import { routeTree } from "./routeTree.gen";
@@ -21,7 +25,7 @@ export const router = createRouter({
   defaultNotFoundComponent: lazyComponents.errors.NotFound,
   defaultPendingComponent: lazyComponents.PendingComponent,
   defaultErrorComponent: ({ error }) => {
-    if (error instanceof PathParamError) {
+    if (error instanceof PathParamError || error instanceof SearchParamError) {
       return <lazyComponents.errors.BadRequest />;
     }
 

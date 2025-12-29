@@ -16,7 +16,7 @@ export const Route = createFileRoute("/account/(my-account)")({
     if (!context.auth.isAuthenticated) {
       throw redirect({
         to: "/auth/sign-in",
-        search: { next: location.pathname },
+        search: { next: location.href },
       });
     }
   },

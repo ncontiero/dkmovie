@@ -1,17 +1,20 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, isNotFound, notFound } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  isNotFound,
+  notFound,
+  redirect,
+} from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
-import { z } from "zod";
+import { object, uuid } from "zod";
 import { VideoPlayer } from "@/components/player/video-player";
 import { getEpisode } from "@/http/get-episodes";
 import { getTitle } from "@/http/get-titles";
 import { isHttpNotFound } from "@/utils/errors";
 import { generateMetadata } from "@/utils/metadata";
 
-const watchSearchSchema = z.object({
-  episodeId: z.uuid().optional(),
-});
+const watchSearchSchema = object({ episodeId: uuid().optional() });
 
 function episodeQueryOptions(episodeId?: string) {
   return queryOptions({
@@ -25,6 +28,14 @@ function episodeQueryOptions(episodeId?: string) {
 export const Route = createFileRoute("/title/$titleId/watch")({
   component: WatchTitleComponent,
   validateSearch: watchSearchSchema,
+  beforeLoad: ({ context, location }) => {
+    if (!context.auth.isAuthenticated) {
+      throw redirect({
+        to: "/auth/sign-in",
+        search: { next: location.href },
+      });
+    }
+  },
   loaderDeps: ({ search: { episodeId } }) => ({ episodeId }),
   loader: async ({
     context: { queryClient },

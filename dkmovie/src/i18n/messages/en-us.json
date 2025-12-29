@@ -82,7 +82,8 @@
     "seekForward": "Seek forward 10 seconds",
     "seekBar": "Seek bar",
     "nextEpisode": "Next Episode",
-    "noNextEpisode": "There are no more episodes in this season."
+    "noNextEpisode": "There are no more episodes in this season.",
+    "onError": "An error occurred while loading the video. Please try again later."
   },
   "titlesPage": {
     "moviesOfTheYear": "Movies of {year}",

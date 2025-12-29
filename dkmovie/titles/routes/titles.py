@@ -55,6 +55,9 @@ def get_title(request, title_id: UUID):
 
 @router.get("/{title_id}/stream")
 def stream_title(request, title_id: UUID):
+    if request.user.is_anonymous:
+        raise ApiProcessError(401, _("Unauthorized"))
+
     try:
         title = Title.objects.prefetch_related("videos").get(
             id=title_id,

@@ -13,7 +13,7 @@ import { type PageError, lazyComponents } from "@/components/lazy-components";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { MFAProvider } from "@/context/mfa/provider";
-import { nextPathSearchSchema } from "@/schemas/routes/base";
+import { rootSearchSchema } from "@/schemas/routes/base";
 import { type MetadataTranslations, generateMetadata } from "@/utils/metadata";
 
 interface RouterContext {
@@ -26,7 +26,7 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
-  validateSearch: (search) => nextPathSearchSchema.parse(search),
+  validateSearch: rootSearchSchema,
   head: ({
     match: {
       context: { metadataTranslations, djangoPageError },

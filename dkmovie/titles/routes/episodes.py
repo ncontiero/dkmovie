@@ -24,6 +24,9 @@ def get_episode(request, episode_id: UUID):
 
 @router.get("/{episode_id}/stream")
 def stream_episode(request, episode_id: UUID):
+    if request.user.is_anonymous:
+        raise ApiProcessError(401, _("Unauthorized"))
+
     try:
         episode = Episode.objects.prefetch_related("videos").get(id=episode_id)
     except Episode.DoesNotExist as err:
