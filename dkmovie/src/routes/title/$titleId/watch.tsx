@@ -93,9 +93,9 @@ function WatchTitleComponent() {
   const poster = episode?.still || title.cover || title.poster || undefined;
 
   if (title.content_type === "MOVIE") {
-    streamUrl = `/api/titles/${title.id}/stream`;
+    streamUrl = `/api/streaming/title/${title.id}`;
   } else if (title.content_type === "SERIES" && episodeId) {
-    streamUrl = `/api/episodes/${episodeId}/stream`;
+    streamUrl = `/api/streaming/episode/${episodeId}`;
   }
 
   if (title.content_type === "SERIES" && !episodeId) {
