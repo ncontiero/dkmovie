@@ -57,7 +57,12 @@ function HomeComponent() {
   const { data: series } = useSuspenseQuery(popularSeriesQueryOptions);
 
   const heroSectionTitles = useMemo(() => {
-    return [...recentlyReleased, ...movies, ...series].slice(0, 5);
+    const titles = [...recentlyReleased, ...movies, ...series];
+    return titles
+      .filter((title, index) => {
+        return titles.findIndex((t) => t.id === title.id) === index;
+      })
+      .slice(0, 5);
   }, [movies, recentlyReleased, series]);
 
   if (

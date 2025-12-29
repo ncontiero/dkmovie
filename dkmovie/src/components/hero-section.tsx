@@ -123,7 +123,7 @@ export function HeroSection({ content }: HeroProps) {
       }}
       autoplay={{ disableOnInteraction: false, delay: 5000 }}
       simulateTouch={isMobile}
-      loop
+      loop={content.length > 1}
     >
       {content.map((item) => (
         <SwiperSlide key={item.id}>
