@@ -42,9 +42,10 @@ export function VideoPlayer({
   poster,
   className,
 }: VideoPlayerProps) {
-  const { isMobile } = useIsMobile();
   const t = useTranslations("playerPage");
   const navigate = useNavigate();
+  const { isMobile } = useIsMobile();
+  const [isLoading, setIsLoading] = useState(true);
   const [isToShowControls, setIsToShowControls] = useState(false);
   const controlsTimeoutRef = useRef<number | null>(null);
   const [isInFullscreen, setIsInFullscreen] = useState(false);
@@ -250,6 +251,9 @@ export function VideoPlayer({
                         variant="ghost"
                         size="icon"
                         className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                        disabled={isLoading}
+                        loading={isLoading}
+                        loadingIconClassName="md:size-8"
                       >
                         {volume > 0.5 ? (
                           <Volume2 className="md:size-8" />
@@ -344,6 +348,7 @@ export function VideoPlayer({
                     const newTime = videoRef.current.currentTime - 10;
                     videoRef.current.currentTime = Math.max(0, newTime);
                   }}
+                  disabled={isLoading}
                 >
                   <StepBack className="size-10 fill-white stroke-white md:size-20" />
                 </Button>
@@ -364,6 +369,9 @@ export function VideoPlayer({
                   videoRef.current.play();
                 }
               }}
+              disabled={isLoading}
+              loading={isLoading}
+              loadingIconClassName="size-10 md:size-20"
             >
               {isVideoPlaying ? (
                 <Pause className="size-10 fill-white stroke-white md:size-20" />
@@ -387,6 +395,7 @@ export function VideoPlayer({
                     const newTime = videoRef.current.currentTime + 10;
                     videoRef.current.currentTime = Math.min(duration, newTime);
                   }}
+                  disabled={isLoading}
                 >
                   <StepForward className="size-10 fill-white stroke-white md:size-20" />
                 </Button>
@@ -404,8 +413,9 @@ export function VideoPlayer({
                   videoRef.current.currentTime = value;
                 }
               }}
-              className="cursor-pointer"
+              className="cursor-pointer data-disabled:cursor-not-allowed data-disabled:opacity-50"
               aria-label={t("seekBar")}
+              disabled={isLoading}
             />
             <div className="flex items-center justify-between pt-4">
               <div className="text-lg font-medium text-white md:text-2xl">
@@ -434,6 +444,7 @@ export function VideoPlayer({
       </div>
       <video
         ref={videoRef}
+        onCanPlay={() => setIsLoading(false)}
         controls={false}
         autoPlay
         preload="metadata"
@@ -446,10 +457,7 @@ export function VideoPlayer({
         onEnded={() => {
           if (episode && !haveNextEpisode) {
             toast.warning(t("noNextEpisode"));
-            navigate({
-              to: "/title/$titleId",
-              params: { titleId: title.id },
-            });
+            closePlayer();
             return;
           }
 

@@ -12,12 +12,14 @@ export interface ButtonProps
   readonly asChild?: boolean;
   readonly loading?: boolean;
   readonly loadingText?: string;
+  readonly loadingIconClassName?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
+      loadingIconClassName,
       variant,
       size,
       loadingText,
@@ -39,7 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading ? (
           <>
-            <Spinner /> {loadingText}
+            <Spinner className={loadingIconClassName} /> {loadingText}
           </>
         ) : (
           children
