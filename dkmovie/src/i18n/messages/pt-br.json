@@ -83,6 +83,7 @@
     "seekBar": "Barra de progresso",
     "nextEpisode": "Próximo episódio",
     "noNextEpisode": "Não há próximo episódio nesta temporada.",
+    "screensLimitReached": "Limite de telas simultâneas atingido. Por favor, feche outras sessões.",
     "onError": "Ocorreu um erro ao carregar o vídeo. Por favor, tente novamente mais tarde."
   },
   "titlesPage": {

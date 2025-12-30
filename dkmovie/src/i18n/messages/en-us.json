@@ -83,6 +83,7 @@
     "seekBar": "Seek bar",
     "nextEpisode": "Next Episode",
     "noNextEpisode": "There are no more episodes in this season.",
+    "screensLimitReached": "The limit for simultaneous screens has been reached. Please close other sessions.",
     "onError": "An error occurred while loading the video. Please try again later."
   },
   "titlesPage": {

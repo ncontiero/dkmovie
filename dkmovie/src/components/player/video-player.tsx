@@ -1,5 +1,12 @@
 import type { Episode, TitleDetails } from "@/utils/types";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Captions,
@@ -20,6 +27,7 @@ import {
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { releaseSession, sendHeartbeat } from "@/http/concurrency";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -54,23 +62,84 @@ export function VideoPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-    }
-  }, [src]);
-
-  useEffect(() => {
-    if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
-    document.documentElement.requestFullscreen().catch(() => {});
-  }, [isMobile]);
+  const sessionIdRef = useRef("");
+  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [isSessionAllowed, setIsSessionAllowed] = useState(false);
 
   const closePlayer = useCallback(async () => {
+    if (sessionIdRef.current) {
+      releaseSession(sessionIdRef.current).catch(() => {});
+    }
+
     if (videoRef.current && isVideoPlaying) videoRef.current.pause();
     if (document.fullscreenElement) await document.exitFullscreen();
 
     await navigate({ to: "/title/$titleId", params: { titleId: title.id } });
   }, [isVideoPlaying, navigate, title.id]);
+
+  const initSession = useEffectEvent(async (sessionId: string) => {
+    if (!sessionId) return await closePlayer();
+
+    try {
+      const { allowed } = await sendHeartbeat(sessionId);
+      if (allowed) {
+        setIsSessionAllowed(true);
+        setVideoSrc(`${src}?session_id=${sessionId}`);
+
+        heartbeatIntervalRef.current = setInterval(async () => {
+          try {
+            const res = await sendHeartbeat(sessionId);
+            if (!res.allowed) {
+              setIsSessionAllowed(false);
+              toast.error(t("screensLimitReached"));
+              await closePlayer();
+            }
+          } catch {}
+        }, 30000);
+      } else {
+        toast.error(t("screensLimitReached"));
+        setIsSessionAllowed(false);
+        await closePlayer();
+      }
+    } catch (error) {
+      console.error("Failed to init session", error);
+      toast.error(t("onError"));
+    }
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const STORAGE_KEY = "stream_session_id";
+      let sid = sessionStorage.getItem(STORAGE_KEY);
+      if (!sid) {
+        sid = crypto.randomUUID();
+        sessionStorage.setItem(STORAGE_KEY, sid);
+      }
+      sessionIdRef.current = sid;
+    }
+
+    const sessionId = sessionIdRef.current;
+    initSession(sessionId);
+
+    return () => {
+      if (heartbeatIntervalRef.current) {
+        clearInterval(heartbeatIntervalRef.current);
+        releaseSession(sessionId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (videoRef.current && videoSrc) {
+      videoRef.current.load();
+    }
+  }, [videoSrc]);
+
+  useEffect(() => {
+    if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
+    document.documentElement.requestFullscreen().catch(() => {});
+  }, [isMobile]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -180,6 +249,17 @@ export function VideoPlayer({
 
   if (!title) return null;
 
+  if (!isSessionAllowed && !isLoading && videoSrc) {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-black text-white">
+        <h1 className="text-2xl font-bold">{t("concurrentLimitReached")}</h1>
+        <Button onClick={closePlayer} variant="secondary">
+          {t("close")}
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -198,6 +278,7 @@ export function VideoPlayer({
         onMouseMove={handleControlsMouseMove}
         onMouseLeave={handleControlsMouseLeave}
       >
+        {/* Controls UI */}
         <div className="absolute inset-0 -z-1 bg-linear-to-b from-black/80 to-transparent to-20%" />
         <div className="absolute inset-0 -z-1 bg-linear-to-t from-black/80 to-transparent to-20%" />
 
@@ -472,7 +553,7 @@ export function VideoPlayer({
           });
         }}
       >
-        <source src={src} type="video/mp4" />
+        {videoSrc ? <source src={videoSrc} type="video/mp4" /> : null}
         {t("browserNotSupported")}
         <track kind="captions" />
       </video>

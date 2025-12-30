@@ -368,3 +368,10 @@ TMDB_IMAGE_BASE_URL = config(
     "TMDB_IMAGE_BASE_URL",
     default="https://image.tmdb.org/t/p/original",
 )
+
+# Stream
+# ------------------------------------------------------------------------------
+# Maximum concurrent streams per user
+MAX_CONCURRENT_STREAMS = config("MAX_CONCURRENT_STREAMS", default=2, cast=int)
+# Time in seconds a stream session remains valid without heartbeat
+STREAM_TTL = config("STREAM_TTL", default=45, cast=int)
