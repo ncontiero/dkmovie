@@ -66,7 +66,6 @@
     "seeMoreTitlesOfTheGenre": "Veja mais títulos do gênero de {genre}"
   },
   "playerPage": {
-    "browserNotSupported": "Seu navegador não suporta o vídeo tag.",
     "selectEpisode": "Selecione um episódio para assistir",
     "episodeNotAvailable": "Este episódio não está disponível.",
     "episodeDescription": "{seasonName}, Ep. {episodeNumber} {episodeName}",

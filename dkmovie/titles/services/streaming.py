@@ -1,7 +1,11 @@
 import logging
+from pathlib import Path
 
+import boto3
+import requests
+from botocore.config import Config
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from config.api.utils import ApiProcessError
@@ -15,13 +19,10 @@ SIGNING_ENDPOINT = getattr(
 )
 
 
-def get_s3_client():
-    import boto3  # noqa: PLC0415
-    from botocore.config import Config  # noqa: PLC0415
-
+def get_s3_client(endpoint=SIGNING_ENDPOINT):
     return boto3.client(
         "s3",
-        endpoint_url=SIGNING_ENDPOINT,
+        endpoint_url=endpoint,
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
         region_name=settings.AWS_S3_REGION_NAME,
@@ -29,39 +30,58 @@ def get_s3_client():
     )
 
 
-def get_video_streaming_response(request, file_field, expiration_seconds=3600):
-    """
-    Generates a response for video streaming.
-    """
-    if not file_field:
-        return None
+def get_hls_streaming_response(request, video_obj):
+    if not video_obj.hls_playlist or video_obj.status != "COMPLETED":
+        raise ApiProcessError(404, _("Video not found or not ready for streaming."))
+
+    storage_backend = video_obj.hls_playlist.storage
+
+    # Internal client to fetch the playlist content locally
+    internal_client = get_s3_client(endpoint=settings.AWS_S3_ENDPOINT_URL)
+
+    m3u8_url = internal_client.generate_presigned_url(
+        "get_object",
+        Params={
+            "Bucket": storage_backend.bucket_name,
+            "Key": video_obj.hls_playlist.name,
+        },
+        ExpiresIn=300,
+    )
 
     try:
-        # Try to generate a presigned URL with expiration
-        storage_backend = file_field.storage
-        client = storage_backend.connection.meta.client
-
-        # If AWS_S3_PUBLIC_ENDPOINT_URL is set (e.g. localhost for docker), use it.
-        # Otherwise fall back to the standard endpoint.
-        if SIGNING_ENDPOINT != settings.AWS_S3_ENDPOINT_URL:
-            client = get_s3_client()
-
-        url = client.generate_presigned_url(
-            "get_object",
-            Params={
-                "Bucket": storage_backend.bucket_name,
-                "Key": file_field.name,
-            },
-            ExpiresIn=expiration_seconds,
-        )
-
-        return HttpResponseRedirect(url)
+        r = requests.get(m3u8_url, timeout=5)
+        r.raise_for_status()
+        content = r.text
     except Exception as e:
-        logger.exception(
-            "Error accessing file_field.url for remote storage",
-            exc_info=e,
-        )
+        logger.exception("Failed to fetch m3u8", exc_info=e)
+        # Fallback to source file
         raise ApiProcessError(
-            400,
-            _("Failed to generate presigned URL for streaming."),
+            404,
+            _("Video not found or not ready for streaming."),
         ) from e
+
+    base_path = str(Path(video_obj.hls_playlist.name).parent)
+    new_lines = []
+
+    # External client to sign segment URLs for the user
+    signing_client = get_s3_client()
+
+    for line in content.splitlines():
+        if line.strip().endswith(".ts"):
+            segment_key = f"{base_path}/{line.strip()}"
+            segment_url = signing_client.generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": storage_backend.bucket_name,
+                    "Key": segment_key,
+                },
+                ExpiresIn=3600,
+            )
+            new_lines.append(segment_url)
+        else:
+            new_lines.append(line)
+
+    return HttpResponse(
+        "\n".join(new_lines),
+        content_type="application/vnd.apple.mpegurl",
+    )

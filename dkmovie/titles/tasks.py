@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 
 from dkmovie.titles.services.video import get_video_duration
+from dkmovie.titles.services.video import process_video_to_hls
 from dkmovie.users.utils import send_email
 from dkmovie.utils.tasks import default_task_params
 
@@ -607,3 +608,18 @@ def calculate_video_duration(self, video_id):
             video.save(update_fields=["duration"])
     except Video.DoesNotExist as e:
         logger.exception("Video with ID %s does not exist", video_id, exc_info=e)
+
+
+@shared_task(
+    **default_task_params("process_video_hls_task"),
+    soft_time_limit=1800,
+    time_limit=1800,
+)
+def process_video_hls_task(self, video_id):
+    try:
+        video = Video.objects.get(id=video_id)
+    except Video.DoesNotExist as e:
+        logger.exception("Video with ID %s does not exist", video_id, exc_info=e)
+        return
+
+    process_video_to_hls(video)

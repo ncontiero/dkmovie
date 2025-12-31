@@ -38,7 +38,7 @@ class VideoInline(GenericStackedInline):
     model = Video
     extra = 0
     max_num = 1
-    fields = ("source_file", "duration")
+    fields = ("source_file", "duration", "hls_playlist", "status", "processing_error")
     readonly_fields = ("created_at", "updated_at")
     show_change_link = True
 
@@ -55,13 +55,15 @@ class VideoAdmin(admin.ModelAdmin):
     list_display = (
         "get_target_name",
         "get_target_type",
+        "status",
         "get_duration_fmt",
         "created_at",
         "link_to_parent",
     )
-    list_filter = ("content_type", "created_at")
+    list_filter = ("status", "content_type", "created_at")
     search_fields = ("id", "source_file")
     readonly_fields = ("created_at", "updated_at", "link_to_parent_large")
+    actions = ["retry_processing"]
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("content_object")
@@ -149,6 +151,13 @@ class VideoAdmin(admin.ModelAdmin):
                 _("Click to edit"),
             )
         return _("Orphaned Video")
+
+    @admin.action(description=_("Retry Processing"))
+    def retry_processing(self, request, queryset):
+        for video in queryset:
+            video.status = Video.Status.PENDING
+            video.save()
+        self.message_user(request, _("Selected videos queued for processing."))
 
 
 @admin.register(Title)

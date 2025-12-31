@@ -11,17 +11,17 @@ from dkmovie.titles.models import Title
 from dkmovie.titles.services.concurrency import is_session_valid
 from dkmovie.titles.services.concurrency import register_heartbeat
 from dkmovie.titles.services.concurrency import release_session
-from dkmovie.titles.services.streaming import get_video_streaming_response
+from dkmovie.titles.services.streaming import get_hls_streaming_response
 
 router = Router(auth=SessionAuth())
 
 
-@router.get("/title/{title_id}")
+@router.get("/title/{title_id}.m3u8")
 def stream_title(request, title_id: UUID, session_id: str):
     if not is_session_valid(request.user.id, session_id):
         raise ApiProcessError(
             403,
-            _("Concurrent stream limit reached or session invalid."),
+            _("The limit for simultaneous screens has been reached."),
         )
 
     try:
@@ -38,20 +38,15 @@ def stream_title(request, title_id: UUID, session_id: str):
     if not title.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this title."))
 
-    thirty_minutes = 60 * 30
-    return get_video_streaming_response(
-        request,
-        title.video.source_file,
-        title.video.duration + thirty_minutes,
-    )
+    return get_hls_streaming_response(request, title.video)
 
 
-@router.get("/episode/{episode_id}")
+@router.get("/episode/{episode_id}.m3u8")
 def stream_episode(request, episode_id: UUID, session_id: str):
     if not is_session_valid(request.user.id, session_id):
         raise ApiProcessError(
             403,
-            _("Concurrent stream limit reached or session invalid."),
+            _("The limit for simultaneous screens has been reached."),
         )
 
     try:
@@ -62,12 +57,7 @@ def stream_episode(request, episode_id: UUID, session_id: str):
     if not episode.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this episode."))
 
-    thirty_minutes = 60 * 30
-    return get_video_streaming_response(
-        request,
-        episode.video.source_file,
-        episode.video.duration + thirty_minutes,
-    )
+    return get_hls_streaming_response(request, episode.video)
 
 
 class HeartbeatSchema(Schema):

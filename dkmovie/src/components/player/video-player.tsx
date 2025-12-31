@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import ReactPlayer from "react-player";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Captions,
@@ -69,12 +70,17 @@ export function VideoPlayer({
 
   const closePlayer = useCallback(async () => {
     if (sessionIdRef.current) {
-      releaseSession(sessionIdRef.current).catch(() => {});
+      try {
+        await releaseSession(sessionIdRef.current);
+      } catch {}
     }
 
     if (videoRef.current && isVideoPlaying) videoRef.current.pause();
     if (document.fullscreenElement) await document.exitFullscreen();
 
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+    }
     await navigate({ to: "/title/$titleId", params: { titleId: title.id } });
   }, [isVideoPlaying, navigate, title.id]);
 
@@ -125,16 +131,10 @@ export function VideoPlayer({
     return () => {
       if (heartbeatIntervalRef.current) {
         clearInterval(heartbeatIntervalRef.current);
-        releaseSession(sessionId);
       }
+      releaseSession(sessionId);
     };
   }, []);
-
-  useEffect(() => {
-    if (videoRef.current && videoSrc) {
-      videoRef.current.load();
-    }
-  }, [videoSrc]);
 
   useEffect(() => {
     if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
@@ -523,16 +523,20 @@ export function VideoPlayer({
           </div>
         </div>
       </div>
-      <video
+
+      <ReactPlayer
         ref={videoRef}
-        onError={() => {
+        width="100%"
+        height="100%"
+        src={videoSrc || undefined}
+        onError={async (e) => {
+          console.error(e);
           toast.error(t("onError"));
-          closePlayer();
+          await closePlayer();
         }}
         onCanPlay={() => setIsLoading(false)}
         controls={false}
         autoPlay
-        preload="metadata"
         className="size-full max-h-screen"
         poster={poster}
         onPlay={() => setIsVideoPlaying(true)}
@@ -552,11 +556,7 @@ export function VideoPlayer({
             search: { episodeId: episode?.next_episode?.id },
           });
         }}
-      >
-        {videoSrc ? <source src={videoSrc} type="video/mp4" /> : null}
-        {t("browserNotSupported")}
-        <track kind="captions" />
-      </video>
+      />
     </div>
   );
 }

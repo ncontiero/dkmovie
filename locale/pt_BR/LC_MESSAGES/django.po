@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-27 18:13+0000\n"
+"POT-Creation-Date: 2025-12-31 22:32+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -527,6 +527,12 @@ msgstr "Clique para editar"
 msgid "Orphaned Video"
 msgstr "Vídeo órfão"
 
+msgid "Retry Processing"
+msgstr "Tentar processar novamente"
+
+msgid "Selected videos queued for processing."
+msgstr "Vídeos selecionados enfileirados para processamento."
+
 msgid "Main Information"
 msgstr "Informações principais"
 
@@ -602,6 +608,18 @@ msgstr "Gênero"
 msgid "Genres"
 msgstr "Gêneros"
 
+msgid "Pending"
+msgstr "Pendente"
+
+msgid "Processing"
+msgstr "Processando"
+
+msgid "Completed"
+msgstr "Concluído"
+
+msgid "Failed"
+msgstr "Falhou"
+
 msgid "Unique identifier for the video"
 msgstr "Identificador único para o vídeo"
 
@@ -611,8 +629,17 @@ msgstr "O tipo do objeto ao qual este vídeo pertence (Título ou Episódio)"
 msgid "The ID of the object this video belongs to"
 msgstr "O ID do objeto ao qual este vídeo pertence"
 
+msgid "The status of the video processing"
+msgstr "O status do processamento do vídeo"
+
 msgid "The video file"
 msgstr "O arquivo de vídeo"
+
+msgid "The HLS master playlist file"
+msgstr "O arquivo de playlist mestre HLS"
+
+msgid "Error message if processing failed"
+msgstr "Mensagem de erro se o processamento falhou"
 
 msgid "The duration in seconds"
 msgstr "A duração em segundos"
@@ -787,11 +814,11 @@ msgstr "Episódios"
 msgid "The episode does not exist."
 msgstr "O episódio não existe."
 
-msgid "Video file not found for this episode."
-msgstr "Arquivo de vídeo não encontrado para este episódio."
-
 msgid "Invalid filter parameter."
 msgstr "Parâmetro de filtro inválido."
+
+msgid "The limit for simultaneous screens has been reached."
+msgstr "O limite para o número de telas simultâneas foi atingido."
 
 msgid "The title does not exist."
 msgstr "O título não existe."
@@ -801,6 +828,12 @@ msgstr "Este título não é um filme."
 
 msgid "Video file not found for this title."
 msgstr "Arquivo de vídeo não encontrado para este título."
+
+msgid "Video file not found for this episode."
+msgstr "Arquivo de vídeo não encontrado para este episódio."
+
+msgid "Video not found or not ready for streaming."
+msgstr "Vídeo não encontrado ou indisponível para streaming."
 
 msgid "Upload"
 msgstr "Enviar"
