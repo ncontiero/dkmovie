@@ -214,6 +214,8 @@ STORAGES = {
         "BACKEND": "config.storages.PrivateMediaStorage",
     },
 }
+# https://github.com/jasongi/collectfasta#setting-up-a-dedicated-cache-backend
+MAX_ENTRIES = config("MAX_ENTRIES", default=322, cast=int)
 
 # EMAIL
 # ------------------------------------------------------------------------------
