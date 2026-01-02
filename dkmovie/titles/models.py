@@ -185,6 +185,10 @@ class Video(models.Model):
         content = (hasattr(self, "content_object") and self.content_object) or self.id
         return _("Video for %s") % (content)
 
+    @property
+    def is_available(self) -> bool:
+        return self.status == self.Status.COMPLETED and bool(self.hls_playlist)
+
 
 class Title(models.Model):
     """
@@ -306,13 +310,13 @@ class Title(models.Model):
     @property
     def is_video_available(self) -> bool:
         if self.content_type == self.ContentType.MOVIE:
-            return self.videos.filter(
-                Q(source_file__isnull=False) & ~Q(source_file=""),
-            ).exists()
+            video = self.video
+            return video.is_available if video else False
         if self.content_type == self.ContentType.SERIES:
             return self.seasons.filter(
-                Q(episodes__videos__source_file__isnull=False)
-                & ~Q(episodes__videos__source_file=""),
+                Q(episodes__videos__hls_playlist__isnull=False)
+                & Q(episodes__videos__status=Video.Status.COMPLETED)
+                & ~Q(episodes__videos__hls_playlist=""),
             ).exists()
         return False
 
@@ -485,9 +489,7 @@ class Episode(models.Model):
 
     @property
     def is_video_available(self) -> bool:
-        return self.videos.filter(
-            Q(source_file__isnull=False) & ~Q(source_file=""),
-        ).exists()
+        return self.video.is_available if self.video else False
 
     @property
     def video(self):
