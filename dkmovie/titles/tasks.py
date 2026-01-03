@@ -612,8 +612,8 @@ def calculate_video_duration(self, video_id):
 
 @shared_task(
     **default_task_params("process_video_hls_task"),
-    soft_time_limit=1800,
-    time_limit=1800,
+    soft_time_limit=3600,
+    time_limit=3600,
 )
 def process_video_hls_task(self, video_id):
     try:
