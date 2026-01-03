@@ -116,6 +116,8 @@ def process_video_to_hls(video_instance):
             "ffmpeg",
             "-i",
             input_url,
+            "-threads",
+            "4",
             "-c:v",
             "libx264",
             *cmd_options,
