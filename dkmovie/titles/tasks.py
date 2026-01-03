@@ -1,7 +1,10 @@
 import logging
+import shutil
+import tempfile
 from datetime import timedelta
 
 from celery import shared_task
+from celery.exceptions import SoftTimeLimitExceeded
 from django.conf import settings
 from django.db import transaction
 from django.urls import reverse
@@ -612,8 +615,8 @@ def calculate_video_duration(self, video_id):
 
 @shared_task(
     **default_task_params("process_video_hls_task"),
-    soft_time_limit=3600,
-    time_limit=3600,
+    soft_time_limit=14400,
+    time_limit=14500,
 )
 def process_video_hls_task(self, video_id):
     try:
@@ -622,4 +625,18 @@ def process_video_hls_task(self, video_id):
         logger.exception("Video with ID %s does not exist", video_id, exc_info=e)
         return
 
-    process_video_to_hls(video)
+    temp_dir = tempfile.mkdtemp()
+    try:
+        process_video_to_hls(video, temp_dir)
+    except SoftTimeLimitExceeded as e:
+        logger.exception("SoftTimeLimitExceeded for video %s", video_id, exc_info=e)
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        video.status = Video.Status.FAILED
+        video.processing_error = f"SoftTimeLimitExceeded: {e}"
+        video.save(update_fields=["status", "processing_error"])
+    except Exception as e:
+        logger.exception("Unexpected error processing video %s", video_id, exc_info=e)
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        video.status = Video.Status.FAILED
+        video.processing_error = str(e)
+        video.save(update_fields=["status", "processing_error"])
