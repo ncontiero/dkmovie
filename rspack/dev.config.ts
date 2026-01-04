@@ -5,6 +5,7 @@ import { commonConfig } from "./common.config";
 export default merge(commonConfig, {
   mode: "development",
   devtool: "inline-source-map",
+  lazyCompilation: false,
   devServer: {
     devMiddleware: { writeToDisk: true },
     port: 3000,
