@@ -357,11 +357,7 @@ export function VideoPlayer({
                     step={0.01}
                     orientation="vertical"
                     className="cursor-pointer"
-                    onValueChange={([value]) => {
-                      if (videoRef.current) {
-                        videoRef.current.volume = value;
-                      }
-                    }}
+                    onValueChange={([value]) => setVolume(value)}
                     aria-label={t("volume")}
                   />
                 </PopoverContent>
@@ -441,15 +437,7 @@ export function VideoPlayer({
               variant="ghost"
               size="icon"
               className="size-auto rounded-full p-4 hover:scale-110 hover:bg-white/40"
-              onClick={() => {
-                if (!videoRef.current) return;
-
-                if (isVideoPlaying) {
-                  videoRef.current.pause();
-                } else {
-                  videoRef.current.play();
-                }
-              }}
+              onClick={() => setIsVideoPlaying((prev) => !prev)}
               disabled={isLoading}
               loading={isLoading}
               loadingIconClassName="size-10 md:size-20"
@@ -528,21 +516,23 @@ export function VideoPlayer({
         ref={videoRef}
         width="100%"
         height="100%"
+        className="size-full min-h-screen min-w-screen"
         src={videoSrc || undefined}
+        controls={false}
+        autoPlay
+        poster={poster}
         onError={async (e) => {
           console.error(e);
           toast.error(t("onError"));
           await closePlayer();
         }}
-        onCanPlay={() => setIsLoading(false)}
-        controls={false}
-        autoPlay
-        className="size-full max-h-screen"
-        poster={poster}
-        onPlay={() => setIsVideoPlaying(true)}
-        onPause={() => setIsVideoPlaying(false)}
+        onCanPlay={() => {
+          setIsLoading(false);
+          setIsVideoPlaying(true);
+        }}
+        playing={isVideoPlaying}
+        volume={volume}
         onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-        onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
         onEnded={() => {
           if (episode && !haveNextEpisode) {
             toast.warning(t("noNextEpisode"));
