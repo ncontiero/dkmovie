@@ -66,6 +66,29 @@ def get_video_duration(video_url: str) -> int:
         return 0
 
 
+def get_video_height(video_url):
+    command = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=height",
+        "-of",
+        "json",
+        video_url,
+    ]
+
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=True)  # noqa: S603
+        data = json.loads(result.stdout)
+        return int(data["streams"][0]["height"])
+    except (subprocess.CalledProcessError, KeyError, IndexError, ValueError) as e:
+        logger.exception("Error parsing FFprobe output", exc_info=e)
+        return None
+
+
 def process_video_to_hls(video_instance: Video, temp_dir: str):
     """
     Converts the video source file to HLS using ffmpeg.
@@ -97,19 +120,24 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
     playlist_path = output_dir / "master.m3u8"
     segment_filename = output_dir / "segment_%03d.ts"
 
+    height = get_video_height(input_url)
+    if height is None:
+        msg = "Failed to get video height"
+        raise Exception(msg)  # noqa: TRY002
+
     cmd_options = (
         [
-            "-t",
-            "300",
             "-crf",
             "28",
             "-preset",
             "ultrafast",
-            "-vf",
-            "scale=-2:480",
         ]
         if settings.DEBUG
         else ["-crf", "23", "-preset", "veryfast"]
+    )
+    full_hd_height = 1080
+    scale_option = (
+        ["-vf", f"scale=-2:{full_hd_height}"] if height > full_hd_height else []
     )
     cmd = [
         "ffmpeg",
@@ -124,6 +152,10 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
         "aac",
         "-b:a",
         "128k",
+        "-ac",
+        "2",
+        "-sn",
+        *scale_option,
         "-sc_threshold",
         "0",
         "-f",
