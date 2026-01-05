@@ -4,7 +4,6 @@ import os
 import shutil
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from os import cpu_count
 from pathlib import Path
 
 from django.conf import settings
@@ -15,24 +14,20 @@ from dkmovie.titles.models import hls_playlist_path
 logger = logging.getLogger(__name__)
 
 
-def get_video_duration(video_url: str) -> int:
+def get_video_metadata(video_url: str):
     if not video_url:
-        return 0
+        return None
 
     # --- DOCKER NETWORK FIX ---
-    # When running inside Docker, 'localhost' refers to the container itself.
-    # If the URL points to localhost:9000 (MinIO), we must change it to the
-    # container hostname ('minio').
     if "localhost:9000" in video_url:
         video_url = video_url.replace("localhost", "minio")
-        logger.info("Patched URL for Docker: %s", video_url)
 
     command = [
         "ffprobe",
         "-v",
         "error",
         "-show_entries",
-        "format=duration",
+        "format=duration:stream=width,height,duration,r_frame_rate",
         "-of",
         "json",
         video_url,
@@ -48,54 +43,52 @@ def get_video_duration(video_url: str) -> int:
         )
 
         if result.returncode != 0:
-            logger.error("FFprobe error: %s", result.stderr)
-            return 0
+            return None
+
+        if not result.stdout:
+            logger.error("FFprobe returned empty stdout")
+            return None
 
         data = json.loads(result.stdout)
-        duration_float = float(data["format"]["duration"])
-        return int(duration_float)
+        try:
+            duration = float(data.get("format", {}).get("duration", 0))
+        except ValueError:
+            duration = 0
 
-    except (KeyError, ValueError, json.JSONDecodeError) as e:
-        logger.exception("Error parsing FFprobe output", exc_info=e)
-        return 0
-    except subprocess.TimeoutExpired as e:
-        logger.exception("FFprobe timed out connecting to URL", exc_info=e)
-        return 0
-    except FileNotFoundError as e:
-        logger.exception("FFmpeg/FFprobe not installed on the system.", exc_info=e)
-        return 0
+        if "streams" not in data or not data["streams"]:
+            logger.error("FFprobe: No streams found in data: %s", data)
+            return None
 
+        stream = data["streams"][0]
 
-def get_video_height(video_url):
-    command = [
-        "ffprobe",
-        "-v",
-        "error",
-        "-select_streams",
-        "v:0",
-        "-show_entries",
-        "stream=height",
-        "-of",
-        "json",
-        video_url,
-    ]
+        # Fallback duration from stream if format duration is 0
+        if duration == 0:
+            duration = float(stream.get("duration", 0))
 
-    try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)  # noqa: S603
-        data = json.loads(result.stdout)
-        return int(data["streams"][0]["height"])
-    except (subprocess.CalledProcessError, KeyError, IndexError, ValueError) as e:
+        r_frame_rate = stream.get("r_frame_rate", "30/1")
+        try:
+            num, den = map(int, r_frame_rate.split("/"))
+            fps = num / den if den > 0 else 30.0
+        except (ValueError, IndexError):
+            fps = 30.0
+
+        return {
+            "width": int(stream.get("width", 0)),
+            "height": int(stream.get("height", 0)),
+            "duration": duration,
+            "fps": fps,
+        }
+    except (json.JSONDecodeError, Exception) as e:
         logger.exception("Error parsing FFprobe output", exc_info=e)
         return None
 
 
-def process_video_to_hls(video_instance: Video, temp_dir: str):
-    """
-    Converts the video source file to HLS using ffmpeg.
-    Uploads the resulting files to S3 in parallel.
-    Updates the video instance status and hls_playlist field.
-    """
+def get_video_duration(video_url: str) -> int:
+    meta = get_video_metadata(video_url)
+    return int(meta["duration"]) if meta else 0
 
+
+def process_video_to_hls(video_instance: Video, temp_dir: str):
     if shutil.which("ffmpeg") is None:
         video_instance.status = Video.Status.FAILED
         video_instance.processing_error = "ffmpeg not found in system path."
@@ -104,7 +97,6 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
 
     # Get Source URL
     input_url = video_instance.source_file.url
-    # --- DOCKER NETWORK FIX ---
     if settings.DEBUG and "localhost:9000" in input_url:
         input_url = input_url.replace("localhost", "minio")
 
@@ -114,60 +106,132 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
         video_instance.save(update_fields=["status", "processing_error"])
         return
 
+    metadata = get_video_metadata(input_url)
+    if not metadata:
+        video_instance.status = Video.Status.FAILED
+        video_instance.processing_error = "Could not probe video metadata."
+        video_instance.save(update_fields=["status", "processing_error"])
+        return
+
+    original_height = metadata.get("height", 1080)
+    fps = metadata.get("fps", 30.0)
+    gop_size = str(int(fps * 2))  # 2 seconds GOP
+
     output_dir = Path(temp_dir) / "hls"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    playlist_path = output_dir / "master.m3u8"
-    segment_filename = output_dir / "segment_%03d.ts"
-
-    height = get_video_height(input_url)
-    if height is None:
-        msg = "Failed to get video height"
-        raise Exception(msg)  # noqa: TRY002
-
-    cmd_options = (
-        [
-            "-crf",
-            "28",
-            "-preset",
-            "ultrafast",
-        ]
-        if settings.DEBUG
-        else ["-crf", "23", "-preset", "veryfast"]
-    )
-    full_hd_height = 1080
-    scale_option = (
-        ["-vf", f"scale=-2:{full_hd_height}"] if height > full_hd_height else []
-    )
-    cmd = [
-        "ffmpeg",
-        "-i",
-        input_url,
-        "-threads",
-        str(max(1, cpu_count() - 2)),
-        "-c:v",
-        "libx264",
-        *cmd_options,
-        "-c:a",
-        "aac",
-        "-b:a",
-        "128k",
-        "-ac",
-        "2",
-        "-sn",
-        *scale_option,
-        "-sc_threshold",
-        "0",
-        "-f",
-        "hls",
-        "-hls_time",
-        "10",
-        "-hls_playlist_type",
-        "vod",
-        "-hls_segment_filename",
-        str(segment_filename),
-        str(playlist_path),
+    # Define target resolutions
+    all_resolutions = [
+        {
+            "name": "1080p",
+            "width": 1920,
+            "height": 1080,
+            "bitrate": "5000k",
+            "maxrate": "5350k",
+            "bufsize": "7500k",
+        },
+        {
+            "name": "720p",
+            "width": 1280,
+            "height": 720,
+            "bitrate": "2800k",
+            "maxrate": "2996k",
+            "bufsize": "4200k",
+        },
+        {
+            "name": "480p",
+            "width": 854,
+            "height": 480,
+            "bitrate": "1400k",
+            "maxrate": "1498k",
+            "bufsize": "2100k",
+        },
     ]
+
+    valid_resolutions = [
+        res for res in all_resolutions if res["height"] <= original_height + 10
+    ] or [all_resolutions[-1]]
+
+    # Build Filter Complex
+    split_count = len(valid_resolutions)
+    outputs = "".join([f"[v{i}]" for i in range(split_count)])
+    filter_complex = f"[0:v]split={split_count}{outputs};"
+
+    for i, res in enumerate(valid_resolutions):
+        filter_complex += f"[v{i}]scale=w={res['width']}:h={res['height']}:force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2[v{i}out];"  # noqa: E501
+
+    filter_complex = filter_complex.rstrip(";")
+
+    # Build Command
+    cmd = ["ffmpeg", "-i", input_url, "-filter_complex", filter_complex]
+
+    # Video Maps & Settings
+    var_stream_map = []
+    for i, res in enumerate(valid_resolutions):
+        cmd.extend(
+            [
+                "-map",
+                f"[v{i}out]",
+                f"-c:v:{i}",
+                "libx264",
+                "-crf",
+                "23",
+                f"-b:v:{i}",
+                res["bitrate"],
+                f"-maxrate:v:{i}",
+                res["maxrate"],
+                f"-bufsize:v:{i}",
+                res["bufsize"],
+                "-preset",
+                "veryfast",
+                "-g",
+                gop_size,
+                "-keyint_min",
+                gop_size,
+                "-sc_threshold",
+                "0",
+            ],
+        )
+        var_stream_map.append(f"v:{i},a:{i}")
+
+    # Audio Maps (One per video stream, re-encoding AAC)
+    for _ in range(split_count):
+        cmd.extend(["-map", "a:0"])
+
+    cmd.extend(
+        [
+            "-c:a",
+            "aac",
+            "-b:a",
+            "128k",
+            "-ac",
+            "2",
+            "-sn",
+            "-threads",
+            str(min(6, max(1, (os.cpu_count() or 1) - 2))),
+        ],
+    )
+
+    # HLS Output Settings
+    cmd.extend(
+        [
+            "-f",
+            "hls",
+            "-hls_time",
+            "10",
+            "-hls_playlist_type",
+            "vod",
+            "-hls_flags",
+            "independent_segments",
+            "-master_pl_name",
+            "master.m3u8",
+            "-hls_segment_filename",
+            str(output_dir / "v%v/segment_%03d.ts"),
+            "-var_stream_map",
+            " ".join(var_stream_map),
+            str(output_dir / "v%v/prog.m3u8"),
+        ],
+    )
 
     try:
         subprocess.run(  # noqa: S603
@@ -203,7 +267,8 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
     for root, _, files in os.walk(output_dir):
         for file in files:
             local_path = Path(root) / file
-            s3_key = f"{s3_base_dir}/{file}"
+            rel_path = local_path.relative_to(output_dir)
+            s3_key = f"{s3_base_dir}/{rel_path}"
 
             # 4. Determine Content-Type (Critical for iOS/Safari)
             content_type = "application/octet-stream"
@@ -239,5 +304,5 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
 
     video_instance.hls_playlist.name = relative_path
     video_instance.status = Video.Status.COMPLETED
-    video_instance.save(update_fields=["status", "hls_playlist"])
+    video_instance.save(update_fields=["hls_playlist", "status"])
     shutil.rmtree(temp_dir, ignore_errors=True)

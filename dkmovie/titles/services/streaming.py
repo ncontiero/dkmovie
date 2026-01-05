@@ -30,55 +30,90 @@ def get_s3_client(endpoint=SIGNING_ENDPOINT):
     )
 
 
-def get_hls_streaming_response(request, video_obj):
+def get_hls_streaming_response(request, video_obj, subpath=None):
     if not video_obj.hls_playlist or video_obj.status != "COMPLETED":
         raise ApiProcessError(404, _("Video not found or not ready for streaming."))
 
     storage_backend = video_obj.hls_playlist.storage
+    bucket_name = storage_backend.bucket_name
 
-    # Internal client to fetch the playlist content locally
+    # Determine which file to serve (Master or Variant)
+    master_key = video_obj.hls_playlist.name
+    base_dir = Path(master_key).parent
+
+    if subpath:
+        # Normalize and validate subpath against base_dir
+        # to prevent directory traversal attacks
+        try:
+            subpath_path = Path(subpath)
+            # Reject absolute paths outright
+            if subpath_path.is_absolute():
+                msg = "Absolute paths are not allowed"
+                raise ValueError(msg)  # noqa: TRY301
+            candidate_path = base_dir / subpath_path
+            candidate_path.relative_to(base_dir)
+        except Exception as e:
+            raise ApiProcessError(400, _("Invalid path.")) from e
+
+        # Enforce .m3u8 extension on the final, normalized path
+        if candidate_path.suffix != ".m3u8":
+            raise ApiProcessError(400, _("Invalid path."))
+        target_key = str(candidate_path)
+    else:
+        target_key = master_key
+
+    # Fetch content using internal client
     internal_client = get_s3_client(endpoint=settings.AWS_S3_ENDPOINT_URL)
 
-    m3u8_url = internal_client.generate_presigned_url(
+    presigned_url = internal_client.generate_presigned_url(
         "get_object",
-        Params={
-            "Bucket": storage_backend.bucket_name,
-            "Key": video_obj.hls_playlist.name,
-        },
+        Params={"Bucket": bucket_name, "Key": target_key},
         ExpiresIn=300,
     )
 
     try:
-        r = requests.get(m3u8_url, timeout=5)
+        r = requests.get(presigned_url, timeout=5)
         r.raise_for_status()
         content = r.text
     except Exception as e:
         logger.exception("Failed to fetch m3u8", exc_info=e)
-        # Fallback to source file
         raise ApiProcessError(
             404,
-            _("Video not found or not ready for streaming."),
+            _("Playlist file not found."),
         ) from e
 
-    base_path = str(Path(video_obj.hls_playlist.name).parent)
+    # Rewrite content
     new_lines = []
-
-    # External client to sign segment URLs for the user
     signing_client = get_s3_client()
+    # The directory of the current playlist file
+    current_dir = str(Path(target_key).parent)
+    session_id = request.GET.get("session_id", "")
 
     for line in content.splitlines():
-        if line.strip().endswith(".ts"):
-            segment_key = f"{base_path}/{line.strip()}"
+        line = line.strip()
+        if not line or line.startswith("#"):
+            new_lines.append(line)
+            continue
+
+        if line.endswith(".m3u8"):
+            # Variant Playlist -> Rewrite to point back to our API
+            # We append the variant path to the current API call logic
+            # Assuming line is relative path like "v0/prog.m3u8"
+            new_url = f"?session_id={session_id}&path={line}"
+            new_lines.append(new_url)
+
+        elif line.endswith(".ts"):
+            # Segment -> Sign direct S3 URL
+            # Segment is relative to current_dir
+            segment_key = f"{current_dir}/{line}"
             segment_url = signing_client.generate_presigned_url(
                 "get_object",
-                Params={
-                    "Bucket": storage_backend.bucket_name,
-                    "Key": segment_key,
-                },
+                Params={"Bucket": bucket_name, "Key": segment_key},
                 ExpiresIn=3600,
             )
             new_lines.append(segment_url)
         else:
+            # Unknown line type, keep as is
             new_lines.append(line)
 
     return HttpResponse(

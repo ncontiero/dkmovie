@@ -17,7 +17,7 @@ router = Router(auth=SessionAuth())
 
 
 @router.get("/title/{title_id}.m3u8")
-def stream_title(request, title_id: UUID, session_id: str):
+def stream_title(request, title_id: UUID, session_id: str, path: str | None = None):
     if not is_session_valid(request.user.id, session_id):
         raise ApiProcessError(
             403,
@@ -38,11 +38,11 @@ def stream_title(request, title_id: UUID, session_id: str):
     if not title.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this title."))
 
-    return get_hls_streaming_response(request, title.video)
+    return get_hls_streaming_response(request, title.video, subpath=path)
 
 
 @router.get("/episode/{episode_id}.m3u8")
-def stream_episode(request, episode_id: UUID, session_id: str):
+def stream_episode(request, episode_id: UUID, session_id: str, path: str | None = None):
     if not is_session_valid(request.user.id, session_id):
         raise ApiProcessError(
             403,
@@ -57,7 +57,7 @@ def stream_episode(request, episode_id: UUID, session_id: str):
     if not episode.is_video_available:
         raise ApiProcessError(404, _("Video file not found for this episode."))
 
-    return get_hls_streaming_response(request, episode.video)
+    return get_hls_streaming_response(request, episode.video, subpath=path)
 
 
 class HeartbeatSchema(Schema):
