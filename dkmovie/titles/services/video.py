@@ -218,7 +218,7 @@ def process_video_to_hls(video_instance: Video, temp_dir: str):
             "-f",
             "hls",
             "-hls_time",
-            "10",
+            "6",
             "-hls_playlist_type",
             "vod",
             "-hls_flags",
