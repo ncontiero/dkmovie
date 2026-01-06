@@ -81,3 +81,11 @@ export interface PaginationLimitQueryParams {
   limit?: number;
   offset?: number;
 }
+
+export interface HLSApiLevelProps {
+  height: number;
+}
+export interface HLSApiProps {
+  levels: HLSApiLevelProps[];
+  currentLevel: number;
+}

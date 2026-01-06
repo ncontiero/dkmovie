@@ -1,4 +1,9 @@
-import type { Episode, TitleDetails } from "@/utils/types";
+import type {
+  Episode,
+  HLSApiLevelProps,
+  HLSApiProps,
+  TitleDetails,
+} from "@/utils/types";
 import {
   useCallback,
   useEffect,
@@ -31,10 +36,12 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { releaseSession, sendHeartbeat } from "@/http/concurrency";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { Slider } from "../ui/slider";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { ResolutionLevels } from "./resolution-levels";
 
 interface VideoPlayerProps {
   readonly src: string;
@@ -61,28 +68,35 @@ export function VideoPlayer({
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
+  const [resolutionLevels, setResolutionLevels] = useState<number[]>([]);
+  const [currentResolution, setCurrentResolution] = useState<number>(-1);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const hlsApiRef = useRef<HLSApiProps | null>(null);
 
   const sessionIdRef = useRef("");
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [isSessionAllowed, setIsSessionAllowed] = useState(false);
 
-  const closePlayer = useCallback(async () => {
-    if (sessionIdRef.current) {
-      try {
-        await releaseSession(sessionIdRef.current);
-      } catch {}
-    }
-
-    if (videoRef.current && isVideoPlaying) videoRef.current.pause();
-    if (document.fullscreenElement) await document.exitFullscreen();
-
+  const releaseCurrentSession = useCallback(async () => {
     if (heartbeatIntervalRef.current) {
       clearInterval(heartbeatIntervalRef.current);
     }
+
+    if (!sessionIdRef.current) return;
+    try {
+      await releaseSession(sessionIdRef.current);
+    } catch (error) {
+      console.error("Failed to release session", error);
+    }
+  }, []);
+
+  const closePlayer = useCallback(async () => {
+    await releaseCurrentSession();
+    if (videoRef.current && isVideoPlaying) videoRef.current.pause();
+    if (document.fullscreenElement) await document.exitFullscreen();
     await navigate({ to: "/title/$titleId", params: { titleId: title.id } });
-  }, [isVideoPlaying, navigate, title.id]);
+  }, [isVideoPlaying, navigate, releaseCurrentSession, title.id]);
 
   const initSession = useEffectEvent(async (sessionId: string) => {
     if (!sessionId) return await closePlayer();
@@ -211,6 +225,16 @@ export function VideoPlayer({
     };
   }, [isMobile]);
 
+  const setResolutionLevel = useCallback((resolution: number) => {
+    if (!hlsApiRef.current) return;
+
+    const levelIndex = hlsApiRef.current.levels.findIndex(
+      (level: HLSApiLevelProps) => level.height === resolution,
+    );
+    hlsApiRef.current.currentLevel = levelIndex;
+    setCurrentResolution(resolution);
+  }, []);
+
   const duration = episode?.duration || title.duration || 0;
   const haveNextEpisode =
     !!episode?.next_episode && episode.next_episode.is_video_available;
@@ -310,19 +334,30 @@ export function VideoPlayer({
                 </TooltipTrigger>
                 <TooltipContent>{t("captionsAndAudios")}</TooltipContent>
               </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
-                  >
-                    <Settings className="md:size-8" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{t("options")}</TooltipContent>
-              </Tooltip>
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                      >
+                        <Settings className="md:size-8" />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>{t("options")}</TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-52 p-1">
+                  <ResolutionLevels
+                    resolutionLevels={resolutionLevels}
+                    currentResolution={currentResolution}
+                    setResolutionLevel={setResolutionLevel}
+                  />
+                </PopoverContent>
+              </Popover>
               <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -519,6 +554,7 @@ export function VideoPlayer({
         className="size-full min-h-screen min-w-screen"
         src={videoSrc || undefined}
         controls={false}
+        playsInline
         autoPlay
         poster={poster}
         onError={async (e) => {
@@ -526,7 +562,18 @@ export function VideoPlayer({
           toast.error(t("onError"));
           await closePlayer();
         }}
-        onCanPlay={() => {
+        onCanPlay={(e) => {
+          const hlsApi = (e.target as any).api;
+          if (hlsApi) {
+            hlsApiRef.current = hlsApi;
+            const levels = hlsApi.levels;
+            if (!levels) return;
+            const heights = Array.from(
+              new Set<number>(levels.map((l: HLSApiLevelProps) => l.height)),
+            ).sort((a, b) => b - a);
+            setResolutionLevels(heights);
+          }
+
           setIsLoading(false);
           setIsVideoPlaying(true);
         }}
