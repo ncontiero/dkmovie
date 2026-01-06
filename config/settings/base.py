@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "dkmovie.users",
+    "dkmovie.videos",
     "dkmovie.titles",
     "dkmovie.upload",
 ]

@@ -6,9 +6,10 @@ import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from dkmovie.titles.models import Video
-from dkmovie.titles.models import hls_playlist_path
-from dkmovie.titles.utils import normalize_local_s3_url_to_service
+from dkmovie.utils.urls import normalize_local_s3_url_to_service
+
+from .models import Video
+from .models import hls_playlist_path
 
 logger = logging.getLogger(__name__)
 

@@ -8,7 +8,7 @@ from .tasks import process_video_hls_task
 
 
 @receiver(post_save, sender=Video)
-def video_post_save(sender, instance, created, **kwargs):
+def video_post_save(sender, instance: Video, created, **kwargs):
     if instance.source_file:
         if created or instance.duration == 0:
             transaction.on_commit(lambda: calculate_video_duration.delay(instance.id))

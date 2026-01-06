@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from config.api.utils import ApiProcessError
-from dkmovie.titles.models import Video
-from dkmovie.titles.utils import normalize_local_s3_url
+from dkmovie.utils.urls import normalize_local_s3_url
+from dkmovie.videos.models import Video
 
 logger = logging.getLogger(__name__)
 
