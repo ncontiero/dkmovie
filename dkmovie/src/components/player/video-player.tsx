@@ -73,7 +73,7 @@ export function VideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
 
-  const sessionIdRef = useRef("");
+  const sessionIdRef = useRef<string | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [isSessionAllowed, setIsSessionAllowed] = useState(false);
@@ -81,11 +81,13 @@ export function VideoPlayer({
   const releaseCurrentSession = useCallback(async () => {
     if (heartbeatIntervalRef.current) {
       clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = null;
     }
 
     if (!sessionIdRef.current) return;
     try {
       await releaseSession(sessionIdRef.current);
+      sessionIdRef.current = null;
     } catch (error) {
       console.error("Failed to release session", error);
     }
@@ -95,40 +97,14 @@ export function VideoPlayer({
     await releaseCurrentSession();
     if (videoRef.current && isVideoPlaying) videoRef.current.pause();
     if (document.fullscreenElement) await document.exitFullscreen();
-    await navigate({ to: "/title/$titleId", params: { titleId: title.id } });
+    await navigate({
+      to: "/title/$titleId",
+      params: { titleId: title.id },
+      replace: true,
+    });
   }, [isVideoPlaying, navigate, releaseCurrentSession, title.id]);
 
-  const initSession = useEffectEvent(async (sessionId: string) => {
-    if (!sessionId) return await closePlayer();
-
-    try {
-      const { allowed } = await sendHeartbeat(sessionId);
-      if (allowed) {
-        setIsSessionAllowed(true);
-        setVideoSrc(`${src}?session_id=${sessionId}`);
-
-        heartbeatIntervalRef.current = setInterval(async () => {
-          try {
-            const res = await sendHeartbeat(sessionId);
-            if (!res.allowed) {
-              setIsSessionAllowed(false);
-              toast.error(t("screensLimitReached"));
-              await closePlayer();
-            }
-          } catch {}
-        }, 30000);
-      } else {
-        toast.error(t("screensLimitReached"));
-        setIsSessionAllowed(false);
-        await closePlayer();
-      }
-    } catch (error) {
-      console.error("Failed to init session", error);
-      toast.error(t("onError"));
-    }
-  });
-
-  useEffect(() => {
+  const initSession = useEffectEvent(async () => {
     if (typeof window !== "undefined") {
       const STORAGE_KEY = "stream_session_id";
       let sid = sessionStorage.getItem(STORAGE_KEY);
@@ -139,15 +115,37 @@ export function VideoPlayer({
       sessionIdRef.current = sid;
     }
 
-    const sessionId = sessionIdRef.current;
-    initSession(sessionId);
+    const sessionId = sessionIdRef.current || "";
+    try {
+      const { allowed } = await sendHeartbeat(sessionId);
+      if (allowed) {
+        setIsSessionAllowed(true);
+        setVideoSrc(`${src}?session_id=${sessionId}`);
 
-    return () => {
-      if (heartbeatIntervalRef.current) {
-        clearInterval(heartbeatIntervalRef.current);
+        heartbeatIntervalRef.current = setInterval(async () => {
+          if (!sessionIdRef.current) return;
+          try {
+            const res = await sendHeartbeat(sessionId);
+            if (!res.allowed) {
+              setIsSessionAllowed(false);
+              toast.error(t("screensLimitReached"));
+              await closePlayer();
+            }
+          } catch {}
+        }, 30000);
+      } else {
+        setIsSessionAllowed(false);
+        toast.error(t("screensLimitReached"));
+        await closePlayer();
       }
-      releaseSession(sessionId);
-    };
+    } catch (error) {
+      console.error("Failed to init session", error);
+      toast.error(t("onError"));
+    }
+  });
+
+  useEffect(() => {
+    initSession();
   }, []);
 
   useEffect(() => {
@@ -273,10 +271,10 @@ export function VideoPlayer({
 
   if (!title) return null;
 
-  if (!isSessionAllowed && !isLoading && videoSrc) {
+  if (!isSessionAllowed && !isLoading) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-black text-white">
-        <h1 className="text-2xl font-bold">{t("concurrentLimitReached")}</h1>
+        <h1 className="text-2xl font-bold">{t("screensLimitReached")}</h1>
         <Button onClick={closePlayer} variant="secondary">
           {t("close")}
         </Button>
