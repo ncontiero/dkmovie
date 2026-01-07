@@ -20,6 +20,7 @@ import {
   Maximize2,
   Minimize2,
   Pause,
+  PictureInPicture2,
   Play,
   Settings,
   StepBack,
@@ -65,6 +66,7 @@ export function VideoPlayer({
   const [isToShowControls, setIsToShowControls] = useState(false);
   const controlsTimeoutRef = useRef<number | null>(null);
   const [isInFullscreen, setIsInFullscreen] = useState(false);
+  const [isInPictureInPicture, setIsInPictureInPicture] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
@@ -341,6 +343,7 @@ export function VideoPlayer({
                         variant="ghost"
                         size="icon"
                         className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                        disabled={isLoading}
                       >
                         <Settings className="md:size-8" />
                       </Button>
@@ -356,6 +359,40 @@ export function VideoPlayer({
                   />
                 </PopoverContent>
               </Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white",
+                      isInFullscreen && "cursor-not-allowed opacity-50",
+                    )}
+                    disabled={isLoading}
+                    loading={isLoading}
+                    loadingIconClassName="md:size-8"
+                    onClick={() => {
+                      if (isInFullscreen) return;
+                      setIsInPictureInPicture((prev) => !prev);
+                    }}
+                  >
+                    <PictureInPicture2
+                      className={cn(
+                        "md:size-8",
+                        isInPictureInPicture && "fold-bold",
+                      )}
+                    />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {isInFullscreen
+                    ? t("pipDisabledWhenInFullScreen")
+                    : isInPictureInPicture
+                      ? t("exitPictureInPicture")
+                      : t("pictureInPicture")}
+                </TooltipContent>
+              </Tooltip>
               <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -401,10 +438,12 @@ export function VideoPlayer({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="
-                      size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white max-lg:hidden
-                    "
+                    className={cn(
+                      "size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white max-lg:hidden",
+                      isInPictureInPicture && "cursor-not-allowed opacity-50",
+                    )}
                     onClick={() => {
+                      if (isInPictureInPicture) return;
                       if (!document.fullscreenElement) {
                         document.documentElement.requestFullscreen();
                       } else {
@@ -420,7 +459,11 @@ export function VideoPlayer({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {isInFullscreen ? t("exitFullScreen") : t("fullScreen")}
+                  {isInPictureInPicture
+                    ? t("fullScreenDisabledWhenInPip")
+                    : isInFullscreen
+                      ? t("exitFullScreen")
+                      : t("fullScreen")}
                 </TooltipContent>
               </Tooltip>
               <Separator
@@ -470,7 +513,12 @@ export function VideoPlayer({
               variant="ghost"
               size="icon"
               className="size-auto rounded-full p-4 hover:scale-110 hover:bg-white/40"
-              onClick={() => setIsVideoPlaying((prev) => !prev)}
+              onClick={() => {
+                if (!videoRef.current) return;
+                videoRef.current.paused
+                  ? videoRef.current.play()
+                  : videoRef.current.pause();
+              }}
               disabled={isLoading}
               loading={isLoading}
               loadingIconClassName="size-10 md:size-20"
@@ -573,10 +621,12 @@ export function VideoPlayer({
           }
 
           setIsLoading(false);
-          setIsVideoPlaying(true);
         }}
-        playing={isVideoPlaying}
+        pip={isInPictureInPicture}
+        onLeavePictureInPicture={() => setIsInPictureInPicture(false)}
         volume={volume}
+        onPlay={() => setIsVideoPlaying(true)}
+        onPause={() => setIsVideoPlaying(false)}
         onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
         onEnded={() => {
           if (episode && !haveNextEpisode) {
