@@ -27,7 +27,9 @@ def season_path(instance, filename):
 
 def episode_path(instance, filename):
     title_id = instance.season.title.id
-    return f"titles/{title_id}/seasons/{instance.season.number}/episodes/{filename}"
+    season_number = instance.season.number
+    episode_number = instance.number
+    return f"titles/{title_id}/seasons/{season_number}/{episode_number}/{filename}"
 
 
 class Genre(models.Model):
