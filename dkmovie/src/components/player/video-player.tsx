@@ -75,6 +75,10 @@ export function VideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
 
+  const duration = episode?.duration || title.duration || 0;
+  const haveNextEpisode =
+    !!episode?.next_episode && episode.next_episode.is_video_available;
+
   const sessionIdRef = useRef<string | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
@@ -155,6 +159,17 @@ export function VideoPlayer({
     document.documentElement.requestFullscreen().catch(() => {});
   }, [isMobile]);
 
+  const seekForward = useCallback(() => {
+    if (!videoRef.current) return;
+    const newTime = videoRef.current.currentTime + 10;
+    videoRef.current.currentTime = Math.min(duration, newTime);
+  }, [duration]);
+  const seekBack = useCallback(() => {
+    if (!videoRef.current) return;
+    const newTime = videoRef.current.currentTime - 10;
+    videoRef.current.currentTime = Math.max(0, newTime);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Escape") {
@@ -176,13 +191,23 @@ export function VideoPlayer({
           videoRef.current.play();
         }
       }
+
+      if (event.code === "ArrowRight") {
+        event.preventDefault();
+        seekForward();
+      }
+
+      if (event.code === "ArrowLeft") {
+        event.preventDefault();
+        seekBack();
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closePlayer, isVideoPlaying]);
+  }, [closePlayer, isVideoPlaying, seekBack, seekForward]);
 
   const handleControlsMouseMove = () => {
     setIsToShowControls(true);
@@ -234,10 +259,6 @@ export function VideoPlayer({
     hlsApiRef.current.currentLevel = levelIndex;
     setCurrentResolution(resolution);
   }, []);
-
-  const duration = episode?.duration || title.duration || 0;
-  const haveNextEpisode =
-    !!episode?.next_episode && episode.next_episode.is_video_available;
 
   const currentTimeFormatted = useMemo(() => {
     const currentHours = Math.floor(currentTime / 3600);
@@ -496,11 +517,7 @@ export function VideoPlayer({
                   size="icon"
                   className="size-auto rounded-full p-4 hover:scale-110 hover:bg-white/40"
                   aria-label={t("seekBack")}
-                  onClick={() => {
-                    if (!videoRef.current) return;
-                    const newTime = videoRef.current.currentTime - 10;
-                    videoRef.current.currentTime = Math.max(0, newTime);
-                  }}
+                  onClick={seekBack}
                   disabled={isLoading}
                 >
                   <StepBack className="size-10 fill-white stroke-white md:size-20" />
@@ -540,11 +557,7 @@ export function VideoPlayer({
                   size="icon"
                   className="size-auto rounded-full p-4 hover:scale-110 hover:bg-white/40"
                   aria-label={t("seekForward")}
-                  onClick={() => {
-                    if (!videoRef.current) return;
-                    const newTime = videoRef.current.currentTime + 10;
-                    videoRef.current.currentTime = Math.min(duration, newTime);
-                  }}
+                  onClick={seekForward}
                   disabled={isLoading}
                 >
                   <StepForward className="size-10 fill-white stroke-white md:size-20" />
