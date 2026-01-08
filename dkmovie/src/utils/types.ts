@@ -48,8 +48,21 @@ export interface Title {
   is_video_available: boolean;
   first_episode_id: string | null;
 }
+
+export interface VideoSprite {
+  image: string;
+  start_time: number;
+  end_time: number;
+  interval: number;
+  frame_width: number;
+  frame_height: number;
+  columns: number;
+  rows: number;
+}
+
 export interface TitleDetails extends Title {
   seasons: Season[];
+  sprites: VideoSprite[];
 }
 
 export interface Episode {
@@ -65,6 +78,7 @@ export interface Episode {
   season: Season;
   next_episode: Episode | null;
   previous_episode: Episode | null;
+  sprites: VideoSprite[];
 }
 
 export interface PaginationDataProps<T = any> {

@@ -11,6 +11,40 @@ from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
 
 from .models import Video
+from .models import VideoSprite
+from .tasks import generate_video_sprites_task
+
+
+class VideoSpriteInline(admin.TabularInline):
+    model = VideoSprite
+    extra = 0
+    ordering = ("start_time",)
+    fields = (
+        "sprite_preview",
+        "start_time",
+        "end_time",
+        "interval",
+        "grid_info",
+        "image",
+    )
+    readonly_fields = ("sprite_preview", "grid_info")
+    can_delete = True
+    show_change_link = True
+    verbose_name = _("Sprite Sheet")
+    verbose_name_plural = _("Sprite Sheets")
+
+    @admin.display(description=_("Preview"))
+    def sprite_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="max-height: 40px; border: 1px solid #ccc;" />',
+                obj.image.url,
+            )
+        return "-"
+
+    @admin.display(description=_("Grid (WxH)"))
+    def grid_info(self, obj):
+        return f"{obj.columns}x{obj.rows} ({obj.frame_width}px)"
 
 
 @admin.register(Video)
@@ -25,11 +59,58 @@ class VideoAdmin(admin.ModelAdmin):
     )
     list_filter = ("status", "content_type", "created_at")
     search_fields = ("id", "source_file")
-    readonly_fields = ("created_at", "updated_at", "link_to_parent_large")
-    actions = ["retry_processing"]
+    readonly_fields = ("id", "created_at", "updated_at", "link_to_parent_large")
+    inlines = [VideoSpriteInline]
+    actions = ["retry_processing", "generate_sprites"]
+
+    fieldsets = (
+        (
+            _("General Information"),
+            {
+                "fields": (
+                    "id",
+                    "status",
+                    "link_to_parent_large",
+                    "duration",
+                ),
+            },
+        ),
+        (
+            _("Files & Streaming"),
+            {
+                "fields": (
+                    "source_file",
+                    "hls_playlist",
+                ),
+                "description": _(
+                    "Paths to the source file and the generated HLS master playlist.",
+                ),
+            },
+        ),
+        (
+            _("Internal References"),
+            {
+                "classes": ("collapse",),
+                "fields": ("content_type", "object_id"),
+            },
+        ),
+        (
+            _("Logs & Debug"),
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "processing_error",
+                    "created_at",
+                    "updated_at",
+                ),
+            },
+        ),
+    )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related("content_object")
+        return (
+            super().get_queryset(request).prefetch_related("content_object", "sprites")
+        )
 
     def get_search_results(self, request, queryset, search_term):
         """
@@ -117,7 +198,89 @@ class VideoAdmin(admin.ModelAdmin):
 
     @admin.action(description=_("Retry Processing"))
     def retry_processing(self, request, queryset):
+        count = queryset.update(status=Video.Status.PENDING)
+        self.message_user(request, _("%s videos queued for reprocessing.") % count)
+
+    @admin.action(description=_("Generate Sprite Sheets"))
+    def generate_sprites(self, request, queryset):
         for video in queryset:
-            video.status = Video.Status.PENDING
-            video.save()
-        self.message_user(request, _("Selected videos queued for processing."))
+            generate_video_sprites_task.delay(video.id)
+        self.message_user(
+            request,
+            _("%s videos queued for sprite generation.") % queryset.count(),
+        )
+
+
+@admin.register(VideoSprite)
+class VideoSpriteAdmin(admin.ModelAdmin):
+    list_display = (
+        "sprite_preview_large",
+        "video_link",
+        "time_range",
+        "interval",
+        "dimensions",
+        "grid_layout",
+        "created_at",
+    )
+    list_filter = ("interval", "created_at")
+    search_fields = ("video__id",)
+    readonly_fields = ("created_at", "sprite_preview_detail")
+
+    fieldsets = (
+        (
+            _("File Info"),
+            {
+                "fields": ("video", "image", "sprite_preview_detail"),
+            },
+        ),
+        (
+            _("Timing"),
+            {
+                "fields": (("start_time", "end_time"), "interval"),
+            },
+        ),
+        (
+            _("Technical Dimensions"),
+            {
+                "fields": (
+                    ("frame_width", "frame_height"),
+                    ("columns", "rows"),
+                ),
+            },
+        ),
+    )
+
+    @admin.display(description=_("Preview"))
+    def sprite_preview_large(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="max-height: 50px; max-width: 100px; object-fit: cover;" />',  # noqa: E501
+                obj.image.url,
+            )
+        return "-"
+
+    @admin.display(description=_("Full Preview"))
+    def sprite_preview_detail(self, obj):
+        if obj.image:
+            return format_html(
+                '<a href="{0}" target="_blank"><img src="{0}" style="max-width: 100%; height: auto;" /></a>',  # noqa: E501
+                obj.image.url,
+            )
+        return "-"
+
+    @admin.display(description=_("Video"), ordering="video")
+    def video_link(self, obj):
+        url = reverse("admin:videos_video_change", args=[obj.video.id])
+        return format_html('<a href="{}">{}</a>', url, str(obj.video))
+
+    @admin.display(description=_("Time Range"), ordering="start_time")
+    def time_range(self, obj):
+        return f"{obj.start_time}s - {obj.end_time}s"
+
+    @admin.display(description=_("Thumb Size"))
+    def dimensions(self, obj):
+        return f"{obj.frame_width}x{obj.frame_height}px"
+
+    @admin.display(description=_("Grid"))
+    def grid_layout(self, obj):
+        return f"{obj.columns}x{obj.rows}"

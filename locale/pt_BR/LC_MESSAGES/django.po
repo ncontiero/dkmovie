@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-31 22:32+0000\n"
+"POT-Creation-Date: 2026-01-08 15:40+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,6 +25,39 @@ msgstr "Inglês"
 
 msgid "Portuguese"
 msgstr "Português"
+
+msgid "Streaming"
+msgstr ""
+
+msgid "Streaming Sessions"
+msgstr "Sessões de streaming"
+
+msgid "The limit for simultaneous screens has been reached."
+msgstr "O limite de telas simultâneas foi atingido."
+
+msgid "The title does not exist."
+msgstr "O título não existe."
+
+msgid "This title is not a movie."
+msgstr "Este título não é um filme."
+
+msgid "This title is not available for streaming."
+msgstr "Este título não está disponível para streaming."
+
+msgid "The episode does not exist."
+msgstr "O episódio não existe."
+
+msgid "This episode is not available for streaming."
+msgstr "Este episódio não está disponível para streaming."
+
+msgid "Playlist file not found."
+msgstr "Arquivo de playlist não encontrado."
+
+msgid "Video not found or not ready for streaming."
+msgstr "Vídeo não encontrado ou não pronto para streaming."
+
+msgid "Invalid path."
+msgstr "Caminho inválido."
 
 msgid "You're not allowed to access this page."
 msgstr "Você não tem permissão para acessar esta página."
@@ -503,35 +536,47 @@ msgstr "Ir para sua conta"
 msgid "TMDB Link"
 msgstr "Link para o TMDB"
 
-msgid "Content Name"
-msgstr "Nome do conteúdo"
+msgid "Streaming Data"
+msgstr "Dados de streaming"
 
-msgid "Type"
-msgstr "Tipo"
+msgid "Status"
+msgstr ""
+
+msgid "Streaming Files"
+msgstr "Arquivos de streaming"
+
+msgid "Master Playlist (M3U8)"
+msgstr "Playlist Mestre (M3U8)"
+
+msgid "Waiting HLS..."
+msgstr "Aguardando HLS..."
+
+msgid "Sprite Sheets generated"
+msgstr "Folhas de sprite geradas"
+
+msgid "No Sprites"
+msgstr "Sem Sprites"
+
+msgid "Technical Info"
+msgstr "Informações técnicas"
+
+msgid "Calculating..."
+msgstr "Calculando..."
 
 msgid "Duration"
 msgstr "Duração"
 
-msgid "Parent Link"
-msgstr "Link do pai"
+msgid "Created"
+msgstr "Criado"
 
-msgid "View Parent"
-msgstr "Ver pai"
+msgid "Video ID"
+msgstr "ID do Vídeo"
 
-msgid "Parent Object"
-msgstr "Objeto pai"
+msgid "Processing Logs"
+msgstr "Logs de processamento"
 
-msgid "Click to edit"
-msgstr "Clique para editar"
-
-msgid "Orphaned Video"
-msgstr "Vídeo órfão"
-
-msgid "Retry Processing"
-msgstr "Tentar processar novamente"
-
-msgid "Selected videos queued for processing."
-msgstr "Vídeos selecionados enfileirados para processamento."
+msgid "No errors reported."
+msgstr "Nenhum erro relatado."
 
 msgid "Main Information"
 msgstr "Informações principais"
@@ -607,58 +652,6 @@ msgstr "Gênero"
 
 msgid "Genres"
 msgstr "Gêneros"
-
-msgid "Pending"
-msgstr "Pendente"
-
-msgid "Processing"
-msgstr "Processando"
-
-msgid "Completed"
-msgstr "Concluído"
-
-msgid "Failed"
-msgstr "Falhou"
-
-msgid "Unique identifier for the video"
-msgstr "Identificador único para o vídeo"
-
-msgid "The type of the object this video belongs to (Title or Episode)"
-msgstr "O tipo do objeto ao qual este vídeo pertence (Título ou Episódio)"
-
-msgid "The ID of the object this video belongs to"
-msgstr "O ID do objeto ao qual este vídeo pertence"
-
-msgid "The status of the video processing"
-msgstr "O status do processamento do vídeo"
-
-msgid "The video file"
-msgstr "O arquivo de vídeo"
-
-msgid "The HLS master playlist file"
-msgstr "O arquivo de playlist mestre HLS"
-
-msgid "Error message if processing failed"
-msgstr "Mensagem de erro se o processamento falhou"
-
-msgid "The duration in seconds"
-msgstr "A duração em segundos"
-
-msgid "Date and time when the video was created"
-msgstr "Data e hora em que o vídeo foi criado"
-
-msgid "Date and time when the video was last updated"
-msgstr "Data e hora em que o vídeo foi atualizado pela última vez"
-
-msgid "Video"
-msgstr "Vídeo"
-
-msgid "Videos"
-msgstr "Vídeos"
-
-#, python-format
-msgid "Video for %s"
-msgstr "Vídeo para %s"
 
 msgid "Movie"
 msgstr "Filme"
@@ -811,29 +804,8 @@ msgstr "Episódio"
 msgid "Episodes"
 msgstr "Episódios"
 
-msgid "The episode does not exist."
-msgstr "O episódio não existe."
-
 msgid "Invalid filter parameter."
 msgstr "Parâmetro de filtro inválido."
-
-msgid "The limit for simultaneous screens has been reached."
-msgstr "O limite para o número de telas simultâneas foi atingido."
-
-msgid "The title does not exist."
-msgstr "O título não existe."
-
-msgid "This title is not a movie."
-msgstr "Este título não é um filme."
-
-msgid "Video file not found for this title."
-msgstr "Arquivo de vídeo não encontrado para este título."
-
-msgid "Video file not found for this episode."
-msgstr "Arquivo de vídeo não encontrado para este episódio."
-
-msgid "Video not found or not ready for streaming."
-msgstr "Vídeo não encontrado ou indisponível para streaming."
 
 msgid "Upload"
 msgstr "Enviar"
@@ -891,3 +863,173 @@ msgstr "O nome é muito curto"
 
 msgid "Name is too long"
 msgstr "O nome é muito longo"
+
+msgid "Sprite Sheet"
+msgstr "Folha de sprite"
+
+msgid "Sprite Sheets"
+msgstr "Folhas de sprite"
+
+msgid "Preview"
+msgstr "Pré-visualização"
+
+msgid "Grid (WxH)"
+msgstr "Grade (LxA)"
+
+msgid "General Information"
+msgstr "Informações gerais"
+
+msgid "Files & Streaming"
+msgstr "Arquivos e Streaming"
+
+msgid "Paths to the source file and the generated HLS master playlist."
+msgstr "Caminhos para o arquivo de origem e a playlist mestre HLS gerada."
+
+msgid "Internal References"
+msgstr "Referências Internas"
+
+msgid "Logs & Debug"
+msgstr "Logs e Depuração"
+
+msgid "Content Name"
+msgstr "Nome do conteúdo"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Sprites"
+msgstr "Folhas de sprite"
+
+msgid "Parent Link"
+msgstr "Link pai"
+
+msgid "View Parent"
+msgstr "Ver pai"
+
+msgid "Parent Object"
+msgstr "Objeto pai"
+
+msgid "Click to edit"
+msgstr "Clique para editar"
+
+msgid "Orphaned Video"
+msgstr "Vídeo órfão"
+
+msgid "Retry Processing"
+msgstr "Tentar processar novamente"
+
+msgid "%s videos queued for reprocessing."
+msgstr "%s vídeos enfileirados para reprocessamento."
+
+msgid "File Info"
+msgstr "Informações do arquivo"
+
+msgid "Timing"
+msgstr "Tempo"
+
+msgid "Technical Dimensions"
+msgstr "Dimensões técnicas"
+
+msgid "Full Preview"
+msgstr "Pré-visualização completa"
+
+msgid "Video"
+msgstr "Vídeo"
+
+msgid "Time Range"
+msgstr "Intervalo de tempo"
+
+msgid "Thumb Size"
+msgstr "Tamanho da miniatura"
+
+msgid "Grid"
+msgstr "Grade"
+
+msgid "Videos"
+msgstr "Vídeos"
+
+msgid "Pending"
+msgstr "Pendente"
+
+msgid "Processing"
+msgstr "Processando"
+
+msgid "Completed"
+msgstr "Concluído"
+
+msgid "Failed"
+msgstr "Falhou"
+
+msgid "Unique identifier for the video"
+msgstr "Identificador único para o vídeo"
+
+msgid "The type of the object this video belongs to (Title or Episode)"
+msgstr "O tipo do objeto ao qual este vídeo pertence (Título ou Episódio)"
+
+msgid "The ID of the object this video belongs to"
+msgstr "O ID do objeto ao qual este vídeo pertence"
+
+msgid "The status of the video processing"
+msgstr "O status do processamento do vídeo"
+
+msgid "The video file"
+msgstr "O arquivo de vídeo"
+
+msgid "The HLS master playlist file"
+msgstr "O arquivo de playlist mestre HLS"
+
+msgid "Error message if processing failed"
+msgstr "Mensagem de erro se o processamento falhou"
+
+msgid "The duration in seconds"
+msgstr "A duração em segundos"
+
+msgid "Date and time when the video was created"
+msgstr "Data e hora em que o vídeo foi criado"
+
+msgid "Date and time when the video was last updated"
+msgstr "Data e hora em que o vídeo foi atualizado pela última vez"
+
+#, python-format
+msgid "Video for %s"
+msgstr "Vídeo para %s"
+
+msgid "Unique identifier for the sprite sheet"
+msgstr "Identificador único para a folha de sprite"
+
+msgid "The video this sprite belongs to"
+msgstr "O vídeo ao qual esta folha de sprite pertence"
+
+msgid "The sprite sheet image file (JPEG)"
+msgstr "O arquivo de imagem da folha de sprite (JPEG)"
+
+msgid "Time in seconds where this sprite sheet starts (e.g., 0)"
+msgstr "Tempo em segundos em que esta folha de sprite começa (por exemplo, 0)"
+
+msgid "Time in seconds where this sprite sheet ends"
+msgstr "Tempo em segundos em que esta folha de sprite termina"
+
+msgid "Interval in seconds between each thumbnail"
+msgstr "Intervalo em segundos entre cada miniatura"
+
+msgid "Width of a single thumbnail in pixels"
+msgstr "Largura de uma única miniatura em pixels"
+
+msgid "Height of a single thumbnail in pixels"
+msgstr "Altura de uma única miniatura em pixels"
+
+msgid "Number of columns in the sprite sheet grid"
+msgstr "Número de colunas na grade da folha de sprite"
+
+msgid "Number of rows in the sprite sheet grid"
+msgstr "Número de linhas na grade da folha de sprite"
+
+msgid "Video Sprite"
+msgstr "Folha de sprite de vídeo"
+
+msgid "Video Sprites"
+msgstr "Folhas de sprite de vídeo"
+
+#, python-format
+msgid "Sprite for %s (%ss - %ss)"
+msgstr "Sprite para %s (%ss - %ss)"

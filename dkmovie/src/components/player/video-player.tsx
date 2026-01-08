@@ -8,15 +8,13 @@ import {
   useCallback,
   useEffect,
   useEffectEvent,
-  useMemo,
   useRef,
   useState,
 } from "react";
 import ReactPlayer from "react-player";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   Captions,
-  ChevronRight,
   Maximize2,
   Minimize2,
   Pause,
@@ -43,6 +41,7 @@ import { Separator } from "../ui/separator";
 import { Slider } from "../ui/slider";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { ResolutionLevels } from "./resolution-levels";
+import { Timeline } from "./timeline";
 
 interface VideoPlayerProps {
   readonly src: string;
@@ -260,38 +259,6 @@ export function VideoPlayer({
     setCurrentResolution(resolution);
   }, []);
 
-  const currentTimeFormatted = useMemo(() => {
-    const currentHours = Math.floor(currentTime / 3600);
-    const currentMinutes = Math.floor((currentTime % 3600) / 60);
-    const currentSeconds = Math.floor(currentTime % 60);
-
-    const minutesAndSeconds = `${currentMinutes
-      .toString()
-      .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`;
-
-    if (currentHours > 0) {
-      return `${currentHours.toString().padStart(2, "0")}:${minutesAndSeconds}`;
-    }
-
-    return minutesAndSeconds;
-  }, [currentTime]);
-
-  const durationFormatted = useMemo(() => {
-    const durationHours = Math.floor(duration / 3600);
-    const durationMinutes = Math.floor((duration % 3600) / 60);
-    const durationSeconds = duration % 60;
-
-    const minutesAndSeconds = `${durationMinutes
-      .toString()
-      .padStart(2, "0")}:${durationSeconds.toString().padStart(2, "0")}`;
-
-    if (durationHours > 0) {
-      return `${durationHours.toString().padStart(2, "0")}:${minutesAndSeconds}`;
-    }
-
-    return minutesAndSeconds;
-  }, [duration]);
-
   if (!title) return null;
 
   if (!isSessionAllowed && !isLoading) {
@@ -308,15 +275,15 @@ export function VideoPlayer({
   return (
     <div
       className={cn(
-        "group flex size-full max-h-screen items-center justify-center",
+        "group flex size-full max-h-screen items-center justify-center overflow-hidden",
         className,
       )}
     >
       <div
         className={cn(
           `
-            absolute inset-0 z-10 bg-radial from-transparent to-black/90 to-75% px-4 pt-6 opacity-0 duration-200
-            md:px-20 md:pt-10
+            absolute inset-0 z-10 bg-radial from-transparent to-black/90 to-75% px-4 pt-2 opacity-0 duration-200
+            lg:px-20 lg:pt-10
           `,
           isToShowControls && "opacity-100",
         )}
@@ -328,8 +295,8 @@ export function VideoPlayer({
         <div className="absolute inset-0 -z-1 bg-linear-to-t from-black/80 to-transparent to-20%" />
 
         <div className="flex size-full flex-col">
-          <div className="flex w-full items-center justify-end md:justify-between">
-            <div className="flex flex-col gap-1 max-md:hidden">
+          <div className="flex w-full items-center justify-end sm:justify-between">
+            <div className="flex flex-col gap-1 max-sm:hidden">
               <h1 className="text-3xl font-bold text-white">{title.title}</h1>
               {episode ? (
                 <p className="text-xl text-white/80">
@@ -387,12 +354,10 @@ export function VideoPlayer({
                     variant="ghost"
                     size="icon"
                     className={cn(
-                      "size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white",
+                      "size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white max-lg:hidden",
                       isInFullscreen && "cursor-not-allowed opacity-50",
                     )}
                     disabled={isLoading}
-                    loading={isLoading}
-                    loadingIconClassName="md:size-8"
                     onClick={() => {
                       if (isInFullscreen) return;
                       setIsInPictureInPicture((prev) => !prev);
@@ -424,8 +389,6 @@ export function VideoPlayer({
                         size="icon"
                         className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
                         disabled={isLoading}
-                        loading={isLoading}
-                        loadingIconClassName="md:size-8"
                       >
                         {volume > 0.5 ? (
                           <Volume2 className="md:size-8" />
@@ -566,43 +529,18 @@ export function VideoPlayer({
               <TooltipContent>{t("seekForward")}</TooltipContent>
             </Tooltip>
           </div>
-          <div className="absolute inset-x-6 bottom-6 md:inset-x-20 md:bottom-8">
-            <Slider
-              value={[currentTime]}
-              max={duration}
-              step={1}
-              onValueChange={([value]) => {
-                if (videoRef.current) {
-                  videoRef.current.currentTime = value;
-                }
-              }}
-              className="cursor-pointer data-disabled:cursor-not-allowed data-disabled:opacity-50"
-              aria-label={t("seekBar")}
-              disabled={isLoading}
-            />
-            <div className="flex items-center justify-between pt-4">
-              <div className="text-lg font-medium text-white md:text-2xl">
-                {currentTimeFormatted}{" "}
-                <span className="text-muted-foreground">
-                  / {durationFormatted}
-                </span>
-              </div>
-              {haveNextEpisode ? (
-                <Link
-                  to="/title/$titleId/watch"
-                  params={{ titleId: title.id }}
-                  search={{ episodeId: episode.next_episode?.id }}
-                  className="
-                    group/next flex items-center text-lg font-medium text-white/80 duration-200 hover:text-white
-                    md:text-2xl
-                  "
-                >
-                  {t("nextEpisode")}
-                  <ChevronRight className="ml-1 inline-block size-5 duration-200 group-hover/next:translate-x-1" />
-                </Link>
-              ) : null}
-            </div>
-          </div>
+          <Timeline
+            sprites={episode?.sprites || title.sprites}
+            titleId={title.id}
+            nextEpisodeId={episode?.next_episode?.id}
+            haveNextEpisode={haveNextEpisode}
+            currentTime={currentTime}
+            duration={duration}
+            onValueChange={(value) => {
+              if (videoRef.current) videoRef.current.currentTime = value;
+            }}
+            disabled={isLoading}
+          />
         </div>
       </div>
 

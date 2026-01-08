@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericStackedInline
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from modeltranslation.admin import TranslationTabularInline
@@ -34,9 +35,133 @@ class VideoInline(GenericStackedInline):
     model = Video
     extra = 0
     max_num = 1
-    fields = ("source_file", "duration", "hls_playlist", "status", "processing_error")
-    readonly_fields = ("created_at", "updated_at")
     show_change_link = True
+    readonly_fields = (
+        "status_badge",
+        "file_links",
+        "technical_info",
+        "error_log",
+        "created_at",
+    )
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    ("status_badge", "technical_info"),
+                    "source_file",
+                ),
+            },
+        ),
+        (
+            _("Streaming Data"),
+            {
+                "classes": ("collapse",),
+                "fields": ("file_links", "error_log"),
+            },
+        ),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("sprites")
+
+    @admin.display(description=_("Status"))
+    def status_badge(self, obj):
+        colors = {
+            Video.Status.COMPLETED: "green",
+            Video.Status.PROCESSING: "orange",
+            Video.Status.PENDING: "#666",
+            Video.Status.FAILED: "red",
+        }
+        color = colors.get(obj.status, "gray")
+
+        extra_text = ""
+        if obj.status == Video.Status.FAILED:
+            extra_text = f" ⚠️ ({_('Check Logs')})"
+
+        return format_html(
+            '<div style="background-color: {}; color: white; padding: 5px 10px; '
+            'border-radius: 4px; display: inline-block; font-weight: bold;">'
+            "{}</div>{}",
+            color,
+            obj.get_status_display(),
+            extra_text,
+        )
+
+    @admin.display(description=_("Streaming Files"))
+    def file_links(self, obj):
+        links = []
+
+        if obj.hls_playlist:
+            links.append(
+                format_html(
+                    '📺 <a href="{}" target="_blank">{}</a>',
+                    obj.hls_playlist.url,
+                    _("Master Playlist (M3U8)"),
+                ),
+            )
+        else:
+            links.append(
+                format_html(
+                    '<span style="color:orange">{}</span>',
+                    _("Waiting HLS..."),
+                ),
+            )
+
+        sprite_count = obj.sprites.count()
+        if sprite_count > 0:
+            links.append(
+                format_html(
+                    "🖼️ <b>{}</b> {}",
+                    sprite_count,
+                    _("Sprite Sheets generated"),
+                ),
+            )
+        else:
+            links.append(
+                format_html(
+                    "🖼️ {}",
+                    _("No Sprites"),
+                ),
+            )
+
+        return mark_safe(" <br> ".join(links))  # noqa: S308
+
+    @admin.display(description=_("Technical Info"))
+    def technical_info(self, obj):
+        if not obj.duration:
+            duration_str = _("Calculating...")
+        else:
+            m, s = divmod(obj.duration, 60)
+            duration_str = f"{int(m)}m {int(s)}s"
+
+        return format_html(
+            "<b>{}:</b> {}<br>"
+            "<b>{}:</b> {}<br>"
+            "<b>{}:</b> <span style='font-family:monospace; font-size:11px'>{}</span>",
+            _("Duration"),
+            duration_str,
+            _("Created"),
+            obj.created_at.strftime("%Y-%m-%d %H:%M"),
+            _("Video ID"),
+            obj.id,
+        )
+
+    @admin.display(description=_("Processing Logs"))
+    def error_log(self, obj):
+        if obj.processing_error:
+            return format_html(
+                '<pre style="color: red; background: #ffeeee; padding: 10px; border: 1px solid red; white-space: pre-wrap;">{}</pre>',  # noqa: E501
+                obj.processing_error,
+            )
+        return format_html(
+            '<span style="color: green">{}</span>',
+            _("No errors reported."),
+        )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Genre)

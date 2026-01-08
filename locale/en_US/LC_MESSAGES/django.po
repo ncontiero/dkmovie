@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-31 22:32+0000\n"
+"POT-Creation-Date: 2026-01-08 15:40+0000\n"
 "Language: en-US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,6 +23,39 @@ msgid "English"
 msgstr ""
 
 msgid "Portuguese"
+msgstr ""
+
+msgid "Streaming"
+msgstr ""
+
+msgid "Streaming Sessions"
+msgstr ""
+
+msgid "The limit for simultaneous screens has been reached."
+msgstr ""
+
+msgid "The title does not exist."
+msgstr ""
+
+msgid "This title is not a movie."
+msgstr ""
+
+msgid "This title is not available for streaming."
+msgstr ""
+
+msgid "The episode does not exist."
+msgstr ""
+
+msgid "This episode is not available for streaming."
+msgstr ""
+
+msgid "Playlist file not found."
+msgstr ""
+
+msgid "Video not found or not ready for streaming."
+msgstr ""
+
+msgid "Invalid path."
 msgstr ""
 
 msgid "You're not allowed to access this page."
@@ -480,34 +513,46 @@ msgstr ""
 msgid "TMDB Link"
 msgstr ""
 
-msgid "Content Name"
+msgid "Streaming Data"
 msgstr ""
 
-msgid "Type"
+msgid "Status"
+msgstr ""
+
+msgid "Streaming Files"
+msgstr ""
+
+msgid "Master Playlist (M3U8)"
+msgstr ""
+
+msgid "Waiting HLS..."
+msgstr ""
+
+msgid "Sprite Sheets generated"
+msgstr ""
+
+msgid "No Sprites"
+msgstr ""
+
+msgid "Technical Info"
+msgstr ""
+
+msgid "Calculating..."
 msgstr ""
 
 msgid "Duration"
 msgstr ""
 
-msgid "Parent Link"
+msgid "Created"
 msgstr ""
 
-msgid "View Parent"
+msgid "Video ID"
 msgstr ""
 
-msgid "Parent Object"
+msgid "Processing Logs"
 msgstr ""
 
-msgid "Click to edit"
-msgstr ""
-
-msgid "Orphaned Video"
-msgstr ""
-
-msgid "Retry Processing"
-msgstr ""
-
-msgid "Selected videos queued for processing."
+msgid "No errors reported."
 msgstr ""
 
 msgid "Main Information"
@@ -583,58 +628,6 @@ msgid "Genre"
 msgstr ""
 
 msgid "Genres"
-msgstr ""
-
-msgid "Pending"
-msgstr ""
-
-msgid "Processing"
-msgstr ""
-
-msgid "Completed"
-msgstr ""
-
-msgid "Failed"
-msgstr ""
-
-msgid "Unique identifier for the video"
-msgstr ""
-
-msgid "The type of the object this video belongs to (Title or Episode)"
-msgstr ""
-
-msgid "The ID of the object this video belongs to"
-msgstr ""
-
-msgid "The status of the video processing"
-msgstr ""
-
-msgid "The video file"
-msgstr ""
-
-msgid "The HLS master playlist file"
-msgstr ""
-
-msgid "Error message if processing failed"
-msgstr ""
-
-msgid "The duration in seconds"
-msgstr ""
-
-msgid "Date and time when the video was created"
-msgstr ""
-
-msgid "Date and time when the video was last updated"
-msgstr ""
-
-msgid "Video"
-msgstr ""
-
-msgid "Videos"
-msgstr ""
-
-#, python-format
-msgid "Video for %s"
 msgstr ""
 
 msgid "Movie"
@@ -788,28 +781,7 @@ msgstr ""
 msgid "Episodes"
 msgstr ""
 
-msgid "The episode does not exist."
-msgstr ""
-
 msgid "Invalid filter parameter."
-msgstr ""
-
-msgid "The limit for simultaneous screens has been reached."
-msgstr ""
-
-msgid "The title does not exist."
-msgstr ""
-
-msgid "This title is not a movie."
-msgstr ""
-
-msgid "Video file not found for this title."
-msgstr ""
-
-msgid "Video file not found for this episode."
-msgstr ""
-
-msgid "Video not found or not ready for streaming."
 msgstr ""
 
 msgid "Upload"
@@ -867,4 +839,175 @@ msgid "Name is too short"
 msgstr ""
 
 msgid "Name is too long"
+msgstr ""
+
+msgid "Sprite Sheet"
+msgstr ""
+
+msgid "Sprite Sheets"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Grid (WxH)"
+msgstr ""
+
+msgid "General Information"
+msgstr ""
+
+msgid "Files & Streaming"
+msgstr ""
+
+msgid "Paths to the source file and the generated HLS master playlist."
+msgstr ""
+
+msgid "Internal References"
+msgstr ""
+
+msgid "Logs & Debug"
+msgstr ""
+
+msgid "Content Name"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Sprites"
+msgstr ""
+
+msgid "Parent Link"
+msgstr ""
+
+msgid "View Parent"
+msgstr ""
+
+msgid "Parent Object"
+msgstr ""
+
+msgid "Click to edit"
+msgstr ""
+
+msgid "Orphaned Video"
+msgstr ""
+
+msgid "Retry Processing"
+msgstr ""
+
+#, python-format
+msgid "%s videos queued for reprocessing."
+msgstr ""
+
+msgid "File Info"
+msgstr ""
+
+msgid "Timing"
+msgstr ""
+
+msgid "Technical Dimensions"
+msgstr ""
+
+msgid "Full Preview"
+msgstr ""
+
+msgid "Video"
+msgstr ""
+
+msgid "Time Range"
+msgstr ""
+
+msgid "Thumb Size"
+msgstr ""
+
+msgid "Grid"
+msgstr ""
+
+msgid "Videos"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Processing"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Unique identifier for the video"
+msgstr ""
+
+msgid "The type of the object this video belongs to (Title or Episode)"
+msgstr ""
+
+msgid "The ID of the object this video belongs to"
+msgstr ""
+
+msgid "The status of the video processing"
+msgstr ""
+
+msgid "The video file"
+msgstr ""
+
+msgid "The HLS master playlist file"
+msgstr ""
+
+msgid "Error message if processing failed"
+msgstr ""
+
+msgid "The duration in seconds"
+msgstr ""
+
+msgid "Date and time when the video was created"
+msgstr ""
+
+msgid "Date and time when the video was last updated"
+msgstr ""
+
+#, python-format
+msgid "Video for %s"
+msgstr ""
+
+msgid "Unique identifier for the sprite sheet"
+msgstr ""
+
+msgid "The video this sprite belongs to"
+msgstr ""
+
+msgid "The sprite sheet image file (JPEG)"
+msgstr ""
+
+msgid "Time in seconds where this sprite sheet starts (e.g., 0)"
+msgstr ""
+
+msgid "Time in seconds where this sprite sheet ends"
+msgstr ""
+
+msgid "Interval in seconds between each thumbnail"
+msgstr ""
+
+msgid "Width of a single thumbnail in pixels"
+msgstr ""
+
+msgid "Height of a single thumbnail in pixels"
+msgstr ""
+
+msgid "Number of columns in the sprite sheet grid"
+msgstr ""
+
+msgid "Number of rows in the sprite sheet grid"
+msgstr ""
+
+msgid "Video Sprite"
+msgstr ""
+
+msgid "Video Sprites"
+msgstr ""
+
+#, python-format
+msgid "Sprite for %s (%ss - %ss)"
 msgstr ""

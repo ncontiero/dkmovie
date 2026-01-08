@@ -6,6 +6,8 @@ from ninja import FilterLookup
 from ninja import FilterSchema
 from ninja import ModelSchema
 
+from dkmovie.videos.schemas import VideoSpriteSchema
+
 from .models import Episode
 from .models import Genre
 from .models import Season
@@ -75,9 +77,14 @@ class SeasonSchema(ModelSchema):
 
 class TitleDetailSchema(BaseTitleSchema):
     seasons: list[SeasonSchema] = []
+    sprites: list[VideoSpriteSchema] = []
 
     class Meta(BaseTitleSchema.Meta):
         fields = BaseTitleSchema.Meta.fields
+
+    @staticmethod
+    def resolve_sprites(title: Title) -> list[VideoSpriteSchema]:
+        return title.video.get_sprites() if title.video else []
 
 
 class BaseEpisodeSchema(ModelSchema):
@@ -108,6 +115,7 @@ class BaseEpisodeSchema(ModelSchema):
 class EpisodeSchema(BaseEpisodeSchema):
     season: SeasonSchema = None
     next_episode: BaseEpisodeSchema | None = None
+    sprites: list[VideoSpriteSchema] = []
 
     class Meta(BaseEpisodeSchema.Meta):
         fields = BaseEpisodeSchema.Meta.fields
@@ -119,6 +127,10 @@ class EpisodeSchema(BaseEpisodeSchema):
     @staticmethod
     def resolve_next_episode(episode: Episode) -> Episode | None:
         return episode.get_next_episode()
+
+    @staticmethod
+    def resolve_sprites(episode: Episode) -> list[VideoSpriteSchema]:
+        return episode.video.get_sprites() if episode.video else []
 
 
 class TitleFilterSchema(FilterSchema):

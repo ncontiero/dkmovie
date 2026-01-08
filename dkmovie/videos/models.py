@@ -51,6 +51,27 @@ def hls_playlist_path(instance, filename):
     return get_source_file_path(instance, filename, is_hls=True)
 
 
+def get_sprite_file_path(instance, filename):
+    video = instance.video
+    if parent := video.content_object:
+        model_name = video.content_type.model.lower()
+        base_path = ""
+        if model_name == "title":
+            base_path = f"titles/{parent.id}"
+        elif model_name == "episode":
+            with contextlib.suppress(Exception):
+                title_id = parent.season.title.id
+                season_number = parent.season.number
+                episode_number = parent.number
+                base_path = (
+                    f"titles/{title_id}/seasons/{season_number}/{episode_number}"
+                )
+
+        if base_path:
+            return f"{base_path}/sprites/{filename}"
+    return f"uploads/videos/{video.id}/sprites/{filename}"
+
+
 class Video(models.Model):
     class Status(models.TextChoices):
         PENDING = "PENDING", _("Pending")
@@ -133,3 +154,66 @@ class Video(models.Model):
     @property
     def is_available(self) -> bool:
         return self.status == self.Status.COMPLETED and bool(self.hls_playlist)
+
+    def get_sprites(self):
+        return self.sprites.all()
+
+
+class VideoSprite(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid4,
+        editable=False,
+        help_text=_("Unique identifier for the sprite sheet"),
+    )
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        related_name="sprites",
+        help_text=_("The video this sprite belongs to"),
+    )
+    image = models.ImageField(
+        upload_to=get_sprite_file_path,
+        help_text=_("The sprite sheet image file (JPEG)"),
+    )
+    start_time = models.PositiveIntegerField(
+        help_text=_("Time in seconds where this sprite sheet starts (e.g., 0)"),
+    )
+    end_time = models.PositiveIntegerField(
+        help_text=_("Time in seconds where this sprite sheet ends"),
+    )
+    interval = models.PositiveIntegerField(
+        default=10,
+        help_text=_("Interval in seconds between each thumbnail"),
+    )
+    frame_width = models.PositiveIntegerField(
+        help_text=_("Width of a single thumbnail in pixels"),
+    )
+    frame_height = models.PositiveIntegerField(
+        help_text=_("Height of a single thumbnail in pixels"),
+    )
+    columns = models.PositiveIntegerField(
+        help_text=_("Number of columns in the sprite sheet grid"),
+    )
+    rows = models.PositiveIntegerField(
+        help_text=_("Number of rows in the sprite sheet grid"),
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Video Sprite")
+        verbose_name_plural = _("Video Sprites")
+        ordering = ["video", "start_time"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video", "start_time"],
+                name="unique_sprite_start_time_per_video",
+            ),
+        ]
+
+    def __str__(self):
+        return _("Sprite for %s (%ss - %ss)") % (
+            self.video,
+            self.start_time,
+            self.end_time,
+        )

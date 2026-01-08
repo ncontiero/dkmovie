@@ -4,6 +4,7 @@ from django.dispatch import receiver
 
 from .models import Video
 from .tasks import calculate_video_duration
+from .tasks import generate_video_sprites_task
 from .tasks import process_video_hls_task
 
 
@@ -15,3 +16,7 @@ def video_post_save(sender, instance: Video, created, **kwargs):
         if instance.status == Video.Status.PENDING:
             Video.objects.filter(id=instance.id).update(status=Video.Status.PROCESSING)
             transaction.on_commit(lambda: process_video_hls_task.delay(instance.id))
+        if instance.status == Video.Status.COMPLETED and not instance.sprites.exists():
+            transaction.on_commit(
+                lambda: generate_video_sprites_task.delay(instance.id),
+            )

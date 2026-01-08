@@ -8,6 +8,7 @@ from celery.exceptions import SoftTimeLimitExceeded
 from dkmovie.utils.tasks import default_task_params
 
 from .models import Video
+from .services import generate_video_sprites
 from .services import get_video_duration
 from .services import process_video_to_hls
 
@@ -44,6 +45,37 @@ def process_video_hls_task(self, video_id):
     temp_dir = tempfile.mkdtemp()
     try:
         process_video_to_hls(video, temp_dir)
+    except SoftTimeLimitExceeded as e:
+        logger.exception("SoftTimeLimitExceeded for video %s", video_id, exc_info=e)
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        video.status = Video.Status.FAILED
+        video.processing_error = f"SoftTimeLimitExceeded: {e}"
+        video.save(update_fields=["status", "processing_error"])
+    except Exception as e:
+        logger.exception("Unexpected error processing video %s", video_id, exc_info=e)
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        video.status = Video.Status.FAILED
+        video.processing_error = str(e)
+        video.save(update_fields=["status", "processing_error"])
+
+
+@shared_task(
+    **default_task_params(
+        "generate_video_sprites_task",
+        soft_time_limit=1800,
+        time_limit=1920,
+    ),
+)
+def generate_video_sprites_task(self, video_id):
+    try:
+        video = Video.objects.get(id=video_id)
+    except Video.DoesNotExist as e:
+        logger.exception("Video with ID %s does not exist", video_id, exc_info=e)
+        return
+
+    temp_dir = tempfile.mkdtemp()
+    try:
+        generate_video_sprites(video, temp_dir)
     except SoftTimeLimitExceeded as e:
         logger.exception("SoftTimeLimitExceeded for video %s", video_id, exc_info=e)
         shutil.rmtree(temp_dir, ignore_errors=True)

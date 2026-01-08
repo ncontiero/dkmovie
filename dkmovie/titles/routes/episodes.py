@@ -16,6 +16,10 @@ router = Router()
 @decorate_view(cache_page(3600))
 def get_episode(request, episode_id: UUID):
     try:
-        return Episode.objects.get(id=episode_id)
+        return (
+            Episode.objects.prefetch_related("videos")
+            .select_related("season")
+            .get(id=episode_id)
+        )
     except Episode.DoesNotExist as err:
         raise ApiProcessError(404, _("The episode does not exist.")) from err
