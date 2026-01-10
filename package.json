@@ -54,7 +54,7 @@
     "@ncontiero/eslint-config": "6.5.2",
     "@rspack/cli": "^1.7.1",
     "@rspack/core": "^1.7.1",
-    "@rspack/plugin-react-refresh": "^1.5.3",
+    "@rspack/plugin-react-refresh": "^1.6.0",
     "@tailwindcss/postcss": "4.1.18",
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@tanstack/router-plugin": "^1.145.7",
