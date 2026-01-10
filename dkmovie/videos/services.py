@@ -102,25 +102,25 @@ def _get_target_resolutions(original_height: int) -> list[dict]:
             "name": "1080p",
             "width": 1920,
             "height": 1080,
-            "bitrate": "5000k",
-            "maxrate": "5350k",
-            "bufsize": "7500k",
+            "crf": "22",
+            "maxrate": "6400k",
+            "bufsize": "12000k",
         },
         {
             "name": "720p",
             "width": 1280,
             "height": 720,
-            "bitrate": "2800k",
-            "maxrate": "2996k",
-            "bufsize": "4200k",
+            "crf": "23",
+            "maxrate": "3300k",
+            "bufsize": "6000k",
         },
         {
             "name": "480p",
             "width": 854,
             "height": 480,
-            "bitrate": "1400k",
-            "maxrate": "1498k",
-            "bufsize": "2100k",
+            "crf": "24",
+            "maxrate": "1650k",
+            "bufsize": "3000k",
         },
     ]
     valid = [res for res in all_resolutions if res["height"] <= original_height + 10]
@@ -140,30 +140,49 @@ def _build_ffmpeg_command(
     filter_complex = f"[0:v]split={split_count}{outputs};"
 
     for i, res in enumerate(resolutions):
-        filter_complex += f"[v{i}]scale=w={res['width']}:h={res['height']}:force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2[v{i}out];"  # noqa: E501
+        filter_complex += (
+            f"[v{i}]scale=w={res['width']}:h={res['height']}:force_original_aspect_ratio=decrease,"
+            f"pad=ceil(iw/2)*2:ceil(ih/2)*2:(ow-iw)/2:(oh-ih)/2[v{i}out];"
+        )
 
     filter_complex = filter_complex.rstrip(";")
 
-    cmd = ["ffmpeg", "-i", input_url, "-filter_complex", filter_complex]
+    cmd = [
+        "ffmpeg",
+        "-hide_banner",
+        "-y",
+        "-i",
+        input_url,
+        "-filter_complex",
+        filter_complex,
+        "-preset",
+        "faster",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+        "-ac",
+        "2",
+        "-sn",
+    ]
 
     var_stream_map = []
     for i, res in enumerate(resolutions):
         cmd.extend(
             [
+                # Video
                 "-map",
                 f"[v{i}out]",
                 f"-c:v:{i}",
                 "libx264",
-                "-crf",
-                "23",
-                f"-b:v:{i}",
-                res["bitrate"],
+                f"-crf:{i}",
+                res["crf"],
                 f"-maxrate:v:{i}",
                 res["maxrate"],
                 f"-bufsize:v:{i}",
                 res["bufsize"],
-                "-preset",
-                "veryfast",
+                f"-profile:v:{i}",
+                res["profile"],
                 "-g",
                 gop_size,
                 "-keyint_min",
@@ -179,13 +198,6 @@ def _build_ffmpeg_command(
 
     cmd.extend(
         [
-            "-c:a",
-            "aac",
-            "-b:a",
-            "128k",
-            "-ac",
-            "2",
-            "-sn",
             "-threads",
             str(min(6, max(1, (os.cpu_count() or 1) - 2))),
             "-f",
