@@ -13,63 +13,49 @@ from dkmovie.upload.fields import S3FileField
 logger = logging.getLogger(__name__)
 
 
-def get_title_video_path(title_obj, filename, *, is_hls=False):
+def get_title_video_path(title_obj, filename, folder):
+    path = f"{folder}/{filename}" if folder else filename
     if title_obj and title_obj.id:
         title_path = f"titles/{title_obj.id}"
-        return title_path + (f"/hls/{filename}" if is_hls else f"/{filename}")
-    return f"uploads/movies/{uuid4()}/{filename}"
+        return f"{title_path}/{path}"
+    return f"uploads/movies/{uuid4()}/{path}"
 
 
-def get_episode_video_path(episode_obj, filename, *, is_hls=False):
+def get_episode_video_path(episode_obj, filename, folder):
+    path = f"{folder}/{filename}" if folder else filename
     with contextlib.suppress(Exception):
         title_id = episode_obj.season.title.id
         season_number = episode_obj.season.number
         episode_number = episode_obj.number
         episode_path = f"titles/{title_id}/seasons/{season_number}/{episode_number}"
-        return episode_path + (f"/hls/{filename}" if is_hls else f"/{filename}")
-    return f"uploads/episodes/{uuid4()}/{filename}"
+        return f"{episode_path}/{path}"
+    return f"uploads/episodes/{uuid4()}/{path}"
 
 
-def get_source_file_path(instance, filename, *, is_hls=False):
+def get_source_file_path(instance, filename, folder):
     if parent := instance.content_object:
         model_name = instance.content_type.model.lower()
         if model_name == "title":
-            return get_title_video_path(parent, filename, is_hls=is_hls)
+            return get_title_video_path(parent, filename, folder)
         if model_name == "episode":
-            return get_episode_video_path(parent, filename, is_hls=is_hls)
+            return get_episode_video_path(parent, filename, folder)
 
+    path = f"{folder}/{filename}" if folder else filename
     if instance and instance.id:
-        return f"uploads/videos/{instance.id}/{filename}"
-    return f"uploads/videos/{uuid4()}/{filename}"
+        return f"uploads/videos/{instance.id}/{path}"
+    return f"uploads/videos/{uuid4()}/{path}"
 
 
 def source_file_path(instance, filename):
-    return get_source_file_path(instance, filename, is_hls=False)
+    return get_source_file_path(instance, filename)
 
 
 def hls_playlist_path(instance, filename):
-    return get_source_file_path(instance, filename, is_hls=True)
+    return get_source_file_path(instance, filename, folder="hls")
 
 
 def get_sprite_file_path(instance, filename):
-    video = instance.video
-    if parent := video.content_object:
-        model_name = video.content_type.model.lower()
-        base_path = ""
-        if model_name == "title":
-            base_path = f"titles/{parent.id}"
-        elif model_name == "episode":
-            with contextlib.suppress(Exception):
-                title_id = parent.season.title.id
-                season_number = parent.season.number
-                episode_number = parent.number
-                base_path = (
-                    f"titles/{title_id}/seasons/{season_number}/{episode_number}"
-                )
-
-        if base_path:
-            return f"{base_path}/sprites/{filename}"
-    return f"uploads/videos/{video.id}/sprites/{filename}"
+    return get_source_file_path(instance.video, filename, folder="sprites")
 
 
 class Video(models.Model):
