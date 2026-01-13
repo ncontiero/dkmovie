@@ -462,7 +462,7 @@ def get_video_tracks_metadata(video_url: str):
             codec = s["codec_type"]
             tags = s.get("tags", {})
             lang = tags.get("language", "und")
-            title = tags.get("title", _("Track %s", idx))
+            title = tags.get("title", _("Track %s") % idx)
 
             track_info = {
                 "index": idx,

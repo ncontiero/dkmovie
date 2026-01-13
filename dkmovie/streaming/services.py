@@ -154,6 +154,7 @@ def get_hls_streaming_response(request, video_obj: Video, subpath: str | None = 
             )
 
         except Exception as e:
+            logger.exception("Failed to fetch audio track", exc_info=e)
             raise ApiProcessError(404, _("Track not found.")) from e
 
     # Handle Main Video (Master or Variant)

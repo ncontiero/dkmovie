@@ -5,5 +5,5 @@ from .models import VideoTrack
 
 
 @register(VideoTrack)
-class GenreTranslationOptions(TranslationOptions):
+class VideoTrackTranslationOptions(TranslationOptions):
     fields = ("label",)
