@@ -223,7 +223,7 @@ def _upload_hls_files(video_instance: Video, output_dir: Path) -> str | None:
     s3_base_dir = str(Path(relative_path).parent)
 
     files_to_upload = []
-    for root, _, files in os.walk(output_dir):
+    for root, __, files in os.walk(output_dir):
         for file in files:
             local_path = Path(root) / file
             rel_path = local_path.relative_to(output_dir)
@@ -530,7 +530,7 @@ def extract_audio_track(video: Video, track_instance: VideoTrack, temp_dir: Path
     s3_base_dir = str(Path(relative_path).parent)
 
     files_to_upload = []
-    for root, _, files in os.walk(output_dir):
+    for root, __, files in os.walk(output_dir):
         for file in files:
             local_path = Path(root) / file
             s3_key = f"{s3_base_dir}/{file}"
