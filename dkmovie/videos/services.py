@@ -508,6 +508,8 @@ def extract_audio_track(video: Video, track_instance: VideoTrack, temp_dir: Path
         "6",
         "-hls_playlist_type",
         "vod",
+        "-hls_flags",
+        "independent_segments",
         "-hls_segment_filename",
         str(output_dir / "seg_%03d.ts"),
         str(playlist_path),
