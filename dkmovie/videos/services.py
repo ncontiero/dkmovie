@@ -131,6 +131,10 @@ def _get_target_resolutions(original_height: int) -> list[dict]:
     return valid or [all_resolutions[-1]]
 
 
+def get_threads_count() -> int:
+    return min(6, max(1, (os.cpu_count() or 1) - 2))
+
+
 def _build_ffmpeg_command(
     input_url: str,
     output_dir: Path,
@@ -193,7 +197,7 @@ def _build_ffmpeg_command(
     cmd.extend(
         [
             "-threads",
-            str(min(6, max(1, (os.cpu_count() or 1) - 2))),
+            str(get_threads_count()),
             "-f",
             "hls",
             "-hls_time",
@@ -374,6 +378,8 @@ def generate_video_sprites(video: Video, temp_dir: Path):
         cmd = [
             "ffmpeg",
             "-hide_banner",
+            "-threads",
+            str(get_threads_count()),
             "-y",
             "-ss",
             str(start_time),
@@ -491,6 +497,8 @@ def extract_audio_track(video: Video, track_instance: VideoTrack, temp_dir: Path
     cmd = [
         "ffmpeg",
         "-hide_banner",
+        "-threads",
+        str(get_threads_count()),
         "-y",
         "-i",
         input_url,
@@ -573,6 +581,8 @@ def extract_subtitle_track(video: Video, track_instance: VideoTrack, temp_dir: P
     cmd = [
         "ffmpeg",
         "-hide_banner",
+        "-threads",
+        str(get_threads_count()),
         "-y",
         "-i",
         input_url,
