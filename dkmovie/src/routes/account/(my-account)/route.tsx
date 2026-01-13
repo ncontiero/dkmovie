@@ -33,7 +33,7 @@ function MyAccountLayoutComponent() {
 
   return (
     <ReAuthenticateProvider>
-      <div className="text-foreground container mx-auto mt-30 flex min-h-screen max-w-7xl">
+      <div className="text-foreground mx-auto mt-30 flex min-h-screen max-w-7xl px-4 md:container">
         <main className="w-full">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold">{t("title")}</h1>
