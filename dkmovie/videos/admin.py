@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.html import format_html_join
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
@@ -25,7 +26,6 @@ class VideoSpriteInline(admin.TabularInline):
     extra = 0
     ordering = ("start_time",)
     fields = (
-        "sprite_preview",
         "start_time",
         "end_time",
         "interval",
@@ -64,45 +64,46 @@ class VideoTrackInline(admin.TabularInline):
         "language",
         "label",
         "is_original",
-        "subtitle_file",
-        "audio_playlist",
         "source_indices_display",
     )
     readonly_fields = ("active_icons", "source_indices_display")
 
     @admin.display(description=_("Status"))
     def active_icons(self, obj):
+        default_styles = "cursor:help; margin-right:5px"
         icons_data = []
-        if obj.is_default:
+        if obj.is_original:
             icons_data.append(
-                ("⭐", _("Default Track"), "cursor:help; margin-right:5px"),
+                ("⭐", _("Original Track"), default_styles),
             )
         else:
-            icons_data.append(("⭐", "", "opacity:0.1; margin-right:5px"))
+            icons_data.append(
+                ("⭐", _("Non-Original Track"), f"opacity:0.1; {default_styles}"),
+            )
 
         if obj.audio_playlist:
             icons_data.append(
-                ("🔊", _("Audio Available"), "color:blue; margin-left:5px"),
+                ("🔊", _("Audio Available"), f"color:blue; {default_styles}"),
             )
         else:
             icons_data.append(
                 (
                     "🔊",
                     _("No Audio"),
-                    "opacity:0.2; filter:grayscale(1); margin-left:5px",
+                    f"opacity:0.2; filter:grayscale(1); {default_styles}",
                 ),
             )
 
         if obj.subtitle_file:
             icons_data.append(
-                ("📝", _("Subtitle Available"), "color:green; margin-left:5px"),
+                ("📝", _("Subtitle Available"), f"color:green; {default_styles}"),
             )
         else:
             icons_data.append(
                 (
                     "📝",
                     _("No Subtitle"),
-                    "opacity:0.2; filter:grayscale(1); margin-left:5px",
+                    f"opacity:0.2; filter:grayscale(1); {default_styles}",
                 ),
             )
 
@@ -124,8 +125,9 @@ class VideoTrackInline(admin.TabularInline):
         if not parts_data:
             return "-"
 
+        sep = mark_safe(" <span style='color:#ccc'>|</span> ")
         return format_html_join(
-            " <span style='color:#ccc'>|</span> ",
+            sep,
             "<b>{0}</b> {1}",
             ((label, value) for label, value in parts_data),
         )
