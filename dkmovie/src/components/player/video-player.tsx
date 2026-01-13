@@ -84,12 +84,13 @@ export function VideoPlayer({
   const duration = episode?.duration || title.duration || 0;
   const haveNextEpisode =
     !!episode?.next_episode && episode.next_episode.is_video_available;
+
   const tracks = episode?.tracks || title.tracks;
   const subtitles = tracks.filter((t) => Boolean(t.subtitle_file));
 
   const currentSubtitleUrl = useMemo(() => {
     const current = subtitles.find((s) => s.language === currentSubtitle);
-    if (!current) return null;
+    if (!current || !current.subtitle_file) return null;
     return current.subtitle_file;
   }, [currentSubtitle, subtitles]);
 
@@ -281,11 +282,9 @@ export function VideoPlayer({
         return;
       }
 
-      for (const subtitle of subtitles) {
-        if (subtitle.language === language) {
-          setCurrentSubtitle(subtitle.language);
-        }
-      }
+      const selectedSubtitle = subtitles.find((t) => t.language === language);
+      if (!selectedSubtitle) return;
+      setCurrentSubtitle(language);
     },
     [subtitles],
   );
@@ -294,24 +293,16 @@ export function VideoPlayer({
     (track: number) => {
       if (!hlsApiRef.current) return;
 
-      if (track < 0 || track >= audioTracks.length) {
-        hlsApiRef.current.audioTrack = 0;
-        setCurrentAudioTrack(0);
-        return;
-      }
+      const selectedTrack = audioTracks.find((t) => t.id === track);
+      if (!selectedTrack) return;
 
-      for (const audio of audioTracks) {
-        if (audio.id === track) {
-          hlsApiRef.current.audioTrack = track;
-          setCurrentAudioTrack(audio.id);
-        }
-      }
+      hlsApiRef.current.audioTrack = track;
+      setCurrentAudioTrack(track);
     },
     [audioTracks],
   );
 
   if (!title) return null;
-
   if (!isSessionAllowed && !isLoading) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-black text-white">

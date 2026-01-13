@@ -29,8 +29,6 @@ export function CaptionsAndAudios({
 }: CaptionsAndAudiosProps) {
   const t = useTranslations("playerPage.captionsAndAudios");
 
-  const subtitles = subtitleTracks.filter((t) => Boolean(t.subtitle_file));
-
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="subtitles" className="border-0">
@@ -60,7 +58,7 @@ export function CaptionsAndAudios({
                 {t("off")}
               </Button>
             </li>
-            {subtitles.map((subtitle) => (
+            {subtitleTracks.map((subtitle) => (
               <li key={subtitle.language}>
                 <Button
                   type="button"
