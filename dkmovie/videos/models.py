@@ -14,7 +14,7 @@ from dkmovie.upload.fields import S3FileField
 logger = logging.getLogger(__name__)
 
 
-def get_title_video_path(title_obj, filename, folder):
+def get_title_video_path(title_obj, filename, folder=None):
     path = f"{folder}/{filename}" if folder else filename
     if title_obj and title_obj.id:
         title_path = f"titles/{title_obj.id}"
@@ -22,7 +22,7 @@ def get_title_video_path(title_obj, filename, folder):
     return f"uploads/movies/{uuid4()}/{path}"
 
 
-def get_episode_video_path(episode_obj, filename, folder):
+def get_episode_video_path(episode_obj, filename, folder=None):
     path = f"{folder}/{filename}" if folder else filename
     with contextlib.suppress(Exception):
         title_id = episode_obj.season.title.id
@@ -33,7 +33,7 @@ def get_episode_video_path(episode_obj, filename, folder):
     return f"uploads/episodes/{uuid4()}/{path}"
 
 
-def get_source_file_path(instance, filename, folder):
+def get_source_file_path(instance, filename, folder=None):
     if parent := instance.content_object:
         model_name = instance.content_type.model.lower()
         if model_name == "title":
