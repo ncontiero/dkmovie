@@ -1,3 +1,4 @@
 MINIO_ROOT_USER=minioAccessKey
 MINIO_ROOT_PASSWORD=minioSecretKey
-MINIO_BUCKET_NAME=dkmovie-bucket
+PUBLIC_BUCKET_NAME=dkmovie-public
+PRIVATE_BUCKET_NAME=dkmovie-private

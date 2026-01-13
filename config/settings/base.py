@@ -180,6 +180,10 @@ AWS_SECRET_ACCESS_KEY = config("DJANGO_AWS_SECRET_ACCESS_KEY")
 AWS_S3_REGION_NAME = config("DJANGO_AWS_S3_REGION_NAME", default=None)
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#cloudfront
 AWS_S3_PUBLIC_CUSTOM_DOMAIN = config("DJANGO_AWS_S3_PUBLIC_CUSTOM_DOMAIN", default=None)
+AWS_S3_PRIVATE_CUSTOM_DOMAIN = config(
+    "DJANGO_AWS_S3_PRIVATE_CUSTOM_DOMAIN",
+    default=None,
+)
 AWS_S3_ENDPOINT_URL = config("DJANGO_AWS_S3_ENDPOINT_URL", default=None)
 # Buckets
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html#settings

@@ -7,6 +7,7 @@ from ninja import FilterSchema
 from ninja import ModelSchema
 
 from dkmovie.videos.schemas import VideoSpriteSchema
+from dkmovie.videos.schemas import VideoTrackSchema
 
 from .models import Episode
 from .models import Genre
@@ -78,6 +79,7 @@ class SeasonSchema(ModelSchema):
 class TitleDetailSchema(BaseTitleSchema):
     seasons: list[SeasonSchema] = []
     sprites: list[VideoSpriteSchema] = []
+    tracks: list[VideoTrackSchema] = []
 
     class Meta(BaseTitleSchema.Meta):
         fields = BaseTitleSchema.Meta.fields
@@ -85,6 +87,10 @@ class TitleDetailSchema(BaseTitleSchema):
     @staticmethod
     def resolve_sprites(title: Title) -> list[VideoSpriteSchema]:
         return title.video.get_sprites() if title.video else []
+
+    @staticmethod
+    def resolve_tracks(title: Title) -> list[VideoTrackSchema]:
+        return title.video.get_tracks() if title.video else []
 
 
 class BaseEpisodeSchema(ModelSchema):
@@ -116,6 +122,7 @@ class EpisodeSchema(BaseEpisodeSchema):
     season: SeasonSchema = None
     next_episode: BaseEpisodeSchema | None = None
     sprites: list[VideoSpriteSchema] = []
+    tracks: list[VideoTrackSchema] = []
 
     class Meta(BaseEpisodeSchema.Meta):
         fields = BaseEpisodeSchema.Meta.fields
@@ -131,6 +138,10 @@ class EpisodeSchema(BaseEpisodeSchema):
     @staticmethod
     def resolve_sprites(episode: Episode) -> list[VideoSpriteSchema]:
         return episode.video.get_sprites() if episode.video else []
+
+    @staticmethod
+    def resolve_tracks(episode: Episode) -> list[VideoTrackSchema]:
+        return episode.video.get_tracks() if episode.video else []
 
 
 class TitleFilterSchema(FilterSchema):

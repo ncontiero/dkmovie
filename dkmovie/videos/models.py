@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from slugify import slugify
 
 from config.storages import PrivateMediaStorage
 from dkmovie.upload.fields import S3FileField
@@ -56,6 +57,26 @@ def hls_playlist_path(instance, filename):
 
 def get_sprite_file_path(instance, filename):
     return get_source_file_path(instance.video, filename, folder="sprites")
+
+
+def subtitle_file_path(instance, filename):
+    lang = slugify(instance.language)
+    subtitle_index = instance.source_subtitle_index or 0
+    return get_source_file_path(
+        instance.video,
+        filename,
+        folder=f"subtitles/{lang}/{subtitle_index}",
+    )
+
+
+def audio_playlist_file_path(instance, filename):
+    lang = slugify(instance.language)
+    audio_index = instance.source_audio_index or 0
+    return get_source_file_path(
+        instance.video,
+        filename,
+        folder=f"audio/{lang}/{audio_index}",
+    )
 
 
 class Video(models.Model):
@@ -144,6 +165,9 @@ class Video(models.Model):
     def get_sprites(self):
         return self.sprites.all()
 
+    def get_tracks(self):
+        return self.tracks.all()
+
 
 class VideoSprite(models.Model):
     id = models.UUIDField(
@@ -203,3 +227,81 @@ class VideoSprite(models.Model):
             self.start_time,
             self.end_time,
         )
+
+
+class VideoTrack(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid4,
+        editable=False,
+        help_text=_("Unique identifier for the media track"),
+    )
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        related_name="tracks",
+        help_text=_("The video this track belongs to"),
+    )
+    language = models.CharField(
+        max_length=10,
+        default="pt-br",
+        help_text=_("Language code (e.g., 'en', 'pt-br')"),
+    )
+    label = models.CharField(
+        max_length=50,
+        default="Português",
+        help_text=_("Label shown to the user (e.g., 'English', 'Português')"),
+    )
+    is_original = models.BooleanField(
+        default=False,
+        help_text=_("If true, this track is the original language track."),
+    )
+    subtitle_file = S3FileField(
+        upload_to=subtitle_file_path,
+        storage=PrivateMediaStorage(),
+        blank=True,
+        null=True,
+        max_length=500,
+        help_text=_("The WebVTT subtitle file (.vtt)"),
+    )
+    audio_playlist = S3FileField(
+        upload_to=audio_playlist_file_path,
+        storage=PrivateMediaStorage(),
+        blank=True,
+        null=True,
+        max_length=500,
+        help_text=_("The HLS manifest for the audio track (.m3u8)"),
+    )
+
+    source_audio_index = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text=_("Original FFmpeg stream index for the audio (if extracted)"),
+    )
+    source_subtitle_index = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text=_("Original FFmpeg stream index for the subtitle (if extracted)"),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _("Media Track")
+        verbose_name_plural = _("Media Tracks")
+        ordering = ["language", "label"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video", "language"],
+                name="unique_language_per_video",
+            ),
+        ]
+
+    def __str__(self):
+        components = []
+        if self.audio_playlist:
+            components.append("Audio")
+        if self.subtitle_file:
+            components.append("Sub")
+        return f"{self.label} [{'/'.join(components)}]"

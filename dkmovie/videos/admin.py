@@ -5,14 +5,19 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.html import format_html_join
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TranslationAdmin
 
 from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
 
 from .models import Video
 from .models import VideoSprite
+from .models import VideoTrack
+from .tasks import discover_tracks_task
 from .tasks import generate_video_sprites_task
+from .tasks import process_track_task
 
 
 class VideoSpriteInline(admin.TabularInline):
@@ -47,6 +52,85 @@ class VideoSpriteInline(admin.TabularInline):
         return f"{obj.columns}x{obj.rows} ({obj.frame_width}px)"
 
 
+class VideoTrackInline(admin.TabularInline):
+    model = VideoTrack
+    extra = 0
+    show_change_link = True
+    verbose_name = _("Media Track")
+    verbose_name_plural = _("Media Tracks (Audio/Subs)")
+
+    fields = (
+        "active_icons",
+        "language",
+        "label",
+        "is_original",
+        "subtitle_file",
+        "audio_playlist",
+        "source_indices_display",
+    )
+    readonly_fields = ("active_icons", "source_indices_display")
+
+    @admin.display(description=_("Status"))
+    def active_icons(self, obj):
+        icons_data = []
+        if obj.is_default:
+            icons_data.append(
+                ("⭐", _("Default Track"), "cursor:help; margin-right:5px"),
+            )
+        else:
+            icons_data.append(("⭐", "", "opacity:0.1; margin-right:5px"))
+
+        if obj.audio_playlist:
+            icons_data.append(
+                ("🔊", _("Audio Available"), "color:blue; margin-left:5px"),
+            )
+        else:
+            icons_data.append(
+                (
+                    "🔊",
+                    _("No Audio"),
+                    "opacity:0.2; filter:grayscale(1); margin-left:5px",
+                ),
+            )
+
+        if obj.subtitle_file:
+            icons_data.append(
+                ("📝", _("Subtitle Available"), "color:green; margin-left:5px"),
+            )
+        else:
+            icons_data.append(
+                (
+                    "📝",
+                    _("No Subtitle"),
+                    "opacity:0.2; filter:grayscale(1); margin-left:5px",
+                ),
+            )
+
+        return format_html_join(
+            "",
+            '<span title="{1}" style="{2}">{0}</span>',
+            ((icon, title, style) for icon, title, style in icons_data),
+        )
+
+    @admin.display(description=_("Source Indexes"))
+    def source_indices_display(self, obj):
+        parts_data = []
+        if obj.source_audio_index is not None:
+            parts_data.append(("A:", obj.source_audio_index))
+
+        if obj.source_subtitle_index is not None:
+            parts_data.append(("S:", obj.source_subtitle_index))
+
+        if not parts_data:
+            return "-"
+
+        return format_html_join(
+            " <span style='color:#ccc'>|</span> ",
+            "<b>{0}</b> {1}",
+            ((label, value) for label, value in parts_data),
+        )
+
+
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
     list_display = (
@@ -60,8 +144,13 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ("status", "content_type", "created_at")
     search_fields = ("id", "source_file")
     readonly_fields = ("id", "created_at", "updated_at", "link_to_parent_large")
-    inlines = [VideoSpriteInline]
-    actions = ["retry_processing", "generate_sprites"]
+    inlines = [VideoSpriteInline, VideoTrackInline]
+    actions = [
+        "retry_processing",
+        "generate_sprites",
+        "discover_tracks",
+        "process_tracks",
+    ]
 
     fieldsets = (
         (
@@ -210,6 +299,25 @@ class VideoAdmin(admin.ModelAdmin):
             _("%s videos queued for sprite generation.") % queryset.count(),
         )
 
+    @admin.action(description=_("Discover Tracks"))
+    def discover_tracks(self, request, queryset):
+        for video in queryset:
+            discover_tracks_task.delay(video.id)
+        self.message_user(
+            request,
+            _("%s videos queued for track discovery.") % queryset.count(),
+        )
+
+    @admin.action(description=_("Process Tracks"))
+    def process_tracks(self, request, queryset):
+        for video in queryset:
+            for track in video.tracks.all():
+                process_track_task.delay(track.id)
+        self.message_user(
+            request,
+            _("%s videos queued for track processing.") % queryset.count(),
+        )
+
 
 @admin.register(VideoSprite)
 class VideoSpriteAdmin(admin.ModelAdmin):
@@ -284,3 +392,73 @@ class VideoSpriteAdmin(admin.ModelAdmin):
     @admin.display(description=_("Grid"))
     def grid_layout(self, obj):
         return f"{obj.columns}x{obj.rows}"
+
+
+@admin.register(VideoTrack)
+class VideoTrackAdmin(TranslationAdmin):
+    list_display = (
+        "get_video_name",
+        "language_badge",
+        "label",
+        "has_audio",
+        "has_subtitle",
+        "is_original",
+        "created_at",
+    )
+    list_filter = (
+        "language",
+        "is_original",
+        ("audio_playlist", admin.EmptyFieldListFilter),
+        ("subtitle_file", admin.EmptyFieldListFilter),
+    )
+    search_fields = (
+        "video__id",
+        "video__source_file",
+        "label",
+        "language",
+    )
+    autocomplete_fields = ["video"]
+
+    fieldsets = (
+        (
+            _("Association"),
+            {
+                "fields": ("video", "language", "label", "is_original"),
+            },
+        ),
+        (
+            _("Media Assets"),
+            {
+                "fields": (
+                    ("audio_playlist", "source_audio_index"),
+                    ("subtitle_file", "source_subtitle_index"),
+                ),
+                "description": _(
+                    "Upload processed files manually or set the source index for auto-extraction.",  # noqa: E501
+                ),
+            },
+        ),
+    )
+
+    @admin.display(description=_("Video"), ordering="video")
+    def get_video_name(self, obj):
+        return (
+            str(obj.video.content_object)
+            if obj.video.content_object
+            else str(obj.video)
+        )
+
+    @admin.display(description=_("Lang"), ordering="language")
+    def language_badge(self, obj):
+        return format_html(
+            '<span style="background:#eee; color:#333; padding:2px 6px; border-radius:3px; font-weight:bold; font-family:monospace">{}</span>',  # noqa: E501
+            obj.language.upper(),
+        )
+
+    @admin.display(description=_("Audio"), boolean=True)
+    def has_audio(self, obj):
+        return bool(obj.audio_playlist)
+
+    @admin.display(description=_("Subtitle"), boolean=True)
+    def has_subtitle(self, obj):
+        return bool(obj.subtitle_file)

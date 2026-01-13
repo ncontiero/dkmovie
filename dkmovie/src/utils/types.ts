@@ -60,9 +60,17 @@ export interface VideoSprite {
   rows: number;
 }
 
+export interface VideoTrack {
+  language: string;
+  label: string;
+  is_original: boolean;
+  subtitle_file: string | null;
+}
+
 export interface TitleDetails extends Title {
   seasons: Season[];
   sprites: VideoSprite[];
+  tracks: VideoTrack[];
 }
 
 export interface Episode {
@@ -79,6 +87,7 @@ export interface Episode {
   next_episode: Episode | null;
   previous_episode: Episode | null;
   sprites: VideoSprite[];
+  tracks: VideoTrack[];
 }
 
 export interface PaginationDataProps<T = any> {
@@ -99,7 +108,14 @@ export interface PaginationLimitQueryParams {
 export interface HLSApiLevelProps {
   height: number;
 }
+export interface HLSApiAudioTrack {
+  id: number;
+  name: string;
+  lang: string;
+}
 export interface HLSApiProps {
   levels: HLSApiLevelProps[];
   currentLevel: number;
+  audioTracks: HLSApiAudioTrack[];
+  audioTrack: number;
 }

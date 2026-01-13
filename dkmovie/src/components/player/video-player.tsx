@@ -1,5 +1,6 @@
 import type {
   Episode,
+  HLSApiAudioTrack,
   HLSApiLevelProps,
   HLSApiProps,
   TitleDetails,
@@ -8,6 +9,7 @@ import {
   useCallback,
   useEffect,
   useEffectEvent,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -40,7 +42,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { Slider } from "../ui/slider";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { CaptionsAndAudios } from "./captions-and-audios";
 import { ResolutionLevels } from "./resolution-levels";
+import { SubtitleOverlay } from "./subtitle-overlay";
 import { Timeline } from "./timeline";
 
 interface VideoPlayerProps {
@@ -71,12 +75,23 @@ export function VideoPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [resolutionLevels, setResolutionLevels] = useState<number[]>([]);
   const [currentResolution, setCurrentResolution] = useState<number>(-1);
+  const [audioTracks, setAudioTracks] = useState<HLSApiAudioTrack[]>([]);
+  const [currentAudioTrack, setCurrentAudioTrack] = useState<number>(0);
+  const [currentSubtitle, setCurrentSubtitle] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
 
   const duration = episode?.duration || title.duration || 0;
   const haveNextEpisode =
     !!episode?.next_episode && episode.next_episode.is_video_available;
+  const tracks = episode?.tracks || title.tracks;
+  const subtitles = tracks.filter((t) => Boolean(t.subtitle_file));
+
+  const currentSubtitleUrl = useMemo(() => {
+    const current = subtitles.find((s) => s.language === currentSubtitle);
+    if (!current) return null;
+    return current.subtitle_file;
+  }, [currentSubtitle, subtitles]);
 
   const sessionIdRef = useRef<string | null>(null);
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -259,6 +274,42 @@ export function VideoPlayer({
     setCurrentResolution(resolution);
   }, []);
 
+  const changeSubtitle = useCallback(
+    (language: string | null) => {
+      if (language === null) {
+        setCurrentSubtitle(null);
+        return;
+      }
+
+      for (const subtitle of subtitles) {
+        if (subtitle.language === language) {
+          setCurrentSubtitle(subtitle.language);
+        }
+      }
+    },
+    [subtitles],
+  );
+
+  const changeAudioTrack = useCallback(
+    (track: number) => {
+      if (!hlsApiRef.current) return;
+
+      if (track < 0 || track >= audioTracks.length) {
+        hlsApiRef.current.audioTrack = 0;
+        setCurrentAudioTrack(0);
+        return;
+      }
+
+      for (const audio of audioTracks) {
+        if (audio.id === track) {
+          hlsApiRef.current.audioTrack = track;
+          setCurrentAudioTrack(audio.id);
+        }
+      }
+    },
+    [audioTracks],
+  );
+
   if (!title) return null;
 
   if (!isSessionAllowed && !isLoading) {
@@ -309,19 +360,37 @@ export function VideoPlayer({
               ) : null}
             </div>
             <div className="flex h-10 items-center gap-1 md:gap-3">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
-                  >
-                    <Captions className="md:size-8" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{t("captionsAndAudios")}</TooltipContent>
-              </Tooltip>
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
+                      >
+                        <Captions className="md:size-8" />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {t("captionsAndAudios.title")}
+                  </TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-52 p-1">
+                  {subtitles.length > 0 ? (
+                    <CaptionsAndAudios
+                      subtitleTracks={subtitles}
+                      audioTracks={audioTracks}
+                      changeSubtitle={changeSubtitle}
+                      changeAudioTrack={changeAudioTrack}
+                      currentSubtitle={currentSubtitle}
+                      currentAudioTrack={currentAudioTrack}
+                    />
+                  ) : null}
+                </PopoverContent>
+              </Popover>
               <Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -544,6 +613,16 @@ export function VideoPlayer({
         </div>
       </div>
 
+      {currentSubtitle && currentSubtitleUrl ? (
+        <SubtitleOverlay
+          currentTime={currentTime}
+          url={currentSubtitleUrl}
+          className={cn(
+            "inset-x-6 bottom-10 duration-200 lg:inset-x-20 lg:bottom-12",
+            isToShowControls && "-translate-y-14",
+          )}
+        />
+      ) : null}
       <ReactPlayer
         ref={videoRef}
         width="100%"
@@ -560,9 +639,12 @@ export function VideoPlayer({
           await closePlayer();
         }}
         onCanPlay={(e) => {
-          const hlsApi = (e.target as any).api;
+          const hlsApi = (e.target as any).api as HLSApiProps;
           if (hlsApi) {
             hlsApiRef.current = hlsApi;
+            setAudioTracks(hlsApi.audioTracks || []);
+            setCurrentAudioTrack(hlsApi.audioTrack || 0);
+
             const levels = hlsApi.levels;
             if (!levels) return;
             const heights = Array.from(
@@ -592,6 +674,7 @@ export function VideoPlayer({
             search: { episodeId: episode?.next_episode?.id },
           });
         }}
+        crossOrigin="anonymous"
       />
     </div>
   );
