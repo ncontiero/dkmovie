@@ -160,13 +160,8 @@ def _build_ffmpeg_command(
         "-filter_complex",
         filter_complex,
         "-preset",
-        "faster",
-        "-c:a",
-        "aac",
-        "-b:a",
-        "128k",
-        "-ac",
-        "2",
+        "medium",
+        "-an",
         "-sn",
     ]
 
@@ -193,10 +188,7 @@ def _build_ffmpeg_command(
                 "0",
             ],
         )
-        var_stream_map.append(f"v:{i},a:{i}")
-
-    for _ in range(split_count):
-        cmd.extend(["-map", "a:0"])
+        var_stream_map.append(f"v:{i}")
 
     cmd.extend(
         [
