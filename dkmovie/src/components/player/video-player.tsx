@@ -16,7 +16,6 @@ import {
 import ReactPlayer from "react-player";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  Captions,
   Maximize2,
   Minimize2,
   Pause,
@@ -36,14 +35,16 @@ import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { releaseSession, sendHeartbeat } from "@/http/concurrency";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
+import { Accordion } from "../ui/accordion";
 
+import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { Slider } from "../ui/slider";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { CaptionsAndAudios } from "./captions-and-audios";
-import { ResolutionLevels } from "./resolution-levels";
+import { AudioOptions } from "./options/audio-options";
+import { ResolutionOptions } from "./options/resolution-options";
+import { SubtitleOptions } from "./options/subtitle-options";
 import { SubtitleOverlay } from "./subtitle-overlay";
 import { Timeline } from "./timeline";
 
@@ -360,51 +361,32 @@ export function VideoPlayer({
                         variant="ghost"
                         size="icon"
                         className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
-                      >
-                        <Captions className="md:size-8" />
-                      </Button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {t("captionsAndAudios.title")}
-                  </TooltipContent>
-                </Tooltip>
-                <PopoverContent className="w-52 p-1">
-                  {subtitles.length > 0 ? (
-                    <CaptionsAndAudios
-                      subtitleTracks={subtitles}
-                      audioTracks={audioTracks}
-                      changeSubtitle={changeSubtitle}
-                      changeAudioTrack={changeAudioTrack}
-                      currentSubtitle={currentSubtitle}
-                      currentAudioTrack={currentAudioTrack}
-                    />
-                  ) : null}
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
                         disabled={isLoading}
                       >
                         <Settings className="md:size-8" />
                       </Button>
                     </PopoverTrigger>
                   </TooltipTrigger>
-                  <TooltipContent>{t("options")}</TooltipContent>
+                  <TooltipContent>{t("options.title")}</TooltipContent>
                 </Tooltip>
                 <PopoverContent className="w-52 p-1">
-                  <ResolutionLevels
-                    resolutionLevels={resolutionLevels}
-                    currentResolution={currentResolution}
-                    setResolutionLevel={setResolutionLevel}
-                  />
+                  <Accordion type="single" collapsible className="w-full">
+                    <ResolutionOptions
+                      resolutionLevels={resolutionLevels}
+                      currentResolution={currentResolution}
+                      setResolutionLevel={setResolutionLevel}
+                    />
+                    <SubtitleOptions
+                      subtitles={subtitles}
+                      changeSubtitle={changeSubtitle}
+                      currentSubtitle={currentSubtitle}
+                    />
+                    <AudioOptions
+                      audioTracks={audioTracks}
+                      changeAudioTrack={changeAudioTrack}
+                      currentAudioTrack={currentAudioTrack}
+                    />
+                  </Accordion>
                 </PopoverContent>
               </Popover>
               <Tooltip>
@@ -609,8 +591,8 @@ export function VideoPlayer({
           currentTime={currentTime}
           url={currentSubtitleUrl}
           className={cn(
-            "inset-x-6 bottom-10 duration-200 lg:inset-x-20 lg:bottom-12",
-            isToShowControls && "-translate-y-14",
+            "inset-x-6 bottom-2 duration-200 lg:inset-x-20 lg:bottom-12",
+            isToShowControls && "-translate-y-12 lg:-translate-y-14",
           )}
         />
       ) : null}

@@ -69,21 +69,25 @@
     "selectEpisode": "Select an episode to watch",
     "episodeNotAvailable": "This episode is not available.",
     "episodeDescription": "{seasonName}, Ep. {episodeNumber} {episodeName}",
-    "options": "Options",
-    "videoQuality": "Video Quality",
-    "auto": "Auto",
-    "selectedResolution": "Selected resolution {resolution}",
-    "selectResolution": "Select resolution {resolution}",
-    "captionsAndAudios": {
-      "title": "Captions and Audios",
-      "subtitles": "Subtitles",
-      "audios": "Audios",
-      "subtitle": "Subtitle",
-      "off": "Off",
-      "selectSubtitle": "Select subtitle {subtitle}",
-      "selectedSubtitle": "Selected subtitle {subtitle}",
-      "selectedAudio": "Selected audio {audio}",
-      "selectAudio": "Select audio {audio}"
+    "options": {
+      "title": "Options",
+      "resolution": {
+        "title": "Video Quality",
+        "auto": "Auto",
+        "selectedResolution": "Selected resolution {resolution}",
+        "selectResolution": "Select resolution {resolution}"
+      },
+      "subtitles": {
+        "title": "Subtitles",
+        "off": "Off",
+        "selectSubtitle": "Select subtitle {subtitle}",
+        "selectedSubtitle": "Selected subtitle {subtitle}"
+      },
+      "audio": {
+        "title": "Audios",
+        "selectedAudio": "Selected audio {audio}",
+        "selectAudio": "Select audio {audio}"
+      }
     },
     "pictureInPicture": "Enter Picture-in-Picture",
     "exitPictureInPicture": "Exit Picture-in-Picture",

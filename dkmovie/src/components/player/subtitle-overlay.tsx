@@ -15,7 +15,7 @@ export function SubtitleOverlay({
   currentTime,
   className,
 }: SubtitleOverlayProps) {
-  const t = useTranslations("playerPage.captionsAndAudios");
+  const t = useTranslations("playerPage.options.subtitles");
   const [cues, setCues] = useState<VTTCue[]>([]);
 
   useEffect(() => {
@@ -38,14 +38,14 @@ export function SubtitleOverlay({
   return (
     <div
       className={cn("pointer-events-none absolute p-4 text-center", className)}
-      aria-label={t("subtitle")}
+      aria-label={t("title")}
       aria-live="polite"
       aria-atomic="true"
     >
       <span
         className="
-          inline-block rounded-sm bg-black/60 px-3 py-1.5 text-2xl text-[clamp(1rem,4vw,2rem)] leading-snug text-white
-          backdrop-blur-lg md:text-4xl
+          inline-block rounded-sm bg-black/60 px-3 py-1.5 text-xl text-[clamp(1rem,4vw,2rem)] leading-snug text-white
+          backdrop-blur-lg lg:text-4xl
         "
         style={{
           textShadow: "0px 1px 2px rgba(0,0,0,0.8)",
