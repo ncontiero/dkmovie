@@ -1,8 +1,8 @@
 from ninja import Router
 from ninja import Schema
 
-from dkmovie.titles.services.concurrency import register_heartbeat
-from dkmovie.titles.services.concurrency import release_session
+from dkmovie.streaming.services.concurrency import register_heartbeat
+from dkmovie.streaming.services.concurrency import release_session
 
 router = Router()
 

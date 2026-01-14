@@ -4,10 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from ninja import Router
 
 from config.api.utils import ApiProcessError
-from dkmovie.streaming.services import get_hls_streaming_response
+from dkmovie.streaming.services.concurrency import is_session_valid
+from dkmovie.streaming.services.streaming import get_hls_streaming_response
 from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
-from dkmovie.titles.services.concurrency import is_session_valid
 
 router = Router()
 

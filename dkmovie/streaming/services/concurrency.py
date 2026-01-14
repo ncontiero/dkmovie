@@ -29,11 +29,7 @@ def clean_stale_sessions(user_id):
 
     # Update cache if changed
     if len(valid_sessions) != len(active_sessions):
-        cache.set(
-            key,
-            valid_sessions,
-            timeout=None,
-        )  # Set persists until explicit deletion
+        cache.set(key, valid_sessions, timeout=None)
 
     return valid_sessions
 
