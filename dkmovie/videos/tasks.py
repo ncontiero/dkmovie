@@ -10,12 +10,12 @@ from dkmovie.utils.tasks import default_task_params
 
 from .models import Video
 from .models import VideoTrack
-from .services import extract_audio_track
-from .services import extract_subtitle_track
-from .services import generate_video_sprites
-from .services import get_video_duration
-from .services import get_video_tracks_metadata
-from .services import process_video_to_hls
+from .services.video_metadata import get_video_duration
+from .services.video_processor import process_video_to_hls
+from .services.video_sprites_generator import generate_video_sprites
+from .services.video_tracks_processor import extract_audio_track
+from .services.video_tracks_processor import extract_subtitle_track
+from .services.video_tracks_processor import get_video_tracks_metadata
 
 logger = logging.getLogger(__name__)
 
