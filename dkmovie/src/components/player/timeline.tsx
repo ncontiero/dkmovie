@@ -1,7 +1,6 @@
 import type { VideoSprite } from "@/utils/types";
 import { type MouseEvent, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { Slider } from "../ui/slider";
