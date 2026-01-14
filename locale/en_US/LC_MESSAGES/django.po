@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-08 15:40+0000\n"
+"POT-Creation-Date: 2026-01-14 20:39+0000\n"
 "Language: en-US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -53,6 +53,12 @@ msgid "Playlist file not found."
 msgstr ""
 
 msgid "Video not found or not ready for streaming."
+msgstr ""
+
+msgid "Audio track not ready."
+msgstr ""
+
+msgid "Track not found."
 msgstr ""
 
 msgid "Invalid path."
@@ -853,6 +859,33 @@ msgstr ""
 msgid "Grid (WxH)"
 msgstr ""
 
+msgid "Media Track"
+msgstr ""
+
+msgid "Media Tracks (Audio/Subs)"
+msgstr ""
+
+msgid "Original Track"
+msgstr ""
+
+msgid "Non-Original Track"
+msgstr ""
+
+msgid "Audio Available"
+msgstr ""
+
+msgid "No Audio"
+msgstr ""
+
+msgid "Subtitle Available"
+msgstr ""
+
+msgid "No Subtitle"
+msgstr ""
+
+msgid "Source Indexes"
+msgstr ""
+
 msgid "General Information"
 msgstr ""
 
@@ -872,9 +905,6 @@ msgid "Content Name"
 msgstr ""
 
 msgid "Type"
-msgstr ""
-
-msgid "Sprites"
 msgstr ""
 
 msgid "Parent Link"
@@ -899,6 +929,27 @@ msgstr ""
 msgid "%s videos queued for reprocessing."
 msgstr ""
 
+msgid "Generate Sprite Sheets"
+msgstr ""
+
+#, python-format
+msgid "%s videos queued for sprite generation."
+msgstr ""
+
+msgid "Discover Tracks"
+msgstr ""
+
+#, python-format
+msgid "%s videos queued for track discovery."
+msgstr ""
+
+msgid "Process Tracks"
+msgstr ""
+
+#, python-format
+msgid "%s videos queued for track processing."
+msgstr ""
+
 msgid "File Info"
 msgstr ""
 
@@ -921,6 +972,25 @@ msgid "Thumb Size"
 msgstr ""
 
 msgid "Grid"
+msgstr ""
+
+msgid "Association"
+msgstr ""
+
+msgid "Media Assets"
+msgstr ""
+
+msgid ""
+"Upload processed files manually or set the source index for auto-extraction."
+msgstr ""
+
+msgid "Lang"
+msgstr ""
+
+msgid "Audio"
+msgstr ""
+
+msgid "Subtitle"
 msgstr ""
 
 msgid "Videos"
@@ -1010,4 +1080,38 @@ msgstr ""
 
 #, python-format
 msgid "Sprite for %s (%ss - %ss)"
+msgstr ""
+
+msgid "Unique identifier for the media track"
+msgstr ""
+
+msgid "The video this track belongs to"
+msgstr ""
+
+msgid "Language code (e.g., 'en', 'pt-br')"
+msgstr ""
+
+msgid "Label shown to the user (e.g., 'English', 'Português')"
+msgstr ""
+
+msgid "If true, this track is the original language track."
+msgstr ""
+
+msgid "The WebVTT subtitle file (.vtt)"
+msgstr ""
+
+msgid "The HLS manifest for the audio track (.m3u8)"
+msgstr ""
+
+msgid "Original FFmpeg stream index for the audio (if extracted)"
+msgstr ""
+
+msgid "Original FFmpeg stream index for the subtitle (if extracted)"
+msgstr ""
+
+msgid "Media Tracks"
+msgstr ""
+
+#, python-format
+msgid "Track %s"
 msgstr ""
