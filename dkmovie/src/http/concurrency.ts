@@ -1,10 +1,14 @@
 import { httpClient } from "./client";
 
 export async function sendHeartbeat(sessionId: string) {
-  return await httpClient.post<{ allowed: boolean }>(
-    "/streaming/sessions/heartbeat",
-    { session_id: sessionId },
-  );
+  try {
+    return await httpClient.post<{ allowed: boolean }>(
+      "/streaming/sessions/heartbeat",
+      { session_id: sessionId },
+    );
+  } catch {
+    return { allowed: false };
+  }
 }
 
 export async function releaseSession(sessionId: string) {

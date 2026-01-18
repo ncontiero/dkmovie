@@ -305,3 +305,7 @@ class VideoTrack(models.Model):
         if self.subtitle_file:
             components.append("Sub")
         return f"{self.label} [{'/'.join(components)}]"
+
+    @property
+    def has_audio(self) -> bool:
+        return bool(self.audio_playlist)

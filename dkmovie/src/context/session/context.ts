@@ -6,6 +6,7 @@ export interface SessionContextProps {
   session: Session | null;
   user: User | null;
   sessionError: Error | null;
+  streamSessionId: string | null;
   isAuthenticated: boolean;
   isLoadingSession: boolean;
   setSession: (newSession?: CurrentSessionResponse | null) => void;
@@ -16,6 +17,7 @@ export const SessionContext = createContext<SessionContextProps>({
   session: null,
   user: null,
   sessionError: null,
+  streamSessionId: null,
   isAuthenticated: false,
   isLoadingSession: true,
   setSession: () => {

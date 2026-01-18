@@ -1,18 +1,10 @@
 import type {
-  Episode,
+  DataToStream,
   HLSApiAudioTrack,
   HLSApiLevelProps,
   HLSApiProps,
-  TitleDetails,
 } from "@/utils/types";
-import {
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -33,7 +25,6 @@ import {
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { releaseSession, sendHeartbeat } from "@/http/concurrency";
 import { cn } from "@/lib/utils";
 import { Accordion } from "../ui/accordion";
 import { Button } from "../ui/button";
@@ -48,20 +39,11 @@ import { SubtitleOverlay } from "./subtitle-overlay";
 import { Timeline } from "./timeline";
 
 interface VideoPlayerProps {
-  readonly src: string;
-  readonly poster?: string;
+  readonly dataToStream: DataToStream;
   readonly className?: string;
-  readonly title: TitleDetails;
-  readonly episode?: Episode | null;
 }
 
-export function VideoPlayer({
-  title,
-  episode,
-  src,
-  poster,
-  className,
-}: VideoPlayerProps) {
+export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
   const t = useTranslations("playerPage");
   const navigate = useNavigate();
   const { isMobile } = useIsMobile();
@@ -81,12 +63,13 @@ export function VideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
 
-  const duration = episode?.duration || title.duration || 0;
-  const haveNextEpisode =
-    !!episode?.next_episode && episode.next_episode.is_video_available;
+  const { title, episode, next_episode: nextEpisode } = dataToStream;
+  const poster = episode?.still || title.cover || title.poster || undefined;
 
-  const tracks = episode?.tracks || title.tracks;
-  const subtitles = tracks.filter((t) => Boolean(t.subtitle_file));
+  const duration = episode?.duration || title.duration || 0;
+  const haveNextEpisode = !!nextEpisode && nextEpisode.is_video_available;
+
+  const subtitles = dataToStream.tracks.filter((t) => Boolean(t.subtitle_file));
 
   const currentSubtitleUrl = useMemo(() => {
     const current = subtitles.find((s) => s.language === currentSubtitle);
@@ -94,28 +77,7 @@ export function VideoPlayer({
     return current.subtitle_file;
   }, [currentSubtitle, subtitles]);
 
-  const sessionIdRef = useRef<string | null>(null);
-  const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
-  const [isSessionAllowed, setIsSessionAllowed] = useState(false);
-
-  const releaseCurrentSession = useCallback(async () => {
-    if (heartbeatIntervalRef.current) {
-      clearInterval(heartbeatIntervalRef.current);
-      heartbeatIntervalRef.current = null;
-    }
-
-    if (!sessionIdRef.current) return;
-    try {
-      await releaseSession(sessionIdRef.current);
-      sessionIdRef.current = null;
-    } catch (error) {
-      console.error("Failed to release session", error);
-    }
-  }, []);
-
   const closePlayer = useCallback(async () => {
-    await releaseCurrentSession();
     if (videoRef.current && isVideoPlaying) videoRef.current.pause();
     if (document.fullscreenElement) await document.exitFullscreen();
     await navigate({
@@ -123,51 +85,7 @@ export function VideoPlayer({
       params: { titleId: title.id },
       replace: true,
     });
-  }, [isVideoPlaying, navigate, releaseCurrentSession, title.id]);
-
-  const initSession = useEffectEvent(async () => {
-    if (typeof window !== "undefined") {
-      const STORAGE_KEY = "stream_session_id";
-      let sid = sessionStorage.getItem(STORAGE_KEY);
-      if (!sid) {
-        sid = crypto.randomUUID();
-        sessionStorage.setItem(STORAGE_KEY, sid);
-      }
-      sessionIdRef.current = sid;
-    }
-
-    const sessionId = sessionIdRef.current || "";
-    try {
-      const { allowed } = await sendHeartbeat(sessionId);
-      if (allowed) {
-        setIsSessionAllowed(true);
-        setVideoSrc(`${src}?session_id=${sessionId}`);
-
-        heartbeatIntervalRef.current = setInterval(async () => {
-          if (!sessionIdRef.current) return;
-          try {
-            const res = await sendHeartbeat(sessionId);
-            if (!res.allowed) {
-              setIsSessionAllowed(false);
-              toast.error(t("screensLimitReached"));
-              await closePlayer();
-            }
-          } catch {}
-        }, 30000);
-      } else {
-        setIsSessionAllowed(false);
-        toast.error(t("screensLimitReached"));
-        await closePlayer();
-      }
-    } catch (error) {
-      console.error("Failed to init session", error);
-      toast.error(t("onError"));
-    }
-  });
-
-  useEffect(() => {
-    initSession();
-  }, []);
+  }, [isVideoPlaying, navigate, title.id]);
 
   useEffect(() => {
     if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
@@ -303,16 +221,6 @@ export function VideoPlayer({
   );
 
   if (!title) return null;
-  if (!isSessionAllowed && !isLoading) {
-    return (
-      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-black text-white">
-        <h1 className="text-2xl font-bold">{t("screensLimitReached")}</h1>
-        <Button onClick={closePlayer} variant="secondary">
-          {t("close")}
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -343,7 +251,7 @@ export function VideoPlayer({
               {episode ? (
                 <p className="text-xl text-white/80">
                   {t("episodeDescription", {
-                    seasonName: episode.season.name,
+                    seasonName: dataToStream.season?.name,
                     episodeNumber: episode.number,
                     episodeName: episode.name,
                   })}
@@ -571,9 +479,9 @@ export function VideoPlayer({
             </Tooltip>
           </div>
           <Timeline
-            sprites={episode?.sprites || title.sprites}
+            sprites={dataToStream.sprites}
             titleId={title.id}
-            nextEpisodeId={episode?.next_episode?.id}
+            nextEpisodeId={nextEpisode?.id}
             haveNextEpisode={haveNextEpisode}
             currentTime={currentTime}
             duration={duration}
@@ -600,7 +508,7 @@ export function VideoPlayer({
         width="100%"
         height="100%"
         className="size-full min-h-screen min-w-screen"
-        src={videoSrc || undefined}
+        src={dataToStream.stream_manifest_url}
         controls={false}
         playsInline
         autoPlay
@@ -643,7 +551,7 @@ export function VideoPlayer({
           navigate({
             to: "/title/$titleId/watch",
             params: { titleId: title.id },
-            search: { episodeId: episode?.next_episode?.id },
+            search: { episodeId: nextEpisode?.id },
           });
         }}
         crossOrigin="anonymous"

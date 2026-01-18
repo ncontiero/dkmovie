@@ -11,14 +11,12 @@ class VideoSpriteSchema(ModelSchema):
 
 
 class VideoTrackSchema(ModelSchema):
+    has_audio: bool = False
+
     class Meta:
         model = VideoTrack
-        exclude = [
-            "id",
-            "video",
-            "audio_playlist",
-            "source_audio_index",
-            "source_subtitle_index",
-            "created_at",
-            "updated_at",
-        ]
+        fields = ["language", "label", "is_original", "subtitle_file"]
+
+    @staticmethod
+    def resolve_has_audio(track: VideoTrack) -> bool:
+        return track.has_audio

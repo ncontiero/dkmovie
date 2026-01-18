@@ -66,6 +66,7 @@
     "seeMoreTitlesOfTheGenre": "Veja mais títulos do gênero de {genre}"
   },
   "playerPage": {
+    "noStreamSession": "Nenhuma sessão de streaming encontrada. Por favor, tente novamente.",
     "selectEpisode": "Selecione um episódio para assistir",
     "episodeNotAvailable": "Este episódio não está disponível.",
     "episodeDescription": "{seasonName}, Ep. {episodeNumber} {episodeName}",

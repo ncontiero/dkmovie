@@ -4,7 +4,6 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from slugify import slugify
 
@@ -182,25 +181,8 @@ class Title(models.Model):
 
     @property
     def is_video_available(self) -> bool:
-        if self.content_type == self.ContentType.MOVIE:
-            video = self.video
-            return video.is_available if video else False
-        if self.content_type == self.ContentType.SERIES:
-            return self.seasons.filter(
-                Q(episodes__videos__hls_playlist__isnull=False)
-                & Q(episodes__videos__status=Video.Status.COMPLETED)
-                & ~Q(episodes__videos__hls_playlist=""),
-            ).exists()
-        return False
-
-    @property
-    def video(self):
-        return self.videos.first()
-
-    @property
-    def duration(self) -> int:
         video = self.video
-        return video.duration if video else 0
+        return video.is_available if video else False
 
     def get_first_episode(self):
         if self.content_type != self.ContentType.SERIES:
@@ -210,6 +192,18 @@ class Title(models.Model):
             .order_by("season__number", "number")
             .first()
         )
+
+    @property
+    def video(self) -> Video | None:
+        if self.content_type == self.ContentType.MOVIE:
+            return self.videos.first()
+        episode = self.get_first_episode()
+        return episode.video if episode else None
+
+    @property
+    def duration(self) -> int:
+        video = self.video
+        return video.duration if video else 0
 
     @property
     def tmdb_url(self) -> None | str:
@@ -365,7 +359,7 @@ class Episode(models.Model):
         return self.video.is_available if self.video else False
 
     @property
-    def video(self):
+    def video(self) -> Video | None:
         return self.videos.first()
 
     @property
@@ -373,7 +367,7 @@ class Episode(models.Model):
         video = self.video
         return video.duration if video else 0
 
-    def get_next_episode(self):
+    def get_next_episode(self) -> "Episode | None":
         return (
             Episode.objects.filter(
                 season__title=self.season.title,

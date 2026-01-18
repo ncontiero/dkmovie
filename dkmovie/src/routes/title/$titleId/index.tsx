@@ -133,8 +133,8 @@ function TitleComponent() {
 
   const durationFormatted = useMemo(() => {
     if (!title || !title.duration) return null;
-    const hours = Math.floor(title.duration / 60);
-    const minutes = title.duration % 60;
+    const hours = Math.floor(title.duration / 3600);
+    const minutes = Math.floor((title.duration % 3600) / 60);
     return `${hours}h ${minutes}m`;
   }, [title]);
 
@@ -224,12 +224,7 @@ function TitleComponent() {
                       </>
                     ) : null}
 
-                    {durationFormatted ? (
-                      <>
-                        <span className="text-muted-foreground/40">•</span>
-                        <span>{durationFormatted}</span>
-                      </>
-                    ) : title.content_type === "SERIES" ? (
+                    {title.content_type === "SERIES" ? (
                       <>
                         <span className="text-muted-foreground/40">•</span>
                         <span>
@@ -237,6 +232,11 @@ function TitleComponent() {
                             count: title.seasons?.length || 0,
                           })}
                         </span>
+                      </>
+                    ) : durationFormatted ? (
+                      <>
+                        <span className="text-muted-foreground/40">•</span>
+                        <span>{durationFormatted}</span>
                       </>
                     ) : null}
 

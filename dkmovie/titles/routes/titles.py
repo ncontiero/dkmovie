@@ -11,15 +11,15 @@ from ninja.pagination import paginate
 from config.api.utils import ApiProcessError
 from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
-from dkmovie.titles.schemas import BaseEpisodeSchema
-from dkmovie.titles.schemas import BaseTitleSchema
+from dkmovie.titles.schemas import EpisodeSchema
 from dkmovie.titles.schemas import TitleDetailSchema
 from dkmovie.titles.schemas import TitleFilterSchema
+from dkmovie.titles.schemas import TitleSchema
 
 router = Router()
 
 
-@router.get("/", response={200: list[BaseTitleSchema]})
+@router.get("/", response={200: list[TitleSchema]})
 @decorate_view(cache_page(3600))
 @paginate(PageNumberPagination, page_size=10)
 def get_titles(
@@ -54,7 +54,7 @@ def get_title(request, title_id: UUID):
 
 @router.get(
     "/{title_id}/season/{season_number}/episodes",
-    response={200: list[BaseEpisodeSchema]},
+    response={200: list[EpisodeSchema]},
 )
 @decorate_view(cache_page(3600))
 def get_episodes(request, title_id: UUID, season_number: int):

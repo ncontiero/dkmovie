@@ -38,15 +38,20 @@ export interface Title {
   description: string;
   content_type: ContentsType;
   release_date: string | null;
-  duration: number | null;
-  rating: number;
-  cast: string;
-  genres: Genre[];
   poster: string | null;
   cover: string | null;
-  trailer_url: string;
+  duration: number;
   is_video_available: boolean;
   first_episode_id: string | null;
+}
+
+export interface TitleDetails extends Title {
+  rating: number;
+  cast: string;
+  trailer_url: string | null;
+  genres: Genre[];
+  seasons: Season[];
+  tracks: VideoTrack[];
 }
 
 export interface VideoSprite {
@@ -67,12 +72,6 @@ export interface VideoTrack {
   subtitle_file: string | null;
 }
 
-export interface TitleDetails extends Title {
-  seasons: Season[];
-  sprites: VideoSprite[];
-  tracks: VideoTrack[];
-}
-
 export interface Episode {
   id: string;
   number: number;
@@ -80,14 +79,20 @@ export interface Episode {
   overview: string;
   still: string | null;
   air_date: string | null;
-  duration: number;
   rating: number;
+  duration: number;
   is_video_available: boolean;
-  season: Season;
+}
+
+export interface DataToStream {
+  title: Title;
+  season: Season | null;
+  episode: Episode | null;
   next_episode: Episode | null;
-  previous_episode: Episode | null;
-  sprites: VideoSprite[];
   tracks: VideoTrack[];
+  sprites: VideoSprite[];
+  session_id: string;
+  stream_manifest_url: string;
 }
 
 export interface PaginationDataProps<T = any> {

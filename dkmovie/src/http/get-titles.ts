@@ -1,5 +1,6 @@
 import type {
   ContentsType,
+  DataToStream,
   PaginationNumberQueryParams,
   Title,
   TitleDetails,
@@ -63,5 +64,16 @@ export async function getTitles(props: GetTitleProps = {}) {
 export async function getTitle(id: string) {
   return await httpClient.get<TitleDetails>(
     `/titles/${id}?lang=${getLangCookie()}`,
+  );
+}
+
+export async function getDataToStream(
+  titleId: string,
+  sessionId: string,
+  episodeId?: string,
+) {
+  const episodeQuery = episodeId ? `&episode_id=${episodeId}` : "";
+  return await httpClient.get<DataToStream>(
+    `/streaming/data_to_stream/${titleId}?session_id=${sessionId}${episodeQuery}&lang=${getLangCookie()}`,
   );
 }

@@ -6,7 +6,6 @@ from ninja import FilterLookup
 from ninja import FilterSchema
 from ninja import ModelSchema
 
-from dkmovie.videos.schemas import VideoSpriteSchema
 from dkmovie.videos.schemas import VideoTrackSchema
 
 from .models import Episode
@@ -21,10 +20,9 @@ class GenreSchema(ModelSchema):
         fields = ["slug", "name"]
 
 
-class BaseTitleSchema(ModelSchema):
-    genres: list[GenreSchema] = []
-    is_video_available: bool = False
+class TitleSchema(ModelSchema):
     duration: int = 0
+    is_video_available: bool = False
     first_episode_id: UUID | None = None
 
     class Meta:
@@ -35,20 +33,12 @@ class BaseTitleSchema(ModelSchema):
             "description",
             "content_type",
             "release_date",
-            "rating",
-            "cast",
             "poster",
             "cover",
+            "rating",
+            "cast",
             "trailer_url",
         ]
-
-    @staticmethod
-    def resolve_is_video_available(title: Title) -> bool:
-        return title.is_video_available
-
-    @staticmethod
-    def resolve_duration(title: Title) -> int:
-        return title.duration
 
     @staticmethod
     def resolve_first_episode_id(title: Title) -> UUID | None:
@@ -63,37 +53,26 @@ class SeasonSchema(ModelSchema):
         model = Season
         fields = [
             "id",
-            "number",
             "name",
+            "number",
             "overview",
             "poster",
             "air_date",
             "rating",
         ]
 
-    @staticmethod
-    def resolve_episodes_count(season: Season) -> int:
-        return season.episode_count
 
-
-class TitleDetailSchema(BaseTitleSchema):
+class TitleDetailSchema(TitleSchema):
+    genres: list[GenreSchema] = []
     seasons: list[SeasonSchema] = []
-    sprites: list[VideoSpriteSchema] = []
     tracks: list[VideoTrackSchema] = []
-
-    class Meta(BaseTitleSchema.Meta):
-        fields = BaseTitleSchema.Meta.fields
-
-    @staticmethod
-    def resolve_sprites(title: Title) -> list[VideoSpriteSchema]:
-        return title.video.get_sprites() if title.video else []
 
     @staticmethod
     def resolve_tracks(title: Title) -> list[VideoTrackSchema]:
         return title.video.get_tracks() if title.video else []
 
 
-class BaseEpisodeSchema(ModelSchema):
+class EpisodeSchema(ModelSchema):
     duration: int = 0
     is_video_available: bool = False
 
@@ -101,47 +80,13 @@ class BaseEpisodeSchema(ModelSchema):
         model = Episode
         fields = [
             "id",
-            "number",
             "name",
+            "number",
             "overview",
             "still",
             "air_date",
             "rating",
         ]
-
-    @staticmethod
-    def resolve_duration(episode: Episode) -> int:
-        return episode.duration
-
-    @staticmethod
-    def resolve_is_video_available(episode: Episode) -> bool:
-        return episode.is_video_available
-
-
-class EpisodeSchema(BaseEpisodeSchema):
-    season: SeasonSchema = None
-    next_episode: BaseEpisodeSchema | None = None
-    sprites: list[VideoSpriteSchema] = []
-    tracks: list[VideoTrackSchema] = []
-
-    class Meta(BaseEpisodeSchema.Meta):
-        fields = BaseEpisodeSchema.Meta.fields
-
-    @staticmethod
-    def resolve_season(episode: Episode) -> SeasonSchema:
-        return episode.season
-
-    @staticmethod
-    def resolve_next_episode(episode: Episode) -> Episode | None:
-        return episode.get_next_episode()
-
-    @staticmethod
-    def resolve_sprites(episode: Episode) -> list[VideoSpriteSchema]:
-        return episode.video.get_sprites() if episode.video else []
-
-    @staticmethod
-    def resolve_tracks(episode: Episode) -> list[VideoTrackSchema]:
-        return episode.video.get_tracks() if episode.video else []
 
 
 class TitleFilterSchema(FilterSchema):
