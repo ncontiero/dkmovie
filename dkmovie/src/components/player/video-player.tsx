@@ -488,6 +488,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
             onValueChange={(value) => {
               if (videoRef.current) videoRef.current.currentTime = value;
             }}
+            setIsToShowControls={setIsToShowControls}
             disabled={isLoading}
           />
         </div>

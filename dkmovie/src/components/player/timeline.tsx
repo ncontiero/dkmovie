@@ -1,5 +1,11 @@
 import type { VideoSprite } from "@/utils/types";
-import { type MouseEvent, useMemo, useRef, useState } from "react";
+import {
+  type MouseEvent,
+  type TouchEvent,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "use-intl";
@@ -14,6 +20,7 @@ interface TimelineProps {
   readonly haveNextEpisode?: boolean;
   readonly titleId: string;
   readonly nextEpisodeId?: string;
+  readonly setIsToShowControls: (value: boolean) => void;
 }
 
 interface SpriteThumbnailProps {
@@ -66,6 +73,7 @@ export function Timeline({
   haveNextEpisode,
   titleId,
   nextEpisodeId,
+  setIsToShowControls,
 }: TimelineProps) {
   const t = useTranslations("playerPage");
   const [hoverTime, setHoverTime] = useState(0);
@@ -113,17 +121,26 @@ export function Timeline({
     );
   }, [duration, hoverTime, showThumb, sprites]);
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (
+    e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>,
+  ) => {
     if (!containerRef.current) return;
+    setIsToShowControls(true);
     const rect = containerRef.current.getBoundingClientRect();
     setContainerWidth(rect.width);
 
-    const offsetX = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const offsetX = Math.max(0, Math.min(clientX - rect.left, rect.width));
     const percentage = offsetX / rect.width;
 
     setHoverPos(offsetX);
     setHoverTime(percentage * duration);
     setShowThumb(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowThumb(false);
+    setIsToShowControls(false);
   };
 
   const safeLeftPos = useMemo(() => {
@@ -164,8 +181,10 @@ export function Timeline({
         value={[currentTime]}
         max={duration}
         step={1}
+        onTouchMove={handleMouseMove}
+        onTouchEnd={handleMouseLeave}
         onMouseMove={handleMouseMove}
-        onMouseLeave={() => setShowThumb(false)}
+        onMouseLeave={handleMouseLeave}
         onValueChange={([value]) => {
           if (!disabled) onValueChange(value);
         }}
