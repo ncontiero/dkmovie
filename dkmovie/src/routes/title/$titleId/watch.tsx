@@ -148,6 +148,6 @@ function WatchTitleComponent() {
   return isSessionAllowed ? (
     <VideoPlayer dataToStream={dataToStream} />
   ) : (
-    lazyComponents.PendingComponent
+    <lazyComponents.PendingComponent />
   );
 }

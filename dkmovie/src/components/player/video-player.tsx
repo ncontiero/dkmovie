@@ -555,6 +555,18 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
           });
         }}
         crossOrigin="anonymous"
+        config={{
+          hls: {
+            xhrSetup(xhr) {
+              xhr.addEventListener("loadstart", () => {
+                setIsLoading(true);
+              });
+              xhr.addEventListener("loadend", () => {
+                setIsLoading(false);
+              });
+            },
+          },
+        }}
       />
     </div>
   );
