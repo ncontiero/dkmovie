@@ -9,7 +9,7 @@
     "export": "email export --outDir ../dkmovie/templates/emails && pnpm copy:subjects"
   },
   "dependencies": {
-    "@react-email/components": "1.0.4",
+    "@react-email/components": "1.0.6",
     "clsx": "2.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -18,7 +18,7 @@
   "devDependencies": {
     "@react-email/preview-server": "5.2.5",
     "@types/fs-extra": "^11.0.4",
-    "@types/react": "19.2.8",
+    "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "fs-extra": "^11.3.3",
     "react-email": "5.2.5",

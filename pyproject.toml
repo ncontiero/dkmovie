@@ -38,7 +38,7 @@ dependencies = [
 dev = [
   "coverage==7.13.1",
   "django-coverage-plugin==3.2.0",
-  "django-debug-toolbar==6.1.0",
+  "django-debug-toolbar==6.2.0",
   "django-extensions==4.1",
   "django-stubs[compatible-mypy]==5.2.8",
   "djlint==1.36.4",
