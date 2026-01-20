@@ -521,36 +521,37 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
             </Tooltip>
           </div>
           {currentMarker ? (
-            <div
-              className={cn(
-                "mt-auto mb-24 flex lg:mb-32",
-                currentMarker.label === "credits"
-                  ? `justify-end ${haveNextEpisode ? "" : "hidden"}`
-                  : "justify-start",
-              )}
-            >
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="
-                  size-auto bg-white px-4 py-3 text-black shadow-lg hover:bg-white/80 hover:text-black
-                  hover:shadow-white/30
-                "
-                disabled={currentMarker.label === "credits" && !haveNextEpisode}
-                onClick={() => {
-                  if (currentMarker.label === "credits") {
-                    goToNextEpisode();
-                    return;
-                  }
-
-                  if (!videoRef.current) return;
-                  videoRef.current.currentTime = currentMarker.end_time;
-                }}
+            currentMarker.label === "credits" && !haveNextEpisode ? null : (
+              <div
+                className={cn(
+                  "mt-auto mb-24 flex lg:mb-32",
+                  currentMarker.label === "credits"
+                    ? "justify-end"
+                    : "justify-start",
+                )}
               >
-                {t(`markers.${currentMarker.label}`)}
-              </Button>
-            </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="
+                    size-auto bg-white px-4 py-3 text-black shadow-lg hover:bg-white/80 hover:text-black
+                    hover:shadow-white/30
+                  "
+                  onClick={() => {
+                    if (currentMarker.label === "credits") {
+                      goToNextEpisode();
+                      return;
+                    }
+
+                    if (!videoRef.current) return;
+                    videoRef.current.currentTime = currentMarker.end_time;
+                  }}
+                >
+                  {t(`markers.${currentMarker.label}`)}
+                </Button>
+              </div>
+            )
           ) : null}
           <Timeline
             sprites={dataToStream.sprites}

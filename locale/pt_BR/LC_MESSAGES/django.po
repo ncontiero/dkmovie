@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-19 21:38+0000\n"
+"POT-Creation-Date: 2026-01-20 20:48+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1166,6 +1166,12 @@ msgstr "Marcador de vídeo"
 
 msgid "Video Markers"
 msgstr "Marcadores de vídeo"
+
+msgid "Marker with this label and start time already exists for this video"
+msgstr "Já existe um marcador com este rótulo e hora de início para este vídeo"
+
+msgid "End time must be greater than start time"
+msgstr "A hora de término deve ser maior que a hora de início"
 
 #, python-format
 msgid "Track %s"

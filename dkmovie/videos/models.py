@@ -348,6 +348,14 @@ class VideoMarker(models.Model):
             models.UniqueConstraint(
                 fields=["video", "label", "start_time"],
                 name="unique_marker_per_video_start_time",
+                violation_error_message=_(
+                    "Marker with this label and start time already exists for this video",  # noqa: E501
+                ),
+            ),
+            models.CheckConstraint(
+                condition=models.Q(end_time__gt=models.F("start_time")),
+                name="end_time_greater_than_start_time",
+                violation_error_message=_("End time must be greater than start time"),
             ),
         ]
 
