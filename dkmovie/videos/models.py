@@ -168,6 +168,9 @@ class Video(models.Model):
     def get_tracks(self):
         return self.tracks.all()
 
+    def get_markers(self):
+        return self.markers.all()
+
 
 class VideoSprite(models.Model):
     id = models.UUIDField(
@@ -309,3 +312,44 @@ class VideoTrack(models.Model):
     @property
     def has_audio(self) -> bool:
         return bool(self.audio_playlist)
+
+
+class VideoMarker(models.Model):
+    MARKER_TYPES = (
+        ("recap", _("Recap")),
+        ("intro", _("Intro")),
+        ("credits", _("Credits (Next Ep)")),
+    )
+
+    video = models.ForeignKey(
+        Video,
+        on_delete=models.CASCADE,
+        related_name="markers",
+        help_text=_("The video this marker belongs to"),
+    )
+    label = models.CharField(
+        max_length=20,
+        choices=MARKER_TYPES,
+        help_text=_("Type of marker"),
+    )
+
+    start_time = models.PositiveIntegerField(
+        help_text=_("Time in seconds when the event starts"),
+    )
+    end_time = models.PositiveIntegerField(
+        help_text=_("Time in seconds when the event ends"),
+    )
+
+    class Meta:
+        verbose_name = _("Video Marker")
+        verbose_name_plural = _("Video Markers")
+        ordering = ["video", "start_time"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video", "label", "start_time"],
+                name="unique_marker_per_video_start_time",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.video} - {self.label} ({self.start_time}-{self.end_time}s)"

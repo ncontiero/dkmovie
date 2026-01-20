@@ -14,6 +14,7 @@ from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
 
 from .models import Video
+from .models import VideoMarker
 from .models import VideoSprite
 from .models import VideoTrack
 from .tasks import discover_tracks_task
@@ -133,6 +134,14 @@ class VideoTrackInline(admin.TabularInline):
         )
 
 
+class VideoMarkerInline(admin.TabularInline):
+    model = VideoMarker
+    extra = 1
+    fields = ("label", "start_time", "end_time")
+    can_delete = True
+    show_change_link = True
+
+
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
     list_display = (
@@ -146,7 +155,7 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ("status", "content_type", "created_at")
     search_fields = ("id", "source_file")
     readonly_fields = ("id", "created_at", "updated_at", "link_to_parent_large")
-    inlines = [VideoSpriteInline, VideoTrackInline]
+    inlines = [VideoSpriteInline, VideoTrackInline, VideoMarkerInline]
     actions = [
         "retry_processing",
         "generate_sprites",
@@ -464,3 +473,16 @@ class VideoTrackAdmin(TranslationAdmin):
     @admin.display(description=_("Subtitle"), boolean=True)
     def has_subtitle(self, obj):
         return bool(obj.subtitle_file)
+
+
+@admin.register(VideoMarker)
+class VideoMarkerAdmin(admin.ModelAdmin):
+    list_display = ("label", "video_link", "start_time", "end_time")
+    list_filter = ("label", "start_time", "end_time")
+    search_fields = ("video__id", "video__source_file")
+    autocomplete_fields = ["video"]
+
+    @admin.display(description=_("Video"), ordering="video")
+    def video_link(self, obj):
+        url = reverse("admin:videos_video_change", args=[obj.video.id])
+        return format_html('<a href="{}">{}</a>', url, str(obj.video))

@@ -1,5 +1,6 @@
 from ninja import ModelSchema
 
+from .models import VideoMarker
 from .models import VideoSprite
 from .models import VideoTrack
 
@@ -20,3 +21,9 @@ class VideoTrackSchema(ModelSchema):
     @staticmethod
     def resolve_has_audio(track: VideoTrack) -> bool:
         return track.has_audio
+
+
+class VideoMarkerSchema(ModelSchema):
+    class Meta:
+        model = VideoMarker
+        exclude = ["id", "video"]

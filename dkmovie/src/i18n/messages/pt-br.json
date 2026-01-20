@@ -70,6 +70,11 @@
     "selectEpisode": "Selecione um episódio para assistir",
     "episodeNotAvailable": "Este episódio não está disponível.",
     "episodeDescription": "{seasonName}, Ep. {episodeNumber} {episodeName}",
+    "markers": {
+      "recap": "Pular recapitulação",
+      "intro": "Pular introdução",
+      "credits": "Ir para o próximo episódio"
+    },
     "options": {
       "title": "Opções",
       "resolution": {

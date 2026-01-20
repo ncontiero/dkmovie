@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-14 20:45+0000\n"
+"POT-Creation-Date: 2026-01-19 21:38+0000\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,17 +38,20 @@ msgstr "O limite de telas simultâneas foi atingido."
 msgid "The title does not exist."
 msgstr "O título não existe."
 
-msgid "This title is not a movie."
-msgstr "Este título não é um filme."
-
 msgid "This title is not available for streaming."
 msgstr "Este título não está disponível para streaming."
+
+msgid "Episode ID is required for series titles."
+msgstr "O ID do episódio é necessário para títulos de séries."
 
 msgid "The episode does not exist."
 msgstr "O episódio não existe."
 
 msgid "This episode is not available for streaming."
 msgstr "Este episódio não está disponível para streaming."
+
+msgid "This title is not a movie."
+msgstr "Este título não é um filme."
 
 msgid "Playlist file not found."
 msgstr "Arquivo de playlist não encontrado."
@@ -1136,6 +1139,33 @@ msgstr "Índice de stream FFmpeg original para a legenda (se extraído)"
 
 msgid "Media Tracks"
 msgstr "Faixas de Mídia"
+
+msgid "Recap"
+msgstr "Recapitulação"
+
+msgid "Intro"
+msgstr "Introdução"
+
+msgid "Credits (Next Ep)"
+msgstr "Créditos (Próximo Ep.)"
+
+msgid "The video this marker belongs to"
+msgstr "O vídeo ao qual este marcador pertence"
+
+msgid "Type of marker"
+msgstr "Tipo de marcador"
+
+msgid "Time in seconds when the event starts"
+msgstr "Tempo em segundos em que o evento começa"
+
+msgid "Time in seconds when the event ends"
+msgstr "Tempo em segundos em que o evento termina"
+
+msgid "Video Marker"
+msgstr "Marcador de vídeo"
+
+msgid "Video Markers"
+msgstr "Marcadores de vídeo"
 
 #, python-format
 msgid "Track %s"

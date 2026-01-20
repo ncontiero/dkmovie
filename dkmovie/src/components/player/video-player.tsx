@@ -3,6 +3,7 @@ import type {
   HLSApiAudioTrack,
   HLSApiLevelProps,
   HLSApiProps,
+  VideoMarker,
 } from "@/utils/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
@@ -60,6 +61,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
   const [audioTracks, setAudioTracks] = useState<HLSApiAudioTrack[]>([]);
   const [currentAudioTrack, setCurrentAudioTrack] = useState<number>(0);
   const [currentSubtitle, setCurrentSubtitle] = useState<string | null>(null);
+  const [currentMarker, setCurrentMarker] = useState<VideoMarker | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
 
@@ -70,6 +72,10 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
   const haveNextEpisode = !!nextEpisode && nextEpisode.is_video_available;
 
   const subtitles = dataToStream.tracks.filter((t) => Boolean(t.subtitle_file));
+  const markers = useMemo(
+    () => dataToStream.markers || [],
+    [dataToStream.markers],
+  );
 
   const currentSubtitleUrl = useMemo(() => {
     const current = subtitles.find((s) => s.language === currentSubtitle);
@@ -91,6 +97,20 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
     if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
     document.documentElement.requestFullscreen().catch(() => {});
   }, [isMobile]);
+
+  const handleTimeUpdate = useCallback(
+    (timePlayed: number) => {
+      setCurrentTime(timePlayed);
+
+      if (markers.length === 0) return;
+      const activeMarker = markers.find(
+        (marker) =>
+          timePlayed >= marker.start_time && timePlayed < marker.end_time,
+      );
+      setCurrentMarker(activeMarker || null);
+    },
+    [markers],
+  );
 
   const seekForward = useCallback(() => {
     if (!videoRef.current) return;
@@ -219,6 +239,28 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
     },
     [audioTracks],
   );
+
+  const goToNextEpisode = useCallback(() => {
+    if (episode && !haveNextEpisode) {
+      toast.warning(t("noNextEpisode"));
+      closePlayer();
+      return;
+    }
+
+    navigate({
+      to: "/title/$titleId/watch",
+      params: { titleId: title.id },
+      search: { episodeId: nextEpisode?.id },
+    });
+  }, [
+    closePlayer,
+    episode,
+    haveNextEpisode,
+    navigate,
+    nextEpisode?.id,
+    t,
+    title.id,
+  ]);
 
   if (!title) return null;
 
@@ -478,6 +520,38 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
               <TooltipContent>{t("seekForward")}</TooltipContent>
             </Tooltip>
           </div>
+          {currentMarker ? (
+            <div
+              className={cn(
+                "mt-auto mb-24 flex lg:mb-32",
+                currentMarker.label === "credits"
+                  ? `justify-end ${haveNextEpisode ? "" : "hidden"}`
+                  : "justify-start",
+              )}
+            >
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="
+                  size-auto bg-white px-4 py-3 text-black shadow-lg hover:bg-white/80 hover:text-black
+                  hover:shadow-white/30
+                "
+                disabled={currentMarker.label === "credits" && !haveNextEpisode}
+                onClick={() => {
+                  if (currentMarker.label === "credits") {
+                    goToNextEpisode();
+                    return;
+                  }
+
+                  if (!videoRef.current) return;
+                  videoRef.current.currentTime = currentMarker.end_time;
+                }}
+              >
+                {t(`markers.${currentMarker.label}`)}
+              </Button>
+            </div>
+          ) : null}
           <Timeline
             sprites={dataToStream.sprites}
             titleId={title.id}
@@ -541,20 +615,8 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
         volume={volume}
         onPlay={() => setIsVideoPlaying(true)}
         onPause={() => setIsVideoPlaying(false)}
-        onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-        onEnded={() => {
-          if (episode && !haveNextEpisode) {
-            toast.warning(t("noNextEpisode"));
-            closePlayer();
-            return;
-          }
-
-          navigate({
-            to: "/title/$titleId/watch",
-            params: { titleId: title.id },
-            search: { episodeId: nextEpisode?.id },
-          });
-        }}
+        onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget.currentTime)}
+        onEnded={goToNextEpisode}
         crossOrigin="anonymous"
         config={{
           hls: {

@@ -84,6 +84,12 @@ export interface Episode {
   is_video_available: boolean;
 }
 
+export interface VideoMarker {
+  label: "recap" | "intro" | "credits";
+  start_time: number;
+  end_time: number;
+}
+
 export interface DataToStream {
   title: Title;
   season: Season | null;
@@ -91,6 +97,7 @@ export interface DataToStream {
   next_episode: Episode | null;
   tracks: VideoTrack[];
   sprites: VideoSprite[];
+  markers: VideoMarker[];
   session_id: string;
   stream_manifest_url: string;
 }

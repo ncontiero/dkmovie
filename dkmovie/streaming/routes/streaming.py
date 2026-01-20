@@ -16,6 +16,7 @@ from dkmovie.titles.models import Title
 from dkmovie.titles.schemas import EpisodeSchema
 from dkmovie.titles.schemas import SeasonSchema
 from dkmovie.titles.schemas import TitleSchema
+from dkmovie.videos.schemas import VideoMarkerSchema
 from dkmovie.videos.schemas import VideoSpriteSchema
 from dkmovie.videos.schemas import VideoTrackSchema
 
@@ -29,6 +30,7 @@ class DataToStreamSchema(Schema):
     next_episode: EpisodeSchema | None = None
     tracks: list[VideoTrackSchema] = []
     sprites: list[VideoSpriteSchema] = []
+    markers: list[VideoMarkerSchema] = []
     session_id: UUID
     stream_manifest_url: str
 
@@ -52,6 +54,7 @@ def get_data_to_stream(
         title = Title.objects.prefetch_related(
             "videos__tracks",
             "videos__sprites",
+            "videos__markers",
             "seasons__episodes",
         ).get(id=title_id, status=Title.Status.RELEASED)
     except Title.DoesNotExist as e:
@@ -66,6 +69,7 @@ def get_data_to_stream(
             title=title,
             tracks=video.get_tracks() if video else [],
             sprites=video.get_sprites() if video else [],
+            markers=video.get_markers() if video else [],
             session_id=session_id,
             stream_manifest_url=reverse(
                 "api-1.0.0:stream_title",
@@ -94,9 +98,10 @@ def get_data_to_stream(
         title=title,
         season=season,
         episode=episode,
+        next_episode=episode.get_next_episode(),
         tracks=video.get_tracks() if video else [],
         sprites=video.get_sprites() if video else [],
-        next_episode=episode.get_next_episode(),
+        markers=video.get_markers() if video else [],
         session_id=session_id,
         stream_manifest_url=reverse(
             "api-1.0.0:stream_episode",
