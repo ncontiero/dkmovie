@@ -8,6 +8,7 @@ import {
   ContentCarousel,
 } from "@/components/content-carousel";
 import { HeroSection, HeroSectionSkeleton } from "@/components/hero-section";
+import { getWatchHistory } from "@/http/account/history";
 import { getTitles } from "@/http/get-titles";
 import { generateMetadata } from "@/utils/metadata";
 import { getPopularMoviesOrSeriesQueryOptions } from "@/utils/query-options/titles";
@@ -15,6 +16,12 @@ import { getPopularMoviesOrSeriesQueryOptions } from "@/utils/query-options/titl
 const recentlyReleasedQueryOptions = queryOptions({
   queryKey: ["content", "recentlyReleased"],
   queryFn: () => getTitles(),
+  staleTime: 1000 * 60 * 60,
+});
+
+const watchHistoryQueryOptions = queryOptions({
+  queryKey: ["content", "watchHistory"],
+  queryFn: () => getWatchHistory(),
   staleTime: 1000 * 60 * 60,
 });
 
@@ -28,6 +35,7 @@ export const Route = createFileRoute("/")({
     queryClient.ensureQueryData(recentlyReleasedQueryOptions);
     queryClient.ensureQueryData(popularMoviesQueryOptions);
     queryClient.ensureQueryData(popularSeriesQueryOptions);
+    queryClient.ensureQueryData(watchHistoryQueryOptions);
   },
   head: ({
     match: {
@@ -55,6 +63,7 @@ function HomeComponent() {
   );
   const { data: movies } = useSuspenseQuery(popularMoviesQueryOptions);
   const { data: series } = useSuspenseQuery(popularSeriesQueryOptions);
+  const { data: watchHistory } = useSuspenseQuery(watchHistoryQueryOptions);
 
   const heroSectionTitles = useMemo(() => {
     const titles = [...recentlyReleased, ...movies, ...series];
@@ -89,6 +98,12 @@ function HomeComponent() {
             title={t("recentlyReleased")}
             items={recentlyReleased}
           />
+          {watchHistory.length > 0 ? (
+            <ContentCarousel
+              title={t("continueWatching")}
+              items={watchHistory}
+            />
+          ) : null}
         </div>
       </main>
     </AnimatedRoute>

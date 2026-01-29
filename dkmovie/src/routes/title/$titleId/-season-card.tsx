@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIntl } from "@/hooks/use-intl";
+import { useSession } from "@/hooks/use-session";
 import { getSeasonEpisodes } from "@/http/get-episodes";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ interface EpisodeCardProps {
 function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
   const { lang } = useIntl();
   const commonT = useTranslations("common");
+  const { isAuthenticated, user } = useSession();
 
   const releaseDate = useMemo(() => {
     if (!episode.air_date) return null;
@@ -40,6 +42,19 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
     const minutes = Math.floor((duration % 3600) / 60);
     return `${hoursFormatted}${minutes}m`;
   }, [episode]);
+
+  const watchedPercentage = useMemo(() => {
+    if (!isAuthenticated || !user) return 0;
+    if (!episode.duration || episode.duration === 0) return 0;
+
+    const watchedEpisode = user.history.find(
+      (entry) => entry.episode?.id === episode.id,
+    );
+    const watchedSeconds = watchedEpisode ? watchedEpisode.watched_seconds : 0;
+    if (watchedSeconds === 0) return 0;
+
+    return Math.min((watchedSeconds / episode.duration) * 100, 100);
+  }, [episode.duration, episode.id, isAuthenticated, user]);
 
   return (
     <Link
@@ -73,6 +88,24 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
           ) : (
             <div className="to-primary/40 size-full bg-linear-to-bl from-transparent lg:rounded-lg lg:rounded-r-none" />
           )}
+          {watchedPercentage > 0 ? (
+            <div
+              className="
+                bg-secondary absolute inset-x-0 bottom-0 h-2.5 duration-200 group-hover:inset-x-2
+                group-hover:-translate-y-2 lg:group-hover:rounded-lg lg:group-focus-visible:inset-x-2
+                lg:group-focus-visible:-translate-y-2 lg:group-focus-visible:rounded-lg
+              "
+            >
+              <div
+                className="
+                  bg-primary size-full duration-200 lg:group-hover:rounded-lg lg:group-focus-visible:rounded-lg
+                "
+                style={{
+                  width: `${watchedPercentage}%`,
+                }}
+              />
+            </div>
+          ) : null}
           <div
             className={cn(
               `

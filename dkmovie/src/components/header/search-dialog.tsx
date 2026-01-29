@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { useSchemaTranslations } from "@/hooks/use-schema-translations";
-import { type SearchDialogSchema, searchDialogSchema } from "@/schemas/search";
+import { type SearchDialogSchema, searchDialogSchema } from "@/schemas/lists";
 import { Button } from "../ui/button";
 import {
   Dialog,

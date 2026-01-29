@@ -7,8 +7,8 @@ export const genresQueryOptions = queryOptions({
   staleTime: 1000 * 60 * 60,
 });
 
-export const searchGenresQueryOptions = queryOptions({
-  queryKey: ["content", "search", "genres"],
+export const genresListQueryOptions = queryOptions({
+  queryKey: ["content", "genres", "list"],
   queryFn: () => getGenres(),
   staleTime: 1000 * 60 * 60,
 });

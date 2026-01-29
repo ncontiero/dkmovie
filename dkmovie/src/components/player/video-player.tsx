@@ -7,6 +7,7 @@ import type {
 } from "@/utils/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Maximize2,
@@ -26,6 +27,8 @@ import {
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useSession } from "@/hooks/use-session";
+import { updateWatchHistory } from "@/http/account/history";
 import { cn } from "@/lib/utils";
 import { Accordion } from "../ui/accordion";
 import { Button } from "../ui/button";
@@ -42,13 +45,21 @@ import { Timeline } from "./timeline";
 interface VideoPlayerProps {
   readonly dataToStream: DataToStream;
   readonly className?: string;
+  readonly timeToStart?: number;
 }
 
-export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
+export function VideoPlayer({
+  dataToStream,
+  className,
+  timeToStart = 0,
+}: VideoPlayerProps) {
   const t = useTranslations("playerPage");
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user } = useSession();
   const { isMobile } = useIsMobile();
   const [isLoading, setIsLoading] = useState(true);
+  const [onCanPlay, setOnCanPlay] = useState(false);
   const [isToShowControls, setIsToShowControls] = useState(false);
   const controlsTimeoutRef = useRef<number | null>(null);
   const [isInFullscreen, setIsInFullscreen] = useState(false);
@@ -64,6 +75,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
   const [currentMarker, setCurrentMarker] = useState<VideoMarker | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
+  const lastSavedTime = useRef(timeToStart);
 
   const { title, episode, next_episode: nextEpisode } = dataToStream;
   const poster = episode?.still || title.cover || title.poster || undefined;
@@ -84,32 +96,86 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
   }, [currentSubtitle, subtitles]);
 
   const closePlayer = useCallback(async () => {
-    if (videoRef.current && isVideoPlaying) videoRef.current.pause();
+    if (videoRef.current && onCanPlay) {
+      const video = videoRef.current;
+      if (isVideoPlaying) video.pause();
+      const currentTime = Math.floor(video.currentTime);
+      updateWatchHistory(title.id, currentTime, episode?.id)
+        .then((newHistory) => {
+          queryClient.setQueryData(["session", "me"], {
+            ...user,
+            history: newHistory,
+          });
+        })
+        .catch(console.error);
+    }
     if (document.fullscreenElement) await document.exitFullscreen();
     await navigate({
       to: "/title/$titleId",
       params: { titleId: title.id },
       replace: true,
     });
-  }, [isVideoPlaying, navigate, title.id]);
+  }, [
+    episode?.id,
+    isVideoPlaying,
+    navigate,
+    onCanPlay,
+    queryClient,
+    title.id,
+    user,
+  ]);
 
   useEffect(() => {
     if (!videoRef.current || !isMobile || !document.fullscreenEnabled) return;
     document.documentElement.requestFullscreen().catch(() => {});
   }, [isMobile]);
 
+  useEffect(() => {
+    if (onCanPlay && videoRef.current) {
+      videoRef.current.currentTime = timeToStart;
+    }
+  }, [onCanPlay, timeToStart]);
+
+  const updateHistory = useCallback(
+    (
+      titleId: string,
+      timePlayed: number,
+      episodeId?: string,
+      watched?: boolean,
+    ) => {
+      updateWatchHistory(titleId, timePlayed, episodeId, watched).catch(
+        console.error,
+      );
+      lastSavedTime.current = timePlayed;
+    },
+    [],
+  );
+
   const handleTimeUpdate = useCallback(
     (timePlayed: number) => {
+      if (!onCanPlay) return;
       setCurrentTime(timePlayed);
 
-      if (markers.length === 0) return;
-      const activeMarker = markers.find(
-        (marker) =>
-          timePlayed >= marker.start_time && timePlayed < marker.end_time,
-      );
-      setCurrentMarker(activeMarker || null);
+      let activeMarker: VideoMarker | undefined;
+      if (markers.length > 0) {
+        activeMarker = markers.find(
+          (marker) =>
+            timePlayed >= marker.start_time && timePlayed < marker.end_time,
+        );
+        setCurrentMarker(activeMarker || null);
+      }
+
+      const timePlayedFloor = Math.floor(timePlayed);
+      if (Math.abs(timePlayedFloor - lastSavedTime.current) >= 15) {
+        updateHistory(
+          title.id,
+          timePlayedFloor,
+          episode?.id,
+          activeMarker?.label === "credits",
+        );
+      }
     },
-    [markers],
+    [episode?.id, markers, onCanPlay, title.id, updateHistory],
   );
 
   const seekForward = useCallback(() => {
@@ -247,6 +313,12 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
       return;
     }
 
+    if (videoRef.current) {
+      const timePlayed = Math.floor(videoRef.current.currentTime);
+      updateWatchHistory(title.id, timePlayed, episode?.id, true).catch(
+        console.error,
+      );
+    }
     navigate({
       to: "/title/$titleId/watch",
       params: { titleId: title.id },
@@ -261,6 +333,15 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
     t,
     title.id,
   ]);
+
+  const onEnded = useCallback(() => {
+    if (title.content_type !== "SERIES") {
+      closePlayer();
+      return;
+    }
+
+    goToNextEpisode();
+  }, [closePlayer, goToNextEpisode, title.content_type]);
 
   if (!title) return null;
 
@@ -310,7 +391,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                         variant="ghost"
                         size="icon"
                         className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
-                        disabled={isLoading}
+                        disabled={!onCanPlay}
                       >
                         <Settings className="md:size-8" />
                       </Button>
@@ -348,7 +429,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                       "size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white max-lg:hidden",
                       isInFullscreen && "cursor-not-allowed opacity-50",
                     )}
-                    disabled={isLoading}
+                    disabled={!onCanPlay}
                     onClick={() => {
                       if (isInFullscreen) return;
                       setIsInPictureInPicture((prev) => !prev);
@@ -379,7 +460,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                         variant="ghost"
                         size="icon"
                         className="size-auto rounded-full p-2 text-white/80 hover:bg-white/40 hover:text-white"
-                        disabled={isLoading}
+                        disabled={!onCanPlay}
                       >
                         {volume > 0.5 ? (
                           <Volume2 className="md:size-8" />
@@ -404,6 +485,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                     className="cursor-pointer"
                     onValueChange={([value]) => setVolume(value)}
                     aria-label={t("volume")}
+                    disabled={!onCanPlay}
                   />
                 </PopoverContent>
               </Popover>
@@ -472,7 +554,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                   className="size-auto rounded-full p-4 hover:scale-110 hover:bg-white/40"
                   aria-label={t("seekBack")}
                   onClick={seekBack}
-                  disabled={isLoading}
+                  disabled={!onCanPlay}
                 >
                   <StepBack className="size-10 fill-white stroke-white md:size-20" />
                 </Button>
@@ -490,8 +572,8 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                   ? videoRef.current.play()
                   : videoRef.current.pause();
               }}
-              disabled={isLoading}
-              loading={isLoading}
+              disabled={isLoading || !onCanPlay}
+              loading={isLoading || !onCanPlay}
               loadingIconClassName="size-10 md:size-20"
             >
               {isVideoPlaying ? (
@@ -512,7 +594,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
                   className="size-auto rounded-full p-4 hover:scale-110 hover:bg-white/40"
                   aria-label={t("seekForward")}
                   onClick={seekForward}
-                  disabled={isLoading}
+                  disabled={!onCanPlay}
                 >
                   <StepForward className="size-10 fill-white stroke-white md:size-20" />
                 </Button>
@@ -564,7 +646,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
               if (videoRef.current) videoRef.current.currentTime = value;
             }}
             setIsToShowControls={setIsToShowControls}
-            disabled={isLoading}
+            disabled={!onCanPlay}
           />
         </div>
       </div>
@@ -610,6 +692,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
           }
 
           setIsLoading(false);
+          setOnCanPlay(true);
         }}
         pip={isInPictureInPicture}
         onLeavePictureInPicture={() => setIsInPictureInPicture(false)}
@@ -617,7 +700,7 @@ export function VideoPlayer({ dataToStream, className }: VideoPlayerProps) {
         onPlay={() => setIsVideoPlaying(true)}
         onPause={() => setIsVideoPlaying(false)}
         onTimeUpdate={(e) => handleTimeUpdate(e.currentTarget.currentTime)}
-        onEnded={goToNextEpisode}
+        onEnded={onEnded}
         crossOrigin="anonymous"
         config={{
           hls: {

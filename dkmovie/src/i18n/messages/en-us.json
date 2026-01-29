@@ -15,6 +15,8 @@
     "resetPassword": "Reset Password",
     "myAccount": "My Account",
     "security": "Security",
+    "myList": "My List",
+    "search": "Search",
     "errors": {
       "BadRequest": "Bad Request",
       "Forbidden": "Forbidden",
@@ -36,7 +38,6 @@
     }
   },
   "heroSection": {
-    "watchNow": "Watch Now",
     "moreInformation": "More Information"
   },
   "homePage": {
@@ -44,12 +45,29 @@
     "checkLater": "Please check back later.",
     "trending": "Trending",
     "popularSeries": "Popular Series",
-    "recentlyReleased": "Recently Released"
+    "recentlyReleased": "Recently Released",
+    "continueWatching": "Continue Watching"
   },
-  "titlePage": {
-    "watch": "Watch",
+  "myListButton": {
     "myList": "My List",
     "addToMyList": "Add to my list",
+    "removeFromMyList": "Remove from my list",
+    "addToMyListSuccess": "Added to My List",
+    "removeFromMyListSuccess": "Removed from My List",
+    "errors": {
+      "addToMyListFailed": "Failed to add to My List. Please try again.",
+      "removeFromMyListFailed": "Failed to remove from My List. Please try again."
+    }
+  },
+  "watchButton": {
+    "watch": "Watch",
+    "watchTitle": "Watch {title}",
+    "continue": "Continue",
+    "continueWatchingTitle": "Continue Watching {title}",
+    "continueWatchingEpisode": "Continue S{seasonNumber}, Ep. {episodeNumber}",
+    "continueWatchingEpisodeTitle": "Continue Watching {title} S{seasonNumber}, Ep. {episodeNumber}"
+  },
+  "titlePage": {
     "seasonsCount": "{count, plural, =0 {No seasons found} =1 {1 season} other {# seasons}}",
     "details": "Details",
     "viewDetails": "View details for {title}",
@@ -127,15 +145,7 @@
       "description": "Search for movies and series",
       "searchIsRequired": "Enter a term to search"
     },
-    "titlesFound": "{count, plural, =0 {No titles found} =1 {1 title found} other {# titles found}}",
-    "noTitles": "No titles found.",
-    "filters": "Filters",
-    "contentType": "Content type",
-    "movies": "Movies",
-    "series": "Series",
-    "filterGenre": "Filter by genre",
-    "searchGenre": "Search genre",
-    "noGenres": "No genres found."
+    "titlesFound": "{count, plural, =0 {No titles found} =1 {1 title found} other {# titles found}}"
   },
   "pagination": {
     "label": "Pagination",
@@ -398,6 +408,18 @@
       }
     }
   },
+  "listsContainer": {
+    "filters": "Filters {count}",
+    "filterGenre": "Filter by genre {count}",
+    "searchGenre": "Search genre",
+    "noGenres": "No genres found.",
+    "contentType": "Content type {type}",
+    "movies": "Movies",
+    "series": "Series"
+  },
+  "myListPage": {
+    "title": "{count, plural, =0 {No titles on my list} other {My List (#)}}"
+  },
   "pageError": {
     "return": "Return to Homepage",
     "400": {
@@ -421,6 +443,7 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "myAccount": "My Account",
+    "myList": "My List",
     "loading": "Loading",
     "seeMore": "See more",
     "notAvailable": "Not available",

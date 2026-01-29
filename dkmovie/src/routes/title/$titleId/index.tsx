@@ -1,19 +1,15 @@
 import { useMemo, useState } from "react";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  isNotFound,
-  Link,
-  notFound,
-} from "@tanstack/react-router";
-import { Play, Plus, Star } from "lucide-react";
+import { createFileRoute, isNotFound, notFound } from "@tanstack/react-router";
+import { Star } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { AnimatedRoute } from "@/components/animated-route";
 import { ContentCarousel } from "@/components/content-carousel";
+import { MyListButton } from "@/components/my-list-button";
 import { Accordion } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { Link as StyledLink } from "@/components/ui/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WatchButton } from "@/components/watch-button";
 import { getTitle, getTitles } from "@/http/get-titles";
 import { titleIdSchema } from "@/schemas/routes/title";
 import { isHttpNotFound } from "@/utils/errors";
@@ -128,7 +124,6 @@ function TitleComponent() {
   );
   const [selectedSeason, setSelectedSeason] = useState<string>();
 
-  const commonT = useTranslations("common");
   const t = useTranslations("titlePage");
 
   const durationFormatted = useMemo(() => {
@@ -275,43 +270,15 @@ function TitleComponent() {
                   </p>
 
                   <div className="mt-8 flex flex-wrap gap-4">
-                    <Button
-                      size="lg"
-                      className={`
-                        shadow-primary/20 xs:w-auto hover:shadow-primary/40 h-12 w-full px-8 text-base font-semibold
-                        shadow-xl hover:scale-105
-                      `}
-                      asChild={title.is_video_available}
-                      disabled={!title.is_video_available}
-                    >
-                      {title.is_video_available ? (
-                        <Link
-                          to="/title/$titleId/watch"
-                          params={{ titleId }}
-                          search={{
-                            episodeId: title.first_episode_id || undefined,
-                          }}
-                        >
-                          <Play className="size-5 fill-current" />
-                          {t("watch")}
-                        </Link>
-                      ) : (
-                        <>
-                          <Play className="size-5 fill-current" />
-                          {commonT("notAvailable")}
-                        </>
-                      )}
-                    </Button>
+                    <WatchButton title={title} />
 
-                    <Button
-                      type="button"
+                    <MyListButton
+                      titleId={titleId}
                       variant="outline"
                       size="lg"
                       className="xs:w-auto h-12 w-full px-6 backdrop-blur-md hover:scale-105"
-                    >
-                      <Plus className="size-5" />
-                      {t("myList")}
-                    </Button>
+                      iconClassName="size-5"
+                    />
                   </div>
                 </div>
               </div>

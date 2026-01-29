@@ -4,9 +4,24 @@ export interface SessionUser {
   has_usable_password: boolean;
 }
 
+export interface WatchHistoryEpisode {
+  id: string;
+  season_number: number;
+  episode_number: number;
+}
+
+export interface WatchHistoryEntry {
+  title: string;
+  episode: WatchHistoryEpisode | null;
+  watched_seconds: number;
+  watched_at: string;
+}
+
 export interface User extends Omit<SessionUser, "has_usable_password"> {
   name: string;
   is_superuser: boolean;
+  my_list: string[];
+  history: WatchHistoryEntry[];
 }
 
 export interface Session {

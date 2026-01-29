@@ -8,5 +8,7 @@ export function setCookie(key: string, value: string) {
 }
 
 export function getLangCookie() {
-  return getCookie("django_language") || "en-us";
+  return (
+    getCookie("django_language") || document.documentElement.lang || "en-us"
+  );
 }

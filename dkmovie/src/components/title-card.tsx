@@ -1,10 +1,10 @@
 import type { Title } from "@/utils/types";
 import { Link } from "@tanstack/react-router";
-import { Play, Plus } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { Button } from "./ui/button";
+import { MyListButton } from "./my-list-button";
 import { Skeleton } from "./ui/skeleton";
+import { WatchButton } from "./watch-button";
 
 interface TitleCardProps {
   readonly title: Title;
@@ -15,7 +15,6 @@ export function TitleCard({
   title,
   horizontalOnMobile = false,
 }: TitleCardProps) {
-  const commonT = useTranslations("common");
   const t = useTranslations("titlePage");
   const { isMobile } = useIsMobile({ mobileMaxWidth: 640 });
 
@@ -90,7 +89,7 @@ export function TitleCard({
         <div
           className={`
             pointer-events-none absolute inset-0 z-20 flex flex-col justify-end bg-linear-to-t from-black to-transparent
-            p-4 opacity-0 duration-300 group-focus-within:opacity-100 group-hover:opacity-100
+            px-2 py-4 opacity-0 duration-300 group-focus-within:opacity-100 group-hover:opacity-100
             group-focus-visible:opacity-100
             ${
               horizontalOnMobile
@@ -113,34 +112,14 @@ export function TitleCard({
             <h4 className="text-primary-foreground mb-2 text-lg leading-tight font-bold">
               {title.title}
             </h4>
-            <div className="pointer-events-auto flex gap-2">
-              <Button
-                type="button"
-                className="z-20 h-8 w-full"
-                size="sm"
-                asChild={title.is_video_available}
-                disabled={!title.is_video_available}
-              >
-                {title.is_video_available ? (
-                  <Link
-                    to="/title/$titleId/watch"
-                    params={{ titleId: title.id }}
-                    search={{ episodeId: title.first_episode_id || undefined }}
-                  >
-                    <Play className="fill-primary-foreground" />
-                    {t("watch")}
-                  </Link>
-                ) : (
-                  <>
-                    <Play className="fill-primary-foreground" />
-                    {commonT("notAvailable")}
-                  </>
-                )}
-              </Button>
-              <Button type="button" size="icon" className="z-20 h-8">
-                <Plus />
-                <span className="sr-only">{t("addToMyList")}</span>
-              </Button>
+            <div className="pointer-events-auto flex gap-1">
+              <WatchButton title={title} variant="small" />
+              <MyListButton
+                titleId={title.id}
+                size="icon"
+                className="z-20 h-8"
+                isTextHidden
+              />
             </div>
           </div>
         </div>

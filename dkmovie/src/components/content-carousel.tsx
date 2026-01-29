@@ -11,7 +11,7 @@ import { Skeleton } from "./ui/skeleton";
 export interface CarouselProps {
   readonly title: string;
   readonly items: Title[];
-  readonly searchParams?: RootRouteChildren["SearchRoute"]["types"]["fullSearchSchema"];
+  readonly searchParams?: RootRouteChildren["ListsSearchRoute"]["types"]["fullSearchSchema"];
 }
 
 export function ContentCarousel({ title, items, searchParams }: CarouselProps) {

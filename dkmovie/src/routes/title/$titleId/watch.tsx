@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useEffectEvent,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -85,8 +86,8 @@ export const Route = createFileRoute("/title/$titleId/watch")({
 
 function WatchTitleComponent() {
   const t = useTranslations("playerPage");
-  const streamSessionId = Route.useRouteContext({
-    select: (search) => search.auth.streamSessionId,
+  const { streamSessionId, user } = Route.useRouteContext({
+    select: (search) => search.auth,
   });
   const { titleId } = Route.useParams();
   const navigate = Route.useNavigate();
@@ -94,6 +95,15 @@ function WatchTitleComponent() {
 
   const heartbeatIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isSessionAllowed, setIsSessionAllowed] = useState(false);
+
+  const timeToStartWatching = useMemo(() => {
+    if (!user) return 0;
+    const historyEntry = user.history.find((entry) => {
+      const episodeEntry = entry.episode?.id === dataToStream.episode?.id;
+      return episodeEntry || entry.title === dataToStream.title.id;
+    });
+    return historyEntry?.watched_seconds || 0;
+  }, [dataToStream.episode?.id, dataToStream.title.id, user]);
 
   const screensLimitReached = useCallback(async () => {
     toast.error(t("screensLimitReached"));
@@ -146,7 +156,10 @@ function WatchTitleComponent() {
   }
 
   return isSessionAllowed ? (
-    <VideoPlayer dataToStream={dataToStream} />
+    <VideoPlayer
+      dataToStream={dataToStream}
+      timeToStart={timeToStartWatching}
+    />
   ) : (
     <lazyComponents.PendingComponent />
   );

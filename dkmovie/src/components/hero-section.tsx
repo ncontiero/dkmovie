@@ -1,19 +1,19 @@
 import type { Title } from "@/utils/types";
 import { Link } from "@tanstack/react-router";
-import { Info, Play } from "lucide-react";
+import { Info } from "lucide-react";
 import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useTranslations } from "use-intl";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { WatchButton } from "./watch-button";
 
 interface HeroProps {
   readonly content: Title[];
 }
 
 function HeroSectionItem({ content }: { readonly content: Title }) {
-  const commonT = useTranslations("common");
   const t = useTranslations("heroSection");
 
   return (
@@ -62,33 +62,7 @@ function HeroSectionItem({ content }: { readonly content: Title }) {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
-              <Button
-                size="lg"
-                className={`
-                  shadow-primary/20 xs:w-auto hover:shadow-primary/40 h-12 w-full px-8 text-base font-semibold shadow-xl
-                  hover:scale-105
-                `}
-                asChild={content.is_video_available}
-                disabled={!content.is_video_available}
-              >
-                {content.is_video_available ? (
-                  <Link
-                    to="/title/$titleId/watch"
-                    params={{ titleId: content.id }}
-                    search={{
-                      episodeId: content.first_episode_id || undefined,
-                    }}
-                  >
-                    <Play className="size-5 fill-current" />
-                    {t("watchNow")}
-                  </Link>
-                ) : (
-                  <>
-                    <Play className="size-5 fill-current" />
-                    {commonT("notAvailable")}
-                  </>
-                )}
-              </Button>
+              <WatchButton title={content} />
 
               <Button
                 type="button"

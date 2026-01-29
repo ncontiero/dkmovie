@@ -27,8 +27,8 @@ def get_titles(
     filters: TitleFilterSchema = Query(...),  # noqa: B008
     order_by: str | None = None,
 ):
-    titles = Title.objects.filter(status=Title.Status.RELEASED).prefetch_related(
-        "genres",
+    titles = Title.objects.prefetch_related("videos").filter(
+        status=Title.Status.RELEASED,
     )
     try:
         filtered_titles = filters.filter(titles)

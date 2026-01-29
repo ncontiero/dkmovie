@@ -149,6 +149,12 @@ export function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="focus:bg-foreground/20 cursor-pointer py-2"
+                      asChild
+                    >
+                      <Link to="/my-list">{commonT("myList")}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="focus:bg-foreground/20 cursor-pointer py-2"
                       onClick={() => logout()}
                     >
                       {t("userMenu.logout")}

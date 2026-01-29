@@ -190,6 +190,7 @@ class Title(models.Model):
         return (
             Episode.objects.filter(season__title=self)
             .order_by("season__number", "number")
+            .prefetch_related("videos")
             .first()
         )
 

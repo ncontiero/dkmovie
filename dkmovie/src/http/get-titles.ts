@@ -17,6 +17,7 @@ interface GetTitleProps extends PaginationNumberQueryParams {
   exclude?: string;
   orderBy?: string;
   releaseYear?: number;
+  isMyList?: boolean;
 }
 
 export async function getTitlesWithCount({
@@ -29,6 +30,7 @@ export async function getTitlesWithCount({
   exclude,
   orderBy,
   releaseYear,
+  isMyList,
 }: GetTitleProps = {}): Promise<PaginationDataProps<Title[]>> {
   const params = new URLSearchParams();
   if (page) params.append("page", page.toString());
@@ -47,7 +49,8 @@ export async function getTitlesWithCount({
   }
   params.append("lang", getLangCookie());
 
-  const url = `/titles/?${params.toString()}`;
+  const path = isMyList ? "/users/my_list/" : "/titles/";
+  const url = `${path}?${params.toString()}`;
 
   try {
     return await httpClient.get<PaginationDataProps<Title[]>>(url);

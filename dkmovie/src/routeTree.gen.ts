@@ -10,13 +10,14 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as SeriesRouteImport } from "./routes/series"
-import { Route as SearchRouteImport } from "./routes/search"
 import { Route as MoviesRouteImport } from "./routes/movies"
 import { Route as AuthRouteRouteImport } from "./routes/auth/route"
 import { Route as IndexRouteImport } from "./routes/index"
 import { Route as AuthSignUpRouteImport } from "./routes/auth/sign-up"
 import { Route as AuthSignInRouteImport } from "./routes/auth/sign-in"
 import { Route as AccountVerifyEmailRouteImport } from "./routes/account/verify-email"
+import { Route as ListsSearchRouteImport } from "./routes/_lists/search"
+import { Route as ListsMyListRouteImport } from "./routes/_lists/my-list"
 import { Route as Auth2faRouteRouteImport } from "./routes/auth/2fa/route"
 import { Route as AccountmyAccountRouteRouteImport } from "./routes/account/(my-account)/route"
 import { Route as TitleTitleIdIndexRouteImport } from "./routes/title/$titleId/index"
@@ -33,11 +34,6 @@ import { Route as AccountmyAccountSecurityRouteImport } from "./routes/account/(
 const SeriesRoute = SeriesRouteImport.update({
   id: "/series",
   path: "/series",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SearchRoute = SearchRouteImport.update({
-  id: "/search",
-  path: "/search",
   getParentRoute: () => rootRouteImport,
 } as any)
 const MoviesRoute = MoviesRouteImport.update({
@@ -68,6 +64,16 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
 const AccountVerifyEmailRoute = AccountVerifyEmailRouteImport.update({
   id: "/account/verify-email",
   path: "/account/verify-email",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsSearchRoute = ListsSearchRouteImport.update({
+  id: "/_lists/search",
+  path: "/search",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsMyListRoute = ListsMyListRouteImport.update({
+  id: "/_lists/my-list",
+  path: "/my-list",
   getParentRoute: () => rootRouteImport,
 } as any)
 const Auth2faRouteRoute = Auth2faRouteRouteImport.update({
@@ -136,10 +142,11 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
-  "/search": typeof SearchRoute
   "/series": typeof SeriesRoute
   "/account": typeof AccountmyAccountRouteRouteWithChildren
   "/auth/2fa": typeof Auth2faRouteRouteWithChildren
+  "/my-list": typeof ListsMyListRoute
+  "/search": typeof ListsSearchRoute
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
@@ -152,14 +159,15 @@ export interface FileRoutesByFullPath {
   "/title/$titleId/watch": typeof TitleTitleIdWatchRoute
   "/account/": typeof AccountmyAccountIndexRoute
   "/auth/2fa/": typeof Auth2faIndexRoute
-  "/title/$titleId": typeof TitleTitleIdIndexRoute
+  "/title/$titleId/": typeof TitleTitleIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
-  "/search": typeof SearchRoute
   "/series": typeof SeriesRoute
+  "/my-list": typeof ListsMyListRoute
+  "/search": typeof ListsSearchRoute
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
@@ -179,10 +187,11 @@ export interface FileRoutesById {
   "/": typeof IndexRoute
   "/auth": typeof AuthRouteRouteWithChildren
   "/movies": typeof MoviesRoute
-  "/search": typeof SearchRoute
   "/series": typeof SeriesRoute
   "/account/(my-account)": typeof AccountmyAccountRouteRouteWithChildren
   "/auth/2fa": typeof Auth2faRouteRouteWithChildren
+  "/_lists/my-list": typeof ListsMyListRoute
+  "/_lists/search": typeof ListsSearchRoute
   "/account/verify-email": typeof AccountVerifyEmailRoute
   "/auth/sign-in": typeof AuthSignInRoute
   "/auth/sign-up": typeof AuthSignUpRoute
@@ -203,10 +212,11 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
-    | "/search"
     | "/series"
     | "/account"
     | "/auth/2fa"
+    | "/my-list"
+    | "/search"
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
@@ -219,14 +229,15 @@ export interface FileRouteTypes {
     | "/title/$titleId/watch"
     | "/account/"
     | "/auth/2fa/"
-    | "/title/$titleId"
+    | "/title/$titleId/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
     | "/auth"
     | "/movies"
-    | "/search"
     | "/series"
+    | "/my-list"
+    | "/search"
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
@@ -245,10 +256,11 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/movies"
-    | "/search"
     | "/series"
     | "/account/(my-account)"
     | "/auth/2fa"
+    | "/_lists/my-list"
+    | "/_lists/search"
     | "/account/verify-email"
     | "/auth/sign-in"
     | "/auth/sign-up"
@@ -268,9 +280,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   MoviesRoute: typeof MoviesRoute
-  SearchRoute: typeof SearchRoute
   SeriesRoute: typeof SeriesRoute
   AccountmyAccountRouteRoute: typeof AccountmyAccountRouteRouteWithChildren
+  ListsMyListRoute: typeof ListsMyListRoute
+  ListsSearchRoute: typeof ListsSearchRoute
   AccountVerifyEmailRoute: typeof AccountVerifyEmailRoute
   AccountProviderCallbackRoute: typeof AccountProviderCallbackRoute
   TitleTitleIdWatchRoute: typeof TitleTitleIdWatchRoute
@@ -284,13 +297,6 @@ declare module "@tanstack/react-router" {
       path: "/series"
       fullPath: "/series"
       preLoaderRoute: typeof SeriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/search": {
-      id: "/search"
-      path: "/search"
-      fullPath: "/search"
-      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/movies": {
@@ -335,6 +341,20 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountVerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/_lists/search": {
+      id: "/_lists/search"
+      path: "/search"
+      fullPath: "/search"
+      preLoaderRoute: typeof ListsSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/_lists/my-list": {
+      id: "/_lists/my-list"
+      path: "/my-list"
+      fullPath: "/my-list"
+      preLoaderRoute: typeof ListsMyListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     "/auth/2fa": {
       id: "/auth/2fa"
       path: "/2fa"
@@ -352,7 +372,7 @@ declare module "@tanstack/react-router" {
     "/title/$titleId/": {
       id: "/title/$titleId/"
       path: "/title/$titleId"
-      fullPath: "/title/$titleId"
+      fullPath: "/title/$titleId/"
       preLoaderRoute: typeof TitleTitleIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -477,9 +497,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   MoviesRoute: MoviesRoute,
-  SearchRoute: SearchRoute,
   SeriesRoute: SeriesRoute,
   AccountmyAccountRouteRoute: AccountmyAccountRouteRouteWithChildren,
+  ListsMyListRoute: ListsMyListRoute,
+  ListsSearchRoute: ListsSearchRoute,
   AccountVerifyEmailRoute: AccountVerifyEmailRoute,
   AccountProviderCallbackRoute: AccountProviderCallbackRoute,
   TitleTitleIdWatchRoute: TitleTitleIdWatchRoute,
