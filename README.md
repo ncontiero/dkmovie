@@ -1,108 +1,122 @@
 # DkMovie
 
-[![Built with DKCutter Django](https://img.shields.io/badge/built%20with-DKCutter%20Django-56BEB8.svg)](https://github.com/ncontiero/dkcutter-django)
-[![license mit](https://img.shields.io/badge/licence-MIT-56BEB8)](LICENSE)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![license mit](https://img.shields.io/badge/licence-MIT-6C47FF)](./LICENSE)
+![Python](https://img.shields.io/badge/python-3.13-blue.svg)
+![Django](https://img.shields.io/badge/django-5.0-44B78B.svg)
+![React](https://img.shields.io/badge/react-19-blue.svg)
 
-A Django project of films and series.
+DkMovie is a full-stack video streaming platform. Built with performance and scalability in mind, it features adaptive bitrate streaming (HLS), multi-language support for audio and subtitles, and strict concurrency control.
 
-## Settings
+## 🚀 Key Features
 
-Moved to [settings](https://github.com/ncontiero/dkcutter-django/blob/main/docs/settings.md).
+- **Adaptive Streaming (HLS)**: Automatically adjusts video quality (1080p, 720p, 480p) based on the user's bandwidth using FFmpeg transcoding.
+- **Media Management**: Support for movies and series (seasons & episodes).
+- **Audio & Subtitles**: Multi-track support with automatic extraction and separate management for different languages.
+- **Concurrency Control**: Limits the number of simultaneous active screens per user with heartbeat monitoring.
+- **Secure Storage**: Private object storage (Cloudflare R2/MinIO) with signed URLs for content protection.
+- **Modern UI/UX**: Responsive interface with dark/light mode support and an advanced custom video player.
 
-## Basic Commands
+## 🛠️ Tech Stack
 
-### Setting Up Your Users
+### Backend
 
-- To create a **superuser account**, use this command:
+- **Framework**: [Django 5.2](https://www.djangoproject.com/) & [Django Ninja](https://django-ninja.dev).
+- **Database**: [PostgreSQL](https://www.postgresql.org).
+- **Task Queue**: [Celery](https://docs.celeryq.dev/en/stable/) with [Redis](https://redis.io) (for video processing and background tasks).
+- **Video Processing**: [FFmpeg](https://ffmpeg.org) (HLS segmentation, transcoding, thumbnail generation).
+- **Storage**: [Cloudflare R2](https://www.cloudflare.com/developer-platform/products/r2/) / [MinIO](https://github.com/minio/minio) (via [`django-storages`](https://github.com/jschneier/django-storages)).
+- **Authentication**: [`django-allauth`](https://allauth.org) (Session & OAuth).
+- **Emails**: [React Email](https://react.email/).
+
+### Frontend
+
+- **Framework**: [React](https://react.dev/) (TypeScript).
+- **Build Tool**: [Rspack](https://rspack.dev).
+- **State & Routing**: [TanStack Query](https://tanstack.com/query) & [TanStack Router](https://tanstack.com/router).
+- **Styling**: [Tailwind CSS](https://tailwindcss.com), [Radix UI](https://www.radix-ui.com) & [Shadcn/ui](https://ui.shadcn.com).
+- **Player**: [ReactPlayer](https://github.com/cookpete/react-player) ([hls.js](https://github.com/video-dev/hls.js) integration) with custom overlay controls.
+
+### Infrastructure
+
+- **Containerization**: [Docker](https://www.docker.com) & [Docker Compose](https://docs.docker.com/compose/).
+- **Reverse Proxy**: [Traefik](https://doc.traefik.io/traefik/) (Production).
+- **Object Store**: Cloudflare R2 (Production) / MinIO (Local development).
+
+## ⚡ Getting Started
+
+This project is fully containerized. You only need Docker to run it locally.
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+- [Git](https://git-scm.com/) (optional, to clone the repo).
+
+### Installation
+
+#### Clone the repository
 
 ```bash
-uv run python manage.py createsuperuser
-```
-
-### Type checks
-
-Running type checks with mypy:
-
-```bash
-uv run mypy dkmovie
-```
-
-### Test coverage
-
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-```bash
-uv run coverage run -m pytest
-uv run coverage html
-uv run open htmlcov/index.html
-```
-
-#### Running tests with pytest
-
-```bash
-uv run pytest
-```
-
-### Celery
-
-This app comes with Celery.
-
-To run a celery worker:
-
-```bash
+git clone https://github.com/ncontiero/dkmovie.git
 cd dkmovie
-uv run celery -A config.celery_app worker -l info
 ```
 
-Please note: For Celery's import magic to work, it is important where the celery commands are run. If you are in the same folder with _manage.py_, you should be right.
+#### Configure Environment Variables
 
-To run [periodic tasks](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html), you'll need to start the celery beat scheduler service. You can start it as a standalone process:
+Copy the example environment configuration folder to the active one.
 
 ```bash
-cd dkmovie
-uv run celery -A config.celery_app beat
+cp -r .envs.example .envs
 ```
 
-or you can embed the beat service inside a worker with the -B option (not recommended for production use):
+_Note: The default credentials in `.envs/.local/` are pre-configured for local development with Docker._
+
+#### Build and Start
+
+Run the project using the local docker-compose configuration.
 
 ```bash
-cd dkmovie
-uv run celery -A config.celery_app worker -B -l info
+docker compose -f docker-compose.local.yml up --build
 ```
 
-### Email Server
+_This may take a few minutes on the first run as it builds the images and installs dependencies (including FFmpeg)._
 
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [Mailpit](https://github.com/axllent/mailpit/) with a web interface is available as docker container.
+#### Access the Application
 
-Container mailpit will start automatically when you will run all docker containers.
-Please check [dkcutter-django Docker documentation](https://github.com/ncontiero/dkcutter-django/blob/main/docs/deployment-with-docker.md) for more details how to start all containers.
+- **Frontend**: <http://localhost:3000>
+- **Backend API**: <http://localhost:3000/api/docs>
+- **Django Admin**: <http://localhost:3000/admin/>
+- **MinIO Console**: <http://localhost:9001> (User/Pass: `minioAccessKey`/`minioSecretKey`)
+- **Mailpit (Email)**: <http://localhost:8025>
 
-With Mailpit running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
+### Post-Installation (Optional)
 
-### React Email
-
-With [React Email](https://react.email/) you can create emails more easily and accessibly using React components.
-
-You can view and edit your emails in the `emails` directory. To see the changes in real-time, run the following command and access <http://localhost:3001> in your browser:
+To create a superuser for the Django Admin:
 
 ```bash
-<package manager> run dev:email
+docker compose -f docker-compose.local.yml run --rm django python manage.py createsuperuser
 ```
 
-> [!NOTE]
-> Replace `<package manager>` with the package manager you selected for the frontend (npm, pnpm, yarn, or bun).
-
-To build the emails and make them available for use in Django, run the build command:
+To run database migrations manually (usually handled automatically):
 
 ```bash
-<package manager> run build:email
+docker compose -f docker-compose.local.yml run --rm django python manage.py migrate
 ```
 
-## Deployment
+To compile messages (i18n support):
 
-The following details how to deploy this application.
+```bash
+docker compose -f docker-compose.local.yml run --rm django python manage.py compilemessages
+```
 
-### Docker
+## 📦 Video Upload & Processing Flow
 
-See detailed [Docker documentation](https://github.com/ncontiero/dkcutter-django/blob/main/docs/deployment-with-docker.md).
+1. Create a title (movie/series) via Django Admin.
+2. Upload a video file for the title.
+3. The system automatically triggers a Celery task.
+4. **FFmpeg** converts the video to HLS format (multiple resolutions) and extracts available audio/subtitle tracks.
+5. Files are uploaded to the private S3 bucket.
+6. Once completed, the video becomes available for streaming on the frontend.
+
+## 📝 License
+
+This project is licensed under the [MIT License](./LICENSE).
