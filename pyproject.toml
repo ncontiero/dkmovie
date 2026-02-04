@@ -23,7 +23,7 @@ dependencies = [
   "django-storages[s3]==1.14.6",
   "django-webpack-loader==3.2.3",
   "flower==2.0.1",
-  "gunicorn==24.1.1",
+  "gunicorn==25.0.1",
   "hiredis==3.3.0",
   "orjson==3.11.6",
   "pillow==12.1.0",
