@@ -56,7 +56,7 @@
     "@rspack/core": "^1.7.4",
     "@rspack/plugin-react-refresh": "^1.6.0",
     "@tailwindcss/postcss": "4.1.18",
-    "@tanstack/eslint-plugin-query": "^5.91.3",
+    "@tanstack/eslint-plugin-query": "^5.91.4",
     "@tanstack/router-plugin": "^1.157.16",
     "@types/node": "^25.2.0",
     "@types/react": "19.2.10",
