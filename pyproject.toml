@@ -116,68 +116,60 @@ extend-exclude = [
   "staticfiles/*",
 ]
 
-[tool.ruff.lint]
-select = [
-  "E",
-  "F",
-  "W",
-  "C90",
-  "I",
-  "N",
-  "UP",
-  "YTT",
-  # "ANN", # flake8-annotations: we should support this in the future but 100+ errors atm
-  "ASYNC",
-  "S",
-  "BLE",
-  "FBT",
-  "B",
+lint.select = [
   "A",
-  "COM",
+  "ASYNC",
+  "B",
+  "BLE",
   "C4",
-  "DTZ",
-  "T10",
+  "C90",
+  "COM",
   "DJ",
+  "DTZ",
+  "E",
   "EM",
+  "ERA",
   "EXE",
+  "F",
   "FA",
-  "ISC",
-  "ICN",
+  "FBT",
+  "FLY",
   "G",
+  "I",
+  "ICN",
   "INP",
+  "INT",
+  "ISC",
+  "N",
+  "PD",
+  "PERF",
+  "PGH",
   "PIE",
-  "T20",
-  "PYI",
+  "PL",
   "PT",
+  "PTH",
+  "PYI",
   "Q",
-  "RSE",
   "RET",
+  "RSE",
+  "RUF",
+  "S",
+  "SIM",
   "SLF",
   "SLOT",
-  "SIM",
-  "TID",
+  "T10",
+  "T20",
   "TC",
-  "INT",
-  # "ARG", # Unused function argument
-  "PTH",
-  "ERA",
-  "PD",
-  "PGH",
-  "PL",
+  "TID",
   "TRY",
-  "FLY",
-  # "NPY",
-  # "AIR",
-  "PERF",
-  # "FURB",
-  # "LOG",
-  "RUF"
+  "UP",
+  "W",
+  "YTT"
 ]
-ignore = [
-  "S101", # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
+lint.ignore = [
   "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
-  "SIM102" # sometimes it's better to nest
+  "S101",   # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
+  "SIM102"  # sometimes it's better to nest of types for comparison.
 ]
 
-[tool.ruff.lint.isort]
-force-single-line = true
+lint.isort.force-single-line = true
