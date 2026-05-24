@@ -1,4 +1,4 @@
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from ninja import ModelSchema
 from ninja import Schema
@@ -7,6 +7,9 @@ from dkmovie.titles.models import Episode
 
 from .models import HistoryEntry
 from .models import User
+
+if TYPE_CHECKING:
+    from uuid import UUID
 
 
 class HistoryEntryEpisodeSchema(ModelSchema):

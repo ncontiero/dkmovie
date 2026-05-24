@@ -1,12 +1,15 @@
 import math
-from collections.abc import Iterator
 from dataclasses import dataclass
 from datetime import timedelta
+from typing import TYPE_CHECKING
 from typing import ClassVar
 
 import boto3
 from botocore.config import Config
 from django.conf import settings
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 @dataclass

@@ -68,7 +68,7 @@ def initialize_upload(request, payload: InitUploadSchema):
             model = field.model
             try:
                 instance = model.objects.filter(pk=payload.instance_id).first()
-            except (ValidationError, ValueError):
+            except ValidationError, ValueError:
                 instance = None
 
         object_key = field.generate_filename(instance, payload.file_name)

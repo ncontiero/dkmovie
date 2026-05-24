@@ -368,7 +368,7 @@ class Episode(models.Model):
         video = self.video
         return video.duration if video else 0
 
-    def get_next_episode(self) -> "Episode | None":
+    def get_next_episode(self) -> Episode | None:
         return (
             Episode.objects.filter(
                 season__title=self.season.title,

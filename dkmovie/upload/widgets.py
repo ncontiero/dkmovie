@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from typing import TYPE_CHECKING
 from typing import Any
 
 from django.core import signing
@@ -8,6 +8,9 @@ from django.forms.widgets import FILE_INPUT_CONTRADICTION
 from django.forms.widgets import CheckboxInput
 from django.urls import reverse
 
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
 
 class S3PlaceholderFile(File):
     def __init__(self, name: str, size: int) -> None:
@@ -15,7 +18,7 @@ class S3PlaceholderFile(File):
         self.size = size
 
     @classmethod
-    def from_field(cls, field_value: str) -> "S3PlaceholderFile | None":
+    def from_field(cls, field_value: str) -> S3PlaceholderFile | None:
         try:
             parsed_field = signing.loads(field_value)
         except signing.BadSignature:

@@ -1,12 +1,17 @@
+from typing import TYPE_CHECKING
+
 from django.conf import settings
-from django.http import HttpRequest
-from django.http import HttpResponse
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
 
 from config.api.utils import ApiProcessError
-from dkmovie.users.schemas import LanguageSchema
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest
+    from django.http import HttpResponse
+
+    from dkmovie.users.schemas import LanguageSchema
 
 LANGUAGE_COOKIE_NAME = settings.LANGUAGE_COOKIE_NAME
 SUPPORTED_LANGUAGES = dict(settings.LANGUAGES)

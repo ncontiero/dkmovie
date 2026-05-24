@@ -58,7 +58,7 @@ def get_video_metadata(video_url: str):
         try:
             num, den = map(int, r_frame_rate.split("/"))
             fps = num / den if den > 0 else 30.0
-        except (ValueError, IndexError):
+        except ValueError, IndexError:
             fps = 30.0
 
         return {

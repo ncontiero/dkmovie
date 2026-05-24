@@ -1,4 +1,4 @@
-from uuid import UUID
+from typing import TYPE_CHECKING
 
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -13,12 +13,16 @@ from dkmovie.streaming.services.concurrency import register_heartbeat
 from dkmovie.streaming.services.streaming import get_hls_streaming_response
 from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
-from dkmovie.titles.schemas import EpisodeSchema
-from dkmovie.titles.schemas import SeasonSchema
-from dkmovie.titles.schemas import TitleSchema
-from dkmovie.videos.schemas import VideoMarkerSchema
-from dkmovie.videos.schemas import VideoSpriteSchema
-from dkmovie.videos.schemas import VideoTrackSchema
+
+if TYPE_CHECKING:
+    from uuid import UUID
+
+    from dkmovie.titles.schemas import EpisodeSchema
+    from dkmovie.titles.schemas import SeasonSchema
+    from dkmovie.titles.schemas import TitleSchema
+    from dkmovie.videos.schemas import VideoMarkerSchema
+    from dkmovie.videos.schemas import VideoSpriteSchema
+    from dkmovie.videos.schemas import VideoTrackSchema
 
 router = Router()
 

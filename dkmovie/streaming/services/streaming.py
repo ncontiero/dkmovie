@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import requests
 from django.http import HttpResponse
@@ -7,7 +8,9 @@ from django.utils.translation import gettext_lazy as _
 
 from config.api.utils import ApiProcessError
 from dkmovie.utils.urls import normalize_local_s3_url
-from dkmovie.videos.models import Video
+
+if TYPE_CHECKING:
+    from dkmovie.videos.models import Video
 
 logger = logging.getLogger(__name__)
 

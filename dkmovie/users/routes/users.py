@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
 from ninja.security import SessionAuth
@@ -11,6 +10,8 @@ from dkmovie.users.schemas import UserSchemaOut
 from dkmovie.users.tasks import send_account_deleted_email_task
 
 if TYPE_CHECKING:
+    from django.http import HttpRequest
+
     from dkmovie.users.models import User
 
 router = Router(auth=SessionAuth())

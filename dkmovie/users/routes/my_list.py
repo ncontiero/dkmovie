@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from ninja import Query
 from ninja import Router
@@ -15,6 +14,8 @@ from dkmovie.titles.schemas import TitleFilterSchema
 from dkmovie.titles.schemas import TitleSchema
 
 if TYPE_CHECKING:
+    from django.http import HttpRequest
+
     from dkmovie.users.models import User
 
 router = Router(auth=SessionAuth())

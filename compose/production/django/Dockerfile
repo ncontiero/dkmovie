@@ -39,7 +39,7 @@ COPY --from=client-builder /app/dkmovie/static/bundles /app/dkmovie/static/bundl
 COPY --from=client-builder /app/dkmovie/templates/emails /app/dkmovie/templates/emails
 
 # define an alias for the specific python version used in this file.
-FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS python-build-stage
+FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim AS python-build-stage
 
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
 
@@ -70,7 +70,7 @@ COPY --from=client-build ${APP_HOME} ${APP_HOME}
 RUN uv sync --locked --no-dev
 
 # Python 'run' stage
-FROM python:3.13-slim-bookworm AS python-run-stage
+FROM python:3.14-slim-bookworm AS python-run-stage
 
 ARG APP_HOME=/app
 

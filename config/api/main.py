@@ -1,6 +1,7 @@
+from typing import TYPE_CHECKING
+
 import orjson
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from ninja import NinjaAPI
 from ninja.errors import ValidationError as NinjaValidationError
@@ -13,6 +14,9 @@ from dkmovie.users.api import router as users_router
 
 from .utils import ApiProcessError
 from .utils import api_error
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest
 
 
 class ORJSONParser(Parser):
