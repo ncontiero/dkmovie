@@ -18,7 +18,7 @@ dependencies = [
   "django-cleanup==9.0.0",
   "django-cors-headers==4.9.0",
   "django-modeltranslation==0.20.3",
-  "django-ninja==1.5.3",
+  "django-ninja==1.6.2",
   "django-redis==6.0.0",
   "django-storages[s3]==1.14.6",
   "django-webpack-loader==3.2.4",

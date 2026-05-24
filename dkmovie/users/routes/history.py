@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
+from ninja import Status
 from ninja.security import SessionAuth
 
 from config.api.utils import ApiProcessError
@@ -23,7 +24,7 @@ router = Router(auth=SessionAuth())
 def get_my_history(request: HttpRequest):
     user: User = request.user
     my_history = user.history.prefetch_related("videos").all()
-    return 200, my_history
+    return Status(200, my_history)
 
 
 @router.post("", response={200: list[HistoryEntrySchema]})
@@ -51,4 +52,4 @@ def add_to_my_history(request: HttpRequest, payload: AddToHistorySchema):
         episode=episode,
         watched=payload.watched,
     )
-    return 200, user.get_history_entries()
+    return Status(200, user.get_history_entries())

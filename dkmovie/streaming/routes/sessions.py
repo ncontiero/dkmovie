@@ -1,5 +1,6 @@
 from ninja import Router
 from ninja import Schema
+from ninja import Status
 
 from dkmovie.streaming.services.concurrency import register_heartbeat
 from dkmovie.streaming.services.concurrency import release_session
@@ -24,4 +25,4 @@ def heartbeat(request, payload: HeartbeatSchema):
 @router.post("/release", response={204: None})
 def release(request, payload: HeartbeatSchema):
     release_session(request.user.id, payload.session_id)
-    return 204, None
+    return Status(204, None)

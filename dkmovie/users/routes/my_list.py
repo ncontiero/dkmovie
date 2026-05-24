@@ -4,6 +4,7 @@ from uuid import UUID
 from django.utils.translation import gettext_lazy as _
 from ninja import Query
 from ninja import Router
+from ninja import Status
 from ninja.pagination import PageNumberPagination
 from ninja.pagination import paginate
 from ninja.security import SessionAuth
@@ -44,7 +45,7 @@ def add_to_my_list(request: HttpRequest, title_id: UUID):
         raise ApiProcessError(404, _("The title does not exist.")) from e
 
     user.my_list.add(title)
-    return 200, user.my_list.values_list("id", flat=True)
+    return Status(200, user.my_list.values_list("id", flat=True))
 
 
 @router.delete("/{title_id}", response={200: list[UUID]})
@@ -57,4 +58,4 @@ def remove_from_my_list(request: HttpRequest, title_id: UUID):
         raise ApiProcessError(404, _("The title does not exist.")) from e
 
     user.my_list.remove(title)
-    return 200, user.my_list.values_list("id", flat=True)
+    return Status(200, user.my_list.values_list("id", flat=True))

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
+from ninja import Status
 from ninja.security import SessionAuth
 
 from config.api.utils import ApiProcessError
@@ -54,4 +55,4 @@ def delete_me(request: HttpRequest):
         request.LANGUAGE_CODE,
     )
 
-    return 204, None
+    return Status(204, None)
