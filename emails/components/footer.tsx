@@ -1,4 +1,4 @@
-import { Hr, Section, Text } from "@react-email/components";
+import { Hr, Section, Text } from "react-email";
 import { SITE_NAME } from "@/utils/constants";
 import { translate } from "@/utils/translate";
 

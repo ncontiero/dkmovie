@@ -1,4 +1,4 @@
-import ReactRefreshPlugin from "@rspack/plugin-react-refresh";
+import { ReactRefreshRspackPlugin } from "@rspack/plugin-react-refresh";
 import { merge } from "webpack-merge";
 import { commonConfig } from "./common.config";
 
@@ -24,5 +24,5 @@ export default merge(commonConfig, {
     },
     watchFiles: ["dkmovie/**/templates/**/*.html"],
   },
-  plugins: [new ReactRefreshPlugin()],
+  plugins: [new ReactRefreshRspackPlugin()],
 });

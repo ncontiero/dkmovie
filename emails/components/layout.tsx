@@ -10,7 +10,7 @@ import {
   Preview,
   Section,
   Tailwind,
-} from "@react-email/components";
+} from "react-email";
 import { SITE_NAME } from "@/utils/constants";
 import { Footer } from "./footer";
 import { Header } from "./header";

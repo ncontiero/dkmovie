@@ -1,4 +1,4 @@
-FROM docker.io/node:24.13.0-bookworm-slim AS client-base
+FROM docker.io/node:24.16.0-bookworm-slim AS client-base
 
 WORKDIR /app
 

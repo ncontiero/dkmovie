@@ -1,4 +1,4 @@
-import { Column, Link, Row, Section } from "@react-email/components";
+import { Column, Link, Row, Section } from "react-email";
 import { Layout } from "@/components/layout";
 import { Text } from "@/components/text";
 import { resolveUrl } from "@/utils/urls";

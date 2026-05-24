@@ -1,4 +1,4 @@
-import { Section } from "@react-email/components";
+import { Section } from "react-email";
 import { translate } from "@/utils/translate";
 import { Text } from "./text";
 

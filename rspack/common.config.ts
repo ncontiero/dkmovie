@@ -4,14 +4,6 @@ import { type SwcLoaderOptions, rspack } from "@rspack/core";
 import { tanstackRouter } from "@tanstack/router-plugin/rspack";
 import BundleTracker from "webpack-bundle-tracker";
 
-// Target browsers, see: https://github.com/browserslist/browserslist
-const BROWSER_TARGETS = [
-  "chrome >= 87",
-  "edge >= 88",
-  "firefox >= 78",
-  "safari >= 14",
-];
-
 const BASE_PATH = path.join(import.meta.dirname, "../");
 const PROJECT_PATH = path.join(BASE_PATH, "dkmovie");
 const SRC_PATH = path.join(PROJECT_PATH, "src");
@@ -62,7 +54,6 @@ export const commonConfig = defineConfig({
                   },
                 },
               },
-              env: { targets: BROWSER_TARGETS },
             } satisfies SwcLoaderOptions,
           },
         ],
@@ -82,9 +73,7 @@ export const commonConfig = defineConfig({
   optimization: {
     minimizer: [
       new rspack.SwcJsMinimizerRspackPlugin(),
-      new rspack.LightningCssMinimizerRspackPlugin({
-        minimizerOptions: { targets: BROWSER_TARGETS },
-      }),
+      new rspack.LightningCssMinimizerRspackPlugin({}),
     ],
   },
   resolve: {

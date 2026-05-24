@@ -7,7 +7,6 @@
     "useDefineForClassFields": true,
 
     // Module system configuration
-    "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {

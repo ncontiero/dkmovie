@@ -1,7 +1,7 @@
 import {
   type ButtonProps as ReactEmailButtonProps,
   Button as ReactEmailButton,
-} from "@react-email/components";
+} from "react-email";
 import { cn } from "../utils/cn";
 
 interface ButtonProps extends ReactEmailButtonProps {
