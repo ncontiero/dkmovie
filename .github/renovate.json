@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>ncontiero/renovate-config"],
   "packageRules": [
-    { "matchPackageNames": ["*"], "dependencyDashboardApproval": true },
     {
       "enabled": false,
       "matchDatasources": ["docker", "python-version"],
