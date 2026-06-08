@@ -37,19 +37,19 @@ services:
       - ./.envs/.local/.postgres
 
   mailpit:
-    image: docker.io/axllent/mailpit:latest
+    image: docker.io/axllent/mailpit:latest@sha256:3bd7c2f2696deb35a4780d152b404dceec99cb041b942c0877b3b22384714f85
     container_name: dkmovie_local_mailpit
     ports:
       - "8025:8025"
 
   redis:
-    image: docker.io/redis:8
+    image: docker.io/redis:8@sha256:aa049e689e141a4358ad1d4562dc49c88a89fbab711fd8fcc33f684c80b26301
     container_name: dkmovie_local_redis
     volumes:
       - dkmovie_local_redis_data:/data
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio:latest@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
     container_name: dkmovie_local_minio
     ports:
       - "9000:9000"
