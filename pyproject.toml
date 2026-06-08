@@ -19,7 +19,7 @@ dependencies = [
   "django-cors-headers==4.9.0",
   "django-modeltranslation==0.20.3",
   "django-ninja==1.6.2",
-  "django-redis==6.0.0",
+  "django-redis==7.0.0",
   "django-storages[s3]==1.14.6",
   "django-webpack-loader==3.2.4",
   "flower==2.0.1",
