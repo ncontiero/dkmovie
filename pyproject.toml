@@ -41,7 +41,7 @@ dev = [
   "django-debug-toolbar==6.3.0",
   "django-extensions==4.1",
   "django-stubs[compatible-mypy]==6.0.5",
-  "djlint==1.38.2",
+  "djlint==1.39.0",
   "mypy==2.1.0",
   "pre-commit==4.6.0",
   "psycopg[binary]==3.3.4",
