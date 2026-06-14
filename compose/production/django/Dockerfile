@@ -1,4 +1,4 @@
-FROM docker.io/node:24.16.0-bookworm-slim@sha256:242549cd46785b480c832479a730f4f2a20865d61ea2e404fdb2a5c3d3b73ecf AS client-base
+FROM docker.io/node:24.16.0-bookworm-slim@sha256:2c87ef9bd3c6a3bd4b472b4bec2ce9d16354b0c574f736c476489d09f560a203 AS client-base
 
 WORKDIR /app
 
@@ -70,7 +70,7 @@ COPY --from=client-build ${APP_HOME} ${APP_HOME}
 RUN uv sync --locked --no-dev
 
 # Python 'run' stage
-FROM python:3.14-slim-bookworm@sha256:a9bee15510a364124aa24692899d269835683b883de42f7ebec8c293cf679ccb AS python-run-stage
+FROM python:3.14-slim-bookworm@sha256:a70519002c49552ea0a853de47599cf40479b001bd7a624f1112eaf44dcaccc7 AS python-run-stage
 
 ARG APP_HOME=/app
 
