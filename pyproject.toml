@@ -169,7 +169,10 @@ lint.select = [
 lint.ignore = [
   "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
   "S101",   # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
-  "SIM102"  # sometimes it's better to nest of types for comparison.
+  "SIM102", # sometimes it's better to nest of types for comparison.
+  "TC001",  # django-ninja requires runtime evaluation of types
+  "TC002",  # django-ninja requires runtime evaluation of types
+  "TC003",  # django-ninja requires runtime evaluation of types
 ]
 
 lint.isort.force-single-line = true

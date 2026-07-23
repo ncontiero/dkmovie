@@ -1,7 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
 from ninja import Status
@@ -11,13 +8,9 @@ from config.api.utils import ApiProcessError
 from dkmovie.titles.models import Episode
 from dkmovie.titles.models import Title
 from dkmovie.titles.schemas import TitleSchema
+from dkmovie.users.models import User
 from dkmovie.users.schemas import AddToHistorySchema
 from dkmovie.users.schemas import HistoryEntrySchema
-
-if TYPE_CHECKING:
-    from django.http import HttpRequest
-
-    from dkmovie.users.models import User
 
 router = Router(auth=SessionAuth())
 

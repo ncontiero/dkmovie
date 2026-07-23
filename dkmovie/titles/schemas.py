@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
 from typing import Annotated
 from uuid import UUID
 
@@ -9,13 +6,12 @@ from ninja import FilterLookup
 from ninja import FilterSchema
 from ninja import ModelSchema
 
+from dkmovie.videos.schemas import VideoTrackSchema
+
 from .models import Episode
 from .models import Genre
 from .models import Season
 from .models import Title
-
-if TYPE_CHECKING:
-    from dkmovie.videos.schemas import VideoTrackSchema
 
 
 class GenreSchema(ModelSchema):

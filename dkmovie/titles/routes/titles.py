@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from uuid import UUID
 
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_page
@@ -17,9 +15,6 @@ from dkmovie.titles.schemas import EpisodeSchema
 from dkmovie.titles.schemas import TitleDetailSchema
 from dkmovie.titles.schemas import TitleFilterSchema
 from dkmovie.titles.schemas import TitleSchema
-
-if TYPE_CHECKING:
-    from uuid import UUID
 
 router = Router()
 
