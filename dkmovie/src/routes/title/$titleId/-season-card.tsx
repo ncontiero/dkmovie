@@ -62,8 +62,8 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
       params={{ titleId }}
       search={{ episodeId: episode.id }}
       className="
-        group ring-ring hover:bg-secondary ring-offset-background focus-visible:bg-secondary overflow-hidden rounded-lg
-        ring-offset-2 duration-200 hover:scale-101 hover:p-2 focus-visible:ring-2 focus-visible:outline-hidden
+        group overflow-hidden rounded-lg ring-ring ring-offset-2 ring-offset-background duration-200 hover:scale-101
+        hover:bg-secondary hover:p-2 focus-visible:bg-secondary focus-visible:ring-2 focus-visible:outline-hidden
         aria-disabled:cursor-not-allowed aria-disabled:opacity-50 max-lg:border-y max-lg:pb-4
       "
       disabled={!episode.is_video_available}
@@ -72,8 +72,7 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
       <div className="flex size-full flex-col gap-4 lg:flex-row">
         <div
           className="
-            group/image relative h-[calc(100vw/16*9)] w-full overflow-hidden lg:h-full lg:max-w-64 lg:min-w-64
-            lg:rounded-lg
+            group/image relative h-[calc(100vw/16*9)] w-full overflow-hidden lg:h-full lg:max-w-64 lg:min-w-64 lg:rounded-lg
           "
         >
           {episode.still ? (
@@ -81,25 +80,22 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
               src={episode.still}
               alt={episode.name}
               className="
-                size-full object-cover object-center duration-200 group-hover:scale-110 lg:max-w-64 lg:min-w-64
-                lg:rounded-lg
+                size-full object-cover object-center duration-200 group-hover:scale-110 lg:max-w-64 lg:min-w-64 lg:rounded-lg
               "
             />
           ) : (
-            <div className="to-primary/40 size-full bg-linear-to-bl from-transparent lg:rounded-lg lg:rounded-r-none" />
+            <div className="size-full bg-linear-to-bl from-transparent to-primary/40 lg:rounded-lg lg:rounded-r-none" />
           )}
           {watchedPercentage > 0 ? (
             <div
               className="
-                bg-secondary absolute inset-x-0 bottom-0 h-2.5 duration-200 group-hover:inset-x-2
-                group-hover:-translate-y-2 lg:group-hover:rounded-lg lg:group-focus-visible:inset-x-2
-                lg:group-focus-visible:-translate-y-2 lg:group-focus-visible:rounded-lg
+                absolute inset-x-0 bottom-0 h-2.5 bg-secondary duration-200 group-hover:inset-x-2 group-hover:-translate-y-2
+                lg:group-hover:rounded-lg lg:group-focus-visible:inset-x-2 lg:group-focus-visible:-translate-y-2
+                lg:group-focus-visible:rounded-lg
               "
             >
               <div
-                className="
-                  bg-primary size-full duration-200 lg:group-hover:rounded-lg lg:group-focus-visible:rounded-lg
-                "
+                className="size-full bg-primary duration-200 lg:group-hover:rounded-lg lg:group-focus-visible:rounded-lg"
                 style={{
                   width: `${watchedPercentage}%`,
                 }}
@@ -118,7 +114,7 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
             )}
           >
             {episode.is_video_available ? (
-              <Play className="fill-background size-8" />
+              <Play className="size-8 fill-background" />
             ) : (
               <p className="text-foreground">{commonT("notAvailable")}</p>
             )}
@@ -131,7 +127,7 @@ function EpisodeCard({ episode, titleId }: EpisodeCardProps) {
               <span className="mx-1">•</span>
               {episode.name}
             </h3>
-            <div className="text-muted-foreground mt-1 flex items-center text-sm">
+            <div className="mt-1 flex items-center text-sm text-muted-foreground">
               <span
                 className={`
                   mr-2 flex items-center gap-1 rounded-md bg-yellow-500/10 px-2 py-0.5 text-yellow-500 ring-1
@@ -186,8 +182,8 @@ export function SeasonCard({
     <AccordionItem value={season.id} className="border-0">
       <AccordionTrigger
         className="
-          group hover:bg-secondary ring-offset-background focus-visible:ring-ring h-40 overflow-hidden rounded-t-lg
-          border py-0 ring-offset-2 duration-200 hover:no-underline focus-visible:ring-2 focus-visible:outline-hidden
+          group h-40 overflow-hidden rounded-t-lg border py-0 ring-offset-2 ring-offset-background duration-200
+          hover:bg-secondary hover:no-underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden
           data-[state=closed]:rounded-lg
         "
         asHeader="div"
@@ -206,20 +202,15 @@ export function SeasonCard({
             ) : (
               <div
                 className="
-                  to-primary/40 size-full rounded-t-lg bg-linear-to-bl from-transparent
-                  group-data-[state=closed]:rounded-lg
+                  size-full rounded-t-lg bg-linear-to-bl from-transparent to-primary/40 group-data-[state=closed]:rounded-lg
                 "
               />
             )}
           </div>
-          <div
-            className="
-              flex flex-col py-4 duration-200 group-data-[state=open]:translate-y-[20%] max-sm:translate-y-[20%]
-            "
-          >
+          <div className="flex flex-col py-4 duration-200 group-data-[state=open]:translate-y-[20%] max-sm:translate-y-[20%]">
             <div className="flex flex-col">
               <h3 className="text-start text-xl font-medium">{season.name}</h3>
-              <div className="text-muted-foreground mt-0.5 flex items-center text-sm">
+              <div className="mt-0.5 flex items-center text-sm text-muted-foreground">
                 <span
                   className={`
                     mr-2 flex items-center gap-1 rounded-md bg-yellow-500/10 px-2 py-0.5 text-yellow-500 ring-1
@@ -258,7 +249,7 @@ export function SeasonCard({
         <ChevronDown className="mr-4 size-6 shrink-0 duration-200 sm:mr-8" />
       </AccordionTrigger>
       <AccordionContent className="rounded-b-lg border-x border-b py-4 duration-1000 lg:p-4">
-        <p className="text-foreground/80 text-base max-lg:px-4 lg:max-w-[80%]">
+        <p className="text-base text-foreground/80 max-lg:px-4 lg:max-w-[80%]">
           {overview}
         </p>
         <div className="flex flex-col gap-8 py-6 lg:gap-4">
@@ -269,12 +260,12 @@ export function SeasonCard({
                   key={i}
                   className="flex size-full h-40 w-full gap-4 rounded-lg"
                 >
-                  <Skeleton className="bg-background h-full min-w-64 rounded-lg rounded-r-none" />
+                  <Skeleton className="h-full min-w-64 rounded-lg rounded-r-none bg-background" />
                   <div className="flex w-full flex-col gap-1 py-4">
-                    <Skeleton className="bg-background h-7 w-52" />
-                    <Skeleton className="bg-background h-5 w-52" />
-                    <Skeleton className="bg-background mt-4 h-6 w-[90%]" />
-                    <Skeleton className="bg-background mt-0.5 h-6 w-1/2" />
+                    <Skeleton className="h-7 w-52 bg-background" />
+                    <Skeleton className="h-5 w-52 bg-background" />
+                    <Skeleton className="mt-4 h-6 w-[90%] bg-background" />
+                    <Skeleton className="mt-0.5 h-6 w-1/2 bg-background" />
                   </div>
                 </Skeleton>
               ))

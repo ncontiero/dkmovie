@@ -54,10 +54,7 @@ export function WatchButton({ title, variant = "large" }: WatchButtonProps) {
       className={cn(
         "w-full",
         variant === "large"
-          ? `
-            shadow-primary/20 xs:w-auto hover:shadow-primary/40 h-12 px-8 text-base font-semibold shadow-xl
-            hover:scale-105
-          `
+          ? `h-12 px-8 text-base font-semibold shadow-xl shadow-primary/20 hover:scale-105 hover:shadow-primary/40 xs:w-auto`
           : "z-20 h-8 gap-1",
       )}
       asChild={title.is_video_available}

@@ -34,7 +34,7 @@ export function TitleCard({
     >
       <div
         className={`
-          ring-ring ring-offset-background overflow-hidden rounded-lg ring-offset-2 duration-300 group-hover:scale-105
+          overflow-hidden rounded-lg ring-ring ring-offset-2 ring-offset-background duration-300 group-hover:scale-105
           not-focus-within:group-hover:-translate-y-2 group-focus-visible:scale-105 group-focus-visible:ring-2
           focus-within:scale-105 focus-within:ring-2
           ${
@@ -59,10 +59,7 @@ export function TitleCard({
                 group-focus-visible:scale-110
                 ${
                   horizontalOnMobile
-                    ? `
-                      max-sm:group-focus-within:scale-100 max-sm:group-hover:scale-100
-                      max-sm:group-focus-visible:scale-100
-                    `
+                    ? `max-sm:group-focus-within:scale-100 max-sm:group-hover:scale-100 max-sm:group-focus-visible:scale-100`
                     : ""
                 }
               `}
@@ -70,7 +67,7 @@ export function TitleCard({
           ) : (
             <div
               className={`
-                to-primary/40 flex size-full items-center justify-center bg-linear-to-bl from-black text-center
+                flex size-full items-center justify-center bg-linear-to-bl from-black to-primary/40 text-center
                 ${horizontalOnMobile ? "max-sm:h-36 max-sm:w-24 max-sm:shrink-0" : ""}
               `}
             >
@@ -88,15 +85,15 @@ export function TitleCard({
 
         <div
           className={`
-            pointer-events-none absolute inset-0 z-20 flex flex-col justify-end bg-linear-to-t from-black to-transparent
-            px-2 py-4 opacity-0 duration-300 group-focus-within:opacity-100 group-hover:opacity-100
+            pointer-events-none absolute inset-0 z-20 flex flex-col justify-end bg-linear-to-t from-black to-transparent px-2
+            py-4 opacity-0 duration-300 group-focus-within:opacity-100 group-hover:opacity-100
             group-focus-visible:opacity-100
             ${
               horizontalOnMobile
                 ? `
-                  dark:max-sm:to-primary/50 max-sm:to-primary max-sm:pointer-events-auto max-sm:relative
-                  max-sm:inset-auto max-sm:z-auto max-sm:flex-row max-sm:justify-start max-sm:bg-linear-to-b
-                  max-sm:from-40% max-sm:p-2 max-sm:opacity-100
+                  max-sm:pointer-events-auto max-sm:relative max-sm:inset-auto max-sm:z-auto max-sm:flex-row
+                  max-sm:justify-start max-sm:bg-linear-to-b max-sm:from-40% max-sm:to-primary max-sm:p-2 max-sm:opacity-100
+                  dark:max-sm:to-primary/50
                 `
                 : ""
             }
@@ -109,7 +106,7 @@ export function TitleCard({
               ${horizontalOnMobile ? "max-sm:translate-y-0" : ""}
             `}
           >
-            <h4 className="text-primary-foreground mb-2 text-lg leading-tight font-bold">
+            <h4 className="mb-2 text-lg/tight font-bold text-primary-foreground">
               {title.title}
             </h4>
             <div className="pointer-events-auto flex gap-1">

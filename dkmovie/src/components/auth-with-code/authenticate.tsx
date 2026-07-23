@@ -1,5 +1,5 @@
-import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import type { PropsWithChildren } from "react";
+import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 import { useMFA } from "@/hooks/use-mfa";

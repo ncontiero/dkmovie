@@ -113,7 +113,7 @@ export function AddPasskey() {
               {...register("name")}
             />
             {errors.name ? (
-              <p className="text-destructive text-sm">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             ) : null}
           </div>
           <DialogFooter>

@@ -23,7 +23,7 @@ export function ContentCarousel({ title, items, searchParams }: CarouselProps) {
     <section className="py-4">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-2 flex items-center gap-4">
-          <h3 className="text-foreground text-2xl font-semibold">{title}</h3>
+          <h3 className="text-2xl font-semibold text-foreground">{title}</h3>
           {searchParams ? (
             <Link
               to="/search"

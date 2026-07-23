@@ -71,20 +71,20 @@ export const Route = createFileRoute("/title/$titleId/")({
           <div className="relative z-10 flex h-full flex-col justify-end">
             <div className="container mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
               <div className="max-w-3xl space-y-4">
-                <Skeleton className="bg-background h-10 w-3/4 sm:h-12 lg:h-14" />
+                <Skeleton className="h-10 w-3/4 bg-background sm:h-12 lg:h-14" />
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                  <Skeleton className="bg-background h-6 w-16" />
-                  <Skeleton className="bg-background h-6 w-20" />
-                  <Skeleton className="bg-background h-6 w-12" />
+                  <Skeleton className="h-6 w-16 bg-background" />
+                  <Skeleton className="h-6 w-20 bg-background" />
+                  <Skeleton className="h-6 w-12 bg-background" />
                 </div>
                 <div className="hidden space-y-2 pt-2 md:block">
-                  <Skeleton className="bg-background h-6 w-full" />
-                  <Skeleton className="bg-background h-6 w-full" />
-                  <Skeleton className="bg-background h-6 w-2/3" />
+                  <Skeleton className="h-6 w-full bg-background" />
+                  <Skeleton className="h-6 w-full bg-background" />
+                  <Skeleton className="h-6 w-2/3 bg-background" />
                 </div>
                 <div className="flex gap-4 pt-4">
-                  <Skeleton className="bg-background h-12 w-36" />
-                  <Skeleton className="bg-background h-12 w-36" />
+                  <Skeleton className="h-12 w-36 bg-background" />
+                  <Skeleton className="h-12 w-36 bg-background" />
                 </div>
               </div>
             </div>
@@ -93,21 +93,21 @@ export const Route = createFileRoute("/title/$titleId/")({
 
         <div className="container mx-auto max-w-7xl p-4 sm:px-6 lg:px-8">
           <div className="mb-6 space-y-2 md:hidden">
-            <Skeleton className="bg-background h-5 w-full" />
-            <Skeleton className="bg-background h-5 w-full" />
-            <Skeleton className="bg-background h-5 w-2/3" />
+            <Skeleton className="h-5 w-full bg-background" />
+            <Skeleton className="h-5 w-full bg-background" />
+            <Skeleton className="h-5 w-2/3 bg-background" />
           </div>
-          <Skeleton className="bg-background mb-6 h-8 w-1/3" />
+          <Skeleton className="mb-6 h-8 w-1/3 bg-background" />
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="space-y-3 md:col-span-2">
-              <Skeleton className="bg-background mb-3 h-6 w-1/4" />
-              <Skeleton className="bg-background h-4 w-1/2" />
-              <Skeleton className="bg-background h-4 w-1/2" />
-              <Skeleton className="bg-background h-4 w-1/2" />
+              <Skeleton className="mb-3 h-6 w-1/4 bg-background" />
+              <Skeleton className="h-4 w-1/2 bg-background" />
+              <Skeleton className="h-4 w-1/2 bg-background" />
+              <Skeleton className="h-4 w-1/2 bg-background" />
             </div>
             <div className="space-y-3">
-              <div className="bg-muted mb-3 h-6 w-1/3 rounded-md" />
-              <div className="bg-muted h-4 w-1/2 rounded-md" />
+              <div className="mb-3 h-6 w-1/3 rounded-md bg-muted" />
+              <div className="h-4 w-1/2 rounded-md bg-muted" />
             </div>
           </div>
         </div>
@@ -146,12 +146,12 @@ function TitleComponent() {
 
   return (
     <AnimatedRoute>
-      <div className="bg-background text-foreground min-h-screen">
+      <div className="min-h-screen bg-background text-foreground">
         <main>
           <div className="relative h-[75vh] w-full overflow-hidden md:h-[85vh]">
             <div className="absolute inset-0 size-full">
               {title.cover ? (
-                <div className="animate-in fade-in size-full duration-1000">
+                <div className="size-full animate-in duration-1000 fade-in">
                   <img
                     src={title.cover}
                     alt={title.title}
@@ -160,28 +160,27 @@ function TitleComponent() {
                   />
                 </div>
               ) : (
-                <div className="from-primary/20 size-full bg-linear-to-bl to-black" />
+                <div className="size-full bg-linear-to-bl from-primary/20 to-black" />
               )}
             </div>
 
-            <div className="from-background via-background/60 absolute inset-0 bg-linear-to-t to-transparent md:hidden" />
+            <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-transparent md:hidden" />
 
             <div
               className={`
-                md:from-background md:via-background/50 hidden md:absolute md:inset-0 md:block md:bg-linear-to-r
+                hidden md:absolute md:inset-0 md:block md:bg-linear-to-r md:from-background md:via-background/50
                 md:to-transparent
               `}
             />
 
-            <div className="via-background/30 from-background absolute inset-0 bg-linear-to-t to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-background via-background/30 to-transparent" />
 
             <div className="relative z-10 flex h-full flex-col justify-end pb-12 md:pb-16">
               <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="animate-in fade-in slide-in-from-bottom-8 fill-mode-both max-w-3xl duration-1000">
+                <div className="max-w-3xl animate-in duration-1000 fill-mode-both fade-in slide-in-from-bottom-8">
                   <h1
                     className={`
-                      text-foreground text-4xl font-black tracking-tight text-balance drop-shadow-2xl sm:text-4xl
-                      lg:text-5xl
+                      text-4xl font-black tracking-tight text-balance text-foreground drop-shadow-2xl sm:text-4xl lg:text-5xl
                     `}
                   >
                     {title.title}
@@ -189,7 +188,7 @@ function TitleComponent() {
 
                   <div
                     className={`
-                      text-muted-foreground mt-4 flex flex-wrap items-center gap-3 text-sm font-medium sm:text-base
+                      mt-4 flex flex-wrap items-center gap-3 text-sm font-medium text-muted-foreground sm:text-base
                     `}
                   >
                     <span
@@ -209,7 +208,7 @@ function TitleComponent() {
                           to="/search"
                           search={{ releaseYear: titleReleaseYear }}
                           variant="muted"
-                          className="hover:text-foreground transition-colors"
+                          className="transition-colors hover:text-foreground"
                           aria-label={t("seeMoreTitlesOfTheYear", {
                             year: titleReleaseYear,
                           })}
@@ -237,7 +236,7 @@ function TitleComponent() {
 
                     {title.genres?.length > 0 && (
                       <>
-                        <span className="text-muted-foreground/40 hidden sm:inline-block">
+                        <span className="hidden text-muted-foreground/40 sm:inline-block">
                           •
                         </span>
                         <div className="flex flex-wrap gap-2">
@@ -247,7 +246,7 @@ function TitleComponent() {
                               to="/search"
                               search={{ genre: genre.name }}
                               variant="muted"
-                              className="hover:text-primary transition-colors"
+                              className="transition-colors hover:text-primary"
                               aria-label={t("seeMoreTitlesOfTheGenre", {
                                 genre: genre.name,
                               })}
@@ -262,8 +261,7 @@ function TitleComponent() {
 
                   <p
                     className={`
-                      text-foreground/80 mt-6 line-clamp-3 hidden max-w-2xl text-lg leading-relaxed drop-shadow-md
-                      md:line-clamp-4
+                      mt-6 line-clamp-3 hidden max-w-2xl text-lg/relaxed text-foreground/80 drop-shadow-md md:line-clamp-4
                     `}
                   >
                     {description}
@@ -276,7 +274,7 @@ function TitleComponent() {
                       titleId={titleId}
                       variant="outline"
                       size="lg"
-                      className="xs:w-auto h-12 w-full px-6 backdrop-blur-md hover:scale-105"
+                      className="h-12 w-full px-6 backdrop-blur-md hover:scale-105 xs:w-auto"
                       iconClassName="size-5"
                     />
                   </div>
@@ -287,32 +285,32 @@ function TitleComponent() {
 
           <div className="container mx-auto max-w-7xl p-4 sm:px-6 lg:px-8">
             <div>
-              <h2 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
+              <h2 className="mb-6 text-3xl font-semibold tracking-tight text-foreground">
                 {t("details")}
               </h2>
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-muted-foreground mb-2 text-sm font-medium tracking-wider uppercase">
+                  <h3 className="mb-2 text-sm font-medium tracking-wider text-muted-foreground uppercase">
                     {t("fullSynopsis")}
                   </h3>
-                  <p className="text-foreground/80 text-lg leading-relaxed">
+                  <p className="text-lg/relaxed text-foreground/80">
                     {description}
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-muted-foreground mb-2 text-sm font-medium tracking-wider uppercase">
+                  <h3 className="mb-2 text-sm font-medium tracking-wider text-muted-foreground uppercase">
                     {t("cast")}
                   </h3>
-                  <p className="text-foreground/80 text-lg">{title.cast}</p>
+                  <p className="text-lg text-foreground/80">{title.cast}</p>
                 </div>
               </div>
             </div>
 
             {title.seasons?.length > 0 ? (
               <div className="mt-6">
-                <h2 className="text-foreground mb-6 text-3xl font-semibold tracking-tight">
+                <h2 className="mb-6 text-3xl font-semibold tracking-tight text-foreground">
                   {t("seasons")}
                 </h2>
 
@@ -336,7 +334,7 @@ function TitleComponent() {
             ) : null}
           </div>
 
-          <div className="border-border/50 mt-12 border-t pt-12">
+          <div className="mt-12 border-t border-border/50 pt-12">
             <ContentCarousel title={t("moreLikeThis")} items={relatedMovies} />
           </div>
         </main>

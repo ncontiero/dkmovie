@@ -96,7 +96,7 @@ function ForgotPasswordComponent() {
           {...register("email")}
         />
         {errors.email ? (
-          <p className="text-destructive text-sm">{errors.email.message}</p>
+          <p className="text-sm text-destructive">{errors.email.message}</p>
         ) : null}
       </div>
       <Button

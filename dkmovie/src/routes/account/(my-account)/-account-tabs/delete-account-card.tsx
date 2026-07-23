@@ -27,7 +27,7 @@ import {
 } from "@/schemas/account/delete-account";
 
 function irreversibleWarning(chunks: ReactNode) {
-  return <span className="text-destructive font-bold">{chunks}</span>;
+  return <span className="font-bold text-destructive">{chunks}</span>;
 }
 
 function labelBold(chunks: ReactNode) {
@@ -89,12 +89,12 @@ export function DeleteAccountCard() {
   if (!userEmail) return null;
 
   return (
-    <Card className="border-destructive mt-10">
+    <Card className="mt-10 border-destructive">
       <CardContent className="flex flex-col p-4 sm:p-6">
         <h3 className="text-lg font-bold">{t("title")}</h3>
-        <p className="text-muted-foreground mt-2 text-sm">{t("description")}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("description")}</p>
       </CardContent>
-      <CardFooter className="bg-destructive/20 border-destructive dark:bg-destructive/20 sm:justify-end">
+      <CardFooter className="border-destructive bg-destructive/20 sm:justify-end dark:bg-destructive/20">
         <Dialog>
           <DialogTrigger asChild>
             <Button type="button" size="sm" variant="destructive">
@@ -132,7 +132,7 @@ export function DeleteAccountCard() {
                   {...register("confirmEmail")}
                 />
                 {errors.confirmEmail ? (
-                  <p className="text-destructive text-sm">
+                  <p className="text-sm text-destructive">
                     {errors.confirmEmail.message}
                   </p>
                 ) : null}
@@ -152,7 +152,7 @@ export function DeleteAccountCard() {
                   {...register("confirmText")}
                 />
                 {errors.confirmText ? (
-                  <p className="text-destructive text-sm">
+                  <p className="text-sm text-destructive">
                     {errors.confirmText.message}
                   </p>
                 ) : null}

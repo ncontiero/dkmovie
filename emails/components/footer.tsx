@@ -9,12 +9,12 @@ interface FooterProps {
 export function Footer({ siteName = SITE_NAME }: FooterProps) {
   return (
     <Section>
-      <Hr className="border-border mx-0 my-6 w-full border border-solid" />
-      <Text className="text-muted-foreground mb-0 text-sm">
+      <Hr className="mx-0 my-6 w-full border border-solid border-border" />
+      <Text className="mb-0 text-sm text-muted-foreground">
         © {new Date().getFullYear()} {siteName}.{" "}
         {translate("All rights reserved.")}
       </Text>
-      <Text className="text-muted-foreground mt-1 text-sm">
+      <Text className="mt-1 text-sm text-muted-foreground">
         {siteName} - {translate("Your favorite streaming portal.")}
       </Text>
     </Section>

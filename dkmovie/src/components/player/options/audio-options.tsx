@@ -26,8 +26,8 @@ export function AudioOptions({
     <AccordionItem value="audios" className="border-0">
       <AccordionTrigger
         className="
-          hover:bg-background/60 flex w-full items-center justify-between gap-1 rounded-md px-4 py-3 font-medium
-          duration-200 hover:no-underline
+          flex w-full items-center justify-between gap-1 rounded-md px-4 py-3 font-medium duration-200 hover:bg-background/60
+          hover:no-underline
         "
       >
         {t("title")}
@@ -38,7 +38,7 @@ export function AudioOptions({
             <li key={audio.id}>
               <Button
                 type="button"
-                className="hover:bg-background/60 h-auto w-full justify-start px-4 py-3"
+                className="h-auto w-full justify-start px-4 py-3 hover:bg-background/60"
                 variant="ghost"
                 onClick={() => changeAudioTrack(audio.id)}
               >

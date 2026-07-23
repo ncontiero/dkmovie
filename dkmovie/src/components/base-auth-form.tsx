@@ -44,14 +44,14 @@ export function BaseAuthForm({
       <div className="w-full max-w-md rounded-lg border shadow-lg">
         {isSocialAccountsLoading ? (
           <div className="flex h-[630px] items-center justify-center">
-            <Spinner className="text-primary size-20" />
+            <Spinner className="size-20 text-primary" />
           </div>
         ) : (
           <>
             <div className="space-y-6 p-6 sm:p-8">
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-xl font-semibold">{title}</h1>
-                <p className="text-muted-foreground text-sm font-medium">
+                <p className="text-sm font-medium text-muted-foreground">
                   {description}
                 </p>
               </div>
@@ -72,7 +72,7 @@ export function BaseAuthForm({
                       <PasskeyAuthButton className="w-full" />
                     )}
                   </div>
-                  <div className="text-muted-foreground flex items-center justify-center text-sm">
+                  <div className="flex items-center justify-center text-sm text-muted-foreground">
                     <Separator className="flex-1" />
                     <p className="mx-3">{t("continueWith.or")}</p>
                     <Separator className="flex-1" />
@@ -92,7 +92,7 @@ export function BaseAuthForm({
                 <>
                   <div className="flex items-center justify-center">
                     <Separator className="flex-1" />
-                    <p className="text-muted-foreground mx-3 text-sm">
+                    <p className="mx-3 text-sm text-muted-foreground">
                       {t("continueWith.anotherMethod")}
                     </p>
                     <Separator className="flex-1" />
@@ -116,28 +116,28 @@ export function BaseAuthForm({
             {!isAuthenticated && type !== "2fa" && type !== "verify-email" && (
               <div className="border-t px-9 py-4">
                 {type === "sign-in" ? (
-                  <p className="text-muted-foreground text-center text-sm font-medium">
+                  <p className="text-center text-sm font-medium text-muted-foreground">
                     {t("formFooter.dontHaveAccount")}{" "}
                     <Link to="/auth/sign-up" search={nextPathSearch} size="sm">
                       {commonT("signUp")}
                     </Link>
                   </p>
                 ) : type === "sign-up" ? (
-                  <p className="text-muted-foreground text-center text-sm font-medium">
+                  <p className="text-center text-sm font-medium text-muted-foreground">
                     {t("formFooter.haveAccount")}{" "}
                     <Link to="/auth/sign-in" search={nextPathSearch} size="sm">
                       {commonT("signIn")}
                     </Link>
                   </p>
                 ) : type === "forgot-password" ? (
-                  <p className="text-muted-foreground text-center text-sm font-medium">
+                  <p className="text-center text-sm font-medium text-muted-foreground">
                     {t("formFooter.rememberPassword")}{" "}
                     <Link to="/auth/sign-in" search={nextPathSearch} size="sm">
                       {commonT("signIn")}
                     </Link>
                   </p>
                 ) : type === "reset-password" ? (
-                  <p className="text-muted-foreground text-center text-sm font-medium">
+                  <p className="text-center text-sm font-medium text-muted-foreground">
                     {t("formFooter.goBackTo")}{" "}
                     <Link to="/auth/sign-in" search={nextPathSearch} size="sm">
                       {commonT("signIn")}

@@ -25,7 +25,7 @@ function MFAComponent() {
         <div className="space-y-6 p-6 sm:p-8">
           <div className="flex flex-col items-center gap-2 text-center">
             <h1 className="text-xl font-semibold">{t("title")}</h1>
-            <p className="text-muted-foreground text-sm font-medium">
+            <p className="text-sm font-medium text-muted-foreground">
               {t("description")}
             </p>
           </div>

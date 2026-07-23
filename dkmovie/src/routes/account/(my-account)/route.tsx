@@ -33,11 +33,11 @@ function MyAccountLayoutComponent() {
 
   return (
     <ReAuthenticateProvider>
-      <div className="text-foreground mx-auto mt-30 flex min-h-screen max-w-7xl px-4 md:container">
+      <div className="mx-auto mt-30 flex min-h-screen max-w-7xl px-4 text-foreground md:container">
         <main className="w-full">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold">{t("title")}</h1>
-            <p className="text-muted-foreground text-lg font-medium">
+            <p className="text-lg font-medium text-muted-foreground">
               {t("description")}
             </p>
             {user?.is_superuser ? (
@@ -46,7 +46,7 @@ function MyAccountLayoutComponent() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`
-                  hover:text-primary ring-ring rounded-lg text-sm font-medium duration-200 hover:underline
+                  rounded-lg text-sm font-medium ring-ring duration-200 hover:text-primary hover:underline
                   focus-visible:ring-2 focus-visible:outline-hidden
                 `}
               >

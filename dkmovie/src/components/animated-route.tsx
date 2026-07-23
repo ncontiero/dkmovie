@@ -6,7 +6,7 @@ interface AnimatedRouteProps extends ComponentProps<"div"> {}
 export function AnimatedRoute({ className, ...props }: AnimatedRouteProps) {
   return (
     <div
-      className={cn("animate-in fade-in duration-1000", className)}
+      className={cn("animate-in duration-1000 fade-in", className)}
       {...props}
     />
   );

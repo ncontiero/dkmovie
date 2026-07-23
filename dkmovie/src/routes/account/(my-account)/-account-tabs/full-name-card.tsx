@@ -85,7 +85,7 @@ export function FullNameCard() {
             {...register("name")}
           />
           {errors.name ? (
-            <p className="text-destructive mt-1 text-sm">
+            <p className="mt-1 text-sm text-destructive">
               {errors.name.message}
             </p>
           ) : null}

@@ -3,6 +3,9 @@ import { ncontiero } from "@ncontiero/eslint-config";
 export default ncontiero(
   {
     ignores: ["dkmovie/templates/emails/**", "**/routeTree.gen.ts"],
+    tailwindcss: {
+      cssGlobalPath: "./dkmovie/src/index.css",
+    },
     javascript: {
       overrides: {
         "node/no-unsupported-features/node-builtins": [

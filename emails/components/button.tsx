@@ -16,10 +16,10 @@ export function Button({
   return (
     <ReactEmailButton
       className={cn(
-        "text-foreground rounded-[6px] px-5 py-3 text-center font-semibold no-underline",
+        "rounded-[6px] px-5 py-3 text-center font-semibold text-foreground no-underline",
         variant === "primary" && "bg-primary text-primary-foreground",
         variant === "outline" &&
-          "border-primary text-primary border border-solid",
+          "border border-solid border-primary text-primary",
         className,
       )}
       {...props}

@@ -16,7 +16,7 @@ export function ChangeLang() {
 
   return (
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger className="focus:bg-foreground/20 data-[state=open]:bg-foreground/30 cursor-pointer py-2">
+      <DropdownMenuSubTrigger className="cursor-pointer py-2 focus:bg-foreground/20 data-[state=open]:bg-foreground/30">
         {t("header.changeLang")}
       </DropdownMenuSubTrigger>
       <DropdownMenuPortal>
@@ -32,7 +32,7 @@ export function ChangeLang() {
               <DropdownMenuRadioItem
                 key={loc}
                 value={loc}
-                className="focus:bg-foreground/20 cursor-pointer py-2"
+                className="cursor-pointer py-2 focus:bg-foreground/20"
               >
                 {t(`langs.${loc}`)}
               </DropdownMenuRadioItem>

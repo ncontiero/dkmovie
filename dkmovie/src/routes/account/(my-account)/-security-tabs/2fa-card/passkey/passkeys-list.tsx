@@ -126,7 +126,7 @@ function PasskeyItem({
 
   return (
     <li className="flex items-center justify-between">
-      <div className="text-foreground/60 space-y-1 text-xs">
+      <div className="space-y-1 text-xs text-foreground/60">
         <p>{passkey.name}</p>
         <p>
           <span>{t("createdOn", { date: createdAtFormatted })}</span>{" "}
@@ -175,7 +175,7 @@ function PasskeyItem({
                   {...register("name")}
                 />
                 {errors.name ? (
-                  <p className="text-destructive text-sm">
+                  <p className="text-sm text-destructive">
                     {errors.name.message}
                   </p>
                 ) : null}
@@ -272,7 +272,7 @@ export function PasskeysList({ passkeys }: PasskeysListProps) {
 
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="mt-2 w-full">
-      <CollapsibleTrigger className="text-muted-foreground flex items-center gap-1 text-sm [&>svg]:size-4">
+      <CollapsibleTrigger className="flex items-center gap-1 text-sm text-muted-foreground [&>svg]:size-4">
         <span>{t("passkeysRegistered", { count: passkeys.length })}</span>
         <ChevronDown className={`${open ? "rotate-180" : ""} duration-200`} />
         <span className="sr-only">

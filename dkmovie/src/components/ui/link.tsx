@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const linkVariants = cva(
   `
-    ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center font-medium
-    underline-offset-4 duration-200 hover:underline focus-visible:ring-2 focus-visible:ring-offset-2
-    focus-visible:outline-hidden active:opacity-70
+    inline-flex items-center justify-center font-medium underline-offset-4 ring-offset-background duration-200
+    hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-hidden
+    active:opacity-70
   `,
   {
     variants: {
@@ -18,11 +18,11 @@ const linkVariants = cva(
         destructive:
           "text-destructive hover:text-destructive/90 focus-visible:ring-destructive",
         ghost: `
-          hover:text-primary-foreground focus-visible:text-primary-foreground px-0.5
-          shadow-[var(--primary)_0_-2px_0_0_inset] hover:no-underline hover:shadow-[var(--primary)_0_-30px_0_-1px_inset]
+          px-0.5 shadow-[var(--primary)_0_-2px_0_0_inset] hover:text-primary-foreground hover:no-underline
+          hover:shadow-[var(--primary)_0_-30px_0_-1px_inset] focus-visible:text-primary-foreground
           focus-visible:shadow-[var(--primary)_0_-30px_0_-1px_inset] focus-visible:ring-transparent
         `,
-        muted: "text-muted-foreground hover:text-foreground text-base",
+        muted: "text-base text-muted-foreground hover:text-foreground",
       },
       size: {
         sm: "text-sm",

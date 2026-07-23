@@ -127,7 +127,7 @@ function ResetPasswordComponent() {
           />
         </div>
         {errors.key ? (
-          <p className="text-destructive text-sm">{errors.key.message}</p>
+          <p className="text-sm text-destructive">{errors.key.message}</p>
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
@@ -138,7 +138,7 @@ function ResetPasswordComponent() {
           {...register("password")}
         />
         {errors.password ? (
-          <p className="text-destructive text-sm">{errors.password.message}</p>
+          <p className="text-sm text-destructive">{errors.password.message}</p>
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
@@ -151,7 +151,7 @@ function ResetPasswordComponent() {
           {...register("passwordConfirmation")}
         />
         {errors.passwordConfirmation ? (
-          <p className="text-destructive text-sm">
+          <p className="text-sm text-destructive">
             {errors.passwordConfirmation.message}
           </p>
         ) : null}

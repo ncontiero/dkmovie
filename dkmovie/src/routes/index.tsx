@@ -82,7 +82,7 @@ function HomeComponent() {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-2">
         <h1 className="text-center text-2xl font-semibold">{t("noTitles")}</h1>
-        <p className="text-muted-foreground text-center">{t("checkLater")}</p>
+        <p className="text-center text-muted-foreground">{t("checkLater")}</p>
       </main>
     );
   }

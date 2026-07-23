@@ -35,11 +35,11 @@ export default function EmailConfirmation({
         )}
       </Text>
 
-      <Section className="bg-muted border-border my-5 rounded-sm border p-5 text-center">
-        <Text className="text-muted-foreground m-0 mb-2.5 text-xs font-bold tracking-wider uppercase">
+      <Section className="my-5 rounded-sm border border-border bg-muted p-5 text-center">
+        <Text className="m-0 mb-2.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
           {translate("Verification Code")}
         </Text>
-        <Text className="text-foreground m-0 font-mono text-3xl font-bold tracking-[8px]">
+        <Text className="m-0 font-mono text-3xl font-bold tracking-[8px] text-foreground">
           {code}
         </Text>
       </Section>
@@ -51,7 +51,7 @@ export default function EmailConfirmation({
       <Text className="mb-0 text-sm">
         {translate("Or you can copy and paste this link into your browser:")}
       </Text>
-      <Text className="text-primary mt-1 text-xs break-all">
+      <Text className="mt-1 text-xs break-all text-primary">
         <Link href={verificationUrl} className="text-primary underline">
           {verificationUrl}
         </Link>

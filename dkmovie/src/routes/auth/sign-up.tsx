@@ -106,7 +106,7 @@ function SingUpComponent() {
           {...register("email")}
         />
         {errors.email ? (
-          <p className="text-destructive text-sm">{errors.email.message}</p>
+          <p className="text-sm text-destructive">{errors.email.message}</p>
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
@@ -117,7 +117,7 @@ function SingUpComponent() {
           {...register("password")}
         />
         {errors.password ? (
-          <p className="text-destructive text-sm">{errors.password.message}</p>
+          <p className="text-sm text-destructive">{errors.password.message}</p>
         ) : null}
       </div>
       <div className="flex flex-col gap-2">
@@ -130,7 +130,7 @@ function SingUpComponent() {
           {...register("confirmPassword")}
         />
         {errors.confirmPassword ? (
-          <p className="text-destructive text-sm">
+          <p className="text-sm text-destructive">
             {errors.confirmPassword.message}
           </p>
         ) : null}

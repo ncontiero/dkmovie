@@ -355,8 +355,8 @@ export function VideoPlayer({
       <div
         className={cn(
           `
-            absolute inset-0 z-10 bg-radial from-transparent to-black/90 to-75% px-4 pt-2 opacity-0 duration-200
-            lg:px-20 lg:pt-10
+            absolute inset-0 z-10 bg-radial from-transparent to-black/90 to-75% px-4 pt-2 opacity-0 duration-200 lg:px-20
+            lg:pt-10
           `,
           isToShowControls && "opacity-100",
         )}

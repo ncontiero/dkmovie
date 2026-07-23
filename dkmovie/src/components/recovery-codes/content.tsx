@@ -59,7 +59,7 @@ export function RecoveryCodesContent({
           ))}
         </div>
       </div>
-      <div className="bg-secondary/80 lg flex items-center justify-end rounded-b border-t p-2">
+      <div className="lg flex items-center justify-end rounded-b border-t bg-secondary/80 p-2">
         <CopyButton value={codes.join("\n")} variant="outline" size="sm">
           {t("copy")}
         </CopyButton>

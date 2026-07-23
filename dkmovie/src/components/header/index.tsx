@@ -61,7 +61,7 @@ export function Header() {
       className={cn(
         "fixed inset-x-0 top-0 z-9999 h-16 w-full duration-300",
         isToAddScrollClasses
-          ? "bg-background/60 border-border border-b backdrop-blur-md"
+          ? "border-b border-border bg-background/60 backdrop-blur-md"
           : `bg-transparent`,
       )}
     >
@@ -72,14 +72,14 @@ export function Header() {
               to="/"
               className={cn(
                 `
-                  focus-visible:ring-ring ring-offset-background rounded-md font-bold ring-offset-2 duration-200
-                  hover:scale-105 focus-visible:ring-2 focus-visible:outline-hidden
+                  rounded-md font-bold ring-offset-2 ring-offset-background duration-200 hover:scale-105 focus-visible:ring-2
+                  focus-visible:ring-ring focus-visible:outline-hidden
                 `,
                 !isScrolled &&
                   addScrollEffect &&
                   `
-                    bg-background/80 dark:bg-background/60 hover:bg-primary dark:hover:bg-primary
-                    focus-visible:bg-primary dark:focus-visible:bg-primary rounded-md backdrop-blur-md
+                    rounded-md bg-background/80 backdrop-blur-md hover:bg-primary focus-visible:bg-primary
+                    dark:bg-background/60 dark:hover:bg-primary dark:focus-visible:bg-primary
                   `,
               )}
             >
@@ -90,7 +90,7 @@ export function Header() {
                 "hidden items-center gap-0.5 md:flex",
                 !isScrolled &&
                   addScrollEffect &&
-                  "bg-background/80 dark:bg-background/60 rounded-md backdrop-blur-md",
+                  "rounded-md bg-background/80 backdrop-blur-md dark:bg-background/60",
               )}
             >
               {links.map(({ title, href }) => (
@@ -98,9 +98,9 @@ export function Header() {
                   key={href}
                   to={href}
                   className={`
-                    hover:bg-foreground/20 focus-visible:ring-ring ring-offset-background
-                    data-[status=active]:shadow-[0_10px_10px_-4px_theme(--color-primary)] rounded-md px-3 py-2 text-sm
-                    font-medium ring-offset-2 duration-200 focus-visible:ring-2 focus-visible:outline-hidden
+                    rounded-md px-3 py-2 text-sm font-medium ring-offset-2 ring-offset-background duration-200
+                    hover:bg-foreground/20 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden
+                    data-[status=active]:shadow-[0_10px_10px_-4px_theme(--color-primary)]
                   `}
                 >
                   {title}
@@ -111,10 +111,10 @@ export function Header() {
 
           <div
             className={cn(
-              "text-muted-foreground flex items-center gap-0.5",
+              "flex items-center gap-0.5 text-muted-foreground",
               !isScrolled &&
                 addScrollEffect &&
-                "bg-background/80 dark:bg-background/60 rounded-full backdrop-blur-md",
+                "rounded-full bg-background/80 backdrop-blur-md dark:bg-background/60",
             )}
           >
             <SearchDialog />
@@ -122,7 +122,7 @@ export function Header() {
               type="button"
               variant="invert"
               size="icon"
-              className="hover:bg-foreground/20 rounded-full"
+              className="rounded-full hover:bg-foreground/20"
             >
               <Bell />
             </Button>
@@ -132,7 +132,7 @@ export function Header() {
                   type="button"
                   variant="invert"
                   size="icon"
-                  className="hover:bg-foreground/20 rounded-full"
+                  className="rounded-full hover:bg-foreground/20"
                   aria-label={t("userMenu.label")}
                 >
                   <User />
@@ -142,19 +142,19 @@ export function Header() {
                 {isAuthenticated ? (
                   <>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/20 cursor-pointer py-2"
+                      className="cursor-pointer py-2 focus:bg-foreground/20"
                       asChild
                     >
                       <Link to="/account">{commonT("myAccount")}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/20 cursor-pointer py-2"
+                      className="cursor-pointer py-2 focus:bg-foreground/20"
                       asChild
                     >
                       <Link to="/my-list">{commonT("myList")}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/20 cursor-pointer py-2"
+                      className="cursor-pointer py-2 focus:bg-foreground/20"
                       onClick={() => logout()}
                     >
                       {t("userMenu.logout")}
@@ -163,7 +163,7 @@ export function Header() {
                 ) : (
                   <>
                     <DropdownMenuItem
-                      className="focus:bg-foreground/20 cursor-pointer py-2"
+                      className="cursor-pointer py-2 focus:bg-foreground/20"
                       asChild
                     >
                       <Link to="/auth/sign-in" search={nextSearchPath}>
@@ -172,7 +172,7 @@ export function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
-                      className="focus:bg-foreground/20 cursor-pointer py-2"
+                      className="cursor-pointer py-2 focus:bg-foreground/20"
                     >
                       <Link to="/auth/sign-up" search={nextSearchPath}>
                         {commonT("signUp")}

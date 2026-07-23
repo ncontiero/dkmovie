@@ -27,21 +27,21 @@ export function PageError({ code, title, description, Icon }: PageErrorProps) {
 
   return (
     <div
-      className={`bg-background text-foreground flex min-h-screen flex-col items-center justify-center text-center`}
+      className={`flex min-h-screen flex-col items-center justify-center bg-background text-center text-foreground`}
     >
       <div className="mb-6">
-        <Icon className="text-destructive size-16" />
+        <Icon className="size-16 text-destructive" />
       </div>
 
-      <h1 className="text-foreground mb-4 text-6xl font-extrabold md:text-8xl">
+      <h1 className="mb-4 text-6xl font-extrabold text-foreground md:text-8xl">
         {code}
       </h1>
 
-      <h2 className="text-foreground mb-3 text-2xl font-semibold md:text-3xl">
+      <h2 className="mb-3 text-2xl font-semibold text-foreground md:text-3xl">
         {title}
       </h2>
 
-      <p className="text-muted-foreground mb-8 max-w-md text-lg">
+      <p className="mb-8 max-w-md text-lg text-muted-foreground">
         {description}
       </p>
 

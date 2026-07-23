@@ -112,7 +112,7 @@ function RouteComponent() {
           />
         </div>
         {errors.key ? (
-          <p className="text-destructive text-sm">{errors.key.message}</p>
+          <p className="text-sm text-destructive">{errors.key.message}</p>
         ) : null}
       </div>
       <div className="-mt-4 flex items-center justify-center">

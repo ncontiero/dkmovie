@@ -14,7 +14,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
     const handleCopy = useCallback(() => {
       navigator.clipboard.writeText(value);
       setHasCopied(true);
-      setTimeout(() => setHasCopied(false), timeout);
+      setTimeout(setHasCopied, timeout, false);
     }, [timeout, value]);
 
     return (

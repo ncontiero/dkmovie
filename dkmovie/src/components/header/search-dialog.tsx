@@ -53,7 +53,7 @@ export function SearchDialog() {
           type="button"
           variant="invert"
           size="icon"
-          className="hover:bg-foreground/20 rounded-full"
+          className="rounded-full hover:bg-foreground/20"
           aria-label={t("label")}
         >
           <Search />
@@ -77,7 +77,7 @@ export function SearchDialog() {
             </InputGroupAddon>
           </InputGroup>
           {errors.search ? (
-            <p className="text-destructive mt-2 text-sm">
+            <p className="mt-2 text-sm text-destructive">
               {errors.search.message}
             </p>
           ) : null}

@@ -21,7 +21,7 @@ export function NotMakeThisChange({
   );
 
   return (
-    <Section className="bg-muted border-border my-5 rounded-sm border p-5">
+    <Section className="my-5 rounded-sm border border-border bg-muted p-5">
       <Text className="m-0 mb-2.5 text-sm font-bold">
         {isNotRequested
           ? translate("Didn't make this change?")
@@ -34,7 +34,7 @@ export function NotMakeThisChange({
             href={resolveUrl("/auth/password/forgot", {
               email: "{{ to_email|default:email }}",
             })}
-            className="text-primary mr-2 font-semibold underline"
+            className="mr-2 font-semibold text-primary underline"
           >
             {translate("Reset Password")}
           </Link>
@@ -42,7 +42,7 @@ export function NotMakeThisChange({
         {addSupportContact ? (
           <Link
             href={resolveUrl("/contact")}
-            className="text-destructive font-semibold underline"
+            className="font-semibold text-destructive underline"
           >
             {translate("Contact Support")}
           </Link>

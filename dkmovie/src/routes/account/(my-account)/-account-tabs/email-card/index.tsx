@@ -38,9 +38,9 @@ export function UserEmailCard() {
         <div className="mt-4 flex flex-col gap-2">
           {isUserEmailsLoading ? (
             <Skeleton className="flex h-14 items-center gap-2 px-4">
-              <Skeleton className="bg-background h-1/2 w-1/4" />
-              <Skeleton className="bg-background h-1/2 w-1/12" />
-              <Skeleton className="bg-background h-1/2 w-1/12" />
+              <Skeleton className="h-1/2 w-1/4 bg-background" />
+              <Skeleton className="h-1/2 w-1/12 bg-background" />
+              <Skeleton className="h-1/2 w-1/12 bg-background" />
             </Skeleton>
           ) : (
             userEmails?.map(({ email, primary, verified }) => (

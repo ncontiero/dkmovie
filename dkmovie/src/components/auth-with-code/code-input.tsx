@@ -37,7 +37,7 @@ export function CodeInput({
         />
       </div>
       {errors.code ? (
-        <p className="text-destructive text-sm">{errors.code.message}</p>
+        <p className="text-sm text-destructive">{errors.code.message}</p>
       ) : null}
     </>
   );

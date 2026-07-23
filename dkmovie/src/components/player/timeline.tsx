@@ -157,8 +157,7 @@ export function Timeline({
       {showThumb && activeSprite ? (
         <div
           className="
-            pointer-events-none absolute bottom-full z-50 mb-4 flex flex-col items-center transition-opacity
-            duration-200
+            pointer-events-none absolute bottom-full z-50 mb-4 flex flex-col items-center transition-opacity duration-200
           "
           style={{
             left: safeLeftPos,
@@ -166,11 +165,7 @@ export function Timeline({
           }}
         >
           <SpriteThumbnail sprite={activeSprite} hoverTime={hoverTime} />
-          <div
-            className="
-              mt-1 rounded-sm border border-white/10 bg-black/80 px-4 py-1 text-sm font-medium text-white shadow-sm
-            "
-          >
+          <div className="mt-1 rounded-sm border border-white/10 bg-black/80 px-4 py-1 text-sm font-medium text-white shadow-sm">
             {new Date(hoverTime * 1000).toISOString().slice(14, 19)}
           </div>
         </div>

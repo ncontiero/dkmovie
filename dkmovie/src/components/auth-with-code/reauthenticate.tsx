@@ -1,6 +1,6 @@
+import type { PropsWithChildren } from "react";
 import type { ReAuthenticationProps } from "@/context/reauthenticate/context";
 import type { AuthFormWithCodeProps, AuthWithCodeProps } from "./types";
-import type { PropsWithChildren } from "react";
 import { useTranslations } from "use-intl";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "../ui/dialog";

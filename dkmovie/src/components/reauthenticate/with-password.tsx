@@ -57,7 +57,7 @@ export function ReAuthenticateWithPassword({
         <Label htmlFor="password">{commonT("fields.password")}</Label>
         <PasswordInput id="password" {...register("password")} />
         {errors.password ? (
-          <p className="text-destructive text-sm">{errors.password.message}</p>
+          <p className="text-sm text-destructive">{errors.password.message}</p>
         ) : null}
       </div>
       <DialogFooter>

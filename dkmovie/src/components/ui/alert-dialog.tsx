@@ -21,8 +21,8 @@ const AlertDialogOverlay = forwardRef<
   <AlertDialogPrimitive.Overlay
     className={cn(
       `
-        data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0
-        data-[state=open]:fade-in-0 fixed inset-0 z-9999 bg-black/40 backdrop-blur-md
+        fixed inset-0 z-9999 bg-black/40 backdrop-blur-md data-[state=closed]:animate-out data-[state=closed]:fade-out-0
+        data-[state=open]:animate-in data-[state=open]:fade-in-0
       `,
       className,
     )}
@@ -42,9 +42,9 @@ const AlertDialogContent = forwardRef<
       ref={ref}
       className={cn(
         `
-          bg-background data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95
-          data-[state=open]:zoom-in-95 data-[state=open]:animate-in data-[state=closed]:animate-out fixed top-[50%]
-          left-[50%] z-99999 grid w-full max-w-lg translate-[-50%] gap-4 border p-6 shadow-lg duration-200 sm:rounded-lg
+          fixed top-[50%] left-[50%] z-99999 grid w-full max-w-lg translate-[-50%] gap-4 border bg-background p-6 shadow-lg
+          duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
+          data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:rounded-lg
         `,
         className,
       )}
@@ -100,7 +100,7 @@ const AlertDialogDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Description
     ref={ref}
-    className={cn("text-muted-foreground text-sm", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ));

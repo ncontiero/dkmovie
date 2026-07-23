@@ -26,8 +26,8 @@ export function SubtitleOptions({
     <AccordionItem value="subtitles" className="border-0">
       <AccordionTrigger
         className="
-          hover:bg-background/60 flex w-full items-center justify-between gap-1 rounded-md px-4 py-3 font-medium
-          duration-200 hover:no-underline
+          flex w-full items-center justify-between gap-1 rounded-md px-4 py-3 font-medium duration-200 hover:bg-background/60
+          hover:no-underline
         "
       >
         {t("title")}
@@ -37,7 +37,7 @@ export function SubtitleOptions({
           <li>
             <Button
               type="button"
-              className="hover:bg-background/60 h-auto w-full justify-start px-4 py-3"
+              className="h-auto w-full justify-start px-4 py-3 hover:bg-background/60"
               variant="ghost"
               onClick={() => changeSubtitle(null)}
             >
@@ -54,7 +54,7 @@ export function SubtitleOptions({
             <li key={subtitle.language}>
               <Button
                 type="button"
-                className="hover:bg-background/60 h-auto w-full justify-start px-4 py-3"
+                className="h-auto w-full justify-start px-4 py-3 hover:bg-background/60"
                 variant="ghost"
                 onClick={() => changeSubtitle(subtitle.language)}
               >

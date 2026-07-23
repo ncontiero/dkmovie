@@ -44,7 +44,7 @@ export function SubtitleOverlay({
     >
       <span
         className="
-          inline-block rounded-sm bg-black/60 px-3 py-1.5 text-xl text-[clamp(1rem,4vw,2rem)] leading-snug text-white
+          inline-block rounded-sm bg-black/60 px-3 py-1.5 text-xl/snug text-[clamp(1rem,4vw,2rem)] text-white
           backdrop-blur-lg lg:text-4xl
         "
         style={{

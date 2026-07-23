@@ -30,19 +30,19 @@ export default function EmailChanged({
         )}
       </Text>
 
-      <Section className="bg-muted border-border my-5 rounded-sm border p-3.5">
+      <Section className="my-5 rounded-sm border border-border bg-muted p-3.5">
         <Text className="m-0 mb-2.5 text-sm">
-          <strong className="text-muted-foreground text-xs tracking-wider uppercase">
+          <strong className="text-xs tracking-wider text-muted-foreground uppercase">
             {translate("From:")}
           </strong>
           <br />
           <span className="font-mono text-base">{oldEmail}</span>
         </Text>
 
-        <Text className="text-primary m-0 mb-2.5 text-lg leading-none">↓</Text>
+        <Text className="m-0 mb-2.5 text-lg leading-none text-primary">↓</Text>
 
         <Text className="m-0 text-sm">
-          <strong className="text-muted-foreground text-xs tracking-wider uppercase">
+          <strong className="text-xs tracking-wider text-muted-foreground uppercase">
             {translate("To:")}
           </strong>
           <br />

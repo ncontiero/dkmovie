@@ -49,7 +49,7 @@ export function TwoFactorAuthenticationCard() {
             <div className="flex items-center justify-between rounded-t-lg border p-4">
               <div>
                 <h4 className="font-semibold">{t("appAuthenticator.title")}</h4>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm text-muted-foreground">
                   {t("appAuthenticator.description")}
                 </p>
               </div>
@@ -59,7 +59,7 @@ export function TwoFactorAuthenticationCard() {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">{t("passkey.title")}</h4>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-sm text-muted-foreground">
                     {t("passkey.description")}
                   </p>
                 </div>
@@ -75,7 +75,7 @@ export function TwoFactorAuthenticationCard() {
           <div className="mt-4 flex items-center justify-between rounded-lg border p-4">
             <div>
               <h4 className="font-semibold">{t("recoveryCodes.title")}</h4>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-sm text-muted-foreground">
                 {t("recoveryCodes.description")}
               </p>
             </div>

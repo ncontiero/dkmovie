@@ -45,7 +45,7 @@ export function SessionCard({
             <Badge variant="defaultOutline">{t("current")}</Badge>
           ) : null}
         </div>
-        <div className="text-muted-foreground flex flex-col gap-1 text-sm">
+        <div className="flex flex-col gap-1 text-sm text-muted-foreground">
           <p>
             {browser.name} {browser.version}
           </p>
@@ -78,11 +78,11 @@ export function SessionCard({
 export function SessionCardSkeleton() {
   return (
     <Skeleton className="w-full rounded-lg p-4">
-      <Skeleton className="bg-background h-7 w-1/3" />
+      <Skeleton className="h-7 w-1/3 bg-background" />
       <div className="mt-2 flex flex-col gap-1">
-        <Skeleton className="bg-background h-5 w-1/4" />
-        <Skeleton className="bg-background h-5 w-1/3" />
-        <Skeleton className="bg-background h-5 w-1/4" />
+        <Skeleton className="h-5 w-1/4 bg-background" />
+        <Skeleton className="h-5 w-1/3 bg-background" />
+        <Skeleton className="h-5 w-1/4 bg-background" />
       </div>
     </Skeleton>
   );

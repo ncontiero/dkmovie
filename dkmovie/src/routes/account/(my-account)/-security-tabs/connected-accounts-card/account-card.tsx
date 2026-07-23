@@ -55,7 +55,7 @@ export function AccountCard({
                 {isConnected ? t("connected") : t("notConnected")}
               </Badge>
             </p>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               {isConnected
                 ? t("youCanSignIn", { accountName: account.name })
                 : t("signInWithYourAccount", { accountName: account.name })}
@@ -122,10 +122,10 @@ export function AccountCardSkeleton() {
   return (
     <Skeleton className="w-full rounded-lg px-2 py-4">
       <div className="flex items-center gap-2">
-        <Skeleton className="bg-background size-10" />
+        <Skeleton className="size-10 bg-background" />
         <div className="flex w-full flex-col gap-1">
-          <Skeleton className="bg-background h-5 w-1/12" />
-          <Skeleton className="bg-background h-5 w-1/3" />
+          <Skeleton className="h-5 w-1/12 bg-background" />
+          <Skeleton className="h-5 w-1/3 bg-background" />
         </div>
       </div>
     </Skeleton>

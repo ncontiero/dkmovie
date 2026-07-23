@@ -161,7 +161,7 @@ export function PasswordCard() {
                     {...register("current_password")}
                   />
                   {errors.current_password ? (
-                    <span className="text-destructive text-sm">
+                    <span className="text-sm text-destructive">
                       {errors.current_password.message}
                     </span>
                   ) : null}
@@ -174,7 +174,7 @@ export function PasswordCard() {
                   {...register("new_password")}
                 />
                 {errors.new_password ? (
-                  <span className="text-destructive text-sm">
+                  <span className="text-sm text-destructive">
                     {errors.new_password.message}
                   </span>
                 ) : null}
@@ -188,7 +188,7 @@ export function PasswordCard() {
                   {...register("password_confirmation")}
                 />
                 {errors.password_confirmation ? (
-                  <span className="text-destructive text-sm">
+                  <span className="text-sm text-destructive">
                     {errors.password_confirmation.message}
                   </span>
                 ) : null}

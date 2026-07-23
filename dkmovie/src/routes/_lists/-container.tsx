@@ -40,7 +40,7 @@ export function ListPendingComponent() {
         <main className="container mx-auto h-[70vh] max-w-7xl px-4 sm:px-6 md:h-[80vh] lg:px-8">
           <Skeleton className="h-9 w-1/4" />
           <Separator className="mt-2 mb-5" />
-          <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-cols-1 gap-3 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {Array.from({ length: 8 }).map((_, i) => (
               // eslint-disable-next-line react/no-array-index-key
               <TitleCardSkeleton key={i} />
@@ -145,7 +145,7 @@ export function ListComponent({
             </DropdownMenu>
           </div>
           <Separator className="mt-2 mb-5" />
-          <div className="xs:grid-cols-2 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-cols-1 gap-3 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {titles?.map((title) => (
               <TitleCard key={title.id} title={title} horizontalOnMobile />
             ))}

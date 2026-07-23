@@ -14,7 +14,7 @@ export default function TitleAdded() {
       <Text className="mt-2 mb-0 text-sm">{text}</Text>
       <Link
         href={resolveUrl("{{ see_all_url }}")}
-        className="text-primary my-0 text-sm"
+        className="my-0 text-sm text-primary"
       >
         Click here to see all the titles.
       </Link>
@@ -31,14 +31,14 @@ export default function TitleAdded() {
               <Column
                 align="center"
                 valign="middle"
-                className="bg-primary text-primary-foreground size-6 rounded-full text-sm leading-none font-semibold"
+                className="size-6 rounded-full bg-primary text-sm leading-none font-semibold text-primary-foreground"
               >
                 {`{{ forloop.counter }}`}
               </Column>
             </Row>
           </Column>
           <Column valign="top">
-            <Text className="text-muted-foreground m-0 text-sm">
+            <Text className="m-0 text-sm text-muted-foreground">
               <Link
                 href={resolveUrl(`{{ link.admin_url }}`)}
                 className="text-primary"

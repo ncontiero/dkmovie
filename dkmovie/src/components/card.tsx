@@ -32,7 +32,7 @@ export function CardTitle({
 export function CardDescription({ className, ...props }: ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-muted-foreground mt-2 text-sm", className)}
+      className={cn("mt-2 text-sm text-muted-foreground", className)}
       {...props}
     />
   );
@@ -43,8 +43,8 @@ export function CardFooter({ className, ...props }: ComponentProps<"div">) {
     <div
       className={cn(
         `
-          bg-secondary/40 dark:bg-secondary/20 flex flex-col items-center justify-center gap-4 rounded-b-lg border-t
-          px-6 py-2 text-center sm:flex-row sm:justify-between sm:text-start md:h-14 md:py-0
+          flex flex-col items-center justify-center gap-4 rounded-b-lg border-t bg-secondary/40 px-6 py-2 text-center
+          sm:flex-row sm:justify-between sm:text-start md:h-14 md:py-0 dark:bg-secondary/20
         `,
         className,
       )}
@@ -58,6 +58,6 @@ export function CardFooterDescription({
   ...props
 }: ComponentProps<"p">) {
   return (
-    <p className={cn("text-muted-foreground text-sm", className)} {...props} />
+    <p className={cn("text-sm text-muted-foreground", className)} {...props} />
   );
 }

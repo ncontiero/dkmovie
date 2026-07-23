@@ -66,15 +66,15 @@ export function Layout({
           <Head />
           {previewText ? <Preview>{previewText}</Preview> : null}
 
-          <Body className="bg-background m-auto px-2 font-sans">
-            <Container className="border-border mx-auto my-10 max-w-[500px] rounded-[6px] border border-solid p-5">
+          <Body className="m-auto bg-background px-2 font-sans">
+            <Container className="mx-auto my-10 max-w-[500px] rounded-[6px] border border-solid border-border p-5">
               <Header siteName={siteName} />
 
               <Section>
                 {title ? (
                   <Heading
                     as="h2"
-                    className="text-foreground my-6 text-center text-2xl font-semibold"
+                    className="my-6 text-center text-2xl font-semibold text-foreground"
                   >
                     {title}
                   </Heading>
