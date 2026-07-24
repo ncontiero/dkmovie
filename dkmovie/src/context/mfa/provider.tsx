@@ -17,18 +17,18 @@ interface MFAProviderProps extends PropsWithChildren {
 
 export function MFAProvider({ sessionError, children }: MFAProviderProps) {
   const navigate = useNavigate();
-  const [mFATypes, setMFATypes] = useState<TwoFactorAuthenticatorType[]>([]);
+  const [mfaTypes, setMfaTypes] = useState<TwoFactorAuthenticatorType[]>([]);
 
   const handleMFATypes = useCallback((error: unknown) => {
     if (need2FA(error)) {
       const flows = getErrorFlows(error);
       const types =
         flows.find((flow) => flowsTo2FA.includes(flow.id))?.types || [];
-      setMFATypes(types as TwoFactorAuthenticatorType[]);
+      setMfaTypes(types as TwoFactorAuthenticatorType[]);
       return;
     }
 
-    setMFATypes([]);
+    setMfaTypes([]);
   }, []);
 
   const handleMFATypesEvent = useEffectEvent(handleMFATypes);
@@ -52,11 +52,9 @@ export function MFAProvider({ sessionError, children }: MFAProviderProps) {
   );
 
   const contextValues = useMemo(
-    (): MFAContextProps => ({ mFATypes, initializeMFAIfNecessary }),
-    [initializeMFAIfNecessary, mFATypes],
+    (): MFAContextProps => ({ mfaTypes, initializeMFAIfNecessary }),
+    [initializeMFAIfNecessary, mfaTypes],
   );
 
-  return (
-    <MFAContext.Provider value={contextValues}>{children}</MFAContext.Provider>
-  );
+  return <MFAContext value={contextValues}>{children}</MFAContext>;
 }

@@ -30,7 +30,7 @@ export function ReAuthenticateProvider({ children }: PropsWithChildren) {
   );
 
   return (
-    <ReAuthenticateContext.Provider value={contextValues}>
+    <ReAuthenticateContext value={contextValues}>
       {isReAuthenticationNeeded ? (
         <ReAuthenticateDialog
           onReAuthenticated={() => {
@@ -44,6 +44,6 @@ export function ReAuthenticateProvider({ children }: PropsWithChildren) {
         />
       ) : null}
       {children}
-    </ReAuthenticateContext.Provider>
+    </ReAuthenticateContext>
   );
 }

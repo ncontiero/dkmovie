@@ -1,11 +1,4 @@
-import {
-  type PropsWithChildren,
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
@@ -19,7 +12,17 @@ import { type SessionContextProps, SessionContext } from "./context";
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const t = useTranslations("auth.logOut");
-  const [streamSessionId, setStreamSessionId] = useState<string | null>(null);
+  const [streamSessionId] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+
+    const STORAGE_KEY = "stream_session_id";
+    let sid = sessionStorage.getItem(STORAGE_KEY);
+    if (!sid) {
+      sid = crypto.randomUUID();
+      sessionStorage.setItem(STORAGE_KEY, sid);
+    }
+    return sid;
+  });
   const queryClient = useQueryClient();
 
   const {
@@ -57,22 +60,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     [queryClient],
   );
 
-  const initStreamSessionId = useEffectEvent(() => {
-    if (typeof window === "undefined") return;
-
-    const STORAGE_KEY = "stream_session_id";
-    let sid = sessionStorage.getItem(STORAGE_KEY);
-    if (!sid) {
-      sid = crypto.randomUUID();
-      sessionStorage.setItem(STORAGE_KEY, sid);
-    }
-    setStreamSessionId(sid);
-  });
-
-  useEffect(() => {
-    initStreamSessionId();
-  }, []);
-
   const contextValues = useMemo(
     (): SessionContextProps => ({
       session: session?.data || null,
@@ -96,9 +83,5 @@ export function SessionProvider({ children }: PropsWithChildren) {
     ],
   );
 
-  return (
-    <SessionContext.Provider value={contextValues}>
-      {children}
-    </SessionContext.Provider>
-  );
+  return <SessionContext value={contextValues}>{children}</SessionContext>;
 }

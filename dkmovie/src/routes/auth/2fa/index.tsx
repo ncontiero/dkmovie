@@ -12,12 +12,12 @@ export const Route = createFileRoute("/auth/2fa/")({
 
 function MFAComponent() {
   const t = useTranslations("authWith2faPage");
-  const { mFATypes } = useMFA();
+  const { mfaTypes } = useMFA();
   const { nextPath } = useNextPath();
 
-  const hasWebAuthn = mFATypes.includes("webauthn");
-  const hasTOTP = mFATypes.includes("totp");
-  const hasRecoveryCodes = mFATypes.includes("recovery_codes");
+  const hasWebAuthn = mfaTypes.includes("webauthn");
+  const hasTOTP = mfaTypes.includes("totp");
+  const hasRecoveryCodes = mfaTypes.includes("recovery_codes");
 
   return (
     <main className="flex min-h-screen items-center justify-center">

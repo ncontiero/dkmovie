@@ -19,10 +19,10 @@ export function AuthenticateWithCode({
   const t = useTranslations("auth");
   const commonT = useTranslations("common");
 
-  const { mFATypes } = useMFA();
+  const { mfaTypes } = useMFA();
   const navigate = useNavigate();
 
-  if (!mFATypes.includes(type)) {
+  if (!mfaTypes.includes(type)) {
     navigate({ to: "/auth/2fa", replace: true });
     return null;
   }

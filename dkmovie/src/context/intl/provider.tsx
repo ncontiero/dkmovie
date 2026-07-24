@@ -77,10 +77,10 @@ export function IntlProvider({ children }: PropsWithChildren) {
   );
 
   return !messages ? null : (
-    <IntlContext.Provider value={contextValues}>
+    <IntlContext value={contextValues}>
       <IntlProviderBase locale={currentLang} messages={messages}>
         {children}
       </IntlProviderBase>
-    </IntlContext.Provider>
+    </IntlContext>
   );
 }
