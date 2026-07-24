@@ -1,3 +1,5 @@
+const timeRegex = /T.*$/;
+
 export function getReleaseYear() {
   const date = new Date();
   const currentYear = date.getFullYear();
@@ -5,5 +7,5 @@ export function getReleaseYear() {
 }
 
 export function formataReleaseDate(date: Date) {
-  return date.toISOString().replace(/T.*$/, "");
+  return date.toISOString().replace(timeRegex, "");
 }

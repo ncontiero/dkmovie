@@ -9,36 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root"
-import { Route as SeriesRouteImport } from "./routes/series"
-import { Route as MoviesRouteImport } from "./routes/movies"
-import { Route as AuthRouteRouteImport } from "./routes/auth/route"
 import { Route as IndexRouteImport } from "./routes/index"
-import { Route as AuthSignUpRouteImport } from "./routes/auth/sign-up"
-import { Route as AuthSignInRouteImport } from "./routes/auth/sign-in"
-import { Route as AccountVerifyEmailRouteImport } from "./routes/account/verify-email"
-import { Route as ListsSearchRouteImport } from "./routes/_lists/search"
+import { Route as AuthRouteRouteImport } from "./routes/auth/route"
+import { Route as MoviesRouteImport } from "./routes/movies"
+import { Route as SeriesRouteImport } from "./routes/series"
 import { Route as ListsMyListRouteImport } from "./routes/_lists/my-list"
-import { Route as Auth2faRouteRouteImport } from "./routes/auth/2fa/route"
+import { Route as ListsSearchRouteImport } from "./routes/_lists/search"
 import { Route as AccountmyAccountRouteRouteImport } from "./routes/account/(my-account)/route"
-import { Route as TitleTitleIdIndexRouteImport } from "./routes/title/$titleId/index"
-import { Route as Auth2faIndexRouteImport } from "./routes/auth/2fa/index"
+import { Route as AccountVerifyEmailRouteImport } from "./routes/account/verify-email"
+import { Route as Auth2faRouteRouteImport } from "./routes/auth/2fa/route"
+import { Route as AuthSignInRouteImport } from "./routes/auth/sign-in"
+import { Route as AuthSignUpRouteImport } from "./routes/auth/sign-up"
 import { Route as AccountmyAccountIndexRouteImport } from "./routes/account/(my-account)/index"
-import { Route as TitleTitleIdWatchRouteImport } from "./routes/title/$titleId/watch"
-import { Route as AuthPasswordResetRouteImport } from "./routes/auth/password/reset"
-import { Route as AuthPasswordForgotRouteImport } from "./routes/auth/password/forgot"
-import { Route as Auth2faTotpRouteImport } from "./routes/auth/2fa/totp"
-import { Route as Auth2faRecoveryCodesRouteImport } from "./routes/auth/2fa/recovery-codes"
-import { Route as AccountProviderCallbackRouteImport } from "./routes/account/provider.callback"
 import { Route as AccountmyAccountSecurityRouteImport } from "./routes/account/(my-account)/security"
+import { Route as AccountProviderCallbackRouteImport } from "./routes/account/provider.callback"
+import { Route as Auth2faIndexRouteImport } from "./routes/auth/2fa/index"
+import { Route as Auth2faRecoveryCodesRouteImport } from "./routes/auth/2fa/recovery-codes"
+import { Route as Auth2faTotpRouteImport } from "./routes/auth/2fa/totp"
+import { Route as AuthPasswordForgotRouteImport } from "./routes/auth/password/forgot"
+import { Route as AuthPasswordResetRouteImport } from "./routes/auth/password/reset"
+import { Route as TitleTitleIdIndexRouteImport } from "./routes/title/$titleId/index"
+import { Route as TitleTitleIdWatchRouteImport } from "./routes/title/$titleId/watch"
 
-const SeriesRoute = SeriesRouteImport.update({
-  id: "/series",
-  path: "/series",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MoviesRoute = MoviesRouteImport.update({
-  id: "/movies",
-  path: "/movies",
+const IndexRoute = IndexRouteImport.update({
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -46,29 +41,14 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   path: "/auth",
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+const MoviesRoute = MoviesRouteImport.update({
+  id: "/movies",
+  path: "/movies",
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthSignUpRoute = AuthSignUpRouteImport.update({
-  id: "/sign-up",
-  path: "/sign-up",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: "/sign-in",
-  path: "/sign-in",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AccountVerifyEmailRoute = AccountVerifyEmailRouteImport.update({
-  id: "/account/verify-email",
-  path: "/account/verify-email",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ListsSearchRoute = ListsSearchRouteImport.update({
-  id: "/_lists/search",
-  path: "/search",
+const SeriesRoute = SeriesRouteImport.update({
+  id: "/series",
+  path: "/series",
   getParentRoute: () => rootRouteImport,
 } as any)
 const ListsMyListRoute = ListsMyListRouteImport.update({
@@ -76,60 +56,40 @@ const ListsMyListRoute = ListsMyListRouteImport.update({
   path: "/my-list",
   getParentRoute: () => rootRouteImport,
 } as any)
-const Auth2faRouteRoute = Auth2faRouteRouteImport.update({
-  id: "/2fa",
-  path: "/2fa",
-  getParentRoute: () => AuthRouteRoute,
+const ListsSearchRoute = ListsSearchRouteImport.update({
+  id: "/_lists/search",
+  path: "/search",
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AccountmyAccountRouteRoute = AccountmyAccountRouteRouteImport.update({
   id: "/account/(my-account)",
   path: "/account",
   getParentRoute: () => rootRouteImport,
 } as any)
-const TitleTitleIdIndexRoute = TitleTitleIdIndexRouteImport.update({
-  id: "/title/$titleId/",
-  path: "/title/$titleId/",
+const AccountVerifyEmailRoute = AccountVerifyEmailRouteImport.update({
+  id: "/account/verify-email",
+  path: "/account/verify-email",
   getParentRoute: () => rootRouteImport,
 } as any)
-const Auth2faIndexRoute = Auth2faIndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => Auth2faRouteRoute,
+const Auth2faRouteRoute = Auth2faRouteRouteImport.update({
+  id: "/2fa",
+  path: "/2fa",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: "/sign-in",
+  path: "/sign-in",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: "/sign-up",
+  path: "/sign-up",
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const AccountmyAccountIndexRoute = AccountmyAccountIndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => AccountmyAccountRouteRoute,
-} as any)
-const TitleTitleIdWatchRoute = TitleTitleIdWatchRouteImport.update({
-  id: "/title/$titleId/watch",
-  path: "/title/$titleId/watch",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthPasswordResetRoute = AuthPasswordResetRouteImport.update({
-  id: "/password/reset",
-  path: "/password/reset",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthPasswordForgotRoute = AuthPasswordForgotRouteImport.update({
-  id: "/password/forgot",
-  path: "/password/forgot",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const Auth2faTotpRoute = Auth2faTotpRouteImport.update({
-  id: "/totp",
-  path: "/totp",
-  getParentRoute: () => Auth2faRouteRoute,
-} as any)
-const Auth2faRecoveryCodesRoute = Auth2faRecoveryCodesRouteImport.update({
-  id: "/recovery-codes",
-  path: "/recovery-codes",
-  getParentRoute: () => Auth2faRouteRoute,
-} as any)
-const AccountProviderCallbackRoute = AccountProviderCallbackRouteImport.update({
-  id: "/account/provider/callback",
-  path: "/account/provider/callback",
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AccountmyAccountSecurityRoute =
   AccountmyAccountSecurityRouteImport.update({
@@ -137,6 +97,46 @@ const AccountmyAccountSecurityRoute =
     path: "/security",
     getParentRoute: () => AccountmyAccountRouteRoute,
   } as any)
+const AccountProviderCallbackRoute = AccountProviderCallbackRouteImport.update({
+  id: "/account/provider/callback",
+  path: "/account/provider/callback",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Auth2faIndexRoute = Auth2faIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => Auth2faRouteRoute,
+} as any)
+const Auth2faRecoveryCodesRoute = Auth2faRecoveryCodesRouteImport.update({
+  id: "/recovery-codes",
+  path: "/recovery-codes",
+  getParentRoute: () => Auth2faRouteRoute,
+} as any)
+const Auth2faTotpRoute = Auth2faTotpRouteImport.update({
+  id: "/totp",
+  path: "/totp",
+  getParentRoute: () => Auth2faRouteRoute,
+} as any)
+const AuthPasswordForgotRoute = AuthPasswordForgotRouteImport.update({
+  id: "/password/forgot",
+  path: "/password/forgot",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthPasswordResetRoute = AuthPasswordResetRouteImport.update({
+  id: "/password/reset",
+  path: "/password/reset",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const TitleTitleIdIndexRoute = TitleTitleIdIndexRouteImport.update({
+  id: "/title/$titleId/",
+  path: "/title/$titleId/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TitleTitleIdWatchRoute = TitleTitleIdWatchRouteImport.update({
+  id: "/title/$titleId/watch",
+  path: "/title/$titleId/watch",
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
@@ -292,18 +292,11 @@ export interface RootRouteChildren {
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/series": {
-      id: "/series"
-      path: "/series"
-      fullPath: "/series"
-      preLoaderRoute: typeof SeriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/movies": {
-      id: "/movies"
-      path: "/movies"
-      fullPath: "/movies"
-      preLoaderRoute: typeof MoviesRouteImport
+    "/": {
+      id: "/"
+      path: "/"
+      fullPath: "/"
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/auth": {
@@ -313,39 +306,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/": {
-      id: "/"
-      path: "/"
-      fullPath: "/"
-      preLoaderRoute: typeof IndexRouteImport
+    "/movies": {
+      id: "/movies"
+      path: "/movies"
+      fullPath: "/movies"
+      preLoaderRoute: typeof MoviesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/auth/sign-up": {
-      id: "/auth/sign-up"
-      path: "/sign-up"
-      fullPath: "/auth/sign-up"
-      preLoaderRoute: typeof AuthSignUpRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    "/auth/sign-in": {
-      id: "/auth/sign-in"
-      path: "/sign-in"
-      fullPath: "/auth/sign-in"
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    "/account/verify-email": {
-      id: "/account/verify-email"
-      path: "/account/verify-email"
-      fullPath: "/account/verify-email"
-      preLoaderRoute: typeof AccountVerifyEmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/_lists/search": {
-      id: "/_lists/search"
-      path: "/search"
-      fullPath: "/search"
-      preLoaderRoute: typeof ListsSearchRouteImport
+    "/series": {
+      id: "/series"
+      path: "/series"
+      fullPath: "/series"
+      preLoaderRoute: typeof SeriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/_lists/my-list": {
@@ -355,12 +327,12 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ListsMyListRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/auth/2fa": {
-      id: "/auth/2fa"
-      path: "/2fa"
-      fullPath: "/auth/2fa"
-      preLoaderRoute: typeof Auth2faRouteRouteImport
-      parentRoute: typeof AuthRouteRoute
+    "/_lists/search": {
+      id: "/_lists/search"
+      path: "/search"
+      fullPath: "/search"
+      preLoaderRoute: typeof ListsSearchRouteImport
+      parentRoute: typeof rootRouteImport
     }
     "/account/(my-account)": {
       id: "/account/(my-account)"
@@ -369,11 +341,53 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountmyAccountRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/title/$titleId/": {
-      id: "/title/$titleId/"
-      path: "/title/$titleId"
-      fullPath: "/title/$titleId/"
-      preLoaderRoute: typeof TitleTitleIdIndexRouteImport
+    "/account/verify-email": {
+      id: "/account/verify-email"
+      path: "/account/verify-email"
+      fullPath: "/account/verify-email"
+      preLoaderRoute: typeof AccountVerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/auth/2fa": {
+      id: "/auth/2fa"
+      path: "/2fa"
+      fullPath: "/auth/2fa"
+      preLoaderRoute: typeof Auth2faRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/auth/sign-in": {
+      id: "/auth/sign-in"
+      path: "/sign-in"
+      fullPath: "/auth/sign-in"
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/auth/sign-up": {
+      id: "/auth/sign-up"
+      path: "/sign-up"
+      fullPath: "/auth/sign-up"
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/account/(my-account)/": {
+      id: "/account/(my-account)/"
+      path: "/"
+      fullPath: "/account/"
+      preLoaderRoute: typeof AccountmyAccountIndexRouteImport
+      parentRoute: typeof AccountmyAccountRouteRoute
+    }
+    "/account/(my-account)/security": {
+      id: "/account/(my-account)/security"
+      path: "/security"
+      fullPath: "/account/security"
+      preLoaderRoute: typeof AccountmyAccountSecurityRouteImport
+      parentRoute: typeof AccountmyAccountRouteRoute
+    }
+    "/account/provider/callback": {
+      id: "/account/provider/callback"
+      path: "/account/provider/callback"
+      fullPath: "/account/provider/callback"
+      preLoaderRoute: typeof AccountProviderCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/auth/2fa/": {
@@ -383,33 +397,12 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof Auth2faIndexRouteImport
       parentRoute: typeof Auth2faRouteRoute
     }
-    "/account/(my-account)/": {
-      id: "/account/(my-account)/"
-      path: "/"
-      fullPath: "/account/"
-      preLoaderRoute: typeof AccountmyAccountIndexRouteImport
-      parentRoute: typeof AccountmyAccountRouteRoute
-    }
-    "/title/$titleId/watch": {
-      id: "/title/$titleId/watch"
-      path: "/title/$titleId/watch"
-      fullPath: "/title/$titleId/watch"
-      preLoaderRoute: typeof TitleTitleIdWatchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/auth/password/reset": {
-      id: "/auth/password/reset"
-      path: "/password/reset"
-      fullPath: "/auth/password/reset"
-      preLoaderRoute: typeof AuthPasswordResetRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    "/auth/password/forgot": {
-      id: "/auth/password/forgot"
-      path: "/password/forgot"
-      fullPath: "/auth/password/forgot"
-      preLoaderRoute: typeof AuthPasswordForgotRouteImport
-      parentRoute: typeof AuthRouteRoute
+    "/auth/2fa/recovery-codes": {
+      id: "/auth/2fa/recovery-codes"
+      path: "/recovery-codes"
+      fullPath: "/auth/2fa/recovery-codes"
+      preLoaderRoute: typeof Auth2faRecoveryCodesRouteImport
+      parentRoute: typeof Auth2faRouteRoute
     }
     "/auth/2fa/totp": {
       id: "/auth/2fa/totp"
@@ -418,26 +411,33 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof Auth2faTotpRouteImport
       parentRoute: typeof Auth2faRouteRoute
     }
-    "/auth/2fa/recovery-codes": {
-      id: "/auth/2fa/recovery-codes"
-      path: "/recovery-codes"
-      fullPath: "/auth/2fa/recovery-codes"
-      preLoaderRoute: typeof Auth2faRecoveryCodesRouteImport
-      parentRoute: typeof Auth2faRouteRoute
+    "/auth/password/forgot": {
+      id: "/auth/password/forgot"
+      path: "/password/forgot"
+      fullPath: "/auth/password/forgot"
+      preLoaderRoute: typeof AuthPasswordForgotRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
-    "/account/provider/callback": {
-      id: "/account/provider/callback"
-      path: "/account/provider/callback"
-      fullPath: "/account/provider/callback"
-      preLoaderRoute: typeof AccountProviderCallbackRouteImport
+    "/auth/password/reset": {
+      id: "/auth/password/reset"
+      path: "/password/reset"
+      fullPath: "/auth/password/reset"
+      preLoaderRoute: typeof AuthPasswordResetRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/title/$titleId/": {
+      id: "/title/$titleId/"
+      path: "/title/$titleId"
+      fullPath: "/title/$titleId/"
+      preLoaderRoute: typeof TitleTitleIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/account/(my-account)/security": {
-      id: "/account/(my-account)/security"
-      path: "/security"
-      fullPath: "/account/security"
-      preLoaderRoute: typeof AccountmyAccountSecurityRouteImport
-      parentRoute: typeof AccountmyAccountRouteRoute
+    "/title/$titleId/watch": {
+      id: "/title/$titleId/watch"
+      path: "/title/$titleId/watch"
+      fullPath: "/title/$titleId/watch"
+      preLoaderRoute: typeof TitleTitleIdWatchRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }

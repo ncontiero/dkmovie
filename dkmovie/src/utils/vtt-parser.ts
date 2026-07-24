@@ -18,9 +18,11 @@ function timeToSeconds(timeStr: string) {
   return seconds;
 }
 
+const newlineRegex = /\r?\n/;
+
 export function parseVTT(vttText: string): VTTCue[] {
   const cues: VTTCue[] = [];
-  const lines = vttText.split(/\r?\n/);
+  const lines = vttText.split(newlineRegex);
 
   let currentCue: Partial<VTTCue> | null = null;
 

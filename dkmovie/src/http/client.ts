@@ -9,11 +9,14 @@ export class HTTPError extends Error {
   status: number;
   data: any;
 
-  constructor(message: string, status: number, data: any) {
-    super(message);
+  constructor(
+    message: string,
+    options?: ErrorOptions & { status?: number; data?: any },
+  ) {
+    super(message, options);
     this.name = "HTTPError";
-    this.status = status;
-    this.data = data;
+    this.status = options?.status ?? 500;
+    this.data = options?.data;
   }
 }
 
@@ -57,8 +60,7 @@ export class HttpClient {
       const errorData = await response.json().catch(() => ({})); // Try to get error details
       const error = new HTTPError(
         `HTTP error! Status: ${response.status} ${response.statusText}`,
-        response.status,
-        errorData,
+        { status: response.status, data: errorData },
       );
 
       console.error("HTTP Request Failed:", error);
