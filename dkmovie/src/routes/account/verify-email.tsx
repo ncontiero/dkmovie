@@ -107,6 +107,7 @@ function RouteComponent() {
                 onComplete={() => {
                   handleSubmit(onSubmit)();
                 }}
+                codeLength={8}
               />
             )}
           />
