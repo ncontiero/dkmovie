@@ -1,4 +1,4 @@
-import { merge } from "webpack-merge";
+import { merge } from "rspack-merge";
 import { commonConfig } from "./common.config";
 
 // This variable should mirror the one from config/settings/production.py

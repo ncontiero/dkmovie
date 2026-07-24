@@ -15,6 +15,7 @@
 
     // Import settings
     "resolveJsonModule": true,
+    "types": ["node"],
     "allowImportingTsExtensions": true,
 
     // Type checking and compilation settings
@@ -28,11 +29,6 @@
     "isolatedModules": true,
     "skipLibCheck": true,
   },
-  "include": ["dkmovie/src"],
-  "exclude": ["node_modules"],
-  "ts-node": {
-    "compilerOptions": {
-      "module": "CommonJS"
-    }
-  }
+  "include": ["dkmovie/src", "rspack"],
+  "exclude": ["node_modules"]
 }
