@@ -14,7 +14,7 @@ export function useNextPath() {
   const searchParams = useSearch({ from: "__root__" });
   const [nextPath, setNextPath] = useState(searchParams.next || "/");
 
-  const especialNextPaths = useMemo(() => [adminUrl, "/api/docs"], []);
+  const especialNextPaths = useMemo(() => [adminUrl, "/api/docs"], [adminUrl]);
 
   if (!nextPath.startsWith("/")) {
     setNextPath("/");
@@ -28,7 +28,7 @@ export function useNextPath() {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await navigate({ to: nextPath });
-  }, []);
+  }, [especialNextPaths, navigate, nextPath]);
 
   return {
     nextPath,

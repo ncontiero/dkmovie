@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseIsMobileReturn {
   isMobile: boolean;
@@ -8,59 +8,43 @@ interface UseIsMobileReturn {
 }
 
 export function useIsMobile(
-  {
-    mobileMaxWidth,
-  }: {
-    mobileMaxWidth: number;
-  } = { mobileMaxWidth: 768 },
+  { mobileMaxWidth }: { mobileMaxWidth: number } = { mobileMaxWidth: 768 },
 ): UseIsMobileReturn {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const checkIsMobileDevice = useCallback(() => {
+    if (typeof window === "undefined") return false;
+    const mediaQuery = window.matchMedia(`(max-width: ${mobileMaxWidth}px)`);
+    const userAgent = navigator.userAgent.toLowerCase();
+    const mobileKeywords = [
+      "android",
+      "webos",
+      "iphone",
+      "ipad",
+      "ipod",
+      "blackberry",
+      "windows phone",
+      "mobile",
+    ];
+    const isMobileUA = mobileKeywords.some((keyword) =>
+      userAgent.includes(keyword),
+    );
+    return mediaQuery.matches || (isMobileUA && window.innerWidth <= 768);
+  }, [mobileMaxWidth]);
+
+  const [isMobile, setIsMobile] = useState(checkIsMobileDevice);
+  const [isLoading] = useState(false);
 
   useEffect(() => {
-    const checkIsMobile = () => {
-      // Check using media query
-      const mediaQuery = window.matchMedia(`(max-width: ${mobileMaxWidth}px)`);
+    const handleResize = () => setIsMobile(checkIsMobileDevice());
 
-      // Check using user agent (additional detection)
-      const userAgent = navigator.userAgent.toLowerCase();
-      const mobileKeywords = [
-        "android",
-        "webos",
-        "iphone",
-        "ipad",
-        "ipod",
-        "blackberry",
-        "windows phone",
-        "mobile",
-      ];
-
-      const isMobileUA = mobileKeywords.some((keyword) =>
-        userAgent.includes(keyword),
-      );
-
-      // Combine both checks - prioritize media query but consider user agent
-      const isMobileDevice =
-        mediaQuery.matches || (isMobileUA && window.innerWidth <= 768);
-
-      setIsMobile(isMobileDevice);
-      setIsLoading(false);
-    };
-
-    // Initial check
-    checkIsMobile();
-
-    // Listen for media query changes
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-
-    mediaQuery.addEventListener("change", checkIsMobile);
-    window.addEventListener("resize", checkIsMobile);
+    const mediaQuery = window.matchMedia(`(max-width: ${mobileMaxWidth}px)`);
+    mediaQuery.addEventListener("change", handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      mediaQuery.removeEventListener("change", checkIsMobile);
-      window.removeEventListener("resize", checkIsMobile);
+      mediaQuery.removeEventListener("change", handleResize);
+      window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [mobileMaxWidth, checkIsMobileDevice]);
 
   return {
     isMobile,
