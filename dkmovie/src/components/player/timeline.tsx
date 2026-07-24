@@ -165,6 +165,7 @@ export function Timeline({
           }}
         >
           <SpriteThumbnail sprite={activeSprite} hoverTime={hoverTime} />
+          {/* eslint-disable-next-line tailwindcss/enforce-consistent-line-wrapping */}
           <div className="mt-1 rounded-sm border border-white/10 bg-black/80 px-4 py-1 text-sm font-medium text-white shadow-sm">
             {new Date(hoverTime * 1000).toISOString().slice(14, 19)}
           </div>

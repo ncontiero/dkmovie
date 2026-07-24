@@ -2,7 +2,7 @@ import {
   type ComponentPropsWithoutRef,
   type ComponentRef,
   forwardRef,
-  useContext,
+  use,
 } from "react";
 import { type OTPInputProps, OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
@@ -36,7 +36,7 @@ const InputOTPSlot = forwardRef<
   ComponentRef<"div">,
   ComponentPropsWithoutRef<"div"> & { readonly index: number }
 >(({ index, className, ...props }, ref) => {
-  const inputOTPContext = useContext(OTPInputContext);
+  const inputOTPContext = use(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
 
   return (

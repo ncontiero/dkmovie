@@ -75,7 +75,7 @@ export function VideoPlayer({
   const [currentMarker, setCurrentMarker] = useState<VideoMarker | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsApiRef = useRef<HLSApiProps | null>(null);
-  const lastSavedTime = useRef(timeToStart);
+  const lastSavedTimeRef = useRef(timeToStart);
 
   const { title, episode, next_episode: nextEpisode } = dataToStream;
   const poster = episode?.still || title.cover || title.poster || undefined;
@@ -146,7 +146,7 @@ export function VideoPlayer({
       updateWatchHistory(titleId, timePlayed, episodeId, watched).catch(
         console.error,
       );
-      lastSavedTime.current = timePlayed;
+      lastSavedTimeRef.current = timePlayed;
     },
     [],
   );
@@ -166,7 +166,7 @@ export function VideoPlayer({
       }
 
       const timePlayedFloor = Math.floor(timePlayed);
-      if (Math.abs(timePlayedFloor - lastSavedTime.current) >= 15) {
+      if (Math.abs(timePlayedFloor - lastSavedTimeRef.current) >= 15) {
         updateHistory(
           title.id,
           timePlayedFloor,
@@ -438,7 +438,7 @@ export function VideoPlayer({
                     <PictureInPicture2
                       className={cn(
                         "md:size-8",
-                        isInPictureInPicture && "fold-bold",
+                        isInPictureInPicture && "font-bold",
                       )}
                     />
                   </Button>

@@ -12,6 +12,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
+      // eslint-disable-next-line tailwindcss/no-unknown-classes
       className="toaster group"
       icons={{
         success: <CircleCheck className="size-4" />,

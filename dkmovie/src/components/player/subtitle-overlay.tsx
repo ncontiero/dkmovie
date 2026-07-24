@@ -23,10 +23,20 @@ export function SubtitleOverlay({
       return;
     }
 
-    fetch(url)
+    const abortController = new AbortController();
+
+    fetch(url, { signal: abortController.signal })
       .then((res) => res.text())
       .then((text) => setCues(parseVTT(text)))
-      .catch(() => setCues([]));
+      .catch((error: Error) => {
+        if (error.name !== "AbortError") {
+          setCues([]);
+        }
+      });
+
+    return () => {
+      abortController.abort();
+    };
   }, [url]);
 
   const activeCue = cues.find(

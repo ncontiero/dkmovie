@@ -1,6 +1,8 @@
 import { useTranslations } from "use-intl";
 import { Link } from "./ui/link";
 
+const currentYear = new Date().getFullYear();
+
 export function Footer() {
   const t = useTranslations("footer");
 
@@ -83,8 +85,7 @@ export function Footer() {
           </div>
         </div>
         <p className="mt-10 text-center text-sm text-muted-foreground/60">
-          &copy; {new Date().getFullYear()} DKMovie, Inc.{" "}
-          {t("allRightsReserved")}.
+          &copy; {currentYear} DKMovie, Inc. {t("allRightsReserved")}.
         </p>
       </div>
     </footer>
