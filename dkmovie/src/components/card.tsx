@@ -1,13 +1,13 @@
 import type { ComponentProps } from "react";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "radix-ui";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends ComponentProps<"div"> {
-  readonly asChild?: boolean;
+  asChild?: boolean;
 }
 
 export function Card({ asChild, className, ...props }: CardProps) {
-  const Comp = asChild ? Slot : "div";
+  const Comp = asChild ? Slot.Root : "div";
 
   return <Comp className={cn("rounded-lg border", className)} {...props} />;
 }

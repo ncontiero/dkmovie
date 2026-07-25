@@ -11,8 +11,10 @@ interface AccountAlreadyExistsEmailProps {
   readonly resetPasswordUrl?: string;
 }
 
+const LOGIN_URL = resolveUrl("/auth/sign-in");
+
 export default function AccountAlreadyExistsEmail({
-  loginUrl = resolveUrl("/auth/sign-in"),
+  loginUrl = LOGIN_URL,
   resetPasswordUrl = "{{ password_reset_url }}",
 }: AccountAlreadyExistsEmailProps) {
   const title = translate("Account Already Exists");

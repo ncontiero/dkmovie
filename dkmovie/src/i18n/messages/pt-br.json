@@ -452,7 +452,9 @@
       "confirm": "Confirmar",
       "save": "Salvar",
       "change": "Alterar",
-      "add": "Adicionar"
+      "add": "Adicionar",
+      "showPassword": "Mostrar senha",
+      "hidePassword": "Ocultar senha"
     },
     "fields": {
       "email": "E-mail",

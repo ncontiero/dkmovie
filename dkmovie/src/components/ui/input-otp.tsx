@@ -1,47 +1,53 @@
-import {
-  type ComponentPropsWithoutRef,
-  type ComponentRef,
-  forwardRef,
-  use,
-} from "react";
+import { type ComponentProps, use } from "react";
 import { type OTPInputProps, OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const InputOTP = forwardRef<
-  ComponentRef<typeof OTPInput>,
-  ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, containerClassName, ...props }, ref) => (
-  <OTPInput
-    ref={ref}
-    containerClassName={cn(
-      "flex items-center gap-2 has-disabled:opacity-50",
-      containerClassName,
-    )}
-    className={cn("disabled:cursor-not-allowed", className)}
-    {...props}
-  />
-));
-InputOTP.displayName = "InputOTP";
+function InputOTP({
+  className,
+  containerClassName,
+  ...props
+}: ComponentProps<typeof OTPInput> & {
+  containerClassName?: string;
+}) {
+  return (
+    <OTPInput
+      data-slot="input-otp"
+      containerClassName={cn(
+        "flex items-center gap-2 has-disabled:opacity-50",
+        containerClassName,
+      )}
+      className={cn("disabled:cursor-not-allowed", className)}
+      spellCheck={false}
+      {...props}
+    />
+  );
+}
 
-const InputOTPGroup = forwardRef<
-  ComponentRef<"div">,
-  ComponentPropsWithoutRef<"div">
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex items-center", className)} {...props} />
-));
-InputOTPGroup.displayName = "InputOTPGroup";
+function InputOTPGroup({ className, ...props }: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="input-otp-group"
+      className={cn("flex items-center", className)}
+      {...props}
+    />
+  );
+}
 
-const InputOTPSlot = forwardRef<
-  ComponentRef<"div">,
-  ComponentPropsWithoutRef<"div"> & { readonly index: number }
->(({ index, className, ...props }, ref) => {
+function InputOTPSlot({
+  index,
+  className,
+  ...props
+}: ComponentProps<"div"> & {
+  index: number;
+}) {
   const inputOTPContext = use(OTPInputContext);
-  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
+  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {};
 
   return (
     <div
-      ref={ref}
+      data-slot="input-otp-slot"
+      data-active={isActive}
       className={cn(
         `
           relative flex size-10 items-center justify-center border-y border-r border-input text-sm transition-all
@@ -53,46 +59,44 @@ const InputOTPSlot = forwardRef<
       {...props}
     >
       {char}
-      {hasFakeCaret ? (
+      {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-4 w-px animate-caret-blink bg-foreground duration-1000" />
         </div>
-      ) : null}
+      )}
     </div>
   );
-});
-InputOTPSlot.displayName = "InputOTPSlot";
+}
 
-const InputOTPSeparator = forwardRef<
-  ComponentRef<"div">,
-  ComponentPropsWithoutRef<"div">
->(({ ...props }, ref) => (
-  <div ref={ref} role="separator" {...props}>
-    <Dot />
-  </div>
-));
-InputOTPSeparator.displayName = "InputOTPSeparator";
+function InputOTPSeparator(props: ComponentProps<"div">) {
+  return (
+    <div data-slot="input-otp-separator" role="separator" {...props}>
+      <Dot />
+    </div>
+  );
+}
 
 type CodeInputProps = Omit<OTPInputProps, "maxLength"> & {
-  readonly codeLength?: number;
+  codeLength?: number;
 };
 
-const CodeInput = forwardRef<ComponentRef<typeof OTPInput>, CodeInputProps>(
-  ({ codeLength = 6, render: _render, ...props }, ref) => {
-    const codesSlot = Array.from({ length: codeLength });
+function CodeInput({
+  codeLength = 6,
+  render: _render,
+  ...props
+}: CodeInputProps) {
+  const codesSlot = Array.from({ length: codeLength });
 
-    return (
-      <InputOTP ref={ref} {...props} maxLength={codesSlot.length}>
-        <InputOTPGroup>
-          {codesSlot.map((_, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <InputOTPSlot key={index} index={index} />
-          ))}
-        </InputOTPGroup>
-      </InputOTP>
-    );
-  },
-);
-CodeInput.displayName = "CodeInput";
+  return (
+    <InputOTP {...props} maxLength={codesSlot.length}>
+      <InputOTPGroup>
+        {codesSlot.map((_, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <InputOTPSlot key={index} index={index} />
+        ))}
+      </InputOTPGroup>
+    </InputOTP>
+  );
+}
 
 export { CodeInput, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot };

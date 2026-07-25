@@ -1,5 +1,6 @@
 import { type ComponentProps, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "use-intl";
 import {
   InputGroup,
   InputGroupAddon,
@@ -8,7 +9,9 @@ import {
 } from "./input-group";
 
 export function PasswordInput(props: ComponentProps<"input">) {
+  const t = useTranslations("common.actions");
   const [showPassword, setShowPassword] = useState(false);
+  const label = showPassword ? t("hidePassword") : t("showPassword");
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -19,8 +22,8 @@ export function PasswordInput(props: ComponentProps<"input">) {
       <InputGroupInput {...props} type={showPassword ? "text" : "password"} />
       <InputGroupAddon align="inline-end">
         <InputGroupButton
-          aria-label={`${showPassword ? "Hide" : "Show"} password`}
-          title={`${showPassword ? "Hide" : "Show"} password`}
+          aria-label={label}
+          title={label}
           onClick={togglePasswordVisibility}
         >
           {showPassword ? <EyeOff /> : <Eye />}

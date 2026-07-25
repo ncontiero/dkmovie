@@ -59,7 +59,7 @@ export function SearchDialog() {
           <Search />
         </Button>
       </DialogTrigger>
-      <DialogContent className="top-[15%] max-w-2xl" addClose={false}>
+      <DialogContent className="top-[15%] max-w-2xl" showCloseButton={false}>
         <DialogHeader className="sr-only">
           <DialogTitle>{t("label")}</DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>

@@ -42,7 +42,7 @@ export function ReAuthenticateDialog(props: ReAuthenticationProps) {
 
   return (
     <Dialog defaultOpen open>
-      <DialogContent addClose={false}>
+      <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>{t("reAuth.title")}</DialogTitle>
           <DialogDescription>{t("reAuth.description")}</DialogDescription>

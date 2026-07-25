@@ -1,12 +1,12 @@
+import type { ComponentProps } from "react";
 import type { ButtonProps } from "@/components/ui/button";
-import { type ComponentProps, forwardRef } from "react";
 import { type LinkComponentProps, Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { useTranslations } from "use-intl";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./button-variants";
 
-const Pagination = ({ className, ...props }: ComponentProps<"nav">) => {
+function Pagination({ className, ...props }: ComponentProps<"nav">) {
   const t = useTranslations("pagination");
 
   return (
@@ -17,56 +17,55 @@ const Pagination = ({ className, ...props }: ComponentProps<"nav">) => {
       {...props}
     />
   );
-};
-Pagination.displayName = "Pagination";
+}
 
-const PaginationContent = forwardRef<HTMLUListElement, ComponentProps<"ul">>(
-  ({ className, ...props }, ref) => (
+function PaginationContent({ className, ...props }: ComponentProps<"ul">) {
+  return (
     <ul
-      ref={ref}
+      data-slot="pagination-content"
       className={cn("flex flex-row items-center gap-1", className)}
       {...props}
     />
-  ),
-);
-PaginationContent.displayName = "PaginationContent";
+  );
+}
+function PaginationItem({ className, ...props }: ComponentProps<"li">) {
+  return (
+    <li
+      data-slot="pagination-item"
+      className={cn("cursor-pointer", className)}
+      {...props}
+    />
+  );
+}
 
-const PaginationItem = forwardRef<HTMLLIElement, ComponentProps<"li">>(
-  ({ className, ...props }, ref) => (
-    <li ref={ref} className={cn("cursor-pointer", className)} {...props} />
-  ),
-);
-PaginationItem.displayName = "PaginationItem";
-
-type PaginationLinkProps = {
-  readonly isActive?: boolean;
-} & Pick<ButtonProps, "size"> &
+type PaginationLinkProps = { isActive?: boolean } & Pick<ButtonProps, "size"> &
   LinkComponentProps;
 
-const PaginationLink = ({
+function PaginationLink({
   className,
   isActive,
   size = "icon",
   ...props
-}: PaginationLinkProps) => (
-  <Link
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
-      className,
-    )}
-    {...props}
-  />
-);
-PaginationLink.displayName = "PaginationLink";
+}: PaginationLinkProps) {
+  return (
+    <Link
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        buttonVariants({
+          variant: isActive ? "outline" : "ghost",
+          size,
+        }),
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-const PaginationPrevious = ({
+function PaginationPrevious({
   className,
   ...props
-}: ComponentProps<typeof PaginationLink>) => {
+}: ComponentProps<typeof PaginationLink>) {
   const t = useTranslations("pagination");
 
   return (
@@ -80,13 +79,12 @@ const PaginationPrevious = ({
       <span>{t("previous")}</span>
     </PaginationLink>
   );
-};
-PaginationPrevious.displayName = "PaginationPrevious";
+}
 
-const PaginationNext = ({
+function PaginationNext({
   className,
   ...props
-}: ComponentProps<typeof PaginationLink>) => {
+}: ComponentProps<typeof PaginationLink>) {
   const t = useTranslations("pagination");
 
   return (
@@ -100,13 +98,9 @@ const PaginationNext = ({
       <ChevronRight className="size-4" />
     </PaginationLink>
   );
-};
-PaginationNext.displayName = "PaginationNext";
+}
 
-const PaginationEllipsis = ({
-  className,
-  ...props
-}: ComponentProps<"span">) => {
+function PaginationEllipsis({ className, ...props }: ComponentProps<"span">) {
   const t = useTranslations("pagination");
 
   return (
@@ -119,8 +113,7 @@ const PaginationEllipsis = ({
       <span className="sr-only">{t("morePages")}</span>
     </span>
   );
-};
-PaginationEllipsis.displayName = "PaginationEllipsis";
+}
 
 export {
   Pagination,
