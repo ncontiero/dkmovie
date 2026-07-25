@@ -26,7 +26,7 @@ export const commonConfig = defineConfig({
   plugins: [
     new BundleTracker({
       path: path.resolve(BASE_PATH),
-      filename: "webpack-stats.json",
+      filename: "rspack-stats.json",
     }),
     tanstackRouter({
       target: "react",
@@ -39,13 +39,13 @@ export const commonConfig = defineConfig({
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(?:js|jsx|ts|tsx)$/,
         use: [
           {
             loader: "builtin:swc-loader",
             options: {
+              detectSyntax: "auto",
               jsc: {
-                parser: { syntax: "typescript", tsx: true },
                 transform: {
                   react: {
                     runtime: "automatic",

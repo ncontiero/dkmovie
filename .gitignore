@@ -282,7 +282,7 @@ dkmovie/titles/scripts/media/
 
 .ipython/
 dkmovie/static/bundles/
-webpack-stats.json
+rspack-stats.json
 
 .env
 .envs/*
