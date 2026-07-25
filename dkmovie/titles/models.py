@@ -207,7 +207,7 @@ class Title(models.Model):
         return video.duration if video else 0
 
     @property
-    def tmdb_url(self) -> None | str:
+    def tmdb_url(self) -> str | None:
         if not self.tmdb_id:
             return None
         media_type = "movie" if self.content_type == Title.ContentType.MOVIE else "tv"
@@ -282,7 +282,7 @@ class Season(models.Model):
         return self.episodes.count()
 
     @property
-    def tmdb_url(self) -> None | str:
+    def tmdb_url(self) -> str | None:
         if not self.tmdb_id:
             return None
         return f"{BASE_TMDB_URL}/tv/{self.title.tmdb_id}/season/{self.number}"
@@ -380,7 +380,7 @@ class Episode(models.Model):
         )
 
     @property
-    def tmdb_url(self) -> None | str:
+    def tmdb_url(self) -> str | None:
         if not self.tmdb_id:
             return None
         season_path = f"tv/{self.season.title.tmdb_id}/season/{self.season.number}"

@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
 
-def send_email(  # noqa: PLR0913
+def send_email(  # noqa: PLR0913, PLR0917
     subject: str,
     to: list[str],
     template: str | None = None,
