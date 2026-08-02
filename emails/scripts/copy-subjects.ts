@@ -1,5 +1,5 @@
+import fs from "node:fs/promises";
 import path from "node:path";
-import fs from "fs-extra";
 import { glob } from "tinyglobby";
 
 const SOURCE_DIR = path.join(process.cwd(), "emails/account");
@@ -24,8 +24,8 @@ async function copySubjects() {
       const destDir = path.join(DEST_DIR, path.dirname(file));
       const destPath = path.join(destDir, path.basename(file));
 
-      await fs.ensureDir(destDir);
-      await fs.copy(sourcePath, destPath, { overwrite: true });
+      await fs.mkdir(destDir, { recursive: true });
+      await fs.cp(sourcePath, destPath, { force: true, recursive: true });
       console.log(`✅ Copied: ${file}`);
     }
 
