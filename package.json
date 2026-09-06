@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@11.21.0",
+  "packageManager": "pnpm@12.3.1",
   "description": "Full-stack video streaming platform.",
   "author": "Nicolas Contiero",
   "license": "MIT",
