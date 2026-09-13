@@ -29,7 +29,7 @@ dependencies = [
   "pillow==12.3.0",
   "psycopg[c]==3.3.5",
   "python-decouple==3.8",
-  "python-slugify==8.0.4",
+  "python-slugify==9.0.0",
   "redis==8.1.0",
   "requests==2.34.2",
 ]
