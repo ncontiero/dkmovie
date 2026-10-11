@@ -43,7 +43,7 @@ services:
       - "8025:8025"
 
   redis:
-    image: docker.io/redis:8@sha256:718f745deb7dfefeac6eed7041fc7ec9476b50e61b247932682457c41adafa0e
+    image: docker.io/redis:8@sha256:2c2dff791878316e3b083188be0d578423b24813cdda5de0e80ea4f7b3e6bfd6
     container_name: dkmovie_local_redis
     volumes:
       - dkmovie_local_redis_data:/data
