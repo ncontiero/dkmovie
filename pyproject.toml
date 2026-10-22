@@ -26,7 +26,7 @@ dependencies = [
   "gunicorn==26.2.0",
   "hiredis==3.4.2",
   "orjson==3.13.0",
-  "pillow==12.3.0",
+  "pillow==13.0.0",
   "psycopg[c]==3.3.6",
   "python-decouple==3.8",
   "python-slugify==9.1.3",
