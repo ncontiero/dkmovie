@@ -1,4 +1,4 @@
-exclude: "/migrations/|devcontainer.json|dkmovie/templates/emails/"
+exclude: "/migrations/|devcontainer.json|pnpm-lock.yaml|dkmovie/templates/emails/"
 default_stages: [pre-commit]
 
 default_language_version:
