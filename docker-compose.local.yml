@@ -49,7 +49,7 @@ services:
       - dkmovie_local_redis_data:/data
 
   minio:
-    image: minio/minio:latest@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
+    image: docker.io/pgsty/silo:latest@sha256:7bb2aff6b89efe1cb1303c10fc21d579447434ed06649ac9ec05a5e2dbf30ad7
     container_name: dkmovie_local_minio
     ports:
       - "9000:9000"
