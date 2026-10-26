@@ -20,7 +20,7 @@ DkMovie is a full-stack video streaming platform. Built with performance and sca
 
 ### Backend
 
-- **Framework**: [Django 5.2](https://www.djangoproject.com/) & [Django Ninja](https://django-ninja.dev).
+- **Framework**: [Django](https://www.djangoproject.com/) & [Django Ninja](https://django-ninja.dev).
 - **Database**: [PostgreSQL](https://www.postgresql.org).
 - **Task Queue**: [Celery](https://docs.celeryq.dev/en/stable/) with [Redis](https://redis.io) (for video processing and background tasks).
 - **Video Processing**: [FFmpeg](https://ffmpeg.org) (HLS segmentation, transcoding, thumbnail generation).
