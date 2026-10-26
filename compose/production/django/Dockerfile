@@ -18,12 +18,6 @@ RUN pnpm install --frozen-lockfile
 
 FROM client-base AS client-builder
 
-ARG DJANGO_AWS_PUBLIC_STORAGE_BUCKET_NAME
-ARG DJANGO_AWS_S3_PUBLIC_CUSTOM_DOMAIN
-
-ENV DJANGO_AWS_PUBLIC_STORAGE_BUCKET_NAME=${DJANGO_AWS_PUBLIC_STORAGE_BUCKET_NAME}
-ENV DJANGO_AWS_S3_PUBLIC_CUSTOM_DOMAIN=${DJANGO_AWS_S3_PUBLIC_CUSTOM_DOMAIN}
-
 COPY --from=client-deps /app/node_modules /app/node_modules
 COPY --from=client-deps /app/emails/node_modules /app/emails/node_modules
 COPY . /app
