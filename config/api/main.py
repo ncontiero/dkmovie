@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from ninja import NinjaAPI
 from ninja.errors import ValidationError as NinjaValidationError
 from ninja.parser import Parser
+from ninja.renderers import BaseRenderer
+from ninja.responses import NinjaJSONEncoder
 
 from dkmovie.streaming.api import router as streaming_router
 from dkmovie.titles.api import router as titles_router
@@ -20,8 +22,22 @@ class ORJSONParser(Parser):
         return orjson.loads(request.body)
 
 
+class ORJSONRenderer(BaseRenderer):
+    media_type = "application/json"
+    # Fallback for types orjson doesn't handle natively (Decimal, lazy strings, ...)
+    _default = NinjaJSONEncoder().default
+
+    def render(self, request: HttpRequest, data, *, response_status: int):
+        return orjson.dumps(
+            data,
+            default=self._default,
+            option=orjson.OPT_UTC_Z | orjson.OPT_NON_STR_KEYS,
+        )
+
+
 api = NinjaAPI(
     parser=ORJSONParser(),
+    renderer=ORJSONRenderer(),
     docs_decorator=staff_member_required,
     title=_("DkMovie API"),
     description=_("Documentation of API endpoints of DkMovie"),
