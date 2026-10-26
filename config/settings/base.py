@@ -357,7 +357,7 @@ USERSESSIONS_TRACK_ACTIVITY = True
 WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
-        "STATS_FILE": BASE_DIR / "webpack-stats.json",
+        "STATS_FILE": BASE_DIR / "rspack-stats.json",
         "POLL_INTERVAL": 0.1,
         "IGNORE": [r".+\.hot-update.js", r".+\.map"],
     },

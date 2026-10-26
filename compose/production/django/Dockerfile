@@ -34,7 +34,7 @@ RUN pnpm build:email
 FROM client-base AS client-build
 
 COPY . /app
-COPY --from=client-builder /app/webpack-stats.json /app/webpack-stats.json
+COPY --from=client-builder /app/rspack-stats.json /app/rspack-stats.json
 COPY --from=client-builder /app/dkmovie/static/bundles /app/dkmovie/static/bundles
 COPY --from=client-builder /app/dkmovie/templates/emails /app/dkmovie/templates/emails
 
