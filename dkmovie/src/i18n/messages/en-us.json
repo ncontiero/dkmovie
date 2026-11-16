@@ -158,6 +158,7 @@
   "auth": {
     "continueWith": {
       "password": "Continue with password",
+      "emailCode": "Continue with email code",
       "totp": "Continue with Authenticator App",
       "recoveryCodes": "Continue with Recovery Codes",
       "passkey": "Continue with Passkey",
@@ -169,7 +170,11 @@
       "submit": "Re-authenticate",
       "title": "Re-authenticate to continue",
       "description": "You need to re-authenticate to perform this action.",
-      "reAuthenticated": "Re-authenticated successfully"
+      "reAuthenticated": "Re-authenticated successfully",
+      "codeSent": "Verification code sent to {email}",
+      "codeDescription": "Enter the verification code sent to {email}",
+      "resendCode": "Didn't receive a code? Resend",
+      "codeExpired": "Verification code expired or invalid. Please request a new one."
     },
     "mfa": {
       "title": "Two Factor Authentication",

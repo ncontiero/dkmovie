@@ -31,7 +31,7 @@ class HistoryEntrySchema(ModelSchema):
 
     class Meta:
         model = HistoryEntry
-        fields = ["title", "episode", "status", "watched_seconds", "watched_at"]
+        fields = ["title", "status", "watched_seconds", "watched_at"]
 
 
 class UserSchemaOut(ModelSchema):

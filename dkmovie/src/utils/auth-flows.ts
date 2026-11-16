@@ -6,7 +6,11 @@ interface Flow {
   types?: string[];
 }
 
-const flowsToReauthenticate = ["reauthenticate", "mfa_reauthenticate"];
+const flowsToReauthenticate = [
+  "reauthenticate",
+  "mfa_reauthenticate",
+  "reauthenticate_by_code",
+];
 export const flowsTo2FA = ["mfa_authenticate"];
 
 export function getErrorFlows(error: Error | unknown): Flow[] {
