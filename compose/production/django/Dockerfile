@@ -64,7 +64,7 @@ COPY --from=client-build ${APP_HOME} ${APP_HOME}
 RUN uv sync --locked --no-dev
 
 # Python 'run' stage
-FROM python:3.15-slim-trixie@sha256:533b0b2f9b5d46fd097091cf826f27902f1d6c3bca714b6dc74551356aa97a51 AS python-run-stage
+FROM python:3.15-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS python-run-stage
 
 ARG APP_HOME=/app
 
