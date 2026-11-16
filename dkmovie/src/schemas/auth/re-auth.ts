@@ -5,3 +5,9 @@ export const reAuthSchema = object({
 });
 
 export type ReAuthSchema = output<typeof reAuthSchema>;
+
+export const reAuthCodeSchema = object({
+  code: string().min(1),
+});
+
+export type ReAuthCodeSchema = output<typeof reAuthCodeSchema>;
